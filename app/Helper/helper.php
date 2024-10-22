@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use App\Models\{CourseSession,CourseSessionsGroup,CourseSessionSubscription,UserCourse,
     StudentSessionInstallment,CourseSessionInstallment};
+use Twilio\Rest\Client;
 
 function checkAllPermissionsAdmin($permissions)
 {
@@ -688,13 +689,13 @@ function quickRandom($length = 16)
 
 function defaultCountryCode()
 {
-    return '966';
+    return '20';
 }
 
 
 function defaultCountrySlug()
 {
-    return 'tr';
+    return 'eg';
 }
 
 function uploadvideo($file, $custome_path='', $is_full_path=false)
@@ -929,4 +930,33 @@ function checkIfInstallmentHasStudents($installment_id)
     
     return StudentSessionInstallment::where('access_until_session_id',$course_session_id)->where('course_id',$installment->course_id)
     ->first();
+}
+
+function sendOtpToWhatsapp($to_mobile,$otp)
+{
+
+    $sid    = "ACa05313d6652bde58f9b50dca4af0d0ed";
+    $token  = "9425fdbbbb027bf3cabcdaf86d3ddf3c";
+
+    $fromNumber = '+9647869653275';
+
+    // try {
+
+        $twilio = new Client($sid, $token);
+
+        $message = $twilio->messages->create(
+            "whatsapp:+".$to_mobile, // To
+            [
+                "contentSid" => "HXa7993fb9898278580e512255d287f4a6",
+                "contentVariables" => json_encode([
+                    "1" => $otp,
+                ]),
+                "from" => "whatsapp:+9647869653275",
+            ]
+        );
+
+        return 'SMS Sent Successfully.';
+    // } catch (Exception $e) {
+    //     return 'Error: ' . $e->getMessage();
+    // }
 }

@@ -93,7 +93,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->last_send_validation_code = Carbon::now();
         $this->update();
 
-        $this->notify(new SendVerificationCodeNotification($code));
+        sendOtpToWhatsapp($this->code_country.$this->mobile,$this->validation_code);
     }
 
     /**

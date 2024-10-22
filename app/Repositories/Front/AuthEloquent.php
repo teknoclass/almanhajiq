@@ -30,6 +30,15 @@ class AuthEloquent extends HelperEloquent
 
     public function singUp($request)
     {
+        if($request->code_country == "")
+        {
+            $request['code_country'] = defaultCountryCode();
+        }
+        if($request->slug_country == "")
+        {
+            $request['slug_country'] = defaultCountrySlug();
+        }
+
         if(JoinAsTeacherRequests::where('email' , $request->email)->where('status' , '!=' , 'unacceptable')->count()){
             $message = __("This_Email_is_used_before!!");
             $status = false;
@@ -82,10 +91,10 @@ class AuthEloquent extends HelperEloquent
 
                 $user->last_login_at = Carbon::now();
                 $user->update();
+                $user->sendVerificationCode();
 
                 $this->guard()->login($user);
 
-               // $user->sendVerificationCode();
             }
 
             // save role

@@ -16,7 +16,7 @@
                         <h2 class="font-bold mb-2">{{ __('confirm_account') }} </h2>
                         <h4 class="text-muted">{{ __('enter_code_received_on_email') }}</h4>
                     </div>
-                      <form class="wow fadeInUp" id="form" action="{{route('user.auth.verify.verification')}}" to="back3" method="POST">
+                      <form class="wow fadeInUp" id="form" action="{{route('user.auth.verify.verification')}}" to="{{route('user.home.index')}}" method="POST">
                         @csrf
                         <div class="form-group">
                           <div class="input-activate">
