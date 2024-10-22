@@ -1,0 +1,160 @@
+
+.remaining-time {
+  color: #F58634;
+  border: 2px solid #F58634;
+  border-radius: 6px;
+  font-size: 17px;
+  padding: 6px 17px;
+}
+
+.item-answer .m-radio .checkmark {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 0;
+  background-color: #d4e2eb;
+}
+
+.item-answer .m-radio input:checked ~ .checkmark {
+  background-color: #F58634;
+}
+
+.item-answer .m-radio input:checked ~ .checkmark:after {
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background-color: #F58634;
+  font-size: 18px;
+}
+
+.btn-danger {
+  background-color: #f66970;
+  border-color: #f66970;
+}
+
+.item-answer .m-radio.answer-success,
+.item-answer .m-radio.answer-error {
+  cursor: text;
+  pointer-events: none;
+}
+
+.item-answer .m-radio.answer-success .checkmark {
+  background-color: #37b284;
+}
+
+.item-answer .m-radio.answer-error .checkmark {
+  background-color: #f66970;
+}
+
+.item-answer .m-radio.answer-success .checkmark::after {
+  opacity: 1;
+  color: #fff;
+  font-size: 18px;
+}
+
+.item-answer .m-radio.answer-error .checkmark::after {
+  opacity: 1;
+  color: #fff;
+  content: "\f00d";
+  font-family: "Font Awesome 6 Pro";
+  font-size: 18px;
+  padding-top: 2px;
+}
+
+.input-question.input-answer {
+  position: relative;
+}
+
+.input-question.input-answer .form-control {
+  pointer-events: none;
+  padding-left: 30px;
+}
+
+.input-question.input-answer.success .form-control {
+  color: #37b284;
+}
+.input-question.input-answer.success::before {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #37b284;
+  font-size: 20px;
+  content: "\f058";
+  font-family: "Font Awesome 6 Pro";
+  font-weight: bold;
+}
+.input-question.input-answer.error .form-control {
+  color: #f66970;
+  border: 2px solid #f66970;
+}
+.input-question.input-answer.error::before {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #f66970;
+  font-size: 20px;
+  content: "\f057";
+  font-family: "Font Awesome 6 Pro";
+  font-weight: bold;
+}
+
+.result-question{
+  border: 2px solid #37B284;
+  color: #37B284;
+  border-radius: 6px;
+  font-size: 17px;
+  padding: 6px 17px;
+}
+
+
+.exam-question-solutions{
+  .m-radio{
+    cursor: text;
+  }
+}
+
+.bg-light-green-2 {
+  background-color: #e3f9f1 !important;
+}
+
+
+
+.dropzone.dz-clickable .dz-message > span {
+  display: inline-block;
+  border: 2px dashed #dce2e9;
+  padding: 20px 50px;
+  border-radius: 8px;
+  font-size: 15px;
+}
+.dropzone {
+  border: 1px solid #dce2e9;
+  background: #fff;
+}
+.dropzone .dz-message {
+  text-align: center;
+  margin: 3em 0;
+}
+
+
+.bg-light-danger-2 {
+  background-color: #ffeff0;
+}
+
+.form-control.disabled-answer{
+  pointer-events: none;
+}
+
+
+.rating-container .caption {
+  display: none !important;
+}
+
+.rating-rtl {
+  float: none;
+}
+
+.rating-container {
+  text-align: center;
+}

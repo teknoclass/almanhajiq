@@ -1,0 +1,45 @@
+
+.input-activate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: ltr;
+}
+
+.input-activate .form-control {
+  width: 58px;
+  height: 50px;
+  text-align: center;
+  -webkit-margin-end: 10px;
+  margin-inline-end: 10px;
+  border-radius: 6px;
+  background-color: #DCE2E9;
+}
+@media (max-width: 991px) {
+  .input-activate .form-control {
+    width: 45px;
+    height: 45px;
+    -webkit-margin-end: 5px;
+    margin-inline-end: 5px;
+  }
+}
+
+.nav-login{
+  background-color: #899EB2;
+  border-radius: 40px;
+  padding: 15px;
+  .nav-item{
+    flex: 1 1 0;
+    .nav-link{
+      display: block;
+      width: 100%;
+      text-align: center;
+      color: #FFF;
+      border-radius: 30px;
+      padding: 9px;
+      &.active,&:hover{
+        background-color: #154572;
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+.widget_item-cart{
+  position: relative;
+  border-radius: 18px;
+  background-color: #FFF;
+  padding: 30px 40px;
+  @media(max-width:991px){
+    padding: 15px;
+  }
+  .widget_item-delete
+  {
+    position: absolute;
+    top: 25px;
+    inset-inline-end: 25px;
+    color: #EB1F1F;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .widget_item-image{
+    width: 220px;
+    position: relative;
+    height: 0;
+    padding-top: 119%;
+    @media(max-width:991px){
+      padding-top: 90%;
+      width: 100%;
+    }
+    img{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      border-radius: 18px;
+      object-fit: cover;
+    }
+  }
+  .widget_item-title{
+    a{
+      color: #000;
+    }
+  }
+}

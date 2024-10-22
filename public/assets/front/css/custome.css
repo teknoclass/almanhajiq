@@ -1,0 +1,186 @@
+.bootstrap-select > .dropdown-toggle {
+    height: 50px !important;
+}
+
+input.error {
+    border: 1px solid red !important;
+}
+
+textarea.error {
+    border: 1px solid red !important;
+}
+
+.select2-container--bootstrap5 .select2-dropdown .select2-results__option.select2-results__option--disabled{
+    color: #B5B5C3 !important;
+}
+.accordion-button:not(.collapsed){
+    color: white;
+}
+.accordion-button {
+    padding: 2%;
+    background-color: #454a4d !important;
+    border: #454a4d;
+    color: white;
+
+}
+
+select.error {
+    border: 1px solid red !important;
+}
+
+label.error {
+    color: red !important;
+}
+
+.select2-container {
+    width: 100% !important;
+}
+
+#toast-container > div {
+    width: 350px !important;
+    font-size: 17px !important;
+}
+
+#load {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    display: block;
+    opacity: 0.8;
+    z-index: 100000;
+    background-color: #fff;
+    z-index: 199;
+    text-align: center;
+}
+
+#loading-image {
+    position: absolute;
+    top: 50%;
+    z-index: 200;
+    right: 50%;
+    z-index: 200;
+}
+
+.no_data {
+    padding: 10px;
+    text-align: center;
+    font-size: 20px;
+    width: 100%;
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+}
+
+.iti__country-list li {
+    text-align: right !important;
+    display: flex !important;
+}
+
+.iti__country-list .iti__flag {
+    position: relative !important;
+    top: 5px !important;
+}
+
+.iti--allow-dropdown {
+    width: 100%;
+}
+
+.iti__country-list {
+    left: 0;
+}
+
+.section-about p {
+    color: #fff !important;
+}
+
+body::-webkit-scrollbar {
+    width: 12px;
+    /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+    background: #dddd;
+    /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #025B87;
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
+    border: 3px solid #dddd;
+    /* creates padding around scroll thumb */
+}
+
+.uploadImg img {
+    width: 150px;
+    height: 150px;
+}
+
+.bootstrap-select .dropdown-toggle .filter-option-inner-inner {
+    overflow: hidden;
+    text-align: start;
+}
+
+.input-activate label.error {
+    display: none !important;
+}
+
+/* update main css */
+
+.btn-white:hover,
+.btn-white:focus {
+    color: #fff !important;
+    background: #06ABD5 !important;
+    border-color: #06ABD5 !important;
+    box-shadow: none !important;
+}
+
+.widget_item-step .widget_item-title {
+    max-width: 70%;
+    max-height: 60px;
+    overflow: hidden;
+}
+
+.nav-competition-levels .nav-item .nav-link {
+    position: relative;
+    border: 0;
+    color: #abbac5;
+    padding: 5px 0;
+}
+
+.nav-competition-levels .nav-item:not(:last-of-type) {
+    margin-inline-end: 40px;
+}
+
+.nav-competition-levels .nav-item .nav-link::before {
+    position: absolute;
+    content: "";
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 2px;
+    background-color: #ee9458;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-competition-levels .nav-item .nav-link.active::before,
+.nav-competition-levels .nav-item .nav-link:hover::before {
+    width: 100%;
+}
+
+.nav-competition-levels .nav-item .nav-link.active {
+    color: #212f3e;
+    font-family: "din-next-medium";
+    background-color: transparent;
+}
+
+.not-active {
+    pointer-events: none;
+    opacity: 0.5;
+}

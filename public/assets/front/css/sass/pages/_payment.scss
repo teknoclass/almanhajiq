@@ -1,0 +1,30 @@
+.card-payment {
+  background-color: #fff;
+  border-radius: 6px;
+}
+.card-payment .nav-tabs .nav-item {
+  flex: 1 1 0;
+}
+.card-payment .nav-tabs .nav-item .nav-link {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #dce2e9;
+  padding: 14px;
+  opacity: 0.34;
+}
+.card-payment .nav-tabs .nav-item .nav-link.active {
+  border-bottom: 1px solid #06abd5;
+  opacity: 1;
+}
+
+
+.widget_item-cart.widget-2 .widget_item-image {
+  width: 112px;
+  position: relative;
+  height: 0;
+  padding-top: 81%;
+  img{
+    border-radius: 10px;
+  }
+}

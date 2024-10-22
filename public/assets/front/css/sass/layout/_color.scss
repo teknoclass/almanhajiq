@@ -1,0 +1,54 @@
+.homeIntro .homeIntro-content .homeIntro-btn ,
+.title-section::before ,
+.main-header .menu-container .main-menu .menu_item .menu_link.register,
+.widget__item-2 .widget__item-body::before, .widget__item-2 .widget__item-body::after,
+.lds-ellipsis div ,
+.master-btn ,
+.loader-page span,
+.card-form .title-card::before ,
+.general_btn_xs,
+.general_btn_sm,
+.general_btn_md,
+.general_btn_lg,
+.m-checkbox .checkmark:after ,
+.card-form .card-title::before,
+.nav-pills.tab-packg .nav-link.active, .nav-pills.tab-packg .show > .nav-link,
+.widget__item-8 .widget__item-image .widget__item-action .btn-action:hover,
+.actions ul li,
+.box-action .box-action-dropdown .btn-styl-add,
+.form-wizard .steps li.current a .step-icon, .form-wizard .steps li.current a:active .step-icon, .form-wizard .steps .done::before, .form-wizard .steps li.done a .step-icon, .form-wizard .steps li.done a:active .step-icon{
+    background-color: #185d95;
+}
+
+.widget__item-2 .widget__item-price,
+.card.card-faq .card-header .btn::before ,
+.widget__item-5 .widget__item-icon,
+.widget__item-7 .widget__item-body .widget__item-info li i,
+.main-header .menu-container .main-menu .menu_item .menu_link:hover,
+.main-header .menu-container .main-menu .menu_item .menu_link.active,
+.widget__item-8:hover .widget__item-body .widget__item-title a,
+.widget__item-8:hover .widget__item-body .widget__item-title{
+  color: #185d95;
+}
+
+.gallery-thumbs .swiper-slide.swiper-slide-thumb-active{
+  border: 3px solid #185d95;
+}
+.widget__item-3 .widget__item-body{
+  border: 2px solid #185d95;
+}
+
+.form-control:focus,
+.widget__item-social.selected{
+  border: 1px solid #185d95;
+}
+
+.btn-hover:hover{
+  background-color: #185d95 !important;
+  color: #FFF !important;
+}
+
+
+.btn-hover{
+  transition:  all .2s ease-in-out;
+}

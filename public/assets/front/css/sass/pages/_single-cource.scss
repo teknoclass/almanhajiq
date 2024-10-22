@@ -1,0 +1,175 @@
+
+.progress.progress-custom {
+  height: 3px;
+  background-color: #d4e2eb;
+  border: 0;
+  border-radius: 30px;
+  overflow: hidden;
+  direction: rtl;
+}
+.progress.progress-custom .progress-bar {
+  background-color: #06abd5;
+}
+
+.widget__item-attac {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.widget__item-attac .widget__item-icon {
+  width: 60px;
+  height: 56px;
+  border: 1px solid #d4d4d4;
+  border-radius: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  background-color: #FFF;
+}
+
+.widget__item-attac .widget__item-icon img {
+  max-height: 55px;
+}
+
+.widget__item-attac .widget__item-content {
+  margin-inline-start: 15px;
+}
+.widget__item-addComment .form-control {
+  background-color: transparent;
+  border-radius: 0;
+  border: 0;
+  border-bottom: 2px solid #e4e4e4;
+}
+
+.widget__item-addComment .form-control::placeholder {
+  color: #777777 !important ;
+  font-size: 16px !important;
+}
+
+.widget__item-message {
+  padding-left: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 25px;
+}
+
+.widget__item-message .widget__item-image {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+}
+
+.widget__item-message .widget__item-content {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 0 0%;
+  flex: 1 0 0%;
+}
+
+.widget__item-message .widget__item-content .widget__item-name {
+  margin-bottom: 15px;
+}
+
+.widget__item-message .widget__item-content .widget__item-name a {
+  color: #363f43;
+}
+
+.widget__item-message .widget__item-content .widget__item-desc {
+  height: 27px;
+  overflow: hidden;
+  color: #363f43;
+}
+
+.widget__item-message .widget__item-content .widget__item-date {
+  color: #b4b4b4;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+}
+
+.widget__item-message:not(:last-child) .widget__item-content {
+  border-bottom: 1px solid #cfcfcf;
+  padding-bottom: 15px;
+}
+
+
+
+.icon-chevron-down {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #718ba1;
+  background-color: #d4e2eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.course-widget{
+  .icon{
+    width:20px ;
+    height: 20px;
+    background-color: #D4E2EB;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+
+
+.circle-progress {
+  width: 200px;
+  height: auto;
+  -webkit-box-shadow: 0px 3px 20px #0000001f;
+  box-shadow: 0px 3px 20px #0000001f;
+  border-radius: 50%;
+}
+.circle-progress-circle {
+  stroke-width: 12px;
+  stroke: #fff;
+  -webkit-box-shadow: inset 0px 4px 12px rgb(0 0 0 / 12%);
+  box-shadow: inset 0px 4px 12px rgb(0 0 0 / 12%);
+}
+.circle-progress-value {
+  stroke-width: 6px;
+}
+.circle-progress-text {
+  fill: #000;
+  font-weight: 700;
+}
+.circleProgress_1 .circle-progress-value {
+  stroke: #75cf8d;
+}
+
+.circleProgress_2 .circle-progress-value {
+  stroke: #f2b734;
+}
+
+.circleProgress_3 .circle-progress-value {
+  stroke: #025b87;
+}
+
+.border-child > div:not(:last-of-type) {
+  border-bottom: 1px solid #d4e2eb;
+}
+
+.image-coach{
+  img{
+    height: 330px;
+    object-fit: cover;
+  }
+}

@@ -1,0 +1,91 @@
+
+
+.table.table-cart > :not(:last-child) > :last-child > * {
+  border-bottom-color: #e3e3e3;
+}
+
+.table.table-cart {
+  vertical-align: middle;
+  border-color: #e3e3e3;
+  border-collapse: separate;
+  border-spacing: 0px 6px;
+}
+
+@media (max-width: 991px) {
+  .table.table-cart thead {
+    display: none;
+  }
+}
+.table.table-cart thead td {
+  border: 0;
+  background-color: #eff5f8;
+  padding: 10px 10px !important;
+}
+
+.table.table-cart tr td {
+  color: #212f3e;
+  font-size: 14px;
+}
+.table.table-cart tr.bg td {
+  background-color: #f4f8fc !important;
+  border: 0;
+}
+.table.table-cart tr.bg td:nth-of-type(1) {
+  border-radius: 0px 4px 4px 0px;
+}
+.table.table-cart tr.bg td:last-of-type {
+  border-radius: 4px 0px 0px 4px;
+}
+
+@media (min-width: 992px) {
+  .table.table-cart tr td {
+    padding: 15px 10px;
+  }
+}
+@media (max-width: 991px) {
+  .table.table-cart tr {
+    display: block;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+  }
+  .table.table-cart tr td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table.table-cart tr td[data-title]:before {
+    content: attr(data-title);
+    font-size: inherit;
+    font-weight: 400;
+  }
+  .table.table-cart tr td,
+  .table.table-cart tr th {
+    padding: 10px 10px;
+    font-size: 12px;
+  }
+  .table.table-cart tr td:last-of-type,
+  .table.table-cart tr th:last-of-type {
+    border-bottom: 0;
+  }
+}
+.table-container {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px;
+}
+
+
+
+.table.table-cart.table-2 thead td {
+  background-color: #fff;
+}
+.table.table-2 > :not(caption) > * > * {
+  background-color: #eff5f8;
+  border: 0;
+}
+.table.table-2.table-cart tr td {
+  color: #777777;
+  font-size: 14px;
+}

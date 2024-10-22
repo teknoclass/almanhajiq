@@ -1,0 +1,10 @@
+#how-work .content .info {
+    padding-right: 3% !important;
+    padding-left: 6% !important;
+}
+
+html[dir="ltr"] #how-work .content #scroll-down,
+html[dir="ltr"] #how-work .content #scroll-up {
+    left: unset;
+    right: -15px;
+}

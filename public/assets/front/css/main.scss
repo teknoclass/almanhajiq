@@ -1,0 +1,51 @@
+
+
+@import 'sass/helpers/variables';
+@import 'sass/helpers/mixins';
+
+@import 'sass/layout/main';
+@import 'sass/components/buttons';
+
+// @import 'sass/components/top_banner';
+@import 'sass/components/_dropdown';
+@import 'sass/components/menu_mobile';
+// @import 'sass/components/_menu_mobile_nav';
+@import 'sass/components/pagination';
+@import 'sass/components/_checkbox';
+// @import 'sass/components/alert';
+@import 'sass/components/breadcrumb';
+// @import 'sass/pages/top_panner';
+// @import 'sass/layout/header';
+// @import 'sass/layout/_color';
+@import 'sass/layout/header';
+
+
+@import 'sass/pages/index';
+@import 'sass/pages/_course-details.scss';
+@import 'sass/pages/_login.scss';
+@import 'sass/pages/_faq';
+@import 'sass/pages/_teacher';
+@import 'sass/pages/_profile';
+@import 'sass/pages/_cart';
+@import 'sass/pages/_table';
+@import 'sass/pages/_setting';
+@import 'sass/pages/_indexStudent';
+@import 'sass/pages/_courses';
+@import 'sass/pages/_curricula';
+@import 'sass/pages/_single-cource';
+@import 'sass/pages/_question';
+
+@import 'sass/pages/_messages';
+@import 'sass/pages/_payment';
+// // // 
+@import 'sass/pages/_blog';
+
+@import 'sass/pages/_forum.scss';
+@import 'sass/pages/_course.scss';
+// @import 'sass/pages/_faq';
+// @import 'sass/pages/login';
+// 
+
+@import 'sass/layout/footer';
+
+// @import 'sass/pages/responsive';

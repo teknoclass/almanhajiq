@@ -1,0 +1,46 @@
+.forum-header {
+  background-color: #dce2e9;
+  border-radius: 0 0 28px 28px;
+  padding: 15px;
+}
+
+.widget_item-forum {
+  .widget_item-head {
+    background-color: #154572;
+  }
+  .widget_item-body {
+    background-color: #fff;
+  }
+  .widget_item-footer{
+    background-color: #F6F6F6;
+    border-radius: 0 0 30px 30px;
+    padding: 20px 20px 20px 60px;
+  }
+}
+.widget_item-forumFile {
+  .icon{
+    color: #212F3E;
+    font-size: 40px;
+    display: flex;
+  }
+  &:not(:last-of-type){
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(112, 112, 112 , .82);
+  }
+}
+
+.bootstrap-select{
+
+  .icon-dropdown-white{
+    &.dropdown-toggle{
+      color: #FFF !important;
+      &::before{
+        color: #FFF;
+      }
+      &:hover,&:focus,&:active{
+        background-color: transparent !important;
+      }
+    }
+  }
+}

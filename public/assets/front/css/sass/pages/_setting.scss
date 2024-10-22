@@ -1,0 +1,20 @@
+.tabs-setting{
+  height: 100%;
+  .nav-link{
+    background-color: #FFF;
+    color: #212F3E;
+    border-radius: 0;
+    height: 33.333%;
+    &.active{
+      color: #212F3E;
+      background-color: #DCE2E9;
+    }
+    &:nth-of-type(1){
+      border-radius: 35px 35px 0 0;
+    }
+    &:last-of-type{
+      border-radius: 35px 35px 0 0;
+    }
+  }
+}
+

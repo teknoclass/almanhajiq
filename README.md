@@ -1,0 +1,2 @@
+# almanhajiq-platform
+منصة المنهج

@@ -1,0 +1,80 @@
+
+.widget_item-student {
+  padding: 13px;
+  border-radius: 60px;
+}
+.widget_item-student .widget_item-content {
+  background-color: #eff5f8;
+  border-radius: 60px;
+  padding: 13px 18px;
+}
+.widget_item-student .widget_item-content .widget_item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  background-color: #718BA1;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+.widget_item-student .widget_item-content .widget_item-icon::after {
+  position: absolute;
+  content: "";
+  border: 3px solid #FFF;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+.widget_item-student .widget_item-content .widget_item-icon img {
+  position: relative;
+  z-index: 1;
+}
+.widget_item-student .widget_item-content .widget_item-number {
+  font-size: 30px;
+}
+
+
+.progress .progress-bar {
+  border-radius: 30px;
+}
+
+.progress .progress-bar.bg-success {
+  background-color: #37b284 !important;
+}
+.progress .progress-bar.bg-warning {
+  background-color: #ee9458 !important;
+}
+.progress .progress-bar.bg-danger {
+  background-color: #f66970 !important;
+}
+
+
+.bootstrap-select > .select-primary.dropdown-toggle {
+  background-color: $general_color !important;
+  color: #fff !important;
+  border-radius: 5px;
+  &::before{
+    color: #FFF;
+  }
+}
+
+
+
+.text-success {
+  color: #37b284 !important;
+}
+
+.text-danger {
+  color: #EB4F64 !important;
+}
+
+.star-fill {
+  color: #FFE952;
+}

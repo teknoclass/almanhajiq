@@ -1,0 +1,14 @@
+.section-faq{
+  .widget__item-faq:not(.collapsed) {
+    background-color: #DAECF3;
+    .title{
+      color: #154572;
+      font-weight: bold;
+    }
+    svg{
+      path{
+        fill: #154572;
+      }
+    }
+}
+}

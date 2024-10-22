@@ -1,0 +1,116 @@
+.widget_item-teacher {
+  border-radius: 23px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.16);
+  padding: 10px;
+  .widget_item-title {
+    a {
+      color: #212f3e;
+      transition: color 0.2s ease-in-out;
+      &:hover {
+        color: $general_color;
+      }
+    }
+  }
+  .widget_item-image {
+    position: relative;
+    height: 0;
+    padding-top: 135%;
+    &::before {
+      -webkit-clip-path: ellipse(37% 18% at 50% 50%);
+      clip-path: ellipse(45% 44% at 50% 50%);
+      position: absolute;
+      content: "";
+      width: 100%;
+      height: 70px;
+      z-index: 15;
+      background-color: white;
+      bottom: -46px;
+      z-index: -8;
+      left: 0;
+      z-index: 2;
+    }
+    img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+    }
+  }
+  .widget_item-overlay {
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    border-radius: 18px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    padding-bottom: 40px;
+    left: 0;
+    z-index: 1;
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.54) 0%,
+      rgba(84, 84, 84, 0.54) 100%
+    );
+    a {
+      color: #fff;
+      padding: 10px;
+      font-size: 25px;
+      transition: color 0.2s ease-in-out;
+      &:hover {
+        color: $general_color;
+      }
+    }
+  }
+  .widget_item-content {
+    position: relative;
+    z-index: 2;
+  }
+  &:hover {
+    .widget_item-overlay {
+      opacity: 1;
+    }
+  }
+}
+
+.card {
+  border: 0;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 12px;
+  .card-body {
+    padding: 20px;
+  }
+}
+
+.collapse-head {
+  background-color: #d0ebf2;
+  border-radius: 30px;
+  padding: 8px 15px;
+  cursor: pointer;
+  color: #fff;
+  &:not(.collapsed) {
+    .collapse-icon {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.slide-search {
+  .form-control {
+    background-color: #d0ebf2;
+  }
+  .input-icon {
+    .icon {
+      color: #fff;
+    }
+    ::placeholder {
+      color: #fff !important;
+    }
+  }
+  .m-checkbox .checkmark {
+    border: 1px solid #d0ebf2;
+    background-color: #d0ebf2;
+  }
+}

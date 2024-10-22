@@ -1,0 +1,78 @@
+@if (@$testimonial_header->hasValues() || @$testimonials->isNotEmpty())
+    <!-- Testimonial End -->
+    <section id="testimonials" class="section-padding">
+        <div class="container">
+            <!-- Section Title Start -->
+            <h2 class="title-section mb-4">{{ __('why_students_love_our_platform') }}</h2>
+            <!-- Section Title End -->
+            <p class="desc mb-4">
+                {{ __('proudly_offer_courses') }}
+                <a href="{{ route('user.auth.register') }}">{{ __('register_now') }}</a>
+            </p>
+            <!-- Testimonial Wrapper End -->
+            <div class="testimonial-wrapper testimonial-active">
+                <div class="swiper swiper-container">
+                    <div class="swiper-wrapper pt-5">
+                        @if (@$testimonials->isNotEmpty())
+                            @foreach ($testimonials as $testimonial)
+                                <!-- Single Testimonial Start -->
+                                <div class="swiper-slide">
+                                    <div class="testimonial-slide">
+                                        <div class="testimonial-author mx-auto">
+                                            <div class="col-10 col-sm-8 py-3 mx-auto">
+                                                <div class="author-thumb">
+                                                    <img src="{{ imageUrl(@$testimonial->image) }}"alt="{{ @$testimonial->name }}"
+                                                        loading="lazy" />
+                                                </div>
+                                                <div class="testimonial-box">
+                                                    <div class="testimonial-content mt-md-4">
+                                                            {!! @$testimonial->text !!}
+                                                        <div
+                                                            class="d-flex align-items-center justify-content-center flex-wrap mt-md-5">
+                                                            <div class="flex-fill">
+                                                                <h4 class="name fw-bold text-color-secondary">
+                                                                    {{ @$testimonial->name }}
+                                                                </h4>
+                                                                <p class="text-muted">
+                                                                    {{ \Carbon\Carbon::parse(@$testimonial->created_at)->diffForHumans() }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="data-rating rating-small ">
+                                                                <span class="d-flex justify-content-end"
+                                                                    data-rating="{{ @$testimonial->rate }}">
+                                                                    <i class="far fa-star"></i><i
+                                                                        class="far fa-star"></i><i
+                                                                        class="far fa-star"></i>
+                                                                    <i class="far fa-star"></i><i
+                                                                        class="far fa-star"></i></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="banner-icon">
+                                            <svg width="284" height="61" viewBox="0 0 284 61" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M284 27.768C282.594 27.8406 281.515 27.9584 280.436 27.9493C273.918 27.8678 267.4 27.7499 260.897 27.6593C260.258 27.6502 259.619 27.6411 258.994 27.6865C256.977 27.8224 256.381 28.5658 257.489 29.6807C258.241 30.4513 259.178 31.1493 260.059 31.8744C264.773 35.7814 269.118 39.8516 272.441 44.3206C274.912 47.6383 276.815 51.0649 277.766 54.6999C277.922 55.2891 277.951 55.8965 278.079 56.667C277.454 56.5219 276.999 56.4766 276.659 56.3316C257.418 47.5386 235.606 42.4441 213.057 38.4918C199.936 36.1893 186.545 34.7027 172.999 33.8687C161.269 33.1435 149.512 33.0166 137.74 33.3974C117.846 34.0319 98.1504 35.5729 78.8242 38.7003C64.2408 41.0663 49.9414 43.958 36.5366 48.4179C27.69 51.364 19.4966 54.9356 11.9564 59.1145C10.8488 59.7309 9.8264 60.4108 8.5484 61C8.8324 57.927 10.4086 55.0806 11.9422 52.2433C13.5042 49.3607 15.5206 46.6049 18.0056 43.9942C20.4622 41.4289 23.359 39.0811 26.625 36.9055C29.8768 34.739 33.3416 32.7265 37.8998 31.2399C35.1592 30.4422 24.6228 31.1855 17.6932 32.4093C11.2464 33.5333 5.5096 35.5367 0 38.0476C0.2556 37.7122 0.497 37.3587 0.7952 37.0324C4.3452 33.0529 8.1082 29.1731 12.6806 25.6378C17.9346 21.5676 24.0264 18.1048 31.3394 15.5848C33.2848 14.914 35.3722 14.3792 37.4028 13.8262C50.4952 10.2637 63.758 6.99127 77.5604 4.69785C90.2836 2.58572 103.177 1.18066 116.284 0.518925C126.366 0.0112903 136.448 -0.115618 146.544 0.101939C157.677 0.337627 168.739 1.06282 179.772 2.04183C194.114 3.31092 208.342 4.92447 222.329 7.29041C236.728 9.71981 250.758 12.8019 263.921 17.3343C270.041 19.4374 275.622 22.039 280.791 24.9942C282.026 25.6831 283.262 26.4083 284 27.768Z"
+                                                    fill="#F9DEDC" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Single Testimonial End -->
+                            @endforeach
+                        @endif
+                    </div>
+
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+            <!-- Testimonial Wrapper End -->
+
+        </div>
+    </section>
+    <!-- Testimonial End -->
+@endif

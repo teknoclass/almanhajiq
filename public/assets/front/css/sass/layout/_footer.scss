@@ -1,0 +1,103 @@
+.main-footer {
+  background-color: #212F3E;
+  padding: 50px 0px 15px;
+  .link-footer  {
+    a{
+      color: #fff;
+      display: inline-block;
+      font-size: 14px;
+      padding: 4px 10px;
+      margin-bottom: 10px;
+      position: relative;
+      -webkit-transition: color 200ms;
+      -moz-transition: color 200ms;
+      -ms-transition: color 200ms;
+      -o-transition: color 200ms;
+      transition: color 200ms;
+      &:hover {
+        color: $general_color !important;
+      }
+    }
+
+  }
+}
+
+
+.social-media {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.social-media li a {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  color: #fff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  font-size: 16px;
+  -webkit-transition: background-color 0.3s ease-in-out;
+  -o-transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
+  i{
+    transition: color 0.3s ease-in-out;
+  }
+  &.social-dark{
+    background-color: #192947;
+    i{
+      color: #FFF;
+    }
+  }
+}
+.social-media li{
+  &:not(:last-of-type){
+    margin-inline-end: 10px;
+  }
+}
+.social-media li a:hover {
+  color: #fff;
+}
+.social-media li a:hover.fa {
+  background-color: #3a5898;
+}
+.social-media li a:hover.ph {
+  background-color: $general_color;
+}
+.social-media li a:hover.tw {
+  background-color: #1da1f2;
+}
+.social-media li a:hover.li {
+  background-color: #0073b1;
+}
+.social-media li a:hover.yo {
+  background-color: #ff0000;
+}
+.social-media li a:hover.wh {
+  background-color: #00E676;
+}
+.social-media li a:hover.in {
+  background-color: #bb00aa;
+
+}
+
+.social-media.social-dark{
+  li{
+    a{
+      color: #000;
+      &:hover{
+        color: #FFF;
+      }
+    }
+  }
+}

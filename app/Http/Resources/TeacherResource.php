@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class TeacherResource extends JsonResource
+{
+
+    /**
+     * Transform the resource into an array.
+     *
+     * @param Request $request
+     *
+     * @return array
+     */
+    public function toArray($request)
+    {
+
+        return [
+            'id'=>$this->id,
+            'name'=>$this->name,
+            'image'=>imageUrl($this->image,'100x100'),
+            'experience'=>$this->lecturerSetting?->exp_years,
+            'mother_lang'=>$this->motherLang?->name,
+            'rating'=>$this->getRating(),
+        ];
+    }
+}

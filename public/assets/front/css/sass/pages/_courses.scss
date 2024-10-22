@@ -1,0 +1,108 @@
+.nav-pills-courses{
+  background-color: #FFF;
+  padding: 14px;
+  border-radius: 30px;
+  .nav-item{
+    flex: 1 1 0;
+    .nav-link {
+      color: $general_color;
+      border-radius: 30px;
+      width: 100%;
+      padding: 9px;
+      font-size: 15px;
+      font-weight: bold;
+      &.active,&:hover{
+        background-color: $general_color;
+        color: #FFF;
+      }
+    }
+  }
+}
+
+.widget_item-offers{
+  position: relative;
+  border-radius: 76px;
+  overflow: hidden;
+  display: block;
+  .widget_item-image{
+    position: relative;
+    height: 0;
+    padding-top:83%;
+    img{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      transition: all .4s ease-in-out;
+    }
+  }
+  &::before{
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #000000;
+    opacity: .4;
+    z-index: 1;
+  }
+  .widget_item-content{
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 40px;
+    padding: 40px 115px;
+    .widget_item-discount{
+      background-color: #EB1F1F;
+      color: #FFF;
+      border-radius: 23px;
+      padding: 27px 22px 23px;
+      font-size: 35px;
+    }
+  }
+  &:hover{
+    .widget_item-image{
+      img{
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+
+
+.btn-light-primary {
+  background-color: #d4e2eb;
+  color: #212f3e;
+  border-radius: 30px;
+  border: 0;
+}
+
+.btn-light-primary:hover {
+  background-color: #c0ccd4 !important;
+  color: #212f3e;
+}
+
+
+.max-height-400{
+  max-height: 400px;
+}
+
+.scroll{
+  position: relative;
+}
+
+.ps__rail-x{
+  overflow-x: hidden;
+}

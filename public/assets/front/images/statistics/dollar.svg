@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36.141"
+    height="36.141" viewBox="0 0 36.141 36.141">
+    <defs>
+        <clipPath id="clip-path">
+            <circle id="Ellipse_304" data-name="Ellipse 304" cx="18.07" cy="18.07" r="18.07"
+                transform="translate(0 0)" fill="#fff"></circle>
+        </clipPath>
+    </defs>
+    <g id="Mask_Group_102" data-name="Mask Group 102" clip-path="url(#clip-path)">
+        <path id="dollar-svgrepo-com"
+            d="M17.435,33.52v5.421h3.614V33.52h1.807a7.228,7.228,0,0,0,0-14.456H21.049V11.835h3.614v3.614h3.614V8.221H21.049V2.8H17.435V8.221H15.628a7.228,7.228,0,0,0,0,14.456h1.807v7.228H13.821V26.291H10.207V33.52Zm3.614-3.614h1.807a3.614,3.614,0,0,0,0-7.228H21.049ZM17.435,19.063V11.835H15.628a3.614,3.614,0,0,0,0,7.228Z"
+            transform="translate(-1.172 -2.8)" fill="#fff" fill-rule="evenodd"></path>
+    </g>
+</svg>

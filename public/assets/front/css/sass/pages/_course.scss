@@ -1,0 +1,463 @@
+.nav-pages > li > a {
+  background-color: #eff5f8;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 17px;
+  margin-bottom: 6px;
+  color: #212f3e;
+}
+.nav-pages > li > a > i {
+  font-size: 8px;
+  color: #a7b7c8;
+}
+.nav-pages > li > a:not(.collapsed) {
+  color: #fff;
+  background-color: #06abd5;
+}
+.nav-pages > li > a:not(.collapsed) i {
+  color: #fff;
+}
+.nav-pages .accordion-collapse li a {
+  color: #777777;
+  font-size: 16px;
+  display: block;
+  padding: 12px 30px;
+}
+.nav-pages .accordion-collapse li:not(:last-of-type) a {
+  border-bottom: 1px solid #dce2e9;
+}
+.nav-pages .accordion-collapse li a.active {
+  color: #06abd5;
+}
+
+
+.input-video-preview input {
+  display: none;
+}
+.input-video-preview {
+  border: 1px solid #ebebeb;
+  border-radius: 8px;
+  height: 50px;
+  color: #a7b7c8;
+}
+.input-video-preview:not(.uploaded) .input-video-filename {
+  display: none !important;
+}
+
+.input-video-preview.uploaded .input-video-container {
+  display: none !important;
+}
+
+
+
+.m-checkbox.checkbox-2 .checkmark {
+  background-color: #D4E3E9;
+  border: 0;
+  width: 26px;
+  height: 26px;
+}
+.m-checkbox.checkbox-2 .checkmark:after {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  content: "\f00c";
+  font-family: "Font Awesome 6 Pro";
+  color:#FFF
+}
+
+
+
+.select-multiple .bootstrap-select.show-tick .dropdown-menu li span.check-mark {
+  position: absolute;
+  display: inline-block;
+  right: 15px !important;
+  top: 10px !important;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d4e2eb;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.select-multiple .bootstrap-select.show-tick .dropdown-menu li span.check-mark {
+  position: absolute;
+  display: inline-block;
+  right: 15px !important;
+  top: 10px !important;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d4e2eb;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.select-multiple
+  .bootstrap-select.show-tick
+  .dropdown-menu
+  li:not(.selected)
+  span.check-mark::after {
+  width: 0;
+  height: 0;
+  border: 0;
+}
+
+.select-multiple
+  .bootstrap-select.show-tick
+  .dropdown-menu
+  .selected
+  span.check-mark {
+  background-color: #06abd5;
+}
+
+.select-multiple .bootstrap-select .bs-ok-default:after {
+  width: 0.6em;
+  height: 1.2em;
+  margin-bottom: 3px;
+}
+
+.select-multiple .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
+  display: flex;
+}
+
+.select-multiple
+  .bootstrap-select
+  .dropdown-toggle
+  .filter-option-inner-inner
+  .symbol {
+  display: none;
+}
+
+
+
+.widget_item-remove {
+  background-color: #718ba1;
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  top: -11px;
+  inset-inline-end: -8px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.font-8 {
+  font-size: 8px !important;
+}
+
+.collapse-video:not(.collapsed) .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+
+
+
+.hover-outline-white:hover {
+  border-color: #fff !important;
+  color: #fff !important;
+}
+
+.state {
+  min-width: 130px;
+  text-align: center;
+  height: 40px;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.state-success {
+  background-color: rgba(55, 178, 132, 0.3);
+  color: #37b284;
+}
+
+.state-warning {
+  background-color: rgba(238, 148, 88, 0.3);
+  color: #ee9458;
+}
+
+.widget_item-action .widget_item-icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #718ba1;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  margin-inline-start: 10px;
+  cursor: pointer;
+}
+
+.widget_item-lesson {
+  padding: 11px 19px;
+  background-color: rgba(212, 226, 235, 0.7);
+}
+
+.widget_item-section .widget_item-head:not(.collapsed) .widget_item-chevron {
+  transform: rotate(180deg);
+}
+
+.tab-add-course {
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.tab-add-course .nav-item .nav-link {
+  min-width: 155px;
+  height: 50px;
+  border: 2px solid #718ba1;
+  color: #718ba1;
+  border-radius: 30px;
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  margin: 0px 10px;
+  font-size: 16px;
+}
+
+.tab-add-course .nav-item .nav-link svg path {
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.tab-add-course .nav-item .nav-link.active,
+.tab-add-course .nav-item .nav-link:hover {
+  background-color: #06abd5;
+  color: #fff;
+  border-color: #06abd5;
+}
+
+.tab-add-course .nav-item .nav-link.active svg path,
+.tab-add-course .nav-item .nav-link:hover svg path {
+  fill: #fff;
+  stroke: #fff;
+}
+
+@media (min-width: 992px) {
+  .modal-course {
+    max-width: 780px;
+  }
+}
+
+.dropzone.dz-clickable.dropzone-course .dz-message > span {
+  border: 1px dashed #718ba1;
+  padding: 22px 120px;
+  background-color: #d4e2ebb3;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #718ba1;
+}
+
+.dropzone.dropzone-course .dz-message {
+  text-align: center;
+  margin: 1em 0;
+}
+
+.scroll-lesson {
+  max-height: 620px;
+}
+
+.tab-add-video {
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.tab-add-video .nav-item {
+  flex: 1 1 0;
+}
+
+.tab-add-video .nav-item .nav-link {
+  height: 50px;
+  border: 0px solid #718ba1;
+  border-bottom: 1px solid #a7b7c8;
+  color: rgba(119, 119, 119, 0.7);
+  border-radius: 0px;
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  margin: 0px 10px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.tab-add-video .nav-item .nav-link svg path {
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.tab-add-video .nav-item .nav-link.active,
+.tab-add-video .nav-item .nav-link:hover {
+  background-color: transparent;
+  border-bottom: 2px solid #06abd5;
+  color: #212f3e;
+}
+
+.m-radio.m-radio-2 .checkmark {
+  height: 28px;
+  width: 28px;
+  background-color: #d4e2eb;
+  border: 0;
+}
+
+.m-radio.m-radio-2 input:checked ~ .checkmark {
+  background-color: #d4e2eb;
+  border-color: #d4e2eb;
+}
+.m-radio.m-radio-2 .checkmark:after {
+  content: "";
+  background-color: #06abd5;
+  width: 12px;
+  height: 12px;
+}
+
+.widget_item-add {
+  border: 1px dashed #d4e2eb;
+  padding: 30px 10px;
+  color: #154572;
+}
+
+
+
+.note-editor .note-editing-area {
+  background-color: #fff;
+}
+
+.note-editor .note-btn-group .note-btn {
+  border-color: rgba(0, 0, 0, 0.2);
+  padding: 0.28rem 0.65rem;
+  font-size: 13px;
+}
+
+.note-editor .btn-group-sm > .btn,
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+.note-toolbar {
+  background: hsla(0, 0%, 50.2%, 0.11);
+}
+
+.note-editor .note-btn-group .note-btn {
+  border-color: rgba(0, 0, 0, 0.2);
+  padding: 0.28rem 0.65rem;
+  font-size: 13px;
+  background-color: #fff;
+}
+
+@media (min-width: 992px){
+
+  .modal-course {
+    max-width: 780px;
+  }
+  .modal-md {
+      max-width: 650px;
+  }
+}
+
+
+
+
+
+.fc-h-event {
+  background-color: transparent;
+  border: 0;
+}
+.fc-daygrid-event {
+  white-space: unset;
+}
+
+.fc-day.fc-event-day {
+  background-color: #eff5f8;
+  padding: 0 5px;
+}
+
+.fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+  position: relative;
+  min-height: 3em;
+}
+
+.fc .fc-button-group > .fc-button {
+  position: relative;
+  flex: 1 1 auto;
+  height: 35px;
+}
+
+.fc .fc-button-primary {
+  background-color: #06abd5;
+  border-color: #06abd5;
+}
+
+.fc .fc-button-primary:hover,
+.fc .fc-button-primary:focus,
+.fc .fc-button-primary:active {
+  background-color: #0894b7 !important;
+  border-color: #0894b7 !important;
+  box-shadow: none !important;
+}
+
+.fc .fc-button-primary:disabled {
+  background-color: #06abd5;
+  border-color: #06abd5;
+}
+.fc .fc-daygrid-day-number {
+  color: #000;
+}
+
+.fc-event-main{
+  .dropdown{
+    .btn-drop{
+      background-color: rgba(255, 255, 255 , .7);
+      color: #000;
+      border-color: transparent;
+    }
+    .dropdown-menu{
+      font-size: 12px;
+      p{
+        color: #808080;
+        margin: 4px 0;
+      }
+    }
+  }
+  
+  .btn-add{
+    padding: 0;
+    color: #FFF;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+#LessonModal{
+  .icon i{
+    font-size: 100px;
+    color: #F66970;
+  }
+}

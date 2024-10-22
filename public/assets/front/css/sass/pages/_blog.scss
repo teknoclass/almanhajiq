@@ -1,0 +1,230 @@
+.swiper-blog .swiper-title,
+.swiper-blog .swiper-text {
+  opacity: 0;
+}
+
+.swiper-blog .swiper-title {
+  animation-duration: 1s;
+  -webkit-animation-duration: 1s;
+  animation-delay: 0.1s;
+  -webkit-animation-delay: 0.1s;
+}
+
+.swiper-blog .swiper-text {
+  animation-duration: 1s;
+  -webkit-animation-duration: 1s;
+  animation-delay: 0.3s;
+  -webkit-animation-delay: 0.3s;
+}
+
+.swiper-slide.swiper-slide-active .swiper-title,
+.swiper-slide.swiper-slide-active .swiper-text {
+  opacity: 1;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.swiper-blog {
+  .swiper-item {
+    min-height: 650px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    flex-direction: column;
+    padding: 70px 150px 140px;
+    position: relative;
+    .swiper-tag{
+      position: absolute;
+      top: 10%;
+      inset-inline-end: 11%;
+      z-index: 1;
+    }
+    // &::before{
+    //   position: absolute;
+    //   content: "";
+    //   background-color: #000000;
+    //   opacity: .39;
+    //   width: 100%;
+    //   height: 100%;
+    //   top: 0;
+    //   left: 0;
+    // }
+    .swiper-text{
+      color: rgba(233, 233, 233 , .8);
+    }
+    .swiper-title{
+      font-size: 60px;
+    }
+    @media(max-width:991px){
+      padding: 90px 30px 70px;
+      min-height: auto;
+      .swiper-title{
+        font-size: 30px;
+      }
+    }
+  }
+  .swiper-pagination {
+    right: 50%;
+    transform: translateX(50%);
+    bottom: 30px;
+    .swiper-pagination-bullet {
+      opacity: 1;
+      margin: 0px 4px;
+      width: 17px;
+      height: 17px;
+      background-color: transparent;
+      border: 2px solid #212f3e;
+      transition: all .2s ease-in-out;
+      border-radius: 30px;
+      &.swiper-pagination-bullet-active {
+        background-color: #212f3e;
+        width: 55px;
+      }
+    }
+  }
+}
+
+
+.widget_item-categoryBlog{
+  position: relative;
+  border-radius: 26px;
+  overflow: hidden;
+  .widget_item-image{
+    position: relative;
+    height: 0;
+    padding-top: 77%;
+    img{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      transition: transform .4s ease-in-out;
+    }
+  }
+  .widget_item-title{
+    color: #154572;
+    position: absolute;
+    bottom: 25px;
+    right: 50%;
+    transform: translateX(50%);
+    z-index: 1;
+    background-color: rgba(255, 255, 255 , .6);
+    border-radius: 12px;
+    font-size: 24px;
+    min-width: 190px;
+    transition: color .2s ease-in-out ,background-color .2s ease-in-out ;
+  }
+  &:hover{
+    .widget_item-image{
+      img{
+        transform: scale(1.1);
+      }
+    }
+    .widget_item-title{
+      color: #fff;
+      background-color: #154572;
+    }
+  }
+}
+
+
+
+.widget_item-latestBlog{
+  border-radius:40px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .16);
+  overflow: hidden;
+  .widget_item-image{
+    position: relative;
+    height: 0;
+    padding-top: 57%;
+    border-radius:40px;
+    overflow: hidden;
+    img{
+      border-radius:40px;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      transition: transform .4s ease-in-out;
+    }
+  }
+  .widget_item-title{
+    a{
+      color: #212F3E;
+      display: inline-block;
+      &:hover{
+        color: $general_color;
+      }
+    }
+  }
+  .widget_item-text{
+    overflow: hidden;
+    height: 90px;
+  }
+  &:hover{
+    .widget_item-image{
+      img{
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+.swiper-action-latestBlog{
+  top: 100%;
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+  transform: unset;
+  .swiper-prev,.swiper-next{
+    width: 34px;
+    height: 34px;
+  }
+}
+
+
+
+.blog-single-image {
+  img{
+    border-radius:20px;
+    max-height: 600px;
+    width: 100%;
+  }
+}
+
+
+.header-blog-top {
+  background-color: #154572;
+  padding: 14px 0;
+}
+
+.header-blog-bottom{
+  padding: 10px 0;
+  background-color: #DCE2E9;
+  border-radius: 0 0 24px 24px;
+}
+
+.menu-blog{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  li{
+    a{
+      font-size: 17px;
+      margin: 0px 20px;
+      color: #154572;
+      @media(max-width:991px){
+        font-size: 12px;
+        margin: 0px 10px;
+      }
+      &.active{
+        color: $general_color;
+      }
+    }
+  }
+}

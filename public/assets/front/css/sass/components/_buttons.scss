@@ -1,0 +1,123 @@
+.btn{
+  &:not(.btn-sm){
+
+    padding: 12px 50px;
+    font-size: 16px;
+    border-radius:30px;
+    text-align: center;
+    @media(max-width:991px){
+      font-size: 12px;
+      min-width: auto;
+      padding: 10px 20px;
+    }
+  }
+}
+
+
+.btn-primary{
+  color: #fff;
+  background: $general_color;
+  border-color: $general_color;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  &::before{
+    position: absolute;
+    width: 100%;
+    content: "";
+    height: 100%;
+    width: 0;
+    width: 0%;
+    right: 0;
+    transition: all .3s ease-in-out;
+    top: 0;
+    border-radius: 6px;
+    z-index: -1;
+    background-color: #154572;
+  }
+  &:hover,&:focus{
+    color: #fff;
+    background-color:  $general_color;
+    box-shadow: none !important;
+    &::before{
+      width: 100%;
+      left: 0;
+      right: auto;
+    }
+  }
+}
+
+
+.btn-primary-2{
+  color: #fff;
+  background: #154572;
+  border-color: #154572;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  &::before{
+    position: absolute;
+    width: 100%;
+    content: "";
+    height: 100%;
+    width: 0;
+    width: 0%;
+    right: 0;
+    transition: all .3s ease-in-out;
+    top: 0;
+    border-radius: 6px;
+    z-index: -1;
+    background-color: $general_color;
+  }
+  &:hover,&:focus{
+    color: #fff;
+    background-color:  #154572;
+    box-shadow: none !important;
+    border-color: #154572 ;
+    &::before{
+      width: 100%;
+      left: 0;
+      right: auto;
+    }
+  }
+}
+
+
+
+
+.btn-outline-primary{
+  border-color: $general_color;
+  color: $general_color;
+  &:hover,&:focus{
+    background-color: $general_color;
+    color: #fff;
+    border-color: $general_color;
+  }
+}
+
+
+.btn-outline-primary-2{
+  border-color: #154572;
+  color: #154572;
+  &:hover,&:focus{
+    background-color: #154572;
+    color: #fff;
+    border-color: #154572;
+  }
+}
+
+
+.btn-outline-white{
+  border: 1px solid #FFF;
+  color: #FFF;
+  &:hover{
+    background-color: #FFF;
+    color: #000;
+  }
+}
+
+
+.btn-success{
+  background-color: #26D04E;
+  border-color: #26D04E;
+}

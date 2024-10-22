@@ -1,0 +1,35 @@
+.widget_item-curricula{
+  background-color: #FFF;
+  border-radius: 40px;
+  padding: 40px 30px 25px 10px;
+  .widget_item-number{
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    position: absolute;
+    top: -25px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+  .dropdown-menu {
+    padding: 10px;
+    width: 80%;
+    li{
+      a{
+        display: block;
+        color: #212F3E;
+        font-size: 19px;
+        padding: 7px 5px;
+        transition: color .2s ease-in-out;
+        &:hover{
+          color: $general_color;
+        }
+      }
+      &:not(:last-of-type){
+        a{
+          border-bottom: 1px solid rgba(112, 112, 112 , .18);
+        }
+      }
+    }
+  }
+} 

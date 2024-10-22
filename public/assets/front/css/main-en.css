@@ -1,0 +1,62 @@
+.title-div .image img {
+    transform: rotateY(180deg);
+}
+
+.title-div h2::after {
+    right: 0;
+    width: 100%;
+}
+
+.bootstrap-select .dropdown-toggle::before {
+    right: 10px;
+    left: unset;
+}
+
+.image-input [data-kt-image-input-action=change] {
+    left: unset;
+    right: -10px;
+}
+
+
+/* Filter Checkbox */
+.tab-filter li:nth-of-type(1) label {
+    border-radius: 8px 0px 0px 8px;
+}
+
+.tab-filter li:last-of-type label {
+    border-radius: 0px 8px 8px 0px;
+}
+
+/* Filter Checkbox */
+/* FAQ Icon in course details page */
+.widget__item-faq svg {
+    transform: rotate(180deg);
+}
+
+/* FAQ Icon in course details page */
+
+/* Range Input in private lessons */
+.range-slider input[type=number]:nth-of-type(1) {
+    border-radius: 8px 0px 0px 8px;
+}
+
+.range-slider input[type=number]:nth-of-type(2) {
+    border-radius: 0px 8px 8px 0px;
+}
+
+/* Range Input in private lessons */
+/*  */
+.private-lessons-filter .dropdown-menu .dropdown-item {
+    padding: 0.4rem 3.2rem;
+}
+
+/*  */
+/* Panel  */
+.menu-arrow-gray-500 .menu-item .menu-link .menu-arrow:after {
+    transform: rotateY(180deg);
+}
+.menu-item .menu-link .menu-bullet{
+    margin-left: 0;
+    margin-right: 0.5rem;
+}
+/* Panel  */
