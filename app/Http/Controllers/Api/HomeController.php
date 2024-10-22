@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiCourseCollection;
-use App\Http\Resources\CoursesResources;
 use App\Http\Resources\GradeLevelCollection;
 use App\Http\Resources\TeacherCollection;
 use App\Http\Response\ErrorResponse;

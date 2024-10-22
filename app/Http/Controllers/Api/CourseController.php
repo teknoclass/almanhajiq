@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FilterRequest;
 use App\Http\Resources\ApiCourseFilterCollection;
+use App\Http\Resources\ApiSingleCourseResource;
 use App\Http\Resources\TeacherCollection;
+use App\Http\Resources\TeacherProfileCollection;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
 use App\Services\CourseService;
@@ -49,6 +51,20 @@ class CourseController extends Controller
            [ "title"=>__('courses'),'courses' => collect($collection)],
             ["title"=>__('most_order_courses') ,'most_order_courses'=> collect($mostOrderCoursesCollection)]
         ], Response::HTTP_OK);
+
+        return response()->success($courses);
+    }
+
+    public function getCourse($id){
+        $course  =  $this->courseService->getById($id);
+        if (!$course['status']) {
+            $response = new ErrorResponse($course['message'], Response::HTTP_BAD_REQUEST);
+
+            return response()->error($response);
+        }
+        $collection                 = new ApiSingleCourseResource($course['data']);
+        $courses = new SuccessResponse($course['message'],  [ "title"=>__('courses'),'courses' => collect($collection)]
+        , Response::HTTP_OK);
 
         return response()->success($courses);
     }
