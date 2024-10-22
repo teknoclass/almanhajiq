@@ -100,6 +100,7 @@
                                                 <th>{{ __('group') }}</th>
                                                 <th>{{ __('time') }}</th>
                                                 <th>{{ __('status') }}</th>
+                                                <th>{{ __('actions') }}</th>
                                                 <th>{{ __('Start Session') }}</th>
                                                 <th>{{ __('password') }}</th>
                                             </tr>
@@ -142,8 +143,8 @@
                                                             </button>
                                                     
                                                     @endif
-                                                    
-
+                                                    </td>
+                                                    <td>
                                                         @if($isSessionNow )
                                                         <button type="button" class="btn btn-primary bigBlueSessonBtnModal" alt = "{{$session->id}}">
                                                                 {{__('go_to_live_session')}}
@@ -199,8 +200,8 @@
                                             data-bs-target="#collapse{{ $group->id }}">
                                         {{ $group->title }}
                                         @if(!isCourseonStudentCourse(@$course->id) && !isStudentSubscribeToSessionGroup($group->id) && !in_array($session->id,installementdLessonsIds(@$course->id)))
-                                            <p style="color:#ffcc00;padding:0px 5px">({{__('you_not_subscribed_to_group')}}
-                                                )</p>
+                                            <p style="color:#ffcc00;padding:0px 5px">({{__('you_not_subscribed_to_group')}})</p>
+                                               
                                         @endif
                                     </button>
                                 </h2>
@@ -253,6 +254,7 @@
                                                             
                                                     </td>
                                                     <td>
+                                                    @if(!$isSessionInPast)
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
                                                                     data-bs-target="#cancelModal" id="cancelButton"><span
                                                                     class="far  fa-cancel"></span><label>{{ __('cancel')}}</label>
@@ -263,7 +265,7 @@
                                                             <span
                                                                 class="far  fa-calendar"></span><label>{{ __('postpone')}}</label>
                                                             </button>
-
+                                                    @endif
                                                     </td>
                                                     <td>
                                                         <div>
