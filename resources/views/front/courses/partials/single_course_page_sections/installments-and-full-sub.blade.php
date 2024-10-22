@@ -59,6 +59,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @if (@$course->priceDetails->price !== '' || @$course->priceDetails->price !== 0)
                                     <div class="tab-pane fade " id="tab-single2-sub">
                                         <div class="card" style="max-width:700px;margin: auto;">
                                                 <div class="card-header">
@@ -139,6 +140,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                     
                     </div>
                 </div>
