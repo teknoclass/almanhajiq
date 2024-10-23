@@ -36,5 +36,8 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect'      => env('GOOGLE_REDIRECT_URI'),
     ],
-
+    'payment' => [
+        'api_url' => env('PAYMENT_API_URL'),
+        'api_key' => env('PAYMENT_API_KEY'),
+    ],
 ];

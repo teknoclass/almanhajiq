@@ -121,7 +121,7 @@
                                                       <br>
                                                         @if(! in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id || @$currentInstallment == $untilLesson) )
                                                         <a style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
-                                                         class="payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}">{{__('payment')}} 
+                                                         class="payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}" data-price="{{$installment->price}}">{{__('payment')}} 
                                                         </a>
                                                         @elseif(in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id) )
                                                         <a style="position:absolute;bottom:5px;text-align:center;cursor:not-allowed;background-color:gray"
@@ -156,13 +156,14 @@
         $(document).on('click','.payInstallment',function(){
             var id = $(this).attr('alt');
             var course_id = "{{@$course->id}}";
+            var price = $(this).data('price');
            
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/pay-to-course-session-installment')}}",
-                data:{id:id,course_id:course_id},
+                data:{id:id,course_id:course_id,price:price},
                 method: 'post',
                 success: function (response) {
                     $(".payInstallment"+"."+id).text("{{__('paid')}}").attr('disabled',true);
@@ -171,15 +172,16 @@
                         "opacity": "0.5",          
                         "cursor": "not-allowed"   
                     });
-                    customSweetAlert(
-                        response.status_msg,
-                        response.message,
-                    );
-                    setTimeout(function() {
-                        console.log("wait..");
-                    }, 3000);
 
-                    window.location.href = "/user/courses/curriculum/item/"+course_id;
+                    if(response.status_msg == "error")
+                    {
+                        customSweetAlert(
+                            response.status_msg,
+                            response.message,
+                        );
+                    }
+                    window.location.href = response.payment_link;
+                    // window.location.href = "/user/courses/curriculum/item/"+course_id;
                 }
             });
           

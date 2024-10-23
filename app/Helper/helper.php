@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\View;
 use App\Models\{CourseSession,CourseSessionsGroup,CourseSessionSubscription,UserCourse,
     StudentSessionInstallment,CourseSessionInstallment};
 use Twilio\Rest\Client;
+use Illuminate\Support\Str;
 
 function checkAllPermissionsAdmin($permissions)
 {
@@ -959,4 +960,9 @@ function sendOtpToWhatsapp($to_mobile,$otp)
     // } catch (Exception $e) {
     //     return 'Error: ' . $e->getMessage();
     // }
+}
+
+function genereatePaymentOrderID()
+{
+    return preg_replace('/[^A-Za-z]/', '', Str::random(10));
 }
