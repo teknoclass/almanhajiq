@@ -3,12 +3,21 @@
 namespace App\Services;
 
 use App\Http\Requests\Api\FilterRequest;
+use App\Models\Category;
 use App\Models\Courses;
 use App\Models\UserCourse;
+use App\Repositories\CourseRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CourseService extends MainService
 {
+    public  CourseRepository $courseRepository;
+    public function __construct(CourseRepository $courseRepository)
+    {
+        $this->courseRepository= $courseRepository;
+    }
+
     public function courseFilter(FilterRequest $filterRequest): array
     {
         $courses = Courses::active()
@@ -58,7 +67,9 @@ class CourseService extends MainService
 
 
         if ($filterRequest->has('material_id')) {
-            $courses = $courses->filterByCategories([$filterRequest->material_id]);
+            $category  = Category::find($filterRequest->material_id);
+
+            $courses = $courses->filterByCategories([$category->value]);
             $courses = $courses->with([
                 'lecturers.lecturerSetting' => function($query) {
                     $query->select(
@@ -96,7 +107,8 @@ class CourseService extends MainService
                           ->where('grade_sub_level', $filterRequest->grade_sub_level_id);
 
         if ($filterRequest->has('material_id')) {
-            $courses = $courses->filterByCategories([$filterRequest->material_id]);
+            $category  = Category::find($filterRequest->material_id);
+            $courses = $courses->filterByCategories([$category->value]);
         }
 
         $courses = $courses->orderBy('students_count', 'desc')->take(5);
@@ -106,6 +118,34 @@ class CourseService extends MainService
             true,
             $courses->get()
         );
+
+    }
+
+    public function getById($id){
+        try {
+            $course = $this->courseRepository->findByIdWith($id,count:[
+                'students',
+                'groups as groups_count' => function($query) {
+                    $query->select(DB::raw('COUNT(DISTINCT group_id)'));
+                },
+                'sessions']);
+            return $this->createResponse(
+                __('message.success'),
+                true,
+                $course
+            );
+        }
+        catch (\Exception  $exception){
+            Log::error($exception->getMessage());
+            return $this->createResponse(
+                __('message.not_found'),
+                false,
+                null
+            );
+        }
+
+
+
 
     }
 }

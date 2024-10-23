@@ -159,7 +159,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Jubaer\Zoom\ZoomServiceProvider::class,
+        //        Jubaer\Zoom\ZoomServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -167,6 +167,7 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\ResponseServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
