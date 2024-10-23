@@ -37,7 +37,7 @@
             ],
         ];
 
-        //installments 
+        //installments
             $checkIfStudentInstallCourse = App\Models\StudentSessionInstallment::where('course_id',$course->id)
             ->where('student_id',auth('web')->user()->id)->orderBy('id','desc')->first();
             if($checkIfStudentInstallCourse)
@@ -48,7 +48,7 @@
                 if($nextInstallment)
                 {
                     $courseSession = App\Models\CourseSession::find($nextInstallment->course_session_id);
-                    $nextInstallmentDate =  __($courseSession->day) .' ' .$courseSession->date.' '.$courseSession->time;   
+                    $nextInstallmentDate =  __($courseSession->day) .' ' .$courseSession->date.' '.$courseSession->time;
                 }
             }else{
                 $nextInstallmentDate = "";
@@ -64,7 +64,7 @@
 
         <div class="container">
             @include('front.user.courses.components.registered_course_breadcrumb')
-            
+
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#live_sessions" type="button" role="tab" aria-controls="live_sessions" aria-selected="true">{{ __('live_lessons') }}</button>
@@ -80,10 +80,10 @@
                 <div class="card-header" style="background-color:slategrey;width:auto;padding:10px;color:white;text-align:center">
                     {{__('next_inst_date')}}: {{$nextInstallmentDate}}
                     <a style="cursor: pointer;"
-                        class="payInstallment {{$nextInstallment->course_session_id}} btn btn-sm primary-btn " alt="{{$nextInstallment->course_session_id}}">{{__('payment')}} 
+                        class="payInstallment {{$nextInstallment->course_session_id}} btn btn-sm primary-btn " alt="{{$nextInstallment->course_session_id}}">{{__('payment')}}
                     </a>
                 </div>
-                @endif 
+                @endif
                     <div class="bg-white p-4 mt-0 rounded-4">
                         <div class="row">
                             <div class="col-12">
@@ -102,6 +102,7 @@
                                                 <th>{{ __('status') }}</th>
                                                 <th>{{ __('actions') }}</th>
                                                 <th>{{ __('Start Session') }}</th>
+                                                <th>{{ __('password') }}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -122,7 +123,7 @@
                                                     @php
                                                         $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
                                                         $now = now();
-                                                        $isSessionNow = $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 10;
+                                                        $isSessionNow = $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15;
                                                         $isSessionInPast = $sessionDateTime->isPast();
                                                         $isSessionStartingSoon = $sessionDateTime->isFuture() && $sessionDateTime->diffInMinutes($now) <= 120;
 
@@ -140,14 +141,14 @@
                                                                     data-bs-target="#postPoneModal" id="postPoneButton"><span
                                                                     class="far  fa-calendar"></span><label>{{ __('postpone')}}</label>
                                                             </button>
-
+                                                    
                                                     @endif
+                                                    </td>
                                                     <td>
-
-                                                        @if($isSessionNow)
-                                                            <span><a
-                                                                    href="{{ route('user.lecturer.live.createLiveSession', $session->id) }}"
-                                                                    class="btn btn-primary">{{ __('Start Session') }}</a></span>
+                                                        @if($isSessionNow )
+                                                        <button type="button" class="btn btn-primary bigBlueSessonBtnModal" alt = "{{$session->id}}">
+                                                                {{__('go_to_live_session')}}
+                                                            </button>
                                                         @elseif ($isSessionStartingSoon)
                                                             <button class="btn btn-warning"
                                                                     disabled>{{ __('starting_soon') }}</button>
@@ -158,13 +159,28 @@
                                                             <button class="btn btn-primary"
                                                                     disabled>{{ __('did_not_start_yet') }}</button>
 
+                                                        @endif
+
+                                                    
                                                     </td>
-                                                </tr>
-                                                @endif
+                                              
+                                                    <td>
+                                                    @if ($isSessionNow)
+                                                    @if(! $session->public_password)
+                                                        <p style="color:#8B0000;font-size:13px">{{__('waiting_password')}}</p>
+                                                        @else
+                                                            {{ $session->public_password }}
+                                                    @endif
+                                                    @endif
+                                                    </td>
 
                                                 @else
                                                 <td colspan="2"><p style="color:#8B0000">{{__('you_not_subscribed')}}</p></td>
                                                 @endif
+
+                                                
+                                               
+                                                </tr>
                                             @endforeach
 
 
@@ -184,8 +200,8 @@
                                             data-bs-target="#collapse{{ $group->id }}">
                                         {{ $group->title }}
                                         @if(!isCourseonStudentCourse(@$course->id) && !isStudentSubscribeToSessionGroup($group->id) && !in_array($session->id,installementdLessonsIds(@$course->id)))
-                                            <p style="color:#ffcc00;padding:0px 5px">({{__('you_not_subscribed_to_group')}}
-                                                )</p>
+                                            <p style="color:#ffcc00;padding:0px 5px">({{__('you_not_subscribed_to_group')}})</p>
+                                               
                                         @endif
                                     </button>
                                 </h2>
@@ -197,9 +213,8 @@
                                                 <th>{{ __('session_title') }}</th>
                                                 <th>{{ __('date') }}</th>
                                                 <th>{{ __('time') }}</th>
+                                                <th>{{ __('Start Session') }}</th>
                                                 <th>{{ __('action') }}</th>
-
-                                                <th>{{ __('actions') }}</th>
                                                 <th>{{ __('password') }}</th>
                                             </tr>
                                             </thead>
@@ -209,20 +224,19 @@
                                                     <td>{{ $session->title }}</td>
                                                     <td>{{ $session->date }}</td>
                                                     <td>{{ $session->time }}</td>
-
-                                                    <td>
-                                                        @php
+                                                    @php
                                                             $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
                                                             $now = now();
                                                             $isSessionInPast = $sessionDateTime->isPast();
-                                                               $isSessionNow= $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 10;
+                                                               $isSessionNow= $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15;
                                                             $isSessionStartingSoon = $sessionDateTime->isFuture() && $sessionDateTime->diffInMinutes($now) <= 120;
 
                                                         @endphp
-                                                        @if(isCourseonStudentCourse(@$course->id) || isStudentSubscribeToSession($session->id) || in_array($session->id,installementdLessonsIds(@$course->id)))
-                                                            @if ($isSessionNow)
-                                                                <button type="button" class="btn btn-primary"
-                                                                        data-toggle="modal" data-target="#bigBlueSesson">
+                                                    @if(isCourseonStudentCourse(@$course->id) || isStudentSubscribeToSession($session->id) || in_array($session->id,installementdLessonsIds(@$course->id)))
+                                                    <td>
+                                                   
+                                                            @if ($isSessionNow )
+                                                                <button type="button" class="btn btn-primary bigBlueSessonBtnModal" alt = "{{$session->id}}">
                                                                     {{__('go_to_live_session')}}
                                                                 </button>
                                                             @elseif ($isSessionInPast)
@@ -235,13 +249,13 @@
                                                             @else
                                                                 <button class="btn btn-primary"
                                                                         disabled>{{ __('did_not_start_yet') }}</button>
+                                                            @endif
 
-
+                                                            
                                                     </td>
                                                     <td>
-                                                        <div>
-
-                                                            <button data-bs-toggle="modal" data-id="{{ $session->id }}"
+                                                    @if(!$isSessionInPast)
+                                                    <button data-bs-toggle="modal" data-id="{{ $session->id }}"
                                                                     data-bs-target="#cancelModal" id="cancelButton"><span
                                                                     class="far  fa-cancel"></span><label>{{ __('cancel')}}</label>
                                                             </button>
@@ -251,58 +265,31 @@
                                                             <span
                                                                 class="far  fa-calendar"></span><label>{{ __('postpone')}}</label>
                                                             </button>
-
-                                                        </div>
+                                                    @endif
                                                     </td>
-                                                    @endif
-                                                    @else
-                                                        <p style="color:#8B0000">{{__('you_not_subscribed')}}</p>
-                                                    @endif
+                                                    <td>
+                                                        <div>
 
-                                                    @if ($isSessionNow)
-                                                        <td>
+                                                          
+                                                            @if ($isSessionNow)
+                                                        
                                                             @if(! $session->public_password)
                                                                 <p style="color:#8B0000;font-size:13px">{{__('waiting_password')}}</p>
                                                             @endif
-                                                            {{ $session->public_password }}</td>
-                                                    @endif
-                                                </tr>
-                                                <div class="modal fade" id="bigBlueSesson" tabindex="-1" role="dialog"
-                                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Modal
-                                                                    title</h5>
-                                                                <button type="button" class="close" data-dismiss="modal"
-                                                                        aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form
-                                                                    action="{{route('user.courses.live.joinLiveSession')}}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    <input hidden value="{{$session->id}}" name="id">
-                                                                    <label> {{__('username')}}
-                                                                        <input class="form-control" value=""
-                                                                               name="userName">
-                                                                    </label>
-                                                                    <label>{{__('password')}}
-                                                                        <input class="form-control" value=""
-                                                                               name="password">
-                                                                    </label>
-                                                                    <button type="submit"
-                                                                            class="btn btn-primary">{{__('join')}}</button>
-                                                                </form>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                        data-dismiss="modal">{{__('close')}}</button>
-                                                            </div>
+                                                            {{ $session->public_password }}
+                                                            @endif
                                                         </div>
-                                                    </div>
+                                                    </td>
+                                                    
+                                                    @else
+                                                    <td colspan="3">
+                                                        <p style="color:#8B0000">{{__('you_not_subscribed')}}</p>
+                                                    </td>
+                                                    @endif
+
+                                                   
+                                                </tr>
+                                                
                                             @endforeach
 
                                             </tbody>
@@ -379,6 +366,46 @@
 
         </div>
     </section>
+
+        <!-- model-->
+<div class="modal fade" id="bigBlueSessonTable" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">الالتحاق بالجلسة
+                </h5>
+            <button type="button" class="close" data-bs-dismiss="modal"
+                    aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form
+                action="{{route('user.courses.live.joinLiveSession')}}"
+                method="POST">
+                @csrf
+                <input hidden id="modelSessionId" name="id">
+                <label> {{__('name')}}
+                    <input class="form-control" value=""
+                            name="userName">
+                </label>
+                <label>{{__('password')}}
+                    <input class="form-control" value=""
+                            name="password">
+                </label>
+                <br><br>
+                <button type="submit"
+                        class="btn btn-primary btn-sm">التحاق</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <br>
+            <button type="button" class="btn btn-secondary btn-sm"
+                    data-bs-dismiss="modal">{{__('close')}}</button>
+        </div>
+    </div>
+</div>
 @endsection
 
 @include('front.user.courses.course_status_modal')
@@ -393,7 +420,7 @@
 $(document).on('click','.payInstallment',function(){
     var id = $(this).attr('alt');
     var course_id = "{{@$course->id}}";
-   
+
     $.ajax({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -404,9 +431,9 @@ $(document).on('click','.payInstallment',function(){
         success: function (response) {
             $(".payInstallment"+"."+id).text("{{__('paid')}}").attr('disabled',true);
             $(".payInstallment"+"."+id).css({
-                "pointer-events": "none",  
-                "opacity": "0.5",          
-                "cursor": "not-allowed"   
+                "pointer-events": "none",
+                "opacity": "0.5",
+                "cursor": "not-allowed"
             });
             customSweetAlert(
                 response.status_msg,
@@ -419,7 +446,16 @@ $(document).on('click','.payInstallment',function(){
             window.location.href = "/user/courses/curriculum/item/"+course_id;
         }
     });
-  
+
+});
+
+
+//session modal
+
+$(document).on('click','.bigBlueSessonBtnModal',function(){
+    var id = $(this).attr('alt');
+    $('#modelSessionId').val(id);
+    $('#bigBlueSessonTable').modal('show');
 });
 
 });

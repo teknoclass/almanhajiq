@@ -12,7 +12,7 @@
                                             type="button" role="tab" style="border-bottom: background-color:rgb(111, 43, 144);">{{ __('full_paid') }}</button>
                                     </li>
                                    
-                                    @if($course->open_installments == 1)
+                                    @if($course->open_installments == 1 && @$course->type == "live" &&  (@$course->priceDetails->price !== '' || @$course->priceDetails->price !== 0))
                                     <li class="nav-item">
                                         <button class="nav-link " data-bs-toggle="pill" data-bs-target="#tab-single2-sub"
                                             type="button" role="tab" style="border-bottom: background-color:rgb(111, 43, 144);">{{ __('installment_paid') }}</button>
@@ -59,6 +59,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @if (@$course->priceDetails->price !== '' || @$course->priceDetails->price !== 0)
                                     <div class="tab-pane fade " id="tab-single2-sub">
                                         <div class="card" style="max-width:700px;margin: auto;">
                                                 <div class="card-header">
@@ -139,6 +140,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                     
                     </div>
                 </div>

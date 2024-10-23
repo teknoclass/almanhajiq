@@ -127,17 +127,15 @@ class LiveSessionEloquent  extends HelperEloquent
             $sessionData = $request->except(['_token', 'course_id']);
             $course = Courses::find($id);
             if (!$course->published){
-                $session = new CourseSession();
 
-                $session->createSessions($id, $sessionData);
-
+                $this->setSessions($sessionData,$request,$course->id);
             }
 
             $message = __('schedule created');
             $status  = true;
             DB::commit();
         } catch (\Exception $e) {
-            $message = __('message_error');
+            $message = __('message.unexpected_error');
             $status  = false;
             DB::rollback();
         }
@@ -147,6 +145,30 @@ class LiveSessionEloquent  extends HelperEloquent
         ];
 
         return $response;
+    }
+
+    public function setSessions($sessionData,$request,$course_id)
+    {
+        CourseSession::where('course_id', $course_id)->delete();
+        $sessionIds = [];
+        $sessions = [];
+        for ($i = 0; $i < $request->total_sessions; $i++) {
+            $sessions[] = [
+                'day' => $request->input("session_day_$i"),
+                'date' => $request->input("session_date_$i"),
+                'time' => $request->input("session_time_$i"),
+                'title' => $request->input("session_title_$i"),
+                'course_id' => $course_id
+            ];
+        }
+
+        foreach ($sessions as $session) {
+            $session = CourseSession::create($session);  
+
+            $sessionIds[] = $session->id;
+        }
+    
+        return $sessionIds;
     }
 
     public function publish($id)
