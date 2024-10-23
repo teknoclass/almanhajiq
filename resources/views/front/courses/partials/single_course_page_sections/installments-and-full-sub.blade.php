@@ -74,6 +74,7 @@
                                                     @foreach($installments as $installment)
                                                     @php
                                                         $untilLesson = $installment->course_session_id;
+                                                        if(!$untilLesson){continue;}
                                                         $lessons = App\Models\CourseSession::where("course_id",$course->id)
                                                         ->where('id','>',$lastIdOnPreviousLoop)
                                                         ->where("id","<=",$untilLesson)->get();
