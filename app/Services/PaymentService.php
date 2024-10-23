@@ -59,7 +59,7 @@ class PaymentService
     public function createTransactionRecord(array $paymentDetails)
     {
         Transactios::create([
-            'description' => 'Payment for Order ' . $paymentDetails['orderId'],
+            'description' => $paymentDetails['description'],
             'user_id' => auth('web')->id(),
             'user_type' => 'student', 
             'payment_id' => $paymentDetails['payment_id'] ?? null,

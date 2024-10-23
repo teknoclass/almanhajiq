@@ -187,7 +187,10 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
             });
         });
 
+        //subscriptions offers
         Route::post('/subscribe-to-course-sessions',[CourseSessionSubscriptionsController::class,'subscribe']);
+        Route::get('/subscribe-to-course-sessions-confirm',[CourseSessionSubscriptionsController::class,'confirmSubscribe']);
+        //installments
         Route::post('/pay-to-course-session-installment',[CourseSessionInstallmentsController::class,'pay']);
         Route::get('/pay-to-course-session-installment-confirm',[CourseSessionInstallmentsController::class,'confirmPayment']);
         

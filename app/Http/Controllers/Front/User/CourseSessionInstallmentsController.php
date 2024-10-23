@@ -30,6 +30,7 @@ class CourseSessionInstallmentsController extends Controller
         if(isset($response['data']['link']))
         {
             $paymentDetails = [
+                "description" => "دفع قسط جلسات دورة",
                 "orderId" => $response['data']['orderId'],
                 "payment_id" => $response['data']['token'],
                 "amount" => $request->price,

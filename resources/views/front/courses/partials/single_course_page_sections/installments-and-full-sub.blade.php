@@ -92,7 +92,7 @@
                                                         {
                                                             $isCurrentInstallment = App\Models\CourseSessionInstallment::where('course_session_id','>',$checkIfPrevious->access_until_session_id)->first();
                                                            
-                                                           $currentInstallment = $isCurrentInstallment->course_session_id;
+                                                           $currentInstallment = @$isCurrentInstallment->course_session_id;
                                                         }
                                                    
                                                         @endphp
@@ -181,7 +181,6 @@
                         );
                     }
                     window.location.href = response.payment_link;
-                    // window.location.href = "/user/courses/curriculum/item/"+course_id;
                 }
             });
           
