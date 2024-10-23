@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 
-class StudentResource extends JsonResource
+class BlogCategoryResource extends JsonResource
 {
 
     /**
@@ -19,20 +19,19 @@ class StudentResource extends JsonResource
     public function toArray($request)
     {
         $locale = App::getLocale();
-
+        $translation = collect($this->translations)
+                ->firstWhere('locale', $locale)
+            ?? collect($this->translations)
+                ->firstWhere('locale', 'en');
         $data =  [
             'id'=>$this->id,
-            'email'=>$this->email,
-            'name'=>$this->name,
-            'role'=>$this->role ,
+            'value'=>$this->value,
+            'text'=>$translation?->text??'',
             'image'=> imageUrl($this->image,'100x100'),
-            'mobile'=>$this->mobile,
-            'country'=> isset($this->country)?collect($this->country['translations'])->firstWhere('locale', $locale??'en')->name??'':'',
+            'name'=>$translation?->name??'',
+            'description'=>$translation?->description??'',
         ];
-        if ($this->token)
-        {
-            $data['token']=$this->token;
-        }
+
         return $data;
     }
 }

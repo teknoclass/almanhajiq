@@ -4,8 +4,13 @@ namespace App\Repositories;
 
 use App\Models\User;
 
-class UserRepository
+class UserRepository extends MainRepository
 {
+    public function __construct()
+    {
+        parent::__construct(new User());
+    }
+
     public function updateOrCreateUser($data)
     {
         $user = User::updateOrCreate(['id' => 0], $data);
