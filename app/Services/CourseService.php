@@ -129,6 +129,9 @@ class CourseService extends MainService
                     $query->select(DB::raw('COUNT(DISTINCT group_id)'));
                 },
                 'sessions']);
+            if ($course) {
+                $course->groups = $course->groups->unique('id');
+            }
             return $this->createResponse(
                 __('message.success'),
                 true,

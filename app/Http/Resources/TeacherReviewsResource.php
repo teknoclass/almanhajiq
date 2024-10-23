@@ -22,6 +22,8 @@ class TeacherReviewsResource extends JsonResource
             'id'=>$this->id,
             'comment_text'=>$this->comment_text,
             'rate'=>$this->rate,
+            'user'=>$this->user?->name,
+            'image'=>$this->user?->image,
 
         ];
     }
