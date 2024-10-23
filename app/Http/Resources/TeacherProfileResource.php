@@ -23,12 +23,13 @@ class TeacherProfileResource extends JsonResource
             'id'=>$this->id,
             'name'=>$this->name,
             'description'=>$lecturerSettingTranslation ?$lecturerSettingTranslation->description: $this->lecturerSetting->description,
+            'position'=>$lecturerSettingTranslation ?$lecturerSettingTranslation->position: $this->lecturerSetting->position,
             'image'=>imageUrl($this->image,'100x100'),
             'experience'=>$this->lecturerSetting?->exp_years,
             'mother_lang'=>$this->motherLang?->name,
             'rating'=>$this->getRating(),
             'teaching_duration'=>null,
-            'reviews'=>null,
+            'reviews'=>$this->reviews?new TeacherReviewsCollection($this->reviews):null
         ];
     }
 }
