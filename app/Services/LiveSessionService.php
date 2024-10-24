@@ -24,13 +24,6 @@ class LiveSessionService extends MainService
 
 
         $groups = $this->liveSessionRepository->getCourseSessionsGroups($id,$user);
-        if (!$groups) {
-            return $this->createResponse(
-                __('message.not_found'),
-                false,
-                null
-            );
-        }
 
         return $this->createResponse(
             __('message.success'),
@@ -45,13 +38,7 @@ class LiveSessionService extends MainService
         $user = $request->attributes->get('user');
 
         $sessions = $this->liveSessionRepository->getCourseSessions($id,$user);
-        if (!$sessions) {
-            return $this->createResponse(
-                __('message.not_found'),
-                false,
-                null
-            );
-        }
+
 
         return $this->createResponse(
             __('message.success'),

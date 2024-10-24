@@ -152,7 +152,11 @@ class CourseService extends MainService
         try {
             $user = $request->attributes->get('user');
 
-            $course = $this->courseRepository->getCourseByUserId($user,$id)->course;
+            $isSub = $this->courseRepository->getCourseByUserId($user,$id)?->course;
+            $course = $this->courseRepository->findById($id);
+            if ($isSub){
+                $course->is_sub = 1;
+            }
 
             if (!$course) {
                 return $this->createResponse(
