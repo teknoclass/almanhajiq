@@ -7,11 +7,12 @@ use App\Repositories\Common\CourseCurriculumEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
-use App\Models\{StudentSessionInstallment,CourseSession};
+use App\Models\{Courses, UserCourse};
 use App\Services\PaymentService;
 
-class CourseSessionInstallmentsController extends Controller
+class CourseFullSubscriptionsController extends Controller
 {
+
     protected PaymentService $paymentService;
 
     public function __construct()
@@ -19,59 +20,68 @@ class CourseSessionInstallmentsController extends Controller
        $this->paymentService = new PaymentService();
     }
 
-    public function pay(Request $request)
+    public function fullSubscribe(Request $request)
     {
-       $response = $this->paymentService->processPayment([
-            "amount" => $request->price,
+        $course = Courses::find($request->id);
+
+        $response = $this->paymentService->processPayment([
+            "amount" => $course->priceDetails->price??0,
             "currency" => "IQD",
-            "successUrl" => url('/user/pay-to-course-session-installment-confirm')
+            "successUrl" => url('/user/full-subscribe-course-confirm')
         ]);  
-        
+     
         if(isset($response['data']['link']))
         {
             $paymentDetails = [
-                "description" => "دفع قسط جلسات دورة",
+                "description" => 'اشتراك كلى فى الدورة',
                 "orderId" => $response['data']['orderId'],
                 "payment_id" => $response['data']['token'],
-                "amount" => $request->price,
-                "transactionable_type" => "App\\Models\\CourseSession",
-                "transactionable_id" => $request->id,
+                "amount" => $course->priceDetails->price??0,
+                "transactionable_type" => "App\\Models\\Courses",
+                "transactionable_id" => $course->id,
                 "brand" => "master",
                 "transaction_id" => $response['data']['transactionId'],
-                'course_id' => $request->course_id
+                'course_id' => $course->id,
+                "purchase_type" => $request->type
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
-
+ 
             return  $response = [
                 'status_msg' => 'success',
-                'payment_link' => $response['data']['link']
+                'status' => 200,
+                'redirect_url' => $response['data']['link']
             ];
         }else{
             return  $response = [
                 'status_msg' => 'error',
                 'message' => __('message.unexpected_error'),
             ];
-        }  
+        } 
     }
-
-    public function confirmPayment(Request $request)
+ 
+    public function fullConfirmSubscribe()
     {
         $paymentDetails = session('payment-'.auth('web')->user()->id);
-
-        $item = StudentSessionInstallment::updateOrCreate([
-            'student_id' => auth('web')->user()->id,
-            'course_id' => $paymentDetails['course_id'],
-            'access_until_session_id' => $paymentDetails['transactionable_id'],
+ 
+        //user course create
+        UserCourse::create([
+            "course_id" => $paymentDetails['course_id'],
+            "user_id" => auth('web')->user()->id,
+            "lecturer_id" => Courses::find($paymentDetails['course_id'])->user_id??"",
+            "subscription_token"  => $paymentDetails['payment_id'],
+            "is_paid" => 1,
+            "is_complete_payment" => 1,
         ]);
 
         $this->paymentService->createTransactionRecord($paymentDetails);
-
+ 
         session()->forget('payment-'.auth('web')->user()->id);
-
+ 
         $course_id = $paymentDetails['course_id'];
-
+ 
         return redirect(url("/user/courses/curriculum/item/".$course_id));
     }
+ 
 
 }

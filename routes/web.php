@@ -23,7 +23,7 @@ use App\Http\Controllers\Front\PrivateLessonsController;
 use App\Http\Controllers\Front\User\Lecturer\CoursesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\User\PaymentController;
-
+use App\Http\Controllers\Front\User\PaymentCallBackController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,7 +46,10 @@ Route::group(
 ], function(){
 
     Route::get('/', [FrontHomeController::class, 'index'])->name('index');
-
+    //payment
+    Route::get('/payment-failure',[PaymentCallBackController::class,'paymentFailure']);
+    Route::get('/payment-cancelled',[PaymentCallBackController::class,'paymentCancelled']);
+    Route::get('/payment-webhook',[PaymentCallBackController::class,'paymentWebhook']);
     //faqs
     Route::prefix('/faqs')->group(function () {
         Route::get('/', [FaqsController::class, 'index'])->name('faqs.index');
@@ -214,6 +217,7 @@ Route::get('/translations', function () {
 
     return $translations;
 });
+///////////////////////////////////////////////////////
 
 Route::get('/migrate',function(){
     $migrations = [
@@ -226,7 +230,11 @@ Route::get('/migrate',function(){
         //installments
         "2024_10_20_150417_add_open_installment_column_to_courses_table.php",
         "2024_10_20_165019_create_course_session_installments_table.php",
-        "2024_10_21_122451_create_student_session_installments_table.php"
+        "2024_10_21_122451_create_student_session_installments_table.php",
+
+        //payments
+        "2024_10_23_194948_make_user_type_string_on_transactios_table.php",
+        "2024_10_24_135654_add_order_id_to_transactios_table.php"
 
     ];
 
