@@ -33,9 +33,9 @@ class ApiSingleCourseResource extends JsonResource
         return [
             'id' => $this->id,
             'slider' => [
-               ['type'=>'image','image' => imageUrl($this->image,'100x100')],
-                ['type'=>'image', 'video_image' => videoUrl($this->video_image)],
-                ['type'=>'video','video' => videoUrl($this->video)],
+               ['type'=>'image','media' => imageUrl($this->image,'100x100')],
+                ['type'=>'video', 'media' => videoUrl($this->video_image)],
+                ['type'=>'video','media' => videoUrl($this->video)],
             ],
             'title' => $translation->title ?? $this->title,
             'teacher' => $this->lecturer->name,

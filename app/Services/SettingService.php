@@ -7,6 +7,7 @@ use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\SubGradeCollection;
 use App\Http\Resources\GradeLevelCollection;
 use App\Models\Category;
+use App\Models\Faqs;
 use Illuminate\Support\Facades\App;
 
 class SettingService extends MainService
@@ -44,6 +45,24 @@ class SettingService extends MainService
             __('message.success'),
             true,
             $data
+        );
+
+    }
+
+    public function getAllFaqs(){
+        $faqs = Faqs::select('id')->where('type', Faqs::GENERAL)
+                            ->with('translations:faqs_id,title,text,locale')->orderByDesc('created_at')->paginate(10);
+        if (!$faqs) {
+            return $this->createResponse(
+                __('message.not_found'),
+                false,
+                null
+            );
+        }
+        return $this->createResponse(
+            __('message.success'),
+            true,
+            $faqs
         );
 
     }

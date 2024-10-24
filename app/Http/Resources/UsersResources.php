@@ -23,7 +23,7 @@ class UsersResources extends JsonResource
 
         ];
         if ($this->token){
-            $data['token'] = $this->token->token;
+            $data['token'] = $this->token;
         }
         return  $data;
     }

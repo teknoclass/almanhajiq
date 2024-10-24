@@ -21,7 +21,7 @@ class ApiUsersResources extends JsonResource
             'image'=>imageUrl($this->image,'100x100') ,
             'role'=>$this->role ,
             'email'=>$this->email,
-            'token'=> $this->token->token,
+            'token'=> $this->token,
         ];
     }
 }
