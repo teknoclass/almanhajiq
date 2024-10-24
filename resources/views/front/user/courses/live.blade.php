@@ -429,7 +429,7 @@ $(document).on('click','.payInstallment',function(){
         data:{id:id,course_id:course_id},
         method: 'post',
         success: function (response) {
-            $(".payInstallment"+"."+id).text("{{__('paid')}}").attr('disabled',true);
+            $(".payInstallment"+"."+id).attr('disabled',true);
             $(".payInstallment"+"."+id).css({
                 "pointer-events": "none",
                 "opacity": "0.5",

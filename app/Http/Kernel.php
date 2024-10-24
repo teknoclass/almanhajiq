@@ -83,5 +83,7 @@ class Kernel extends HttpKernel
         'checkIsMarketer' => \App\Http\Middleware\CheckIsMarketer::class,
         'checkIsLecturer' => \App\Http\Middleware\checkIsLecturer::class,
         'language' => LanguageSwitcher::class,
+        'check.sanctum.token' => \App\Http\Middleware\CheckSanctumToken::class,
+
     ];
 }

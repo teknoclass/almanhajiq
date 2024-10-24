@@ -53,7 +53,7 @@
                                                 <select class="form-control sessionGroupId">
                                                     <option value="">{{__('choose_pls')}}</option>
                                                 @foreach($sessionGroups as $sessionGroup)
-                                                    <option value="{{$sessionGroup->id}}">{{$sessionGroup->title}}  ({{__('price')}} : {{$sessionGroup->price}})</option>
+                                                    <option data-price="{{$sessionGroup->price}}"  value="{{$sessionGroup->id}}">{{$sessionGroup->title}}  ({{__('price')}} : {{$sessionGroup->price}})</option>
                                                 @endforeach
                                                 </select>
                                                 <div class="form-group mt-4 text-center col-3 subscribeToSessionGroup" style="margin: auto;">
@@ -73,10 +73,10 @@
                                                 <select class="form-control sessionId">
                                                     <option value="">{{__('choose_pls')}}</option>
                                                 @foreach($sessions as $session)
-                                                    <option value="{{$session->id}}">{{$session->title}} ({{__('price')}} : {{$session->price}})</option>
+                                                    <option data-price="{{$session->price}}"  value="{{$session->id}}">{{$session->title}} ({{__('price')}} : {{$session->price}})</option>
                                                 @endforeach
                                                 </select>
-                                                <div class="form-group mt-4 text-center col-3 subscribeToSession" style="margin: auto;">
+                                                <div class="form-group mt-4 text-center col-3 subscribeToSession"  style="margin: auto;">
                                                     <button class="primary-btn p-2 w-100 " type="submit"
                                                         id="btn_submit">{{ __('subscribe') }}</button>
                                                 </div>
@@ -106,6 +106,8 @@
             var target_id = $('.sessionGroupId').val();
             var type = "group";
             var course_id = "{{@$course->id}}";
+            var price = $('.sessionGroupId option:selected').data('price');
+
             if(target_id != "")
             {
             $.ajax({
@@ -113,19 +115,18 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/subscribe-to-course-sessions')}}",
-                data:{target_id:target_id,type:type},
+                data:{target_id:target_id,type:type,price:price,course_id:course_id},
                 method: 'post',
                 success: function (response) {
                     $('.sessionGroupId option[value="' + target_id + '"]').remove();
-                    customSweetAlert(
-                        response.status_msg,
-                        response.message,
-                    );
-                    setTimeout(function() {
-                        console.log("wait..");
-                    }, 3000);
-
-                    window.location.href = "/user/courses/curriculum/item/"+course_id;
+                    if(response.status_msg == "error")
+                    {
+                        customSweetAlert(
+                            response.status_msg,
+                            response.message,
+                        );
+                    }
+                    window.location.href = response.payment_link;
                 }
             });
             }else{
@@ -140,6 +141,8 @@
             var target_id = $('.sessionId').val();
             var type = "session";
             var course_id = "{{@$course->id}}";
+            var price = $('.sessionId option:selected').data('price');
+
             if(target_id != "")
             {
             $.ajax({
@@ -147,19 +150,18 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/subscribe-to-course-sessions')}}",
-                data:{target_id:target_id,type:type},
+                data:{target_id:target_id,type:type,price:price,course_id:course_id},
                 method: 'post',
                 success: function (response) {
                     $('.sessionId option[value="' + target_id + '"]').remove();
-                    customSweetAlert(
-                        response.status_msg,
-                        response.message,
-                    );
-                    setTimeout(function() {
-                        console.log("wait..");
-                    }, 3000);
-
-                    window.location.href = "/user/courses/curriculum/item/"+course_id;
+                    if(response.status_msg == "error")
+                    {
+                        customSweetAlert(
+                            response.status_msg,
+                            response.message,
+                        );
+                    }
+                    window.location.href = response.payment_link;
                 }
             });
             }else{

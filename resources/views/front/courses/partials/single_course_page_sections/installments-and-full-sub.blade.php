@@ -6,11 +6,12 @@
                     <div class="row">
            
                         <ul class="nav nav-sub-pills2 mb-3 nav-pills-login" id="pills-sub2-tab">
-                                   
+                                   @if(! checkIfstudentFullySubscribeOnCourse(@$course->id))
                                     <li class="nav-item">
                                         <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-group2-sub"
                                             type="button" role="tab" style="border-bottom: background-color:rgb(111, 43, 144);">{{ __('full_paid') }}</button>
                                     </li>
+                                    @endif
                                    
                                     @if($course->open_installments == 1 && @$course->type == "live" &&  (@$course->priceDetails->price !== '' || @$course->priceDetails->price !== 0))
                                     <li class="nav-item">
@@ -27,17 +28,17 @@
                                                 <div class="card-title" class="text-center">{{ __('full_paid') }}</div>
                                             </div>
                                             <div class="card-body">
-                                            @if (@$course->priceDetails->price !== '' || @$course->priceDetails->price !== 0)
+                                            @if ( @$course->priceDetails && (@$course->priceDetails->price != '' || @$course->priceDetails->price != 0) )
                                             <div class="col-12">
                                                 <div class="form-group text-center my-1">
                                                     <button id="submit_free_reg_btn" type="button"
                                                         class="secondary-btn p-1 confirm-free-registeration"
-                                                        data-url="{{ route('user.courses.register.submit') }}"
+                                                        data-url="{{ url('user/full-subscribe-course') }}"
                                                         data-id="{{ @$course->id }}"
                                                         data-to="{{ route('user.courses.curriculum.item', ['course_id' => $course->id]) }}"
                                                         data-marketer_coupon="{{ request('marketer_coupon') }}"
                                                         data-is_relpad_page="true">
-                                                        {{ __('register_now') }}
+                                                        {{ __('register_now') }} 
                                                     </button>
                                                 </div>
                                             </div>
@@ -51,7 +52,7 @@
                                                         data-to="{{ route('user.courses.curriculum.item', ['course_id' => $course->id]) }}"
                                                         data-marketer_coupon="{{ request('marketer_coupon') }}"
                                                         data-is_relpad_page="true">
-                                                        {{ -__('subscribe_now') }}
+                                                        {{ __('subscribe_now') . __('the_free')}} 
                                                     </button>
                                                 </div>
                                             </div>
@@ -74,6 +75,7 @@
                                                     @foreach($installments as $installment)
                                                     @php
                                                         $untilLesson = $installment->course_session_id;
+                                                        if(!$untilLesson){continue;}
                                                         $lessons = App\Models\CourseSession::where("course_id",$course->id)
                                                         ->where('id','>',$lastIdOnPreviousLoop)
                                                         ->where("id","<=",$untilLesson)->get();
@@ -91,7 +93,7 @@
                                                         {
                                                             $isCurrentInstallment = App\Models\CourseSessionInstallment::where('course_session_id','>',$checkIfPrevious->access_until_session_id)->first();
                                                            
-                                                           $currentInstallment = $isCurrentInstallment->course_session_id;
+                                                           $currentInstallment = @$isCurrentInstallment->course_session_id;
                                                         }
                                                    
                                                         @endphp
@@ -120,7 +122,7 @@
                                                       <br>
                                                         @if(! in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id || @$currentInstallment == $untilLesson) )
                                                         <a style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
-                                                         class="payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}">{{__('payment')}} 
+                                                         class="payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}" data-price="{{$installment->price}}">{{__('payment')}} 
                                                         </a>
                                                         @elseif(in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id) )
                                                         <a style="position:absolute;bottom:5px;text-align:center;cursor:not-allowed;background-color:gray"
@@ -155,30 +157,31 @@
         $(document).on('click','.payInstallment',function(){
             var id = $(this).attr('alt');
             var course_id = "{{@$course->id}}";
+            var price = $(this).data('price');
            
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/pay-to-course-session-installment')}}",
-                data:{id:id,course_id:course_id},
+                data:{id:id,course_id:course_id,price:price},
                 method: 'post',
                 success: function (response) {
-                    $(".payInstallment"+"."+id).text("{{__('paid')}}").attr('disabled',true);
+                    $(".payInstallment"+"."+id).attr('disabled',true);
                     $(".payInstallment"+"."+id).css({
                         "pointer-events": "none",  
                         "opacity": "0.5",          
                         "cursor": "not-allowed"   
                     });
-                    customSweetAlert(
-                        response.status_msg,
-                        response.message,
-                    );
-                    setTimeout(function() {
-                        console.log("wait..");
-                    }, 3000);
 
-                    window.location.href = "/user/courses/curriculum/item/"+course_id;
+                    if(response.status_msg == "error")
+                    {
+                        customSweetAlert(
+                            response.status_msg,
+                            response.message,
+                        );
+                    }
+                    window.location.href = response.payment_link;
                 }
             });
           

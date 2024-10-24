@@ -7,18 +7,75 @@ use App\Repositories\Common\CourseCurriculumEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
-use App\Models\{CourseSessionSubscription,CourseSession};
+use App\Models\{CourseSessionSubscription,CourseSession,CourseSessionsGroup};
+use App\Services\PaymentService;
 
 class CourseSessionSubscriptionsController extends Controller
 {
 
+    protected PaymentService $paymentService;
+
+    public function __construct()
+    {
+       $this->paymentService = new PaymentService();
+    }
+
     public function subscribe(Request $request)
     {
-        $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
-
+        $response = $this->paymentService->processPayment([
+            "amount" => $request->price,
+            "currency" => "IQD",
+            "successUrl" => url('/user/subscribe-to-course-sessions-confirm')
+        ]);  
+        
         if($request->type == "group")
         {
-           $sessions = CourseSession::where('group_id', $request->target_id)->get();
+            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSessionsGroup";
+        }else{
+            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSession";
+        }
+
+        if(isset($response['data']['link']))
+        {
+            $paymentDetails = [
+                "description" => $description,
+                "orderId" => $response['data']['orderId'],
+                "payment_id" => $response['data']['token'],
+                "amount" => $request->price,
+                "transactionable_type" => $transactionable_type,
+                "transactionable_id" => $request->target_id,
+                "brand" => "master",
+                "transaction_id" => $response['data']['transactionId'],
+                'course_id' => $request->course_id,
+                "purchase_type" => $request->type
+            ];
+    
+            session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
+
+            return  $response = [
+                'status_msg' => 'success',
+                'payment_link' => $response['data']['link']
+            ];
+        }else{
+            return  $response = [
+                'status_msg' => 'error',
+                'message' => __('message.unexpected_error'),
+            ];
+        } 
+    }
+
+    public function confirmSubscribe()
+    {
+        $paymentDetails = session('payment-'.auth('web')->user()->id);
+
+        $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+
+        if($paymentDetails['purchase_type'] == "group")
+        {
+           $sessions = CourseSession::where('group_id', $paymentDetails['transactionable_id'])->get();
+
            foreach($sessions as $session)
            {
                 if(! in_array( $session->id,$studentSubscribedSessionsIds))
@@ -35,9 +92,10 @@ class CourseSessionSubscriptionsController extends Controller
                 }
            }
         }
-        elseif($request->type == "session")
+        elseif($paymentDetails['purchase_type'] == "session")
         {
-           $session = CourseSession::find($request->target_id);
+           $session = CourseSession::find($paymentDetails['transactionable_id']);
+
            if(! in_array($session->id, $studentSubscribedSessionsIds))
            {
                 CourseSessionSubscription::create([
@@ -49,18 +107,18 @@ class CourseSessionSubscriptionsController extends Controller
                     'related_to_group_subscription' => 0,
                     'course_id' => $session->course_id
                 ]);
-            }else{
-                return  $response = [
-                    'status_msg' => 'error',
-                    'message' => __('lesson_alreay_subscribed'),
-                ];
             }
         }
 
-        return  $response = [
-            'status_msg' => 'success',
-            'message' => __('done_operation'),
-        ];
+        $this->paymentService->createTransactionRecord($paymentDetails);
+
+        session()->forget('payment-'.auth('web')->user()->id);
+
+        $course_id = $paymentDetails['course_id'];
+
+        return redirect(url("/user/courses/curriculum/item/".$course_id));
     }
+
+   
 
 }

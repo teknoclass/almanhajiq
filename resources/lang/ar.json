@@ -1153,6 +1153,13 @@
     "installment_paid":"دفع بالأقساط",
     "last_pay_date":"تاريخ اخر سداد ",
     "next_inst_date":"تاريخ اخر سداد للقسط القادم ",
-    "cant_delete_or_edit":"لا يمكن الحذف او التعديل عليه لانه مرتبط بطلاب"
+    "cant_delete_or_edit":"لا يمكن الحذف او التعديل عليه لانه مرتبط بطلاب",
+    "the_free":"(مجانية)",
+    "price-not-zero":"يجب ادخال سعر اكبر من الصفر",
+    "payment_cancelled_txt":"تم الغاء عملية الدفع",
+    "payment_cancelled":"الغاء الدفع",
+    "payment_failed":"فشل الدفع",
+    "payment_failed_txt":" تم فشل عملية الدفع للمزيد من المعلومات تواصل مع الدعم الفنى للموقع",
+    "pay_bill":"عملية دفع"
 
 }

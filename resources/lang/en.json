@@ -1104,7 +1104,15 @@
     "installment_paid":"Installment Payment",
     "last_pay_date":"Last Payment Date",
     "next_inst_date":"Next Installment Last Payment Date ",
-    "cant_delete_or_edit":"Can not delete or update it related to students"
+    "cant_delete_or_edit":"Can not delete or update it related to students",
+    "the_free":"(Free)",
+    "price-not-zero":"Price must be greater than 0",
+    "payment_cancelled":"Payment Canceled",
+    "payment_cancelled_txt":"Your payment has been canceled. If you have any questions, please contact support.",
+    "payment_failed":"Payment Failed",
+    "payment_failed_txt":"Your payment has been Failed. If you have any questions, please contact support.",
+    "pay_bill":"Payment Process"
+
 
 
 

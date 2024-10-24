@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Courses;
+use App\Models\UserCourse;
 
 class CourseRepository extends MainRepository
 {
@@ -10,5 +11,11 @@ class CourseRepository extends MainRepository
     {
         parent::__construct(new Courses());
     }
-
+    public function getCourseByUserId($user,$id){
+        $course =  UserCourse::where('course_id',$id);
+            if($user){
+                $course->where('user_id',$user->id);
+            }
+            return $course->first();
+    }
 }

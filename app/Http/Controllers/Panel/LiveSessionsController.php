@@ -20,7 +20,7 @@ class LiveSessionsController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'required|string',
-            'price' => 'required',
+            'price' => 'required|numeric|min:1',
             'sessions' => 'required|array|min:1',
         ]);
 
@@ -38,7 +38,7 @@ class LiveSessionsController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'required|string',
-            'price' => 'required',
+            'price' => 'required|numeric|min:1',
             'sessions' => 'required|array|min:1',
         ]);
 

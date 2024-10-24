@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\View;
 use App\Models\{CourseSession,CourseSessionsGroup,CourseSessionSubscription,UserCourse,
     StudentSessionInstallment,CourseSessionInstallment};
 use Twilio\Rest\Client;
+use Illuminate\Support\Str;
 
 function checkAllPermissionsAdmin($permissions)
 {
@@ -959,4 +960,14 @@ function sendOtpToWhatsapp($to_mobile,$otp)
     // } catch (Exception $e) {
     //     return 'Error: ' . $e->getMessage();
     // }
+}
+
+function genereatePaymentOrderID()
+{
+    return preg_replace('/[^A-Za-z]/', '', Str::random(10)).rand(1,1000);
+}
+
+function checkIfstudentFullySubscribeOnCourse($course_id)
+{
+    return UserCourse::where('user_id','student_id',auth('web')->user()->id)->where('course_id',$course_id)->first();
 }

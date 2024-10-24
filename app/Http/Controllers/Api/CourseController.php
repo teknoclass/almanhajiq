@@ -35,7 +35,7 @@ class CourseController extends Controller
         }
         $mostOrderCoursesCollection = new ApiCourseFilterCollection($mostOrderCourses['data']);
         if ($filterRequest->has('material_id') && $courses['data']->isNotEmpty()) {
-            $lecturers = $courses['data']->pluck('lecturers')->flatten();
+            $lecturers = $courses['data']->pluck('lecturers')->unique('id')->flatten();
 
             $collection = new TeacherCollection($lecturers);
             $courses = new SuccessResponse($courses['message'], [
