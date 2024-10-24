@@ -6,7 +6,7 @@ class PostsCollection extends MainCollection
 {
     public function __construct($resource)
     {
-        parent::__construct($resource, __('latest_posts'));
+        parent::__construct($resource,'posts');
     }
 }
 
