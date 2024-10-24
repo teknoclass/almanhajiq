@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 
-class LatestPostsResource extends JsonResource
+class PostsResource extends JsonResource
 {
 
     /**
@@ -31,7 +31,7 @@ class LatestPostsResource extends JsonResource
             'image'=> imageUrl($this->image,'100x100'),
             'created_at'=> $this->created_at,
             'category'=> [
-                'id'=>$this->category?->id,
+                'id'=>$this->category?->value,
                 'name'=>collect($this->category?->translations)
                         ->firstWhere('locale', $locale)?->name
                     ?? collect($this->category?->translations)

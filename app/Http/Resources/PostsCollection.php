@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-class LatestPostsCollection extends MainCollection
+class PostsCollection extends MainCollection
 {
     public function __construct($resource)
     {
