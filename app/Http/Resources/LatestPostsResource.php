@@ -29,6 +29,7 @@ class LatestPostsResource extends JsonResource
             'text'=>$translation?->text??'',
             'is_favourite'=>$this->is_favourite,
             'image'=> imageUrl($this->image,'100x100'),
+            'created_at'=> $this->created_at,
             'category'=> [
                 'id'=>$this->category?->id,
                 'name'=>collect($this->category?->translations)
