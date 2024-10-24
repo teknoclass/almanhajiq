@@ -23,6 +23,7 @@ class PagesResource extends JsonResource
                 ->firstWhere('locale', 'en');
         $data = [
             'id' => $this->id,
+            'image' => imageUrl($this->image,'100x100'),
             'title' => $translation?->title??'',
             'text' => $translation?->text??'',
 
