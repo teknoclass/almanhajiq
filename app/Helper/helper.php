@@ -690,13 +690,13 @@ function quickRandom($length = 16)
 
 function defaultCountryCode()
 {
-    return '20';
+    return '964';
 }
 
 
 function defaultCountrySlug()
 {
-    return 'eg';
+    return 'iraq';
 }
 
 function uploadvideo($file, $custome_path='', $is_full_path=false)
