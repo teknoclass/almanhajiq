@@ -1,80 +1,53 @@
 <script>
 
-    // $( document ).ready(function() {
-    //     var input = document.querySelector("#phone");
-
-    //     $.get("https://ipinfo.io", function(response) {
-    //         var countryCode = response.country.toLowerCase();
-
-    //         var iti = window.intlTelInput(input, {
-    //             initialCountry: countryCode,
-    //             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
-    //         });
-
-    //         updateHiddenInputs(iti);
-
-    //         input.addEventListener("change", function () {
-    //             updateHiddenInputs(iti);
-    //         });
-
-    //         function updateHiddenInputs(iti) {
-    //             var countryData = iti.getSelectedCountryData();
-    //             document.querySelector(".code_country").value = countryData.dialCode;
-    //             document.querySelector(".slug_country").value = countryData.iso2;
-    //         }
-    //     }, "jsonp");
-
-
-    //     $('.code_counrty').val($('.iti__active').data('dial-code'));
-    //     $('.slug_country').val($('.iti__active').data('country-code'));
-
-    // });
-
-    // $(document).on("click",".iti__country",function() {
-    //     $('.code_counrty').val($(this).data('dial-code'));
-    //     $('.slug_country').val($(this).data('country-code'));
-    // });
-
-
-</script>
-
-<script>
-    //new
-
-$(document).ready(function () {
-
-if (window.specify_a_specific_country) {
-    var input = document.querySelector("#phone");
-    window.intlTelInput(input, {
-        initialCountry: window.initialCountry,
-    });
-    $('.code_country').val($('.iti__active').data('dial-code'));
-
-
-} else {
-
-    $.ajax({
-        url: "https://ipinfo.io/json",
-        data: {}
-    }).done(function (data) {
-        window.initialCountry = data['country'];
-
+    $( document ).ready(function() {
         var input = document.querySelector("#phone");
-        window.intlTelInput(input, {
-            initialCountry: window.initialCountry, //change according to your own country.
-        });
 
-        $('.code_country').val($('.iti__active').data('dial-code'));
+        $.get("https://ipinfo.io", function(response) {
+            var countryCode = response.country.toLowerCase();
+
+            var iti = window.intlTelInput(input, {
+                initialCountry: countryCode,
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+
+            updateHiddenInputs(iti);
+
+            input.addEventListener("change", function () {
+                updateHiddenInputs(iti);
+            });
+
+            function updateHiddenInputs(iti)
+           {
+                var countryData = iti.getSelectedCountryData();
+
+                var codeCountryElement = document.querySelector(".code_country");
+                var slugCountryElement = document.querySelector(".slug_country");
+
+                if (codeCountryElement) {
+                    codeCountryElement.value = countryData.dialCode;
+                } else {
+                    console.error("Element with class 'code_country' not found.");
+                }
+
+                if (slugCountryElement) {
+                    slugCountryElement.value = countryData.iso2;
+                } else {
+                    console.error("Element with class 'slug_country' not found.");
+                }
+            }
+        }, "jsonp");
+
+
+        $('.code_counrty').val($('.iti__active').data('dial-code'));
+        $('.slug_country').val($('.iti__active').data('country-code'));
 
     });
 
+    $(document).on("click",".iti__country",function() {
+        $('.code_counrty').val($(this).data('dial-code'));
+        $('.slug_country').val($(this).data('country-code'));
+    });
 
-}
 
-/////
-
-$(document).on("click", ".iti__country", function () {
-    $('.code_country').val($(this).data('dial-code'));
-});
-});
 </script>
