@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BlogCategoryCollection;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\PostsCollection;
 use App\Http\Resources\BlogSliderCollection;
 use App\Http\Resources\PostsResource;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
-use App\Services\AuthService;
 use App\Services\BlogService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,11 +41,11 @@ class BlogController extends Controller
 
         $sliderCollection = new BlogSliderCollection($slider['data']);
         $latestPostsCollection = new PostsCollection($latestPosts['data']);
-        $categoriesCollection = new BlogCategoryCollection($categories['data']);
+        $categoriesCollection = new CategoryCollection($categories['data']);
         $response = new SuccessResponse($latestPosts['message'], [
             $sliderCollection,
-            ['latest_posts'=>collect($categoriesCollection)],
-            $latestPostsCollection
+            ['categories'=>collect($categoriesCollection)],
+            ['latest_posts'=>collect($latestPostsCollection)]
         ], Response::HTTP_OK);
 
         return response()->success($response);
