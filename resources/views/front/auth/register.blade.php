@@ -63,7 +63,7 @@
                                     <div class="form-group">
                                         <label for="phone"
                                             class="d-block fw-bold text-color-primary">{{ __('mobile') }}</label>
-                                        <input type="hidden" name="code_country" value="{{ defaultCountryCode() }}"
+                                        <input type="hidden" class="code_country" name="code_country" value="{{ defaultCountryCode() }}"
                                             class="code_counrty">
                                         <input type="hidden" name="slug_country" value="{{ defaultCountrySlug() }}"
                                             class="slug_country">

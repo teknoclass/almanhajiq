@@ -17,11 +17,26 @@
                updateHiddenInputs(iti);
            });
 
-           function updateHiddenInputs(iti) {
-               var countryData = iti.getSelectedCountryData();
-               document.querySelector(".code_country").value = countryData.dialCode;
-               document.querySelector(".slug_country").value = countryData.iso2;
-           }
+           function updateHiddenInputs(iti)
+           {
+                var countryData = iti.getSelectedCountryData();
+
+                var codeCountryElement = document.querySelector(".code_country");
+                var slugCountryElement = document.querySelector(".slug_country");
+
+                if (codeCountryElement) {
+                    codeCountryElement.value = countryData.dialCode;
+                } else {
+                    console.error("Element with class 'code_country' not found.");
+                }
+
+                if (slugCountryElement) {
+                    slugCountryElement.value = countryData.iso2;
+                } else {
+                    console.error("Element with class 'slug_country' not found.");
+                }
+            }
+
        }, "jsonp");
 
 
