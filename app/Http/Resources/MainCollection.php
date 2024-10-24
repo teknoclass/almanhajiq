@@ -29,12 +29,14 @@ abstract class MainCollection extends ResourceCollection
             return [
 
                 $this->collectionKey => $this->collection,
-                'current_page' => $this->currentPage(),
-                'from' => $this->firstItem(),
-                'last_page' => $this->lastPage(),
-                'per_page' => $this->perPage(),
-                'to' => $this->lastItem(),
-                'total' => $this->total(),
+                "pagination"=>[
+                    'current_page' => $this->currentPage(),
+                    'from' => $this->firstItem(),
+                    'last_page' => $this->lastPage(),
+                    'per_page' => $this->perPage(),
+                    'to' => $this->lastItem(),
+                    'total' => $this->total(),
+                ]
             ];
         }
         return   [$this->collectionKey => $this->collection];

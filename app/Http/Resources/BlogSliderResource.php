@@ -32,7 +32,7 @@ class BlogSliderResource extends JsonResource
             'image'=> imageUrl($this->image,'100x100'),
             'created_at'=> $this->created_at,
             'category'=> [
-                'id'=>$this->category?->id,
+                'id'=>$this->category?->value,
                 'name'=>collect($this->category?->translations)
                         ->firstWhere('locale', $locale)?->name
                     ?? collect($this->category?->translations)

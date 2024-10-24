@@ -67,9 +67,8 @@ class CourseService extends MainService
 
 
         if ($filterRequest->has('material_id')) {
-            $category  = Category::find($filterRequest->material_id);
+            $courses = $courses->filterByCategories([$filterRequest->material_id]);
 
-            $courses = $courses->filterByCategories([$category->value]);
             $courses = $courses->with([
                 'lecturers.lecturerSetting' => function($query) {
                     $query->select(
@@ -107,8 +106,8 @@ class CourseService extends MainService
                           ->where('grade_sub_level', $filterRequest->grade_sub_level_id);
 
         if ($filterRequest->has('material_id')) {
-            $category  = Category::find($filterRequest->material_id);
-            $courses = $courses->filterByCategories([$category->value]);
+
+            $courses = $courses->filterByCategories([$filterRequest->material_id]);
         }
 
         $courses = $courses->orderBy('students_count', 'desc')->take(5);

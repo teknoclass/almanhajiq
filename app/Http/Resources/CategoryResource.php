@@ -19,11 +19,18 @@ class CategoryResource extends JsonResource
     public function toArray($request)
     {
         $locale = App::getLocale();
-        $translation = collect($this->translations)->firstWhere('locale', $locale ?? 'ar');
-        return [
-            'id'=>$this->id,
-            'name'=> $translation ? $translation->name : $this->name,
-
+        $translation = collect($this->translations)
+                ->firstWhere('locale', $locale)
+            ?? collect($this->translations)
+                ->firstWhere('locale', 'en');
+        $data =  [
+            'id'=>$this->value,
+            'text'=>$translation?->text??'',
+            'image'=> imageUrl($this->image,'100x100'),
+            'name'=>$translation?->name??'',
+            'description'=>$translation?->description??'',
         ];
+
+        return $data;
     }
 }

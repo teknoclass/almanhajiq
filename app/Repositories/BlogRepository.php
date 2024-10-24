@@ -20,9 +20,36 @@ class BlogRepository extends MainRepository
 
     }
 
+    public function all()
+    {
+        return $this->model::
+                    select('id', 'image', 'created_at', 'user_id','category_id')
+                    ->with(['translations:posts_id,title,locale,text', 'user:id,name,image','category'])
+                    ->paginate();
+
+    }
+
+    public function findByCategoryId(int $categoryId){
+        return $this->model::
+        select('id', 'image', 'created_at', 'user_id','category_id')
+                           ->with(['translations:posts_id,title,locale,text', 'user:id,name,image','category'])
+                           ->where('category_id',$categoryId)
+                           ->paginate();
+    }
+
+    public function findById($id)
+    {
+        return $this->model::
+                    select('id', 'image', 'created_at', 'user_id','category_id')
+                    ->with(['translations:posts_id,title,locale,text', 'user:id,name,image','category'])
+                    ->where('id',$id)
+                    ->first();
+
+    }
+
     public function blogCategories()
     {
-        return Category::query()->select('id', 'value', 'image')
-                       ->with('translations:category_id,name,locale')->where('parent', 'blog_categories')->get();
+        return   Category::getCategoriesByParent('blog_categories')->get();
+
     }
 }
