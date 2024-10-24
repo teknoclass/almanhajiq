@@ -85,15 +85,26 @@ class AuthService extends MainService
             DB::beginTransaction();
 
             $data                = $studentRequest->all();
+            $data['validation_code']    = '0000';
             $data['password_c']  = $studentRequest->get('password');
             $data['password']    = Hash::make($studentRequest->get('password'));
-            $data['validation_code']    = '0000';
             $user =  $this->userRepository->updateOrCreateUser($data);
             $token = $user->createToken('auth_token')->plainTextToken;
 
 
             $message = __('message.operation_accomplished_successfully');
-          //   $user->sendVerificationCode();
+//            try {
+//                $user->sendVerificationCode();
+//            }
+//            catch (\Exception $exception){
+//                DB::rollback();
+//                Log::error($exception->getMessage());
+//                return $this->createResponse(
+//                    __('message.message.unexpected_error'),
+//                    false,
+//                    null
+//                );
+//            }
             DB::commit();
             $user->token = $token;
             return $this->createResponse(
@@ -260,48 +271,6 @@ class AuthService extends MainService
         );
     }
 
-    public function editProfile(UpdateStudentRequest $request): array
-    {
-
-        DB::beginTransaction();
-
-        try {
-            $user = $request->user();
-
-            if (!$user) {
-                return $this->createResponse(
-                    __('message.user_does_not_exist'),
-                    false,
-                    null
-                );
-            }
-
-            $data = $request->all();
-
-            $data = $this->handleFileUploads($request, $user, $data);
-
-            $user->update($data);
-
-            DB::commit();
-
-            return $this->createResponse(
-                __('message.success'),
-                true,
-                $user
-            );
-
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            Log::alert($e->getMessage());
-
-            return $this->createResponse(
-                __('message.unexpected_error'),
-                false,
-                null
-            );
-        }
-    }
 
     private function handleFileUploads($request, $item, $data)
     {
