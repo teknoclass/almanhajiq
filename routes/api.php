@@ -2,13 +2,12 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\HomeController;
-use App\Http\Controllers\Api\LiveSessionsController;
 use App\Http\Controllers\Api\PagesController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\TeacherController;
-//use App\Http\Controllers\Api\StudentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -79,7 +78,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'courses'], function () {
 });
 
 Route::group(['middleware' => 'language', 'prefix' => 'live-sessions'], function () {
-    Route::get('/groups', [LiveSessionsController::class, 'getCourseSessionsGroups'])->name('filter');
+    Route::post('/groups/{id}', [CourseSessionsController::class, 'purchaseOptions'])->name('session_groups')->middleware('check.sanctum.token');
 });
 
 Route::get('/teacher/{id}', [TeacherController::class, 'findTeacherById'])->name('teacher')->middleware('language');

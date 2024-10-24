@@ -146,8 +146,36 @@ class CourseService extends MainService
             );
         }
 
+    }
 
+    public function getCourseByUserId($request,$id){
+        try {
+            $user = $request->attributes->get('user');
 
+            $course = $this->courseRepository->getCourseByUserId($user,$id)->course;
+
+            if (!$course) {
+                return $this->createResponse(
+                    __('message.not_found'),
+                    false,
+                    null
+                );
+            }
+            return $this->createResponse(
+                __('message.success'),
+                true,
+                $course
+            );
+        }
+        catch (\Exception  $exception){
+            Log::error($exception->getMessage());
+            return $this->createResponse(
+                __('xx'),
+                false,
+                null
+            );
+        }
 
     }
+
 }
