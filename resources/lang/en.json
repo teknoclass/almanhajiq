@@ -1105,7 +1105,8 @@
     "last_pay_date":"Last Payment Date",
     "next_inst_date":"Next Installment Last Payment Date ",
     "cant_delete_or_edit":"Can not delete or update it related to students",
-    "the_free":"(Free)"
+    "the_free":"(Free)",
+    "price-not-zero":"Price must be greater than 0"
 
 
 
