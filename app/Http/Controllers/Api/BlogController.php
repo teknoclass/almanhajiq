@@ -46,7 +46,7 @@ class BlogController extends Controller
         $categoriesCollection = new BlogCategoryCollection($categories['data']);
         $response = new SuccessResponse($latestPosts['message'], [
             $sliderCollection,
-            $categoriesCollection,
+            ['latest_posts'=>collect($categoriesCollection)],
             $latestPostsCollection
         ], Response::HTTP_OK);
 
