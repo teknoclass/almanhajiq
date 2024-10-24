@@ -167,7 +167,7 @@
                 data:{id:id,course_id:course_id,price:price},
                 method: 'post',
                 success: function (response) {
-                    $(".payInstallment"+"."+id).text("{{__('paid')}}").attr('disabled',true);
+                    $(".payInstallment"+"."+id).attr('disabled',true);
                     $(".payInstallment"+"."+id).css({
                         "pointer-events": "none",  
                         "opacity": "0.5",          

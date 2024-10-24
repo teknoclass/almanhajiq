@@ -46,7 +46,10 @@ Route::group(
 ], function(){
 
     Route::get('/', [FrontHomeController::class, 'index'])->name('index');
-
+    //payment
+    Route::get('/payment-failure',[PaymentCallBackController::class,'paymentFailure']);
+    Route::get('/payment-cancelled',[PaymentCallBackController::class,'paymentCancelled']);
+    Route::get('/payment-webhook',[PaymentCallBackController::class,'paymentWebhook']);
     //faqs
     Route::prefix('/faqs')->group(function () {
         Route::get('/', [FaqsController::class, 'index'])->name('faqs.index');
@@ -215,11 +218,6 @@ Route::get('/translations', function () {
     return $translations;
 });
 ///////////////////////////////////////////////////////
-//payment
-Route::get('/payment-failure',[PaymentCallBackController::class,'paymentFailure']);
-Route::get('/payment-cancelled',[PaymentCallBackController::class,'paymentCancelled']);
-Route::get('/payment-webhook',[PaymentCallBackController::class,'paymentWebhook']);
-/////////////////////////////////////////////
 
 Route::get('/migrate',function(){
     $migrations = [
@@ -235,7 +233,8 @@ Route::get('/migrate',function(){
         "2024_10_21_122451_create_student_session_installments_table.php",
 
         //payments
-        "2024_10_23_194948_make_user_type_string_on_transactios_table.php"
+        "2024_10_23_194948_make_user_type_string_on_transactios_table.php",
+        "2024_10_24_135654_add_order_id_to_transactios_table.php"
 
     ];
 

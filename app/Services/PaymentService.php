@@ -12,8 +12,8 @@ class PaymentService
 
     public function __construct()
     {
-        $this->apiUrl = config('services.payment.api_url');
-        $this->apiKey = config('services.payment.api_key');
+        $this->apiUrl = env('PAYMENT_API_URL');
+        $this->apiKey = env('PAYMENT_API_KEY');
     }
 
     /**
@@ -40,9 +40,9 @@ class PaymentService
             ];
 
             $response = Http::withHeaders([
-                'Authorization' =>  '39cd434c94fa49e99646b58f31bbdb88',
+                'Authorization' =>  $this->apiKey,
                 'Content-Type' => 'application/json',
-            ])->post('https://api.uat.pay.qi.iq/api/v0/transactions/business/token', $payload);
+            ])->post($this->apiUrl, $payload);
 
             if ($response->successful()) {
                 $paymentResponse = $response->json();
@@ -73,6 +73,7 @@ class PaymentService
             'coupon' => $paymentDetails['coupon'] ?? null,
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
             'is_paid' => true,
+            'order_id' => $paymentDetails['orderId']
         ]);
     }
 }
