@@ -49,7 +49,7 @@ class BlogRepository extends MainRepository
 
     public function blogCategories()
     {
-        return Category::query()->select('id', 'value', 'image')
-                       ->with('translations:category_id,name,locale')->where('parent', 'blog_categories')->get();
+        return   Category::getCategoriesByParent('blog_categories')->get();
+
     }
 }
