@@ -1104,7 +1104,9 @@
     "installment_paid":"Installment Payment",
     "last_pay_date":"Last Payment Date",
     "next_inst_date":"Next Installment Last Payment Date ",
-    "cant_delete_or_edit":"Can not delete or update it related to students"
+    "cant_delete_or_edit":"Can not delete or update it related to students",
+    "the_free":"(Free)"
+
 
 
 

@@ -30,9 +30,11 @@ class CourseSessionSubscriptionsController extends Controller
         
         if($request->type == "group")
         {
-            $description = " شراء وحدة" . CourseSessionsGroup::find($request->target_id);
+            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSessionsGroup";
         }else{
-            $description = " شراء جلسة" . CourseSession::find($request->target_id);
+            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSession";
         }
 
         if(isset($response['data']['link']))
@@ -42,7 +44,7 @@ class CourseSessionSubscriptionsController extends Controller
                 "orderId" => $response['data']['orderId'],
                 "payment_id" => $response['data']['token'],
                 "amount" => $request->price,
-                "transactionable_type" => "App\Models\\CourseSessionSubscription",
+                "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
                 "brand" => "master",
                 "transaction_id" => $response['data']['transactionId'],

@@ -19,6 +19,7 @@ use App\Http\Controllers\Front\User\RatingsController;
 use App\Http\Controllers\Front\User\Lecturer\CoursesController as LecturerCoursesController;
 use App\Http\Controllers\Front\User\CourseSessionSubscriptionsController;
 use App\Http\Controllers\Front\User\CourseSessionInstallmentsController;
+use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
 
 Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
     Route::group(['middleware' => 'checkActiveUser'], function () {
@@ -193,6 +194,9 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         //installments
         Route::post('/pay-to-course-session-installment',[CourseSessionInstallmentsController::class,'pay']);
         Route::get('/pay-to-course-session-installment-confirm',[CourseSessionInstallmentsController::class,'confirmPayment']);
+        //full subscription
+        Route::post('/full-subscribe-course',[CourseFullSubscriptionsController::class,'fullSubscribe']);
+        Route::get('/full-subscribe-course-confirm',[CourseFullSubscriptionsController::class,'fullConfirmSubscribe']);
         
     });
 

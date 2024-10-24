@@ -966,3 +966,8 @@ function genereatePaymentOrderID()
 {
     return preg_replace('/[^A-Za-z]/', '', Str::random(10));
 }
+
+function checkIfstudentFullySubscribeOnCourse($course_id)
+{
+    return UserCourse::where('user_id','student_id',auth('web')->user()->id)->where('course_id',$course_id)->first();
+}
