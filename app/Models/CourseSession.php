@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 
@@ -31,8 +32,7 @@ class CourseSession extends Model
     public function canAccess($userId)
     {
         return DB::table('course_session_subscriptions')
-                 ->where('student_id', $userId)
-                 ->where('course_session_id', $this->id)
+                 ->where(['course_session_id'=> $this->id,'student_id'=> $userId])
                  ->exists();
     }
     public function studentRequests()

@@ -54,14 +54,6 @@ class CourseSessionsController  extends Controller
 
         return response()->success($courses);
     }
-    public function getCourseSessions(Request $request,$id){
 
-
-        $collection                 = new CourseSessionCollection($sessions['data']);
-        $courses = new SuccessResponse($sessions['message'], $collection
-            , Response::HTTP_OK);
-
-        return response()->success($courses);
-    }
 
 }

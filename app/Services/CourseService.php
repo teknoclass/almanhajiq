@@ -121,22 +121,17 @@ class CourseService extends MainService
 
     }
 
-    public function getById($id,$request){
+    public function getById($id){
         try {
-            $user = $request->attributes->get('user');
-
             $course = $this->courseRepository->findByIdWith($id,count:[
                 'students',
                 'groups as groups_count' => function($query) {
                     $query->select(DB::raw('COUNT(DISTINCT group_id)'));
                 },
                 'sessions']);
-            $isSub = $this->courseRepository->getCourseByUserId($user, $id)?->course;
 
             if ($course) {
                 $course->groups = $course->groups->unique('id');
-                $course->setAttribute('is_sub', (int)!is_null($isSub));
-
             }
             return $this->createResponse(
                 __('message.success'),
@@ -144,6 +139,7 @@ class CourseService extends MainService
                 $course
             );
         }
+
         catch (\Exception  $exception){
             Log::error($exception->getMessage());
             return $this->createResponse(
@@ -182,7 +178,7 @@ class CourseService extends MainService
         catch (\Exception  $exception){
             Log::error($exception->getMessage());
             return $this->createResponse(
-                __('xx'),
+                __('message.not_found'),
                 false,
                 null
             );

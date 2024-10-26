@@ -33,25 +33,33 @@ class ApiSingleCourseResource extends JsonResource
             'id' => $this->id,
             'slider' => [
                ['type'=>'image','media' => imageUrl($this->image,'100x100')],
-                ['type'=>'video', 'media' => videoUrl($this->video_image)],
-                ['type'=>'video','media' => videoUrl($this->video)],
+                ['type'=>'image', 'media' =>imageUrl($this->video_image,'100x100')],
+                ['type'=>'video','media' => $this->video],
             ],
             'title' => $translation->title ?? $this->title,
-            'teacher' => $this->lecturer->name,
+
             'sessions_count' => count($this->sessions),
             'groups_count' => count($this->groups),
+            'start_date' => $this->start_date,
             'can_subscribe_to_session' => $this->can_subscribe_to_session,
             'can_subscribe_to_session_group' => $this->can_subscribe_to_session_group,
             'open_installments' => $this->open_installments,
-            'teacher_rating' => $this->lecturer->getRating(),
+            'teacher'=>[
+                'id' => $this->lecturer->id,
+                'name' => $this->lecturer->name,
+                'teacher_rating' => $this->lecturer->getRating(),
+
+            ],
+
             'duration' => $this->getDurationInMonths(),
+            'max_students' => 10,
+            'session_days' =>  $this->sessions->pluck('time','day'),
             'description' => $translation->description ?? $this->description,
             'category' => collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name ?? $this->category?->title,
-            'price' => $this->priceDetails?->price,
-            'discount_price' => $this->priceDetails?->discount_price,
+            'price' => $this->priceDetails?->price??0,
+            'discount_price' => $this->priceDetails?->discount_price??0,
             'rate' => $this->rate,
             'curriculum_items' => $curriculumItems,
-            'is_sub' => $this->is_sub,
 
         ];
         return $data;

@@ -612,14 +612,14 @@ function sendWebNotifications($users_id, $user_type, $title, $text)
     // dd($result);
 }
 
-function getUser()
+function getUser($guard = 'web')
 {
-    return auth('web')->user();
+    return auth($guard)->user();
 }
 
-function checkUser($role)
+function checkUser($role,$guard='web')
 {
-    if (auth('web')->check()) {
+    if (auth($guard)->check()) {
         if (getUser()->role==$role) {
             return true;
         }
@@ -850,7 +850,7 @@ function isCourseHasSubscriptions($course_id)
 
 function isStudentSubscribeToSessionGroup($group_id)
 {
-   //check if student subscribe on all sessions of group 
+   //check if student subscribe on all sessions of group
    $studentSubscribedSessionCount = CourseSessionSubscription::where('course_session_group_id',$group_id)->where('student_id',auth('web')->user()->id)->count();
 
    $groupSessionsCount = CourseSession::where('group_id',$group_id)->count();
@@ -877,7 +877,7 @@ function studentSubscriptionCoursessIds()
     {
         return [];
     }
-    
+
     return CourseSessionSubscription::where('student_id',auth('web')->user()->id)->pluck('course_id')->toArray();
 }
 
@@ -896,7 +896,7 @@ function isCourseonStudentCourse($course_id)
 function installementdLessonsIds($course_id)
 {
    $studentLessonsUntilIds = StudentSessionInstallment::where('course_id',$course_id)
-    ->where('student_id',auth('web')->user()->id)->pluck('access_until_session_id')->toArray();  
+    ->where('student_id',auth('web')->user()->id)->pluck('access_until_session_id')->toArray();
     if($studentLessonsUntilIds)
     {
         $maxLessonId = max($studentLessonsUntilIds);
@@ -911,7 +911,7 @@ function installementdLessonsIds($course_id)
 function studentCourseSessionInstallmentsIDs($course_id)
 {
     return  StudentSessionInstallment::where('course_id',$course_id)
-    ->where('student_id',auth('web')->user()->id)->pluck('access_until_session_id')->toArray();   
+    ->where('student_id',auth('web')->user()->id)->pluck('access_until_session_id')->toArray();
 }
 
 function studentInstallmentsCoursessIds()
@@ -920,7 +920,7 @@ function studentInstallmentsCoursessIds()
     {
         return [];
     }
-    
+
     return StudentSessionInstallment::where('student_id',auth('web')->user()->id)->pluck('course_id')->toArray();
 }
 
@@ -928,7 +928,7 @@ function checkIfInstallmentHasStudents($installment_id)
 {
     $installment = CourseSessionInstallment::find($installment_id);
     $course_session_id = $installment->course_session_id;
-    
+
     return StudentSessionInstallment::where('access_until_session_id',$course_session_id)->where('course_id',$installment->course_id)
     ->first();
 }

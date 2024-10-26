@@ -17,6 +17,10 @@ class ApiCurriculumItemResource extends JsonResource
     public function toArray($request)
     {
         $locale = App::getLocale();
+        $fullCourseSub = $this->course->isSubscriber('api');
+        if ($fullCourseSub) {
+            $isSub = (int)$fullCourseSub;
+        }
 
         $translation = collect($this->itemable->translations)
                 ->firstWhere('locale', $locale)
@@ -25,6 +29,7 @@ class ApiCurriculumItemResource extends JsonResource
         return [
             'id' => $this->itemable_id,
             'course_id' => $this->course_id,
+            'is_sub' => $isSub??0,
             'item_type' => config("constants.item_model_types.$this->itemable_type"),
             'order' => $this->order,
             config("constants.item_model_types.$this->itemable_type") => [
