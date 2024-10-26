@@ -22,7 +22,8 @@ class UpdateStudentRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('id');
+        $userId =   $this->user();
+
         return [
             'name'             => 'nullable|string',
             'email'            => [
