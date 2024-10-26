@@ -11,11 +11,13 @@ class CourseRepository extends MainRepository
     {
         parent::__construct(new Courses());
     }
-    public function getCourseByUserId($user,$id){
-        $course =  UserCourse::where('course_id',$id);
-            if($user){
-                $course->where('user_id',$user->id);
-            }
-            return $course->first();
+
+    public function getCourseByUserId($user, $id)
+    {
+        if ($user) {
+            return UserCourse::where('course_id', $id)->where('user_id', $user->id)->first();
+        }
+
+        return null;
     }
 }

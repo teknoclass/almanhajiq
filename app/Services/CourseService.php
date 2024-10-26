@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\Api\FilterRequest;
 use App\Models\Category;
 use App\Models\Courses;
+use App\Models\CourseSessionSubscription;
 use App\Models\UserCourse;
 use App\Repositories\CourseRepository;
 use Illuminate\Support\Facades\DB;
@@ -120,16 +121,22 @@ class CourseService extends MainService
 
     }
 
-    public function getById($id){
+    public function getById($id,$request){
         try {
+            $user = $request->attributes->get('user');
+
             $course = $this->courseRepository->findByIdWith($id,count:[
                 'students',
                 'groups as groups_count' => function($query) {
                     $query->select(DB::raw('COUNT(DISTINCT group_id)'));
                 },
                 'sessions']);
+            $isSub = $this->courseRepository->getCourseByUserId($user, $id)?->course;
+
             if ($course) {
                 $course->groups = $course->groups->unique('id');
+                $course->setAttribute('is_sub', (int)!is_null($isSub));
+
             }
             return $this->createResponse(
                 __('message.success'),
@@ -148,14 +155,15 @@ class CourseService extends MainService
 
     }
 
+
     public function getCourseByUserId($request,$id){
         try {
             $user = $request->attributes->get('user');
 
             $isSub = $this->courseRepository->getCourseByUserId($user,$id)?->course;
             $course = $this->courseRepository->findById($id);
-            if ($isSub){
-                $course->is_sub = 1;
+            if ($course){
+                $course->setAttribute('is_sub', (int)!is_null($isSub));
             }
 
             if (!$course) {

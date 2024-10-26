@@ -29,8 +29,7 @@ class ApiSingleCourseResource extends JsonResource
         $curriculumItems = $curriculumItems->merge(collect(new ApiSessionCollection($this->sessions->whereNull('group_id'))));
         $curriculumItems = $curriculumItems->merge(collect(new ApiCurriculumItemCollection($this->items)));
 
-
-        return [
+        $data =  [
             'id' => $this->id,
             'slider' => [
                ['type'=>'image','media' => imageUrl($this->image,'100x100')],
@@ -39,6 +38,8 @@ class ApiSingleCourseResource extends JsonResource
             ],
             'title' => $translation->title ?? $this->title,
             'teacher' => $this->lecturer->name,
+            'sessions_count' => count($this->sessions),
+            'groups_count' => count($this->groups),
             'can_subscribe_to_session' => $this->can_subscribe_to_session,
             'can_subscribe_to_session_group' => $this->can_subscribe_to_session_group,
             'open_installments' => $this->open_installments,
@@ -50,7 +51,9 @@ class ApiSingleCourseResource extends JsonResource
             'discount_price' => $this->priceDetails?->discount_price,
             'rate' => $this->rate,
             'curriculum_items' => $curriculumItems,
+            'is_sub' => $this->is_sub,
 
         ];
+        return $data;
     }
 }

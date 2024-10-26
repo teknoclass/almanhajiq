@@ -29,8 +29,10 @@ class StudentResource extends JsonResource
             'image'=> imageUrl($this->image,'100x100'),
             'mobile'=>$this->mobile,
             'country_code'=>$this->code_country,
-            'courses_count'=>count($this->courses),
-            'private_lessons_count'=>count($this->privateLessons),
+            'info'=>[
+                'courses_count'=>count($this->courses),
+                'private_lessons_count'=>count($this->privateLessons),
+            ],
             'country'=> isset($this->country)?collect($this->country['translations'])->firstWhere('locale', $locale??'en')->name??'':'',
         ];
         if ($this->token)

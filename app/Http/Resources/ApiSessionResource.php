@@ -19,6 +19,7 @@ class ApiSessionResource extends JsonResource
             'id' => $this->id,
             'course_id' => $this->course_id,
             'item_type' => 'session',
+            'is_sub' => $request->get('user')?(int)$this->canAccess($request->get('user')->id):0,
             'session'=>[
                 'group_id' => $this->group_id,
                 'price' => $this->price,

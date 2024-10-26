@@ -45,8 +45,8 @@ Route::group(['middleware' => 'language', 'prefix' => 'page'], function () {
 
 // Auth routes with sanctum and language middleware
 Route::middleware(['language', 'auth:sanctum'])->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/delete', [AuthController::class, 'deleteUser']);
+    Route::post('/user/logout', [AuthController::class, 'logout']);
+    Route::get('/user/delete', [AuthController::class, 'deleteUser']);
 });
 
 // Teacher registration routes with language middleware
@@ -74,11 +74,12 @@ Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('
 
 Route::group(['middleware' => 'language', 'prefix' => 'courses'], function () {
     Route::post('/filter', [CourseController::class, 'courseFilter'])->name('filter');
-    Route::get('/{id}', [CourseController::class, 'getCourse'])->name('singleCourse');
+    Route::get('/{id}', [CourseController::class, 'getCourse'])->name('singleCourse')->middleware(['check.sanctum.token']);
+    Route::get('/purchase-options/{id}', [CourseSessionsController::class, 'purchaseOptions'])->name('session_groups')->middleware(['check.sanctum.token']);
+
 });
 
 Route::group(['middleware' => 'language', 'prefix' => 'live-sessions'], function () {
-    Route::post('/groups/{id}', [CourseSessionsController::class, 'purchaseOptions'])->name('session_groups')->middleware('check.sanctum.token');
 });
 
 Route::get('/teacher/{id}', [TeacherController::class, 'findTeacherById'])->name('teacher')->middleware('language');

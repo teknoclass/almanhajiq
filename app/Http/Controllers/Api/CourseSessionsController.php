@@ -26,8 +26,8 @@ class CourseSessionsController  extends Controller
     }
 
     public function purchaseOptions(Request $request, $id){
-        $groups = $this->liveSessionService->getCourseSessionsGroups($request,$id);
-        $sessions = $this->liveSessionService->getCourseSessions($request,$id);
+        $groups = $this->liveSessionService->getCourseSessionsGroups($id);
+        $sessions = $this->liveSessionService->getCourseSessions($id);
         $course = $this->courseService->getCourseByUserId($request,$id);
         if (!$groups['status']) {
             $response = new ErrorResponse($groups['message'], Response::HTTP_BAD_REQUEST);
