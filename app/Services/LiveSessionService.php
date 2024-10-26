@@ -17,13 +17,9 @@ class LiveSessionService extends MainService
         $this->liveSessionRepository = $liveSessionRepository;
     }
 
-    public function getCourseSessionsGroups($request, $id)
+    public function getCourseSessionsGroups($id)
     {
-
-        $user = $request->attributes->get('user');
-
-
-        $groups = $this->liveSessionRepository->getCourseSessionsGroups($id,$user);
+        $groups = $this->liveSessionRepository->getCourseSessionsGroups($id);
 
         return $this->createResponse(
             __('message.success'),
@@ -32,13 +28,9 @@ class LiveSessionService extends MainService
         );
     }
 
-    public function getCourseSessions($request, $id)
+    public function getCourseSessions($id)
     {
-
-        $user = $request->attributes->get('user');
-
-        $sessions = $this->liveSessionRepository->getCourseSessions($id,$user);
-
+        $sessions = $this->liveSessionRepository->getCourseSessions($id);
 
         return $this->createResponse(
             __('message.success'),

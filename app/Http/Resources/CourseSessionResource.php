@@ -20,23 +20,11 @@ class CourseSessionResource extends JsonResource
             "title" => $this->title,
             "price" => $this->price,
             "time" => $this->time,
+            'is_sub' => $request->get('user')?(int)$this->canAccess($request->get('user')->id):0,
+
 
         ];
-        if ($this->subscription) {
-            $data['is_sub']       = 1;
-            $data['subscription'] = [
-                'id' => $this->subscription?->id,
-                'subscription_date' => $this->subscription?->subscription_date,
-                'status' => $this->subscription?->status,
-                'student_id' => $this->subscription?->student_id,
-                'course_session_group_id' => $this->subscription?->course_session_group_id,
-                'course_id' => $this->subscription?->course_id,
-            ];
-        }
-        else {
-            $data['is_sub'] = 0;
 
-        }
         return $data;
     }
 }

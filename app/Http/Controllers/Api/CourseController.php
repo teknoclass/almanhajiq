@@ -7,7 +7,7 @@ use App\Http\Requests\Api\FilterRequest;
 use App\Http\Resources\ApiCourseFilterCollection;
 use App\Http\Resources\ApiSingleCourseResource;
 use App\Http\Resources\TeacherCollection;
-use App\Http\Resources\TeacherProfileCollection;
+use Illuminate\Http\Request;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
 use App\Services\CourseService;
@@ -55,8 +55,9 @@ class CourseController extends Controller
         return response()->success($courses);
     }
 
-    public function getCourse($id){
-        $course  =  $this->courseService->getById($id);
+    public function getCourse($id,Request $request){
+        $course  =  $this->courseService->getById($id,$request);
+
         if (!$course['status']) {
             $response = new ErrorResponse($course['message'], Response::HTTP_BAD_REQUEST);
 

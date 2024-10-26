@@ -34,7 +34,7 @@ class ApiCourseResource extends JsonResource
             'is_sub'=>0
         ];
         if ($this->is_sub){
-            $data['is_sub']=$this->is_sub;
+            $data['is_sub']=1;
         }
         return $data;
     }

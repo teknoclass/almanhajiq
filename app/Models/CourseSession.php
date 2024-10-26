@@ -28,6 +28,13 @@ class CourseSession extends Model
         return $this->belongsTo(CourseSessionsGroup::class);
     }
 
+    public function canAccess($userId)
+    {
+        return DB::table('course_session_subscriptions')
+                 ->where('student_id', $userId)
+                 ->where('course_session_id', $this->id)
+                 ->exists();
+    }
     public function studentRequests()
     {
         return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','student');

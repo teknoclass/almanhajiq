@@ -15,6 +15,7 @@ class ApiGroupResource extends JsonResource
      */
     public function toArray($request)
     {
+
         return [
             'id' => $this->id,
             'item_type' => 'group',
@@ -22,6 +23,8 @@ class ApiGroupResource extends JsonResource
                 'id' => $this->id,
                 'title' => $this->title,
                 'items' => collect(new ApiSessionCollection($this->sessions)),
+                'is_sub' => $request->get('user')?(int)$this->canAccess($request->get('user')->id):0,
+
             ],
         ];
     }
