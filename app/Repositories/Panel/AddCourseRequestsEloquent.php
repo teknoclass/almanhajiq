@@ -72,9 +72,9 @@ class AddCourseRequestsEloquent
                          })
                          ->addColumn('status', function($row) {
                              $status = [
-                                 'pending' => ['title' => __('Under Review'), 'class' => 'badge bg-dark'],
-                                 'acceptable' => ['title' => __('Acceptable'), 'class' => 'badge bg-success'],
-                                 'unacceptable' => ['title' => __('Unacceptable'), 'class' => 'badge bg-danger'],
+                                 'pending' => ['title' => __('Under Review'), 'class' => 'badge bg-info badge-custom'],
+                                 'acceptable' => ['title' => __('Acceptable'), 'class' => 'badge bg-success badge-custom'],
+                                 'unacceptable' => ['title' => __('Unacceptable'), 'class' => 'badge bg-danger badge-custom'],
                              ];
 
                              return '<span class="label font-weight-bold label-lg ' . $status[$row->status]['class'] . ' label-inline">' . $status[$row->status]['title'] . '</span>';

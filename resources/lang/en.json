@@ -1057,7 +1057,6 @@
     "certificate_is_required": "Certificate is required",
     "And_We_will_mail_you_with_your_login_credintials_after_admin_confirmation": "And we will mail you with your login credentials after admin confirmation",
     "waiting_password": "If the password does not appear at sesson time, try refreshing the page",
-
     "interactive_educational_curricula": "Interactive educational curricula",
     "study_material": "Study Material",
     "form_submit_error": "Please fill all required inputs correctly.",
@@ -1111,7 +1110,10 @@
     "payment_cancelled_txt":"Your payment has been canceled. If you have any questions, please contact support.",
     "payment_failed":"Payment Failed",
     "payment_failed_txt":"Your payment has been Failed. If you have any questions, please contact support.",
-    "pay_bill":"Payment Process"
+    "pay_bill":"Payment Process",
+    "Under Review":"Under Review",
+    "Acceptable":"Accepted",
+    "Unacceptable":"Not Accepted"
 
 
 

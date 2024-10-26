@@ -111,7 +111,7 @@ $item = isset($item) ? $item: null;
                           class="code_counrty">
                            <input type="hidden" name="slug_country"
                              class="slug_country">
-                           <input
+                           <input style="padding-left: 50px;"
                               type="number" minlength="10" maxlength="10" name="mobile"
                               required placeholder="{{__('enter_mobile_number')}}"
                               class="form-control mobile-number"

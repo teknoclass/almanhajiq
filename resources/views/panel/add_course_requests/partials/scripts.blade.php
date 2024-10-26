@@ -27,13 +27,20 @@
     window.excel = "{{__('excel')}}";
     window.pageLength="{{__('pageLength')}}";
 
-    $('#status-filter').change(function () {
-        var selectedValue = $(this).val();
-        console.log(selectedValue);
+    $('#status-filter').on('change', function () {
+    var selectedValue = $(this).val();
+    console.log(selectedValue);
+    
+    // Check if `datatable` is defined and column exists to avoid errors
+    if (typeof datatable !== 'undefined' && datatable.column(3)) {
         if (selectedValue) {
             datatable.column(3).search(selectedValue).draw();
         } else {
             datatable.column(3).search('').draw();
         }
-    });
+    } else {
+        console.error("Datatable or column not found");
+    }
+});
+
 </script>

@@ -15,6 +15,16 @@
    ],
 ]
 @endphp
+<style>
+   .badge-custom {
+    border-radius: 0; 
+    padding: 0.5em 1em; 
+    display: inline-block; 
+    color:white;
+    border-radius: 20%;
+}
+
+</style>
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 
 <!--begin::Entry-->
@@ -52,12 +62,13 @@
             <!--end::Search Form-->
             <!--end: Search Form-->
             <!--begin: Datatable-->
-             <select id="status-filter" class="form-control">
+             <select id="status-filter" class="form-control " style="width: 300px;">
                  <option value="">{{ __('All Statuses') }}</option>
                  <option value="pending">{{ __('Under Review') }}</option>
                  <option value="acceptable">{{ __('Acceptable') }}</option>
                  <option value="unacceptable">{{ __('Unacceptable') }}</option>
              </select>
+             <br>
             <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
              <table class="table table-bordered data-table">
                  <thead>

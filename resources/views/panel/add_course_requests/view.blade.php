@@ -60,7 +60,11 @@ $breadcrumb_links=[
                                  {{__('the_trainer')}}
                              </td>
                              <td>
-                                 {{__($item->course->lecturer->name)}}
+                              @if($item->course && $item->course->lecturer)
+                                 {{__(@$item->course->lecturer->name)}}
+                              @else 
+                              ---
+                              @endif
                              </td>
                          </tr>
 

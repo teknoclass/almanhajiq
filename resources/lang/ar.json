@@ -144,7 +144,7 @@
     "message.operation_accomplished_successfully": "تمت العملية بنجاح",
     "message.teacher_request_sent": "تم تلقي طلبكم بنجاح. الرجاء الانتظار حتى يتم تقييم طبلكم من قبل الإدارة! ",
     "message.unexpected_error": "حدث خطأ غير متوقع",
-    "message.sorry_your_account_has_been_banned_please_check_with_the_admin": "اسف الحساب تم حظره يرجى التواصل مع الادارة",
+    "message.sorry_your_account_has_been_banned_please_check_with_the_admin": "عذرا الحساب تم حظره يرجى التواصل مع الادارة",
     "message.the_data_entered_does_not_match_our_records": "البيانات المدخلة غير متوافقة مع سجلاتنا",
     "message.invalid_token": "لا يمكنك تغير كلمة المرور , انتهت صلاحية الرابط",
 
@@ -1160,6 +1160,9 @@
     "payment_cancelled":"الغاء الدفع",
     "payment_failed":"فشل الدفع",
     "payment_failed_txt":" تم فشل عملية الدفع للمزيد من المعلومات تواصل مع الدعم الفنى للموقع",
-    "pay_bill":"عملية دفع"
+    "pay_bill":"عملية دفع",
+    "Under Review":"تحت المراجعة",
+    "Acceptable":"مقبول",
+    "Unacceptable":"غير مقبول"
 
 }
