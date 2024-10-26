@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 
 class ApiSessionResource extends JsonResource
 {
@@ -22,12 +23,25 @@ class ApiSessionResource extends JsonResource
         else {
             $isSub = $request->get('user') ? (int) $this->canAccess($request->get('user')->id) : 0;
         }
-
+        $join_url  = '';
+        if ($isSub==1 &&  $this->password!=null){
+            $join_url = URL::temporarySignedRoute(
+                'user.courses.live.joinLiveSession',
+                now()->addMinutes(5),
+                [
+                    'id' => $this->id,
+                    'userName' => $request->user()->name,
+                    'password' => $this->public_password
+                ]
+            );
+        }
         return [
             'id' => $this->id,
             'course_id' => $this->course_id,
             'item_type' => 'session',
             'is_sub' => $isSub,
+            'join_url' => $join_url,
+
             'session' => [
                 'group_id' => $this->group_id,
                 'price' => $this->price,

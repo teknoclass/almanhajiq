@@ -13,18 +13,20 @@ class CourseSessionResource extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
-
+        $fullCourseSub = $this->course->isSubscriber('api');
+        if ($fullCourseSub) {
+            $isSub = (int)$fullCourseSub;
+        }
+        else {
+            $isSub = $request->get('user') ? (int) $this->canAccess($request->get('user')->id) : 0;
+        }
         $data = [
             "id" => $this->id,
             "title" => $this->title,
             "price" => $this->price,
             "time" => $this->time,
-            'is_sub' => $request->get('user')?(int)$this->canAccess($request->get('user')->id):0,
-
-
+            'is_sub' => $isSub,
         ];
-
         return $data;
     }
 }
