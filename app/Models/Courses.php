@@ -408,11 +408,11 @@ class Courses extends Model
         return $this->hasMany('App\Models\UserCourse', 'course_id', 'id')->where('is_end', 1);
     }
 
-    public function isSubscriber()
+    public function isSubscriber($guard = 'web')
     {
-        if (checkUser('student')) {
+        if (checkUser('student',$guard)) {
             $item = UserCourse::select('id', 'user_id', 'course_id')
-                ->where([['user_id', getUser()->id],
+                ->where([['user_id', getUser($guard)->id],
                     ['course_id', $this->id]
                 ])
                 ->where('is_paid' , 1)

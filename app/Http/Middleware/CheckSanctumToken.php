@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class CheckSanctumToken
@@ -16,6 +17,7 @@ class CheckSanctumToken
 
             if ($user) {
                 $request->attributes->set('user', $user);
+                Auth::login($user);
             }
         }
 

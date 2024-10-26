@@ -55,8 +55,8 @@ class CourseController extends Controller
         return response()->success($courses);
     }
 
-    public function getCourse($id,Request $request){
-        $course  =  $this->courseService->getById($id,$request);
+    public function getCourse($id){
+        $course  =  $this->courseService->getById($id);
 
         if (!$course['status']) {
             $response = new ErrorResponse($course['message'], Response::HTTP_BAD_REQUEST);
