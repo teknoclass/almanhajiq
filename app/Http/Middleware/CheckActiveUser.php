@@ -22,7 +22,7 @@ class CheckActiveUser
 
 
         if ($user!='') {
-            if ($user->is_block==1) {
+            if ($user->is_block==1 || $user->is_validation == 0) {
                 Auth::guard('web')->logout();
                 return Redirect::to('/login');
             }

@@ -198,6 +198,16 @@ class AuthEloquent extends HelperEloquent
                     ];
             }
 
+            if (Auth('web')->user()->is_validation == 0) {
+
+                $this->guard()->logout();
+
+                return
+                    [
+                        'message' => __('message.sorry_your_account_has_been_deactivated_please_check_with_the_admin'),
+                        'status' => false,
+                    ];
+            }
 
             $device_token=$request->device_token;
             Auth::user()->update(['device_token'=>$device_token]);

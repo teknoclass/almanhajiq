@@ -5,7 +5,7 @@
     <div class="spinner-border  ml-2" style="display:none ;" role="status">
         <span class="sr-only">Loading...</span>
     </div>
-    <span class="px-2">
+    <span class="">
         {{$btn_submit_text}}
     </span>
 </button>

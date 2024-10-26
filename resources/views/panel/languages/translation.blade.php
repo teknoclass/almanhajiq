@@ -61,7 +61,8 @@ $item = isset($item) ? $item: null;
                                 <textarea class="form-control m-input update-text"
                                           name="values[]"
                                           data-key="{{@$key}}"
-                                          data-id="{{@$item->id}}" required>{{ $text_data[$key]??"" }}</textarea>
+                                          data-id="{{ @$item->id }}" required>{{ is_string($text_data[$key] ?? "") ? $text_data[$key] : "" }}</textarea>
+
                                         </div>
                                     </div>
                                 @endforeach

@@ -1163,6 +1163,7 @@
     "pay_bill":"عملية دفع",
     "Under Review":"تحت المراجعة",
     "Acceptable":"مقبول",
-    "Unacceptable":"غير مقبول"
+    "Unacceptable":"غير مقبول",
+    "message.sorry_your_account_has_been_deactivated_please_check_with_the_admin": "عذرا الحساب تم الغاء تفعيله يرجى التواصل مع الادارة"
 
 }

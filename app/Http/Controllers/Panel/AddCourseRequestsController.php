@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Panel\AddCourseRequestsEloquent;
 use Illuminate\Http\Request;
 use App\Http\Requests\Panel\JoinAsTeacherRequestsRequest;
+use App\Models\{User,Courses};
 
 class AddCourseRequestsController extends Controller
 {
@@ -22,8 +23,10 @@ class AddCourseRequestsController extends Controller
 
     public function index(Request $request) {
 
+        $data['courses'] = Courses::select('id')->with('translations:courses_id,title,locale')->get();
+        $data['lecturers'] = User::where('role','lecturer')->select('id','name')->get();
 
-       return view('panel.add_course_requests.all');
+       return view('panel.add_course_requests.all',$data);
     }
 
 

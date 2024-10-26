@@ -62,12 +62,26 @@
             <!--end::Search Form-->
             <!--end: Search Form-->
             <!--begin: Datatable-->
-             <select id="status-filter" class="form-control " style="width: 300px;">
-                 <option value="">{{ __('All Statuses') }}</option>
+            <div class="row">
+             <select id="status-filter" class="form-control col-3" style="width: 300px;margin:5px">
+                 <option value="">{{ __('status') }}</option>
                  <option value="pending">{{ __('Under Review') }}</option>
                  <option value="acceptable">{{ __('Acceptable') }}</option>
                  <option value="unacceptable">{{ __('Unacceptable') }}</option>
              </select>
+             <!-- <select id="lecturer-filter" class="form-control col-3" style="width: 300px;margin:5px">
+                 <option value="">{{ __('lecturer') }}</option>
+                 @foreach($lecturers as $lecturer)
+                     <option value="{{$lecturer->name}}">{{$lecturer->name}}</option>
+                 @endforeach
+             </select>
+             <select id="course-filter" class="form-control col-3" style="width: 300px;margin:5px">
+                 <option value="">{{ __('course') }}</option>
+                 @foreach($courses as $course)
+                     <option value="{{$course->title}}">{{$course->title}}</option>
+                 @endforeach
+             </select> -->
+             </div>
              <br>
             <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
              <table class="table table-bordered data-table">
