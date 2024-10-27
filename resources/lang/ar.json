@@ -1167,7 +1167,16 @@
     "message.sorry_your_account_has_been_deactivated_please_check_with_the_admin": "عذرا الحساب تم الغاء تفعيله يرجى التواصل مع الادارة",
     "choose_level":"اختر الفصل الدراسي",
     "choose_year":"اختر السنة الدراسية",
-    "choose_subject":"اختر الدورة"
+    "choose_subject":"اختر الدورة",
+    "lecturer_statistics":"الاحصائيات الخاصة بالمعلم",
+    "course_by_him":"دور يقدمها",
+    "minutes_done":"دقائق تمت",
+    "when_founded":"متى تأسس",
+    "our_vision":"الرؤية",
+    "our_exports":"مخرجاتنا",
+    "ar":"العربية",
+    "en":"الانجليزية",
+    "about_cards":"بيانات اخرى  "
 
 
 }

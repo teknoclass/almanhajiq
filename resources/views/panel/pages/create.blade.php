@@ -93,7 +93,53 @@
                                         </div>
 
                                     @endforeach
-
+                                    <br>
+                                        <h3 class="text-center">{{__('when_founded')}}, {{__('our_vision')}} , {{__('our_exports')}}</h3>
+                                    <hr>
+                                    @if(isset($item) && $item->sulg == "about")
+                                     <div class="form-group">
+                                            <label>{{__('when_founded')}} ({{__('ar')}}) <span class="text-danger">*</span></label>
+                                            <textarea type="text" name="when_founded_ar"
+                                                   class="form-control tinymce  " required
+                                                   value="{{@$settings->valueOf('when_founded_ar')}}"
+                                                   >{!!@$settings->valueOf('when_founded_ar')!!}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                            <label>{{__('when_founded')}} ({{__('en')}}) <span class="text-danger">*</span></label>
+                                            <textarea type="text" name="when_founded_en" required
+                                                   class="form-control tinymce  "
+                                                   value="{{@$settings->valueOf('when_founded_en')}}"
+                                                   >{!!@$settings->valueOf('when_founded_en')!!}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                            <label>{{__('our_vision')}} ({{__('ar')}}) <span class="text-danger">*</span></label>
+                                            <textarea type="text" name="our_vision_ar" required
+                                                 class="form-control tinymce  "
+                                                   value="{{@$settings->valueOf('our_vision_ar')}}"
+                                                   >{!!@$settings->valueOf('our_vision_ar')!!}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                            <label>{{__('our_vision')}} ({{__('en')}}) <span class="text-danger">*</span></label>
+                                            <textarea type="text" name="our_vision_en" required
+                                                 class="form-control tinymce  "
+                                                   value="{{@$settings->valueOf('our_vision_en')}}"
+                                                   >{!!@$settings->valueOf('our_vision_en')!!}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                            <label>{{__('our_exports')}} ({{__('ar')}}) <span class="text-danger">*</span></label>
+                                            <textarea type="text" name="our_exports_ar" required
+                                                  class="form-control tinymce  "
+                                                   value="{{@$settings->valueOf('our_exports_ar')}}"
+                                                   >{!!@$settings->valueOf('our_exports_ar')!!}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                            <label>{{__('our_exports')}} ({{__('en')}}) <span class="text-danger">*</span></label>
+                                            <textarea type="text" name="our_exports_en" required
+                                                 class="form-control tinymce  "
+                                                   value="{{@$settings->valueOf('our_exports_en')}}"
+                                                   >{!!@$settings->valueOf('our_exports_en')!!}</textarea>
+                                    </div>
+                                        @endif
 
                                 </div>
 

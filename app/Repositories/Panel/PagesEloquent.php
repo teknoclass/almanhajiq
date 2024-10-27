@@ -5,6 +5,7 @@ namespace App\Repositories\Panel;
 use App\Models\Pages;
 use DataTables;
 use Illuminate\Support\Facades\DB;
+use App\Models\Setting;
 
 class PagesEloquent
 {
@@ -60,11 +61,23 @@ class PagesEloquent
         DB::beginTransaction();
         try {
             $page = Pages::updateOrCreate(['id' => $id], $request->all())->createTranslation($request);
+            //about another info
+            if($page->sulg == "about")
+            {
+                Setting::updateOrCreate(['key' => 'when_founded_ar'],['value' => $request->when_founded_ar]);
+                Setting::updateOrCreate(['key' => 'when_founded_en'],['value' => $request->when_founded_en]);
+                Setting::updateOrCreate(['key' => 'our_vision_ar'],['value' => $request->our_vision_ar]);
+                Setting::updateOrCreate(['key' => 'our_vision_en'],['value' => $request->our_vision_en]);
+                Setting::updateOrCreate(['key' => 'our_exports_ar'],['value' => $request->our_exports_ar]);
+                Setting::updateOrCreate(['key' => 'our_exports_en'],['value' => $request->our_exports_en]);
+            }
+
             DB::commit();
             $message =__('message_done');
             $status = true;
         } catch (\Exception $e) {
-            $message =__('message_error');
+            // $message =__('message_error');
+            $message = $e->getMessage();
             $status = false;
             DB::rollback();
        }
