@@ -1113,7 +1113,10 @@
     "pay_bill":"Payment Process",
     "Under Review":"Under Review",
     "Acceptable":"Accepted",
-    "Unacceptable":"Not Accepted"
+    "Unacceptable":"Not Accepted",
+    "choose_level":"Choose Level",
+    "choose_year":"Choose Year",
+    "choose_subject":"Choose Subject"
 
 
 

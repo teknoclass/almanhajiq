@@ -75,6 +75,8 @@ Route::group(
         Route::get('/live',     [FrontHomeController::class, 'liveCourse'])->name('live');
         Route::get('/text',     [FrontHomeController::class, 'textCourse'])->name('text');
         // ----
+        Route::get('/get-subjects/{gradeLevel}', [FrontHomeController::class, 'getSubjects']);
+        Route::get('/get-topics/{subject}', [FrontHomeController::class, 'getTopics']);
     });
 
     // packages

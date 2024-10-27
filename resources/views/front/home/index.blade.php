@@ -18,9 +18,9 @@
             'our_teachers'      => 'teachers',
             'our_service'       => 'services',
             'students_opinions' => 'testimonials',
-            'our_partner'       => 'partners',
-            'our_messages'      => 'messages',
-            'our_teams'         => 'teams',
+            //'our_partner'       => 'partners',
+            //'our_messages'      => 'messages',
+            //'our_teams'         => 'teams',
         ];
 
         //$sectionData = collect(@$section_settings)->where('section_key', 'statistics')->first();
@@ -32,7 +32,7 @@
 
     @if (@$section_settings)
     @foreach ($section_settings as $section)
-        @if (@$section['is_active'] === 1)
+        @if (@$section['is_active'] === 1 && isset($sectionHTML[$section['section_key']]) )
         @include('front.home.sections.'.$sectionHTML[$section['section_key']])
         @endif
     @endforeach
