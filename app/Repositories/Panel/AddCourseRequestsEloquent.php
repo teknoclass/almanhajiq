@@ -25,41 +25,7 @@ class AddCourseRequestsEloquent
                                            ->where('courses_translations.locale', app()->getLocale());
                                   })
                                   ->leftJoin('users', 'courses.user_id', '=', 'users.id');
-
-        // Apply search filtering
-        // $keyword = request()->get('search')['value'];
-        // if ($keyword) {
-        //     $query->where(function($query) use ($keyword) {
-        //         $query->where('courses_translations.title', 'LIKE', "%{$keyword}%")
-        //               ->orWhere(DB::raw('DATE_FORMAT(add_course_requests.created_at, "%Y-%m-%d")'), 'LIKE', "%{$keyword}%")
-        //               ->orWhere('users.name', 'LIKE', "%{$keyword}%");
-        //     });
-        // }
-        // if ($status = request()->get('status')) {
-        //     Log::alert($status);
-        //     $query->where('add_course_requests.status', $status);
-        // }
-        // Apply sorting
-        // if ($order = request()->get('order')) {
-        //     $columnIndex = $order[0]['column'];
-        //     $direction   = $order[0]['dir'];
-        //     $columns     = [
-        //         'add_course_requests.id', // Column index 0
-        //         'course_title',
-        //         'lecturer_name',
-        //         'lecturer_name',
-        //         'add_course_requests.status',
-        //     ];
-
-        //     if (isset($columns[$columnIndex]) && $columns[$columnIndex] !== 'add_course_requests.id') {
-        //         $query->orderBy($columns[$columnIndex], $direction);
-        //     }
-        // }
-        // else {
-        //     $query->orderByDesc('add_course_requests.created_at');
-        // }
-
-        return Datatables::of($query)
+                        return Datatables::of($query)
                          ->addIndexColumn()
                          ->filter(function($query) {
                             $keyword = request()->get('search')['value'];
@@ -68,10 +34,9 @@ class AddCourseRequestsEloquent
 
                                 $query->where(function($query) use ($keyword) {
                                     $query->where('add_course_requests.status', 'LIKE', "%{$keyword}%")
-                                        //   ->orWhere('email', 'LIKE', "%{$keyword}%")
-                                        //   ->orWhere('role', 'LIKE', "%{$keyword}%")
-                                        //   ->orWhere('role', 'LIKE', "%{$keyword}%")
-                                          ->orWhere(DB::raw('DATE_FORMAT(add_course_requests.created_at, "%Y-%m-%d ")'), 'LIKE', "%{$keyword}%");
+                                //    ->orWhereRelation('courses_id',$keyword)
+                                //    ->orWhereRelation('courses_id',$keyword)
+                                    ->orWhere(DB::raw('DATE_FORMAT(add_course_requests.created_at, "%Y-%m-%d ")'), 'LIKE', "%{$keyword}%");
                                 });
                             }
                         })

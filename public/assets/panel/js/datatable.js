@@ -17,6 +17,7 @@ var KTDatatableRemoteAjaxDemo = function () {
             processing: true,
             serverSide: true,
             paging: true,
+            ordering: false, 
             dom: 'Blfrtip',
             buttons: [
                 {

@@ -30,7 +30,8 @@ $item = isset($item) ? $item: null;
    'title'=>$title_page,
    'link'=>'#',
    ],
-   ]
+   ];
+
    @endphp
 
 
@@ -107,9 +108,8 @@ $item = isset($item) ? $item: null;
                                     <span class="text-danger"></span></label>
 
                                   <div class="">
-                           <input type="hidden" name="code_country"
-                          class="code_counrty">
-                           <input type="hidden" name="slug_country"
+                           <input type="hidden" name="code_country" class="code_country"   value="{{@$item->code_country}}">
+                           <input type="hidden" name="slug_country"   value="{{@$item->slug_country}}"
                              class="slug_country">
                            <input style="padding-left: 50px;"
                               type="number" minlength="10" maxlength="10" name="mobile"
@@ -523,11 +523,22 @@ $item = isset($item) ? $item: null;
 
       window.initialCountry="{{@$item->slug_country?@$item->slug_country :defaultCountrySlug()}}"
 
+      $( document ).ready(function() {
+         var input = document.querySelector("#phone")
+         input.val("{{$item->mobile}}");
+      });
    </script>
 
      @include('panel.components.mobile_number_script')
 
-
+<script>
+     $( document ).ready(function() {
+         setTimeout(function(){
+            $("#phone").val("{{$item->mobile}}");
+         },1000)
+ 
+      });
+   </script>
    @endpush
 
    @stop

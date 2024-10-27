@@ -33,7 +33,7 @@
                     'link' => route('panel.home'),
                 ],
                 [
-                    'title' => 'الصور ',
+                    'title' => __('certificate_templates'),
                     'link' => route('panel.certificateTemplates.all.index'),
                 ],
                 [
@@ -45,7 +45,7 @@
         <div class="container">
             @include('panel.layouts.breadcrumb', [
                 'breadcrumb_links' => $breadcrumb_links,
-                'title_page' => 'الصور ',
+                'title_page' => __('certificate_templates')
             ])
         </div>
         <!--begin::Entry-->

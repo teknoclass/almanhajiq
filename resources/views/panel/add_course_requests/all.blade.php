@@ -23,7 +23,9 @@
     color:white;
     border-radius: 20%;
 }
-
+.dataTables_filter{
+   display: none;
+}
 </style>
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 
@@ -72,13 +74,13 @@
              <!-- <select id="lecturer-filter" class="form-control col-3" style="width: 300px;margin:5px">
                  <option value="">{{ __('lecturer') }}</option>
                  @foreach($lecturers as $lecturer)
-                     <option value="{{$lecturer->name}}">{{$lecturer->name}}</option>
+                     <option value="{{$lecturer->id}}">{{$lecturer->name}}</option>
                  @endforeach
              </select>
              <select id="course-filter" class="form-control col-3" style="width: 300px;margin:5px">
                  <option value="">{{ __('course') }}</option>
                  @foreach($courses as $course)
-                     <option value="{{$course->title}}">{{$course->title}}</option>
+                     <option value="{{$course->id}}">{{$course->title}}</option>
                  @endforeach
              </select> -->
              </div>

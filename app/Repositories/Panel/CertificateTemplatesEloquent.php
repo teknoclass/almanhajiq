@@ -264,7 +264,7 @@ class CertificateTemplatesEloquent
                 $left = (int)($coordinates->left - $text_center);
                 $top = (int)((float)str_replace('px', '', (string) $coordinates->top) + 30);
                 
-                imagettftext($our_image, $size, $angle, $left, $top, $color, $font_path, $text);
+                imagettftext($our_image, $size, $angle, $left, $top, (int) $color, $font_path, $text);
             }
 
             $name = time() . ".jpeg";
