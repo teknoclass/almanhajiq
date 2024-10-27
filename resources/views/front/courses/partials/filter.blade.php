@@ -21,7 +21,7 @@
                     <div class="row">
 
                     <select id="gradeLevel" class="form-control col-4 filtergrade_level_id" style="max-width:300px;margin:10px" name="grade_level_id">
-                        <option disabled readonly>{{__('choose_level')}}</option>
+                        <option selected disabled readonly>{{__('choose_level')}}</option>
                         @foreach ($grade_levels as $i => $level)
                         <option value="{{$level->id}}">{{$level->name}}</option>
                         @endforeach

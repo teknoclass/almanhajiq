@@ -174,7 +174,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-6">
-                                            <label>{{ __('grade_level') }}
+                                            <label>{{ __('grade_levels') }}
                                                 <span class="text-danger">*</span></label>
                                             <select id="grade_level_id" name="grade_level_id" class="form-control" required>
                                                 <option value="" selected disabled>{{ __('level_select') }}</option>
@@ -534,7 +534,7 @@
                                                 data-kt-image-input-action="remove"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-dismiss="click"
-                                                title=""{{__('cancel')}}"">
+                                                title="{{__('cancel')}}">
 
                                             <i class="fa fa-ban fs-3"></i>
 

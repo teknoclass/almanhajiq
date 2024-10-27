@@ -33,6 +33,8 @@
                </div>
            </div>
        </div>
+       <br>
+
        <div id="sessionInputsContainer">
 
        </div>
@@ -49,6 +51,7 @@
                </thead>
                <tbody>
                @foreach ($item['sessions'] as $index => $session)
+               <br>
                    <tr>
                        <td >
                            <input type="text" class="form-control session_day" name="session_day_display_{{ $index }}" value="{{ __($session->day) }}" placeholder="{{ __($session->day) }}" readonly>

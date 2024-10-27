@@ -525,7 +525,7 @@ $item = isset($item) ? $item: null;
 
       $( document ).ready(function() {
          var input = document.querySelector("#phone")
-         input.val("{{$item->mobile}}");
+         input.val("{{@$item->mobile}}");
       });
    </script>
 
@@ -534,7 +534,7 @@ $item = isset($item) ? $item: null;
 <script>
      $( document ).ready(function() {
          setTimeout(function(){
-            $("#phone").val("{{$item->mobile}}");
+            $("#phone").val("{{@$item->mobile}}");
          },1000)
  
       });

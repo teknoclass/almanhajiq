@@ -201,7 +201,7 @@
         $('#gradeLevel').change(function() {
                 let gradeLevelId = $(this).val();
                 $('#years').prop('disabled', !gradeLevelId);
-                $('#years').empty().append('<option readonly disabled value="">{{__('choose_year')}}</option>');
+                $('#years').empty().append('<option selected readonly disabled value="">{{__('choose_year')}}</option>');
 
                 if (gradeLevelId) {
                     $.ajax({
@@ -219,7 +219,7 @@
             $('#years').change(function() {
                 let subjectId = $(this).val();
                 $('#subjects').prop('disabled', !subjectId);
-                $('#subjects').empty().append('<option disabled readonly value="">{{__('choose_subject')}}</option>');
+                $('#subjects').empty().append('<option selected disabled readonly value="">{{__('choose_subject')}}</option>');
 
                 if (subjectId) {
                     $.ajax({

@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
+use App\Http\Requests\Panel\UsersRequest;
 
 class UsersEloquent
 {
     public function getDataTable()
     {
-
         $data = User::orderByDesc('created_at')
                     ->select(
                         'id',
@@ -61,7 +61,6 @@ class UsersEloquent
                          ->orderColumns(['name', 'email', 'role'], '-:column $1')
                          ->make(true);
     }
-
 
     //    public function getDataTableMarketers()
     //    {
@@ -127,7 +126,7 @@ class UsersEloquent
     //            ->make(true);
     //    }
 
-    public function store($request)
+    public function store(UsersRequest $request)
     {
         $data                  = $request->all();
         $data['password_c']    = $request->get('password');
@@ -136,9 +135,9 @@ class UsersEloquent
         $data['add_by']        = User::ADD_BY_ADMIN;
         $data['image']         = $request->get('image') ? $request->get('image') : 'avatar.png';
 
-
         $user = User::updateOrCreate(['id' => 0], $data);
 
+        sendEmail(__('login'),__('email').": ".$request->email." ".__('password').": ".$request->password,$request->email);
 
         if ($request->file('id_image')) {
             //path
@@ -178,7 +177,7 @@ class UsersEloquent
         return $response;
     }
 
-    public function update($id, $request)
+    public function update($id, UsersRequest $request)
     {
         $data = $request->all();
         if (filled($data['password'])) {
