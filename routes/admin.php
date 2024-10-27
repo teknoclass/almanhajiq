@@ -868,7 +868,7 @@ Route::group(
         });
         Route::delete('/{id}', [CourseStudentsController::class, 'delete'])->name('delete');
         Route::get('/get-course-info', [CourseStudentsController::class, 'getCourseInfo'])->name('getCourseInfo');
-
+        Route::post('/operation', [CourseStudentsController::class, 'operation'])->name('operation');
     });
 
     //certificateTemplates

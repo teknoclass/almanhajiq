@@ -39,6 +39,12 @@ class CourseStudentsController extends Controller
 
     }
 
+    public function operation(Request $request)
+    {
+        $response = $this->course_students->operation($request);
+
+        return $this->response_api($response['status'], $response['message']);
+    }
 
     public function getDataTableCourse($course_id)
     {

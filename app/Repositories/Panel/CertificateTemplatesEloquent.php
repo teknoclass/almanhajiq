@@ -148,7 +148,7 @@ class CertificateTemplatesEloquent
         }
     }
 
-    private function saveTexts(int $certificate_template_id, Request $request): void
+    private function saveTexts($certificate_template_id, Request $request): void
     {
         CertificateTemplateTexts::where('certificate_template_id', $certificate_template_id)->delete();
 
@@ -262,9 +262,8 @@ class CertificateTemplatesEloquent
 
                 $text_center = $textwidth / 2;
                 $left = (int)($coordinates->left - $text_center);
-                $top = (int)((float)str_replace('px', '', $coordinates->top) + 30);
-
-
+                $top = (int)((float)str_replace('px', '', (string) $coordinates->top) + 30);
+                
                 imagettftext($our_image, $size, $angle, $left, $top, $color, $font_path, $text);
             }
 
