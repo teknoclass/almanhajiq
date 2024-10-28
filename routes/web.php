@@ -24,6 +24,7 @@ use App\Http\Controllers\Front\User\Lecturer\CoursesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\User\PaymentController;
 use App\Http\Controllers\Front\User\PaymentCallBackController;
+use App\Http\Controllers\LevelsControllers;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,6 +60,10 @@ Route::group(
     Route::group(['prefix' => '/lecturers', 'as' => 'lecturers.'], function () {
         Route::get('/', [LecturersController::class, 'index'])->name('index');
     });
+
+    //levels
+    Route::get('get-levels/{id}', [LevelsControllers::class, 'getLevels']);
+    Route::get('get-sub-levels/{id}', [LevelsControllers::class, 'getSubLevels']);
 
     // private lessons
     /*Route::group(['prefix' => '/private-lessons', 'as' => 'private_lessons.'], function () {
@@ -236,7 +241,13 @@ Route::get('/migrate',function(){
 
         //payments
         "2024_10_23_194948_make_user_type_string_on_transactios_table.php",
-        "2024_10_24_135654_add_order_id_to_transactios_table.php"
+        "2024_10_24_135654_add_order_id_to_transactios_table.php",
+
+        //quizes
+        "2024_10_28_215817_change_quiz_date_to_date_time_on_course_quizes_table.php",
+
+        //assignments
+        "2024_10_28_215959_change_assignment_date_to_date_time_on_course_assignments_table.php"
 
     ];
 

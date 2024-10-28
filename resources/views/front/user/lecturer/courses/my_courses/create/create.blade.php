@@ -140,7 +140,18 @@
                                             @endforeach
                                         </select>
                                     </div>
-
+                                    <div class="form-group col-6">
+                                            <label>{{ __('grade_level') }}
+                                                <span class="text-danger">*</span></label>
+                                            <select id="grade_level_id"  name="grade_level_id" class="form-control" required>
+                                                <option value="" selected disabled>{{ __('level_select') }}</option>
+                                                @foreach ($grade_levels as $grade_level)
+                                                    <option data-child="{{ json_encode($grade_level->getSubChildren()) }}" value="{{ $grade_level->id }}" {{ old('grade_level_id', @$item->grade_level_id) == $grade_level->id ? 'selected' : '' }}>
+                                                        {{ $grade_level->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     <div class="form-group col-6">
                                         <label>{{ __('level') }}
                                             <span class="text-danger">*</span></label>
@@ -154,18 +165,7 @@
                                         </select>
                                     </div>
 
-                                        <div class="form-group col-6">
-                                            <label>{{ __('grade_level') }}
-                                                <span class="text-danger">*</span></label>
-                                            <select id="grade_level_id"  name="grade_level_id" class="form-control" required>
-                                                <option value="" selected disabled>{{ __('level_select') }}</option>
-                                                @foreach ($grade_levels as $grade_level)
-                                                    <option data-child="{{ json_encode($grade_level->getSubChildren()) }}" value="{{ $grade_level->id }}" {{ old('grade_level_id', @$item->grade_level_id) == $grade_level->id ? 'selected' : '' }}>
-                                                        {{ $grade_level->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                       
                                         <div class="form-group col-6">
                                             <label>{{ __('grade_sub_level') }}
                                                 <span class="text-danger">*</span></label>
@@ -479,6 +479,27 @@
                     $('.link').show();
                 }
             }
+
+            $(document).ready(function(){
+                $('#level_id').change(function() {
+                    let id = $(this).val();
+                    $('#sub_level_id').prop('disabled', !id);
+                    $('#sub_level_id').empty().append('<option selected readonly disabled value="">{{__('grade_sub_level')}}</option>');
+
+                        if (id) {
+                            $.ajax({
+                                url: `/get-sub-levels/${id}`,
+                                type: 'GET',
+                                success: function(response) {
+                                    $('#sub_level_id').empty();
+                                    response.forEach(function(response) {
+                                        $('#sub_level_id').append(`<option value="${response.id}">${response.name}</option>`);
+                                    });
+                                }
+                            });
+                        }
+                    });
+            });
         </script>
     @endpush
 @endsection
