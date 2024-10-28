@@ -23,12 +23,19 @@ class ApiSingleCourseResource extends JsonResource
             ?? collect($this->translations)
                 ->firstWhere('locale', 'en');
 
+        $fullCourseSub = $this->isSubscriber('api');
 
         $curriculumItems = new Collection();
         $curriculumItems = $curriculumItems->merge(collect(new ApiGroupCollection($this->groups)));
         $curriculumItems = $curriculumItems->merge(collect(new ApiSessionCollection($this->sessions->whereNull('group_id'))));
         $curriculumItems = $curriculumItems->merge(collect(new ApiCurriculumItemCollection($this->items)));
+        $sessionDays = $this->sessions->pluck('day', 'time')->toArray();
 
+        $formattedDays = implode(',', array_map(
+            fn($time, $day) => "{$day} - {$time}",
+            array_keys($sessionDays),
+            array_values($sessionDays)
+        ));
         $data =  [
             'id' => $this->id,
             'slider' => [
@@ -54,13 +61,16 @@ class ApiSingleCourseResource extends JsonResource
 
             'duration' => $this->getDurationInMonths(),
             'max_students' => 10,
-            'session_days' =>  $this->sessions->pluck('time','day'),
+            'session_days' =>  [
+                'days'=>$formattedDays
+            ],
             'description' => $translation->description ?? $this->description,
             'category' => collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name ?? $this->category?->title,
             'price' => $this->priceDetails?->price??0,
             'discount_price' => $this->priceDetails?->discount_price??0,
             'rate' => $this->rate,
             'curriculum_items' => $curriculumItems,
+            'is_bought' => $fullCourseSub,
 
         ];
         return $data;

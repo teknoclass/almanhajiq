@@ -26,12 +26,15 @@ class ApiCurriculumItemResource extends JsonResource
                 ->firstWhere('locale', $locale)
             ?? collect($this->translations)
                 ->firstWhere('locale', 'en');
+
         return [
             'id' => $this->itemable_id,
             'course_id' => $this->course_id,
             'is_sub' => $isSub??0,
             'item_type' => config("constants.item_model_types.$this->itemable_type"),
             'order' => $this->order,
+            'start_date' => $this->itemable->start_date,
+            'end_date' => $this->itemable->start_date,
             config("constants.item_model_types.$this->itemable_type") => [
                 'order' => $this->order,
                 'teacher' => $this->itemable->creator?->name,
