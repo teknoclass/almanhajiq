@@ -26,6 +26,7 @@ class CourseSessionGroupResource extends JsonResource
             "price" => $this->price,
             "sessions_count" => count($this->sessions),
             'is_sub' => $isSub,
+            'sessions' => collect(new CourseSessionCollection($this->sessions)),
 
 
         ];

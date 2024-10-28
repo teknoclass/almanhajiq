@@ -25,6 +25,7 @@ class CourseSessionResource extends JsonResource
             "title" => $this->title,
             "price" => $this->price,
             "time" => $this->time,
+            'date' => $this->date,
             'is_sub' => $isSub,
         ];
         return $data;
