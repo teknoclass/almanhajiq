@@ -247,7 +247,8 @@ Route::get('/migrate',function(){
         "2024_10_28_215817_change_quiz_date_to_date_time_on_course_quizes_table.php",
 
         //assignments
-        "2024_10_28_215959_change_assignment_date_to_date_time_on_course_assignments_table.php"
+        "2024_10_28_215959_change_assignment_date_to_date_time_on_course_assignments_table.php",
+        "2024_10_30_011604_add_dob_column_to_join_as_teacher_requests_table.php"
 
     ];
 

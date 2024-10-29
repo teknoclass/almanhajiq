@@ -119,6 +119,11 @@
                                     </div>
 
                                     <div class="form-group d-none gender-div">
+                                        <h3>{{ __('dob') }}</h3>
+                                        <input name="dob" id="" type="date" class="form-control">
+                                    </div>
+
+                                    <div class="form-group d-none gender-div">
                                         <h3>{{ __('about') }}</h3>
                                         <textarea name="about" id="" cols="30" rows="3" class="form-control"></textarea>
                                     </div>

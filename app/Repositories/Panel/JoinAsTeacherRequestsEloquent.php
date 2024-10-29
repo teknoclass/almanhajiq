@@ -114,6 +114,8 @@ class JoinAsTeacherRequestsEloquent
                     'is_validation' => 1,
                     'validation_at' => now(),
                     'add_by'        => User::ADD_BY_ADMIN,
+                    'gender'        => $item->gender,
+                    'dob'           => $item->dob,
                 ]);
 
                 $title = 'نتيجة تقييم طلب الانضمام كمدرب';

@@ -51,15 +51,15 @@
                 var status = {
                     'pending': {
                         'title': '{{__('underreview')}}',
-                        'class': 'badge bg-dark',
+                        'class': 'badge bg-warning badge-custom',
                     },
                     'acceptable': {
                         'title': '{{__('acceptable')}}',
-                        'class': 'badge bg-success',
+                        'class': 'badge bg-success badge-custom',
                     },
                     'unacceptable': {
                         'title': '{{__('unacceptable')}}',
-                        'class': 'badge bg-danger',
+                        'class': 'badge bg-danger badge-custom',
                     },
                 };
                 return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';

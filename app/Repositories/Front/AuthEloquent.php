@@ -48,7 +48,7 @@ class AuthEloquent extends HelperEloquent
             ];
             return $response;
         }
-        // dd($request->all());
+      
         try {
             DB::beginTransaction();
             $password           = substr(sprintf("%06d", mt_rand(1, 999999)), 0, 6);
@@ -60,6 +60,7 @@ class AuthEloquent extends HelperEloquent
             if($request->role == User::LECTURER)
             {
                 $data['material_id']       = 1;
+                $data['dob']               = $request->dob;
                 $join_request =  JoinAsTeacherRequests::updateOrCreate(['id' => 0], $data);
                 if ($request->file('id_image')) {
                     $custome_path     = 'join_as_teacher_requests/' . $join_request->id . '/id_image';

@@ -990,7 +990,9 @@
     "choose_pls":"Choose Please",
     "can_subscribe_to_session_group":"Can Subscribe to Session Group",
     "can_subscribe_to_session":"Can Subscribe to Single Session",
-    "message.sorry_your_account_has_been_deactivated_please_check_with_the_admin":"Sorry, your account has been de activated. Please check with the admin"
+    "message.sorry_your_account_has_been_deactivated_please_check_with_the_admin":"Sorry, your account has been de activated. Please check with the admin",
+    "dob":"Date of birth"
+
     
 
 

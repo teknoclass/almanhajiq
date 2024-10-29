@@ -22,8 +22,7 @@ class CertificateIssuanceEloquent
     {
         $certificateTemplate = CertificateTemplates::findOrFail($templateId);
         $templateTexts = $certificateTemplate->texts;
-        $imagePath = storage_path("app/public/uploads/images/" . $certificateTemplate->background);
-        
+        $imagePath = storage_path("app/uploads/images/" . $certificateTemplate->background);
         $image = $this->createImageFromPath($imagePath);
 
         foreach ($templateTexts as $templateText) {
@@ -32,23 +31,20 @@ class CertificateIssuanceEloquent
             $color = hexToRgb($templateText->font_color_css);
             $allocatedColor = imagecolorallocate($image, $color['r'], $color['g'], $color['b']);
 
-            $width = $coordinates->width ?? 100;
+            $width = $coordinates->width;
             $left = $coordinates->left;
             $top = (str_replace('px', '', $coordinates->top));
 
-            if(! in_array($templateText->type,["qrcode_location"]) )
-            {
-                $this->writeTextOnImage(
-                    $image,
-                    $this->fontPath,
-                    $text,
-                    $left,
-                    $top + 30,
-                    $left + $width,
-                    $top + 100,
-                    $allocatedColor
-                );
-            }
+            $this->writeTextOnImage(
+                $image,
+                $this->fontPath,
+                $text,
+                $left,
+                $top + 30,
+                $left + $width,
+                $top + 100,
+                $allocatedColor
+            );
         }
 
         $this->saveImage($image, $outputPath);
@@ -62,14 +58,13 @@ class CertificateIssuanceEloquent
 
     protected function getText($templateText, $userData)
     {
-        switch ($templateText->type)
-        {
+        switch ($templateText->type) {
             case CertificateTemplateTexts::STUDENT_NAME_LOCATION:
                 return $this->arabic->utf8Glyphs( $userData['name'] ?? 'Student Name');
             case CertificateTemplateTexts::COURSE_NAME_LOCATION:
                 return $this->arabic->utf8Glyphs($userData['courseTitle'] ?? 'Here Is The Default Course Title');
-			case CertificateTemplateTexts::DepartmentNAMELOCATION:
-                return $this->arabic->utf8Glyphs($userData['departmentName'] ?? 'department Name');
+			case CertificateTemplateTexts::LECTURER_NAME_LOCATION:
+                return $this->arabic->utf8Glyphs($userData['lecturerName'] ?? 'Lecturer Name');
             case CertificateTemplateTexts::CERTIFICATE_DATE:
                 return $userData['date'] ?? date('Y-m-d');
             default:

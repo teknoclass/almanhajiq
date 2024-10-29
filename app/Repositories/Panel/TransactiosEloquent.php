@@ -32,8 +32,8 @@ class TransactiosEloquent
     ])->orderByDesc('created_at')->get();
         return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('action', 'panel.transactios.partials.actions')
-            ->rawColumns(['action'])
+            // ->addColumn('action', 'panel.transactios.partials.actions')
+            // ->rawColumns(['action'])
             ->make(true);
 
     }
