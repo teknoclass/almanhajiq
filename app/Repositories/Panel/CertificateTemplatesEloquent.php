@@ -380,7 +380,7 @@ class CertificateTemplatesEloquent
             return response()->download($path . '/' . $name);
 			*/
         } catch (\Exception $e) {
-            dd($e->getLine());
+            $message = 'حدث خطأ غير متوقع';
             return back();
         }
     }

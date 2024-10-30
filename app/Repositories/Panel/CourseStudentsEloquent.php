@@ -108,7 +108,7 @@ class CourseStudentsEloquent
 
               if ($ch == 0) {
                   $data = $request->all();
-                  // $data['is_complete_payment']=1;
+                  $data['is_paid'] = $data['is_complete_payment'];
                   $data['register_sourse'] = UserCourse::REGISTER_FROM_ADMIN;
                   $data['register_by'] = Auth::user()->id;
 

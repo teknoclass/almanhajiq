@@ -50,6 +50,7 @@ class CourseFullSubscriptionsController extends Controller
             return  $response = [
                 'status_msg' => 'success',
                 'status' => 200,
+                'payment' => true,
                 'redirect_url' => $response['data']['link']
             ];
         }else{

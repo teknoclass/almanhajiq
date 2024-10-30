@@ -81,7 +81,8 @@
                             </svg>
                         </span>
                         <div>
-                            <h3 class="num">{{App\Models\Courses::where('user_id',auth('web')->user()->id)->count() }}</h3>
+                            
+                            <h3 class="num">{{App\Models\Courses::where('user_id',request()->segment(2))->count() }}</h3>
                             <h6 class="text">{{__('course_by_him')}}</h6>
                         </div>
                     </div>
@@ -99,7 +100,7 @@
                             </svg>
                         </span>
                         <div>
-                            <h3 class="num">{{App\Models\Courses::where('user_id',auth('web')->user()->id)->sum('duration')}}</h3>
+                            <h3 class="num">{{App\Models\Courses::where('user_id',request()->segment(2))->sum('duration')}}</h3>
                             <h6 class="text"> {{__('minutes_done')}} </h6>
                         </div>
                     </div>

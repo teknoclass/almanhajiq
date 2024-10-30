@@ -13,7 +13,7 @@
                 <div class="">
                     <h3 class="font-medium text-dark">
                         @php
-                        if($statistic['type'] == 'financial-record'){
+                        if(@$statistic['type'] == 'financial-record'){
                             $amount = $statistic['value'];
                                 if($user->country) {
                                     $amount = ceil($user->country->currency_exchange_rate*$amount);
