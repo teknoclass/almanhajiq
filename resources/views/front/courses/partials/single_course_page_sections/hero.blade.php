@@ -156,7 +156,7 @@
                     </div>
                     <div class="pt-2 d-flex align-items-center">{!! @$course->getPriceDisc() !!}</div>
                     
-                    @if(auth('web')->user()->role != "marketer")
+                    @if(@auth('web')->user()->role != "marketer")
                         @if (!$course->isSubscriber())
                            {{-- <div class="pt-2 d-flex align-items-center">
                                 <div class="text-color-secondary flex-fill font-bold">{!! @$course->getPriceDisc() !!}</div>

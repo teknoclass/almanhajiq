@@ -58,7 +58,7 @@
                         'blade' => 'course_registration',
                     ]
                     : null,
-                (($course->can_subscribe_to_session_group == 1 || $course->can_subscribe_to_session == 1) && $course->published == 1 && !@$course->isSubscriber() && (auth('web')->user()->role != "marketer"))
+                (($course->can_subscribe_to_session_group == 1 || $course->can_subscribe_to_session == 1) && $course->published == 1 && !@$course->isSubscriber() && (@auth('web')->user()->role != "marketer"))
                ? [
                     'title' => __('subscription_offers'),
                     'tab' => 'course-subscription-offers',

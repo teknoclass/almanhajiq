@@ -54,7 +54,7 @@
                     {{-- <div class="courses-price flex-fill">
                         <span class="sale-parice font-bold text-color-third">{!! @$course->getPriceDisc() !!}</span>
                     </div> --}}
-                    @if(auth('web')->user()->role != "marketer")
+                    @if(@auth('web')->user()->role != "marketer")
                         @if (@$is_subscriber || in_array($course->id, studentSubscriptionCoursessIds()) || in_array($course->id, studentInstallmentsCoursessIds()))
                             <a href="{{ @$url_curriculum }}"
                                 class="primary-btn p-1 w-100 d-block text-center border-0 rounded-0 py-2">
