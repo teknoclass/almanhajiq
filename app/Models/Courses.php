@@ -486,10 +486,12 @@ class Courses extends Model
         } else
         {
             if($user && $user->country) {
-                $price         = ceil($user->country->currency_exchange_rate * $price) . " ".$user->country->currency_name;
+                // $price         = ceil($user->country->currency_exchange_rate * $price) . " ".$user->country->currency_name;
+                $price         = ceil($user->country->currency_exchange_rate * $price) . " ". __('currency');
                 if($discount_price){
                     $price = "<del>" . $price . "</del> &nbsp;";
-                    $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ".$user->country->currency_name;
+                    // $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ".$user->country->currency_name;
+                    $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ". __('currency');
                     $price .=  $discount_price;
                 }
             } else {
