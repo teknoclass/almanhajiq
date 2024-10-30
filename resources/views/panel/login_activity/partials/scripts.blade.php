@@ -12,7 +12,7 @@
         },
         {
             data: 'role', // Use the alias provided in backend
-            title: '{{__('role')}}',
+            title: '{{__('user_role')}}',
         },
         {
             data: 'type',

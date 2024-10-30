@@ -338,7 +338,7 @@ class CoursesEloquent
         if (auth()->user() && auth()->user()->role == User::MARKETER) {
             $data['coupon']=Coupons::whereHas('allMarketers', function (Builder $query) {
                 $query->where('user_id', auth()->id());
-            })->first()->code;
+            })->first()->code ?? '';
         }
         $data['live_lessons_groups'] = Courses::where('user_id',auth()->id())
                                               ->where('type', 'live')

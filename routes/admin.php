@@ -527,7 +527,7 @@ Route::group(
     });
 
     //courses
-    Route::group(['prefix' => 'courses', 'as' => 'courses.'], function () {
+    Route::group(['prefix' => 'courses', 'as' => 'courses.','middleware' => 'permission:show_courses'], function () {
 
 
         Route::get('/search/{type}', [CoursesController::class, 'search'])->name('search');
@@ -806,7 +806,7 @@ Route::group(
         Route::post('/operation', [PrivateLessonRatingsController::class, 'operation'])->name('operation');
     });
 
-    Route::group(['prefix' => 'private_lesson_requests', 'as' => 'PrivateLessonRequests.'], function() {
+    Route::group(['prefix' => 'private_lesson_requests', 'as' => 'PrivateLessonRequests.','middleware' => 'permission:show_private_lessons'], function() {
         Route::get('/', [PrivateLessonRequestsController::class, 'index'])->name('index');
         Route::post('/respond', [PrivateLessonRequestsController::class, 'respondToRequest'])->name('respond');
         Route::get('/data', [PrivateLessonRequestsController::class, 'getDataTable'])->name('data');

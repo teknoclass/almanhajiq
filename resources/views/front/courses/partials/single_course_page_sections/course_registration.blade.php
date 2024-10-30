@@ -68,7 +68,9 @@
                                                     </select>
                                                 </div>
                                             </div> --}}
+                                            @if(auth('web')->user()->role != "marketer")
                                             @include('front.courses.partials.single_course_page_sections.installments-and-full-sub')
+                                            @endif
                                      
                                         {{-- <div class="col-12">
                                                 <div class="form-group">

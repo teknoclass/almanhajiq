@@ -258,7 +258,7 @@
     "total_balance": "الرصيد الكلي",
     "suspended_balance": "الرصيد المعلق",
     "retractable": "قابل للسحب",
-    "currency": "$",
+    "currency": "دينار عراقى",
     "amount": "المبلغ",
     "withdrawal_request": "طلب سحب الأرباح",
     "withdrawal_request_details": "تفاصيل الطلب",
@@ -1182,7 +1182,8 @@
     "males":"ذكور ",
     "females":"اناث",
     "and_We_will_mail_you_with_your_login_credintials_after_admin_confirmation":"سوف نرسل لكم بيانات الدخول بعد موافقة الادمن",
-    "dob":"تاريخ الميلاد"
+    "dob":"تاريخ الميلاد",
+    "iraq_currency":"الدينار العراقي"
 
 
 }
