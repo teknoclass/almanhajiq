@@ -43,10 +43,17 @@ class CoursesEloquent
                 'category_id',
                 'is_active',
                 'user_id',
+                'material_id'
             )
             ->with('translations:courses_id,title,locale,description')
             ->with([
                 'category' => function ($query) {
+                    $query->select('id', 'value', 'parent')
+                        ->with('translations:category_id,name,locale');
+                }
+            ])
+            ->with([
+                'material' => function ($query) {
                     $query->select('id', 'value', 'parent')
                         ->with('translations:category_id,name,locale');
                 }
@@ -189,11 +196,18 @@ class CoursesEloquent
                 'can_subscribe_to_session_group',
                 'can_subscribe_to_session',
                 'published',
-                'open_installments'
+                'open_installments',
+                'material_id'
             )
             ->with('translations:courses_id,title,locale,description,welcome_text_for_registration,certificate_text')
             ->with([
                 'category' => function ($query) {
+                    $query->select('id', 'value', 'parent')
+                        ->with('translations:category_id,name,locale');
+                }
+            ])
+            ->with([
+                'material' => function ($query) {
                     $query->select('id', 'value', 'parent')
                         ->with('translations:category_id,name,locale');
                 }

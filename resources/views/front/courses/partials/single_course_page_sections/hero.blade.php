@@ -89,6 +89,7 @@
             </div>
             <div class="col-12 col-lg-4 mb-4">
                 <div class="content course-info">
+                @if(@$course->material)
                     <div class="category">
                         <div class="icon">
                             <svg width="121" height="32" viewBox="0 0 121 32" fill="none"
@@ -98,8 +99,9 @@
                                     fill="#6F2B90"></path>
                             </svg>
                         </div>
-                        <span class="cate-title">{{ @$course->category->name }}</span>
+                        <span class="cate-title">{{ @$course->material->name }}</span>
                     </div>
+                    @endif
                     <h4 class="text-color-secondary">
                         {{ @$course->title }}
                     </h4>

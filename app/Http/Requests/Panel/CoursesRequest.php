@@ -29,6 +29,7 @@ class CoursesRequest extends FormRequest
         $rules['type']        = 'required:in:recorded,live';
         $rules['image']       = 'required';
         $rules['user_id']     = 'required';
+        $rules['material_id'] = 'required';
         //   $rules['start_date'] = 'required|date:Y-m-d H:i:s';
         //  $rules['end_date'] = 'required|date|after:start_date';
         foreach (locales() as $key => $language) {
@@ -45,6 +46,7 @@ class CoursesRequest extends FormRequest
         $messages['type.required']        = 'النوع مطلوب';
         $messages['type.in']              = ' النوع لابد ان يكونrecorded او live';
         $messages['user_id.required']     = 'رقم المستخدم مطلوب';
+        $messages['material_id']          = 'المادة مطلوبة';
         foreach (locales() as $key => $language) {
             $messages['title_' . $key . '.required']       = "العنوان مطلوب ($key)";
             $messages['description_' . $key . '.required'] = "الوصف مطلوب ($key)";

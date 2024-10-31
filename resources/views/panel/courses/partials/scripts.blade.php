@@ -22,12 +22,12 @@
             },
         },
         {
-            title: '{{__('category')}}',
+            title: '{{__('material')}}',
             data: function(data) {
-                if(data.category==null){
+                if(data.material==null){
                     return '';
                 }else{
-                    return data.category.name;
+                    return data.material.name;
                 }
             },
         },

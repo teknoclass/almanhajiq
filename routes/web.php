@@ -62,7 +62,6 @@ Route::group(
     });
 
     //levels
-    Route::get('get-levels/{id}', [LevelsControllers::class, 'getLevels']);
     Route::get('get-sub-levels/{id}', [LevelsControllers::class, 'getSubLevels']);
 
     // private lessons
@@ -253,6 +252,12 @@ Route::get('/migrate',function(){
         //balances
         "2024_10_31_124047_change_pay_transaction_id_to_string_on_balances_table.php",
 
+        //courses
+        "2024_10_31_163741_add_material_id_to_courses_table.php",
+
+        //users
+        "2024_10_31_180444_add_material_id_to_users_table.php"
+
     ];
 
     foreach($migrations as $migration)
@@ -262,5 +267,19 @@ Route::get('/migrate',function(){
 
     return "migrations done";
     
+});
+
+//seeder
+
+Route::get('seed',function(){
+    $seeders = [
+        'SocialMediaSeeder',
+    ];
+    foreach($seeders as $seeder)
+    {
+        \Artisan::call('db:seed --class='.$seeder);
+    }
+
+    return "seed done";
 });
 

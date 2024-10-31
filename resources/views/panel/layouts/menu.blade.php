@@ -168,7 +168,7 @@
                 ],
             ],
         ],
-        [
+       /* [
             'name' => __('course_category'),
             'type' => '',
             'href' => 'javascript:;',
@@ -193,7 +193,7 @@
                     'sub_menu' => [],
                 ],
             ],
-        ],
+        ], */
         [
             'name' => __('course_languages'),
             'type' => '',

@@ -87,6 +87,7 @@
                                             <div class="swiper-slide single-courses"
                                                 data-filter="{{ @$course->grade_sub_level }}">
                                                 <div class="item-courses">
+                                                @if(@$course->material)
                                                     <div class="category">
                                                         <div class="icon">
                                                             <svg width="121" height="32" viewBox="0 0 121 32"
@@ -96,8 +97,9 @@
                                                                     fill="#6F2B90"></path>
                                                             </svg>
                                                         </div>
-                                                        <span class="cate-title">{{ @$course->category->name }}</span>
+                                                        <span class="cate-title">{{ @$course->material->name }}</span>
                                                     </div>
+                                                    @endif
                                                     <div class="p-3">
                                                         <div class="courses-images">
                                                             <a

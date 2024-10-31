@@ -7,6 +7,8 @@
     <div class="courses-content">
         <div class="mb-2 mx-1 single-courses" style="min-height: 260px">
             <div class="item-courses {{ @$course->is_delete == 1 ? 'deletedCourse' : '' }}">
+        
+                @if(@$course->material)
                 <div class="category">
                     <div class="icon">
                         <svg width="121" height="32" viewBox="0 0 121 32" fill="none"
@@ -16,8 +18,9 @@
                                 fill="#6F2B90"></path>
                         </svg>
                     </div>
-                    <span class="cate-title">{{ @$course->category->name }}</span>
+                    <span class="cate-title">{{ @$course->material->name ?? ''}}</span>
                 </div>
+                @endif
                 <div class="p-3">
                     <div class="courses-images">
                         <a href="{{ @$is_subscriber ? @$url_curriculum : @$url_course }}">
