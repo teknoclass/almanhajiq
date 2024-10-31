@@ -90,7 +90,7 @@ class PaymentService
             'description' => $paymentDetails['description'],
             'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
             'transaction_id' => $paymentDetails['transactionable_id'] ?? null, 
-            'type' => 'withdrow',
+            'type' => 'deposit',
             'is_retractable' => 1,
             'becomes_retractable_at' => now(),
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,

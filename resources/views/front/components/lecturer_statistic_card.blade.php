@@ -20,8 +20,8 @@
                         if(@$statistic['type'] == 'financial-record'){
                             $amount = $statistic['value'];
                                 if($user->country) {
-                                    $amount = ceil($user->country->currency_exchange_rate*$amount);
-                                    echo $amount . ' ' . __('currency') . '<br>' . '(' . $statistic['value'] .' )';
+                                    //$amount = ceil($user->country->currency_exchange_rate*$amount);
+                                    echo $amount . ' ' . __('currency') ;
                                 }else {
                                     echo $amount . __('currency');
                                 }
