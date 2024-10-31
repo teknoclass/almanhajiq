@@ -74,7 +74,7 @@ class HomeUserEloquent extends HelperEloquent
             $user = $this->getUser($is_web);
             $totalEarningsLastMonth  = Balances::where('user_id', "=", $user->id)->where('type', "=", 'deposit')->whereDate('created_at', '>=', Carbon::now()->subMonth())->sum('amount');
             if($data['user']->country) {
-                $data['totalEarningsLastMonth'] = ceil($data['user']->country->currency_exchange_rate * $totalEarningsLastMonth) . " ".$data['user']->country->currency_name;
+                $data['totalEarningsLastMonth'] = ceil($data['user']->country->currency_exchange_rate * $totalEarningsLastMonth) . " ".__('currency');
             } else {
                 $data['totalEarningsLastMonth'] = $totalEarningsLastMonth . ' $';
             }

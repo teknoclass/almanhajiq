@@ -7,8 +7,12 @@
         <div class="card-body">
             <div class="d-flex gap-2 align-items-center">
                 <div class="icon-statistics bg-statistics-{{ $i }}">
+                    @if( $statistic['icon'] != "iqd")
                     <img src="{{ asset('assets/front/images/statistics/' . $statistic['icon'] . '.svg') }}"
                         alt="" loading="lazy">
+                        @else 
+                        <h3 style="text-align: center;color:white" class="fa fa-money-bill"></h3>
+                        @endif
                 </div>
                 <div class="">
                     <h3 class="font-medium text-dark">
@@ -17,9 +21,9 @@
                             $amount = $statistic['value'];
                                 if($user->country) {
                                     $amount = ceil($user->country->currency_exchange_rate*$amount);
-                                    echo $amount . ' ' . $user->country->currency_name . '<br>' . '(' . $statistic['value'] .' $)';
+                                    echo $amount . ' ' . __('currency') . '<br>' . '(' . $statistic['value'] .' )';
                                 }else {
-                                    echo $amount .' $';
+                                    echo $amount . __('currency');
                                 }
                         }else{
                             echo $statistic['value'];

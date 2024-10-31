@@ -32,7 +32,7 @@
                                         </svg>
                                     </div>
                                     <div class="ms-3">
-                                        <h3 class="font-medium text-dark">$150</h3>
+                                        <h3 class="font-medium text-dark">__('currency')</h3>
                                         <h5 class="text-gray-500">الأرباح اليومية</h5>
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
                                         </svg>
                                     </div>
                                     <div class="ms-3">
-                                        <h3 class="font-medium text-dark">$150</h3>
+                                        <h3 class="font-medium text-dark">__('currency')</h3>
                                         <h5 class="text-gray-500">الأرباح الشهرية</h5>
                                     </div>
                                 </div>
@@ -92,7 +92,7 @@
                                         </svg>
                                     </div>
                                     <div class="ms-3">
-                                        <h3 class="font-medium text-dark">$150</h3>
+                                        <h3 class="font-medium text-dark">__('currency')</h3>
                                         <h5 class="text-gray-500">إجمالي الأرباح</h5>
                                     </div>
                                 </div>

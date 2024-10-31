@@ -13,8 +13,8 @@
     $statistics = [
         [
             'title' => __('monthly_profits'),
-            'currency' => "$",
-            'icon' => "dollar",
+            'currency' => __('currency'),
+            'icon' => "iqd",
             'value' => @$totalEarningsLastMonth,
             'type' => '',
         ],

@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\{Transactios};
+use App\Models\{Transactios,Balances, Courses};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
@@ -76,4 +76,30 @@ class PaymentService
             'order_id' => $paymentDetails['orderId']
         ]);
     }
+
+    public function storeBalance(array $paymentDetails)
+    {
+        $course = Courses::find($paymentDetails['course_id']);
+        $lecturer = $course->lecturer;
+
+        $amount_before_commission = $paymentDetails['amount'];
+        $system_commission = ($lecturer->system_commission > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
+        $amount = $amount_before_commission - $system_commission;
+
+        Balances::create([
+            'description' => $paymentDetails['description'],
+            'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
+            'transaction_id' => $paymentDetails['transactionable_id'] ?? null, 
+            'type' => 'withdrow',
+            'is_retractable' => 1,
+            'becomes_retractable_at' => now(),
+            'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
+            'user_type' => 'lecturer',
+            'user_id' => $lecturer->id,
+            'system_commission' => $system_commission,
+            'amount' => $amount,
+            'amount_before_commission' => $amount_before_commission,
+        ]);
+    }
+
 }

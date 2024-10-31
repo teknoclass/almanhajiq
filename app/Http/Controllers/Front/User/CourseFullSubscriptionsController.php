@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
 use App\Models\{Courses, UserCourse};
 use App\Services\PaymentService;
+use Illuminate\Support\Facades\DB;
 
 class CourseFullSubscriptionsController extends Controller
 {
@@ -63,25 +64,36 @@ class CourseFullSubscriptionsController extends Controller
  
     public function fullConfirmSubscribe()
     {
-        $paymentDetails = session('payment-'.auth('web')->user()->id);
- 
-        //user course create
-        UserCourse::create([
-            "course_id" => $paymentDetails['course_id'],
-            "user_id" => auth('web')->user()->id,
-            "lecturer_id" => Courses::find($paymentDetails['course_id'])->user_id??"",
-            "subscription_token"  => $paymentDetails['payment_id'],
-            "is_paid" => 1,
-            "is_complete_payment" => 1,
-        ]);
+        DB::beginTransaction();
+        try
+        {
+            $paymentDetails = session('payment-'.auth('web')->user()->id);
+    
+            //user course create
+            UserCourse::create([
+                "course_id" => $paymentDetails['course_id'],
+                "user_id" => auth('web')->user()->id,
+                "lecturer_id" => Courses::find($paymentDetails['course_id'])->user_id??"",
+                "subscription_token"  => $paymentDetails['payment_id'],
+                "is_paid" => 1,
+                "is_complete_payment" => 1,
+            ]);
 
-        $this->paymentService->createTransactionRecord($paymentDetails);
- 
-        session()->forget('payment-'.auth('web')->user()->id);
- 
-        $course_id = $paymentDetails['course_id'];
- 
-        return redirect(url("/user/courses/curriculum/item/".$course_id));
+            $this->paymentService->createTransactionRecord($paymentDetails);
+
+            $this->paymentService->storeBalance($paymentDetails);
+    
+            session()->forget('payment-'.auth('web')->user()->id);
+    
+            $course_id = $paymentDetails['course_id'];
+    
+            DB::commit(); 
+            return redirect(url("/user/courses/curriculum/item/".$course_id));
+        } catch (\Exception $e)
+        {
+            DB::rollback(); 
+            return url('/payment-failure'); 
+        }
     }
  
 

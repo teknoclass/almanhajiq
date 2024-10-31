@@ -248,7 +248,10 @@ Route::get('/migrate',function(){
 
         //assignments
         "2024_10_28_215959_change_assignment_date_to_date_time_on_course_assignments_table.php",
-        "2024_10_30_011604_add_dob_column_to_join_as_teacher_requests_table.php"
+        "2024_10_30_011604_add_dob_column_to_join_as_teacher_requests_table.php",
+
+        //balances
+        "2024_10_31_124047_change_pay_transaction_id_to_string_on_balances_table.php",
 
     ];
 
