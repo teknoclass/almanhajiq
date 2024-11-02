@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Repositories\Front\HomeEloquent;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Courses;
 
 class HomeController extends Controller
 {
@@ -82,5 +84,19 @@ class HomeController extends Controller
         $data = $this->home->showAssignmentResult($result_token);
 
         return view('front.show_result.assignment_result',$data);
+    }
+
+    public function getSubjects($gradeLevelId)
+    {
+        $subjects = Category::where('parent', 'grade_levels')->where('parent_id',$gradeLevelId)->get();
+
+        return response()->json($subjects);
+    }
+
+    public function getTopics($year)
+    {
+        $topics = Courses::where('grade_sub_level', $year)->get();
+
+        return response()->json($topics);
     }
 }

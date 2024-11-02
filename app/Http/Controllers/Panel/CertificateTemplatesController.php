@@ -9,7 +9,9 @@ use App\Repositories\Panel\CertificateTemplatesEloquent;
 
 class CertificateTemplatesController extends Controller
 {
-    private CertificateTemplatesEloquent $certificate_templates;
+    //
+
+    private $certificate_templates;
     public function __construct(CertificateTemplatesEloquent $certificate_templates_eloquent)
     {
         $this->middleware('auth:admin');
@@ -75,6 +77,9 @@ class CertificateTemplatesController extends Controller
 
         $response = $this->certificate_templates->operation($request);
         return $this->response_api($response['status'], $response['message']);
+
+
+
     }
 
     public function certificateTestIssuance($id)

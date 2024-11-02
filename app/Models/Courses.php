@@ -35,7 +35,7 @@ class Courses extends Model
    'number_of_free_lessons','age_range_id', 'lessons_follow_up',
    'language_id', 'category_id', 'age_range_id','level_id', 'type','duration','grade_level_id','grade_sub_level',
    'total_rate', 'is_active','status', 'video_type', 'total_sales', 'is_delete',
-    'can_subscribe_to_session','can_subscribe_to_session_group','open_installments'];
+    'can_subscribe_to_session','can_subscribe_to_session_group','open_installments','material_id'];
 
     public $translatedAttributes = ['title', 'description', 'welcome_text_for_registration', 'certificate_text'];
 
@@ -195,6 +195,11 @@ class Courses extends Model
     public function category()
     {
         return $this->hasOne('App\Models\Category', 'value', 'category_id')->where('parent', 'course_categories');
+    }
+
+    public function material()
+    {
+        return $this->hasOne('App\Models\Category', 'value', 'material_id')->where('parent', 'joining_course');
     }
 
     public function level()
@@ -486,10 +491,12 @@ class Courses extends Model
         } else
         {
             if($user && $user->country) {
-                $price         = ceil($user->country->currency_exchange_rate * $price) . " ".$user->country->currency_name;
+                // $price         = ceil($user->country->currency_exchange_rate * $price) . " ".$user->country->currency_name;
+                $price         = ceil($user->country->currency_exchange_rate * $price) . " ". __('currency');
                 if($discount_price){
                     $price = "<del>" . $price . "</del> &nbsp;";
-                    $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ".$user->country->currency_name;
+                    // $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ".$user->country->currency_name;
+                    $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ". __('currency');
                     $price .=  $discount_price;
                 }
             } else {

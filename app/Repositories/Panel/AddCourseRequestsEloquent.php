@@ -25,42 +25,21 @@ class AddCourseRequestsEloquent
                                            ->where('courses_translations.locale', app()->getLocale());
                                   })
                                   ->leftJoin('users', 'courses.user_id', '=', 'users.id');
-
-        // Apply search filtering
-        $keyword = request()->get('search')['value'];
-        if ($keyword) {
-            $query->where(function($query) use ($keyword) {
-                $query->where('courses_translations.title', 'LIKE', "%{$keyword}%")
-                      ->orWhere(DB::raw('DATE_FORMAT(add_course_requests.created_at, "%Y-%m-%d")'), 'LIKE', "%{$keyword}%")
-                      ->orWhere('users.name', 'LIKE', "%{$keyword}%");
-            });
-        }
-        if ($status = request()->get('status')) {
-            Log::alert($status);
-            $query->where('add_course_requests.status', $status);
-        }
-        // Apply sorting
-        if ($order = request()->get('order')) {
-            $columnIndex = $order[0]['column'];
-            $direction   = $order[0]['dir'];
-            $columns     = [
-                'add_course_requests.id', // Column index 0
-                'course_title',
-                'lecturer_name',
-                'lecturer_name',
-                'add_course_requests.status',
-            ];
-
-            if (isset($columns[$columnIndex]) && $columns[$columnIndex] !== 'add_course_requests.id') {
-                $query->orderBy($columns[$columnIndex], $direction);
-            }
-        }
-        else {
-            $query->orderByDesc('add_course_requests.created_at');
-        }
-
-        return Datatables::of($query)
+                        return Datatables::of($query)
                          ->addIndexColumn()
+                         ->filter(function($query) {
+                            $keyword = request()->get('search')['value'];
+
+                            if ($keyword) {
+
+                                $query->where(function($query) use ($keyword) {
+                                    $query->where('add_course_requests.status', 'LIKE', "%{$keyword}%")
+                                //    ->orWhereRelation('courses_id',$keyword)
+                                //    ->orWhereRelation('courses_id',$keyword)
+                                    ->orWhere(DB::raw('DATE_FORMAT(add_course_requests.created_at, "%Y-%m-%d ")'), 'LIKE', "%{$keyword}%");
+                                });
+                            }
+                        })
                          ->addColumn('course', function($row) {
                              return $row->course_title;
                          })
@@ -70,17 +49,17 @@ class AddCourseRequestsEloquent
                          ->addColumn('date', function($row) {
                              return $row->date;
                          })
-                         ->addColumn('status', function($row) {
+                         ->addColumn('statusColumn', function($row) {
                              $status = [
-                                 'pending' => ['title' => __('Under Review'), 'class' => 'badge bg-dark'],
-                                 'acceptable' => ['title' => __('Acceptable'), 'class' => 'badge bg-success'],
-                                 'unacceptable' => ['title' => __('Unacceptable'), 'class' => 'badge bg-danger'],
+                                 'pending' => ['title' => __('Under Review'), 'class' => 'badge bg-info badge-custom'],
+                                 'acceptable' => ['title' => __('Acceptable'), 'class' => 'badge bg-success badge-custom'],
+                                 'unacceptable' => ['title' => __('Unacceptable'), 'class' => 'badge bg-danger badge-custom'],
                              ];
 
                              return '<span class="label font-weight-bold label-lg ' . $status[$row->status]['class'] . ' label-inline">' . $status[$row->status]['title'] . '</span>';
                          })
                          ->addColumn('action', 'panel.add_course_requests.partials.actions')
-                         ->rawColumns(['action', 'status'])
+                         ->rawColumns(['action', 'status','statusColumn','course','trainer'])
                          ->make(true);
 
     }

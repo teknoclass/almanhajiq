@@ -48,7 +48,7 @@ class AuthEloquent extends HelperEloquent
             ];
             return $response;
         }
-        // dd($request->all());
+      
         try {
             DB::beginTransaction();
             $password           = substr(sprintf("%06d", mt_rand(1, 999999)), 0, 6);
@@ -60,6 +60,7 @@ class AuthEloquent extends HelperEloquent
             if($request->role == User::LECTURER)
             {
                 $data['material_id']       = 1;
+                $data['dob']               = $request->dob;
                 $join_request =  JoinAsTeacherRequests::updateOrCreate(['id' => 0], $data);
                 if ($request->file('id_image')) {
                     $custome_path     = 'join_as_teacher_requests/' . $join_request->id . '/id_image';
@@ -198,6 +199,16 @@ class AuthEloquent extends HelperEloquent
                     ];
             }
 
+            if (Auth('web')->user()->is_validation == 0) {
+
+                $this->guard()->logout();
+
+                return
+                    [
+                        'message' => __('message.sorry_your_account_has_been_deactivated_please_check_with_the_admin'),
+                        'status' => false,
+                    ];
+            }
 
             $device_token=$request->device_token;
             Auth::user()->update(['device_token'=>$device_token]);

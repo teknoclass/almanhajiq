@@ -123,26 +123,27 @@
                 var status = {
                     'refused': {
                         'title': '{{__('refused')}}',
-                        'class': 'badge bg-dark',
+                        'class': 'badge bg-dark badge-custom',
                     },
                     'pinding': {
                         'title': '{{__('pinding')}}',
-                        'class': 'badge bg-primary transactions-status',
+                        'class': 'badge bg-primary transactions-status badge-custom',
                     },
                     'completed': {
                         'title': '{{__('completed')}}',
-                        'class': 'badge bg-success',
+                        'class': 'badge bg-success badge-custom',
                     },
 
                 };
                 return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
             }
         },
-        {
-            data: 'action',
-            title: '{{__('action')}}',
-            orderable: false
-        }];
+        // {
+        //     data: 'action',
+        //     title: '{{__('action')}}',
+        //     orderable: false
+        // }
+    ];
     window.search = "{{__('search')}}";
     window.rows = "{{__('rows')}}";
     window.all = "{{__('view_all')}}";

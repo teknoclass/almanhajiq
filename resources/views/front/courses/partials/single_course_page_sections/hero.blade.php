@@ -89,6 +89,7 @@
             </div>
             <div class="col-12 col-lg-4 mb-4">
                 <div class="content course-info">
+                @if(@$course->material)
                     <div class="category">
                         <div class="icon">
                             <svg width="121" height="32" viewBox="0 0 121 32" fill="none"
@@ -98,8 +99,9 @@
                                     fill="#6F2B90"></path>
                             </svg>
                         </div>
-                        <span class="cate-title">{{ @$course->category->name }}</span>
+                        <span class="cate-title">{{ @$course->material->name }}</span>
                     </div>
+                    @endif
                     <h4 class="text-color-secondary">
                         {{ @$course->title }}
                     </h4>
@@ -154,20 +156,26 @@
 
                         </div>
                     </div>
-                    @if (!$course->isSubscriber())
-                        <div class="pt-2 d-flex align-items-center">
-                            <div class="text-color-secondary flex-fill font-bold">{!! @$course->getPriceDisc() !!}</div>
-                            <a href="#course-registration" class="primary-btn py-2 px-5 text-center font-bold">
-                                {{ __('register_now') }}
-                            </a>
-                        </div>
-                    @else
-                        <div class="pt-2">
-                            <a href="{{url('/user/courses/curriculum/item/'.$course->id)}}"
-                                class="primary-btn py-2 d-block w-100 text-center font-bold">
-                                {{__('continue_course')}}
-                            </a>
-                        </div>
+                    <div class="pt-2 d-flex align-items-center">{!! @$course->getPriceDisc() !!}</div>
+                    
+                    @if(@auth('web')->user()->role != "marketer")
+                        @if (!$course->isSubscriber())
+                           {{-- <div class="pt-2 d-flex align-items-center">
+                                <div class="text-color-secondary flex-fill font-bold">{!! @$course->getPriceDisc() !!}</div>
+                                <a href="#course-registration" class="primary-btn py-2 px-5 text-center font-bold">
+                                    {{ __('register_now') }}
+                                </a>
+                            </div> --}}
+                          
+                        @else
+                            <div class="pt-2">
+                                <a href="{{url('/user/courses/curriculum/item/'.$course->id)}}"
+                                    class="primary-btn py-2 d-block w-100 text-center font-bold">
+                                    {{__('continue_course')}}
+                                </a>
+                            </div>
+                        @endif
+                 
                     @endif
                 </div>
             </div>

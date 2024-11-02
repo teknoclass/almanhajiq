@@ -47,21 +47,21 @@ class HomePageSettingsSeeder extends Seeder
                 'title'=>'قسم اراء الطلاب    ',
 
             ],
-            [
-                'section_key' => 'our_partner',
-                'title'=>'قسم شركائنا    ',
+            // [
+            //     'section_key' => 'our_partner',
+            //     'title'=>'قسم شركائنا    ',
 
-            ],
-            [
-                'section_key' => 'our_messages',
-                'title'=>'رسالتنا     ',
+            // ],
+            // [
+            //     'section_key' => 'our_messages',
+            //     'title'=>'رسالتنا     ',
 
-            ],
-            [
-                'section_key' => 'our_teams',
-                'title'=>'فريقنا     ',
+            // ],
+            // [
+            //     'section_key' => 'our_teams',
+            //     'title'=>'فريقنا     ',
 
-            ],
+            // ],
         ];
 
         $order_num=1;

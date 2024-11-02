@@ -310,10 +310,10 @@
 
 
                     <div class="form-group mt-2 col-6 col-lg-12 col-md-3 text-center">
-                        <button class="text-decoration-underline bg-transparent text-color-third clear-filter"
-                            data-url="{{ route('lecturers.index') }}">
+                        <a class="text-decoration-underline bg-transparent text-color-third clear-filter"
+                            href="{{ route('lecturers.index') }}">
                             {{ __('clear_filter') }}
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

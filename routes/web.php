@@ -24,6 +24,7 @@ use App\Http\Controllers\Front\User\Lecturer\CoursesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\User\PaymentController;
 use App\Http\Controllers\Front\User\PaymentCallBackController;
+use App\Http\Controllers\LevelsControllers;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -60,6 +61,9 @@ Route::group(
         Route::get('/', [LecturersController::class, 'index'])->name('index');
     });
 
+    //levels
+    Route::get('get-sub-levels/{id}', [LevelsControllers::class, 'getSubLevels']);
+
     // private lessons
     /*Route::group(['prefix' => '/private-lessons', 'as' => 'private_lessons.'], function () {
         Route::get('/', [PrivateLessonsController::class, 'index'])->name('index');
@@ -75,6 +79,8 @@ Route::group(
         Route::get('/live',     [FrontHomeController::class, 'liveCourse'])->name('live');
         Route::get('/text',     [FrontHomeController::class, 'textCourse'])->name('text');
         // ----
+        Route::get('/get-subjects/{gradeLevel}', [FrontHomeController::class, 'getSubjects']);
+        Route::get('/get-topics/{subject}', [FrontHomeController::class, 'getTopics']);
     });
 
     // packages
@@ -234,7 +240,23 @@ Route::get('/migrate',function(){
 
         //payments
         "2024_10_23_194948_make_user_type_string_on_transactios_table.php",
-        "2024_10_24_135654_add_order_id_to_transactios_table.php"
+        "2024_10_24_135654_add_order_id_to_transactios_table.php",
+
+        //quizes
+        "2024_10_28_215817_change_quiz_date_to_date_time_on_course_quizes_table.php",
+
+        //assignments
+        "2024_10_28_215959_change_assignment_date_to_date_time_on_course_assignments_table.php",
+        "2024_10_30_011604_add_dob_column_to_join_as_teacher_requests_table.php",
+
+        //balances
+        "2024_10_31_124047_change_pay_transaction_id_to_string_on_balances_table.php",
+
+        //courses
+        "2024_10_31_163741_add_material_id_to_courses_table.php",
+
+        //users
+        "2024_10_31_180444_add_material_id_to_users_table.php"
 
     ];
 
@@ -245,5 +267,19 @@ Route::get('/migrate',function(){
 
     return "migrations done";
     
+});
+
+//seeder
+
+Route::get('seed',function(){
+    $seeders = [
+        'SocialMediaSeeder',
+    ];
+    foreach($seeders as $seeder)
+    {
+        \Artisan::call('db:seed --class='.$seeder);
+    }
+
+    return "seed done";
 });
 

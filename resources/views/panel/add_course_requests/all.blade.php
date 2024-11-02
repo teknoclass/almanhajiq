@@ -15,6 +15,18 @@
    ],
 ]
 @endphp
+<style>
+   .badge-custom {
+    border-radius: 0; 
+    padding: 0.5em 1em; 
+    display: inline-block; 
+    color:white;
+    border-radius: 20%;
+}
+.dataTables_filter{
+   display: none;
+}
+</style>
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 
 <!--begin::Entry-->
@@ -52,12 +64,27 @@
             <!--end::Search Form-->
             <!--end: Search Form-->
             <!--begin: Datatable-->
-             <select id="status-filter" class="form-control">
-                 <option value="">{{ __('All Statuses') }}</option>
+            <div class="row">
+             <select id="status-filter" class="form-control col-3" style="width: 300px;margin:5px">
+                 <option value="">{{ __('status') }}</option>
                  <option value="pending">{{ __('Under Review') }}</option>
                  <option value="acceptable">{{ __('Acceptable') }}</option>
                  <option value="unacceptable">{{ __('Unacceptable') }}</option>
              </select>
+             <!-- <select id="lecturer-filter" class="form-control col-3" style="width: 300px;margin:5px">
+                 <option value="">{{ __('lecturer') }}</option>
+                 @foreach($lecturers as $lecturer)
+                     <option value="{{$lecturer->id}}">{{$lecturer->name}}</option>
+                 @endforeach
+             </select>
+             <select id="course-filter" class="form-control col-3" style="width: 300px;margin:5px">
+                 <option value="">{{ __('course') }}</option>
+                 @foreach($courses as $course)
+                     <option value="{{$course->id}}">{{$course->title}}</option>
+                 @endforeach
+             </select> -->
+             </div>
+             <br>
             <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
              <table class="table table-bordered data-table">
                  <thead>

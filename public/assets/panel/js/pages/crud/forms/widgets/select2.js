@@ -112,7 +112,7 @@ var KTSelect2 = function () {
             if (repo.loading) return repo.text;
             var markup = "<div class='select2-result-repository clearfix'>" +
                 "<div class='select2-result-repository__meta'>" +
-                "<div class='select2-result-repository__title'><b>اسم  :</b> " + repo.title + "</div>";
+                "<div class='select2-result-repository__title'><b>اسم  :</b> " + repo.name + "</div>";
 
 
             markup += "<div class='select2-result-repository__description'> <b> البريد الالكترونى :</b>" + repo.email + "</div>";

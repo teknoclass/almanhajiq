@@ -194,5 +194,49 @@
                 });
             });
         </script>
+
+        
+<script>
+    $(document).ready(function() {
+        $('#gradeLevel').change(function() {
+                let gradeLevelId = $(this).val();
+                $('#years').prop('disabled', !gradeLevelId);
+                $('#years').empty().append('<option selected readonly disabled value="">{{__('choose_year')}}</option>');
+
+                if (gradeLevelId) {
+                    $.ajax({
+                        url: `/courses/get-subjects/${gradeLevelId}`,
+                        type: 'GET',
+                        success: function(response) {
+                            response.forEach(function(year) {
+                                $('#years').append(`<option value="${year.id}">${year.name}</option>`);
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('#years').change(function() {
+                let subjectId = $(this).val();
+                $('#subjects').prop('disabled', !subjectId);
+                $('#subjects').empty().append('<option selected disabled readonly value="">{{__('choose_subject')}}</option>');
+
+                if (subjectId) {
+                    $.ajax({
+                        url: `/courses/get-topics/${subjectId}`,
+                        type: 'GET',
+                        success: function(response) {
+                            response.forEach(function(topic) {
+                                $('#subjects').append(`<option value="${topic.id}">${topic.title}</option>`);
+                            });
+                        }
+                    });
+                }
+            });
+
+       
+    });
+</script>
+
     @endpush
 @endsection

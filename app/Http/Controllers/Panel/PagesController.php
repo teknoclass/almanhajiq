@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Panel\PagesRequest;
 use App\Repositories\Panel\PagesEloquent;
-
+use App\Models\Setting;
 
 class PagesController extends Controller
 {
@@ -39,8 +39,6 @@ class PagesController extends Controller
 
     public function store(PagesRequest $request)
     {
-
-
         $response = $this->pages->store($request);
 
         return $this->response_api($response['status'], $response['message']);
@@ -48,9 +46,7 @@ class PagesController extends Controller
 
     public function edit($id)
     {
-
         $data = $this->pages->edit($id);
-
 
         return view('panel.pages.create', $data);
     }
@@ -61,7 +57,6 @@ class PagesController extends Controller
 
         return $this->response_api($response['status'], $response['message']);
     }
-
 
     public function delete($id)
     {

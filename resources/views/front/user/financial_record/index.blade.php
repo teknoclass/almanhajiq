@@ -13,13 +13,13 @@ $statistics = [
                         'title' => __('suspended_balance'),
                         'currency' => __('currency'),
                         'value' => @$suspended_balance,
-                        'icon' => 'dollar',
+                        'icon' => 'iqd',
                     ],
                     [
                         'title' => __('retractable'),
                         'currency' => __('currency'),
                         'value' => @$retractable_balance,
-                        'icon' => 'dollar',
+                        'icon' => 'iqd',
                     ],
                 ];
 

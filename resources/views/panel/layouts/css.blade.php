@@ -39,6 +39,15 @@
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="{{ imageUrl(getSeting('logo')) }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+   .badge-custom {
+    border-radius: 0; 
+    padding: 0.5em 1em; 
+    display: inline-block; 
+    color:white;
+    border-radius: 20%;
+}
 
+</style>
 </head>
 <!--end::Head-->

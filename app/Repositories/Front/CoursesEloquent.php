@@ -43,10 +43,17 @@ class CoursesEloquent
                 'category_id',
                 'is_active',
                 'user_id',
+                'material_id'
             )
             ->with('translations:courses_id,title,locale,description')
             ->with([
                 'category' => function ($query) {
+                    $query->select('id', 'value', 'parent')
+                        ->with('translations:category_id,name,locale');
+                }
+            ])
+            ->with([
+                'material' => function ($query) {
                     $query->select('id', 'value', 'parent')
                         ->with('translations:category_id,name,locale');
                 }
@@ -125,6 +132,31 @@ class CoursesEloquent
         } catch (\Exception $e) {
         }
 
+
+        try {
+            $id = $request->get('id');
+            if ($id && $id != "") {
+                $data['courses'] = $data['courses']->where('id',$id);
+            }
+        } catch (\Exception $e) {
+        }
+
+        try {
+            $grade_level_id = $request->get('grade_level_id');
+            if ($grade_level_id && $grade_level_id != "") {
+                $data['courses'] = $data['courses']->where('grade_level_id',$grade_level_id);
+            }
+        } catch (\Exception $e) {
+        }
+
+        try {
+            $grade_sub_level = $request->get('grade_sub_level');
+            if ($grade_sub_level&& $grade_sub_level != "") {
+                $data['courses'] = $data['courses']->where('grade_sub_level',$grade_sub_level);
+            }
+        } catch (\Exception $e) {
+        }
+
         $data['lecturers'] = $data['courses'] ->with([
             'lecturers.lecturerSetting' => function ($query) {
                 $query->select('id', 'user_id', 'video_thumbnail', 'video_type', 'video', 'exp_years', 'twitter', 'facebook', 'instagram', 'youtube')
@@ -164,11 +196,18 @@ class CoursesEloquent
                 'can_subscribe_to_session_group',
                 'can_subscribe_to_session',
                 'published',
-                'open_installments'
+                'open_installments',
+                'material_id'
             )
             ->with('translations:courses_id,title,locale,description,welcome_text_for_registration,certificate_text')
             ->with([
                 'category' => function ($query) {
+                    $query->select('id', 'value', 'parent')
+                        ->with('translations:category_id,name,locale');
+                }
+            ])
+            ->with([
+                'material' => function ($query) {
                     $query->select('id', 'value', 'parent')
                         ->with('translations:category_id,name,locale');
                 }
@@ -313,7 +352,7 @@ class CoursesEloquent
         if (auth()->user() && auth()->user()->role == User::MARKETER) {
             $data['coupon']=Coupons::whereHas('allMarketers', function (Builder $query) {
                 $query->where('user_id', auth()->id());
-            })->first()->code;
+            })->first()->code ?? '';
         }
         $data['live_lessons_groups'] = Courses::where('user_id',auth()->id())
                                               ->where('type', 'live')

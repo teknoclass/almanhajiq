@@ -36,7 +36,7 @@ class CoursesEloquent extends HelperEloquent
         $data['certTempsCats'] = CertificateTemplates::pluck('course_category_id')->toArray();
         $data['user_courses'] = UserCourse::where([['user_id', $data['user']->id], ['is_end', 1]])
         ->with(['course' => function ($query) {
-            $query->select('id', 'type', 'category_id', 'certificate_template_id', 'is_active', 'created_at')
+            $query->select('id', 'type', 'category_id', 'certificate_template_id', 'is_active', 'created_at','material_id')
                 ->active()->accepted()
                 ->with('translations:courses_id,title,locale,description');
         }
@@ -54,7 +54,7 @@ class CoursesEloquent extends HelperEloquent
 
             $item = UserCourse::where([['id',$id],['user_id',$data['user']->id],['is_end',1]])
             ->with(['course' => function ($query) {
-                $query->select('id', 'category_id')->active()
+                $query->select('id', 'category_id','material_id')->active()
                     ->with('translations:courses_id,title,locale');
             }
             ])
@@ -162,13 +162,18 @@ class CoursesEloquent extends HelperEloquent
         $course_type = $request->get('course_type');
 
         $data['courses'] = Courses::withTrashed()->active()->accepted()
-            ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete')
+            ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','material_id')
             ->with('translations:courses_id,title,locale,description')
             ->with(['category' => function ($query) {
                 $query->select('id', 'value', 'parent')
                     ->with('translations:category_id,name,locale');
             }
-        ])
+             ])
+             ->with(['material' => function ($query) {
+                $query->select('id', 'value', 'parent')
+                    ->with('translations:category_id,name,locale');
+            }
+             ])
         ->where(function($query)  use ($user_id, $only_is_end) {
             $query->where('id',studentSubscriptionCoursessIds());
             $query->orWhere('id',studentInstallmentsCoursessIds());
@@ -218,7 +223,7 @@ class CoursesEloquent extends HelperEloquent
     public function getCourse($course_id)
     {
         $course = Courses::withTrashed()->active()->accepted()
-        ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete')
+        ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','material_id')
         ->with('translations:courses_id,title,locale,description')
         ->where('id', $course_id)
         ->addSelect([

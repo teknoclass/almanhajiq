@@ -92,14 +92,14 @@
                                                     <div class="form-group col-md-4 mt-3">
                                                         <label>{{ __('start_date') }}
                                                             <span class="text-danger">*</span></label>
-                                                        <input class="form-control" type="date" name="start_date" required
+                                                        <input class="form-control" type="datetime-local" name="start_date" required
                                                                placeholder="{{ __('start_date') }}" value="{{ @$item->start_date }}"
                                                                style="direction: rtl !important;" />
                                                     </div>
                                                     <div class="form-group col-md-4 mt-3">
                                                         <label>{{ __('end_date') }}
                                                             <span class="text-danger">*</span></label>
-                                                        <input class="form-control" type="date" name="end_date"
+                                                        <input class="form-control" type="datetime-local" name="end_date"
                                                                placeholder="{{ __('end_date') }}" value="{{ @$item->start_date }}"
                                                                style="direction: rtl !important;" />
                                                     </div>

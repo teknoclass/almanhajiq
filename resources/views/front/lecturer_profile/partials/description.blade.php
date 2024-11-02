@@ -2,7 +2,7 @@
     <div class="container">
         <div class="text">
             <h2 class="mb-1">
-                المحاضر:
+                {{__('lecturer')}}:
                 {{ @$lecturer->name }}
                 @if (@$lecturer->belongs_to_awael)
                     <img src="{{ asset('assets/front/images/verified.png') }}" style="width: 20px" loading="lazy" />
@@ -46,13 +46,13 @@
                         <div class="read-more-text" data-max-length="{{ $maxLength }}">
                             {!! $abstract !!}
                             @if (mb_strlen(@$lecturerSetting->abstract) > $maxLength)
-                                <span class="read-more-btn"><strong>اقرأ المزيد</strong></span>
+                                <span class="read-more-btn"><strong>{{__('read_more')}}</strong></span>
                             @endif
                         </div>
 
                         <div class="more-text" style="display: none;">
                             {!! @$lecturerSetting->abstract !!}
-                            <span class="read-less-btn"><strong>إخفاء التفاصيل</strong></span>
+                            <span class="read-less-btn"><strong>{{__('hide_details')}} </strong></span>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
         <div class="col-12 col-md-6 col-lg-4 mb-4">
             <div class="statics-box">
                 <h5 class="title">
-                    الاحصاءيات الخاصة بالمدرس
+                 {{__('lecturer_statistics')}}
                 </h5>
                 <div class="row">
                     <div class="col-6 mb-4 d-flex align-items-center gap-2">
@@ -81,8 +81,9 @@
                             </svg>
                         </span>
                         <div>
-                            <h3 class="num">{{ $lecturer->lecturer_courses_count }}</h3>
-                            <h6 class="text">دورة يقدمها </h6>
+                            
+                            <h3 class="num">{{App\Models\Courses::where('user_id',request()->segment(2))->count() }}</h3>
+                            <h6 class="text">{{__('course_by_him')}}</h6>
                         </div>
                     </div>
                     <div class="col-6 mb-4 d-flex align-items-center gap-2">
@@ -99,14 +100,14 @@
                             </svg>
                         </span>
                         <div>
-                            <h3 class="num">360</h3>
-                            <h6 class="text">دقائق تمت </h6>
+                            <h3 class="num">{{App\Models\Courses::where('user_id',request()->segment(2))->sum('duration')}}</h3>
+                            <h6 class="text"> {{__('minutes_done')}} </h6>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-4 mb-4">
+       {{-- <div class="col-12 col-md-6 col-lg-4 mb-4">
             <div class="progress-box">
                 <div class="row">
                     <div class="col-6 mb-2">
@@ -167,7 +168,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>--}}
     </div>
     <!--
     <div class="row gap-3 gap-lg-0">

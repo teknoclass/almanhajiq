@@ -43,6 +43,37 @@ class CourseStudentsEloquent
             ->make(true);
     }
 
+    public function operation($request)
+    {
+        $id        = $request->get('id');
+        $operation = $request->get('operation');
+
+        $item = UserCourse::find($id);
+        if ($item) {
+            if ($operation == 'is_complete_payment') {
+                $item->is_complete_payment = !$item->is_complete_payment;
+                $item->update();
+            }
+
+            $message  = __('message_done');
+            $status   = true;
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
+
+            return $response;
+        }
+
+        $message  = __('message_error');
+        $status   = false;
+        $response = [
+            'message' => $message,
+            'status' => $status,
+        ];
+
+        return $response;
+    }
 
     public function getDataTableCourse($course_id)
     {
@@ -77,7 +108,7 @@ class CourseStudentsEloquent
 
               if ($ch == 0) {
                   $data = $request->all();
-                  // $data['is_complete_payment']=1;
+                  $data['is_paid'] = $data['is_complete_payment'];
                   $data['register_sourse'] = UserCourse::REGISTER_FROM_ADMIN;
                   $data['register_by'] = Auth::user()->id;
 

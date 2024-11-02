@@ -7,11 +7,11 @@
     @php
         $amount = $balance_transaction->amount;
             if($user->country) {
-                $amount = ceil($user->country->currency_exchange_rate*$amount);
-                echo $amount . ' ' . $user->country->currency_name . '<br>' . '(' . $balance_transaction->amount .' $)';
+                //$amount = ceil($user->country->currency_exchange_rate*$amount);
+                echo  $balance_transaction->amount .  __('currency');
             }
             else {
-                echo $amount .' $';
+                echo $amount . __('currency');
             }
     @endphp
 

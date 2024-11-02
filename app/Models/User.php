@@ -73,7 +73,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'max_student_no',
         'last_login_at',
         'market_id',
-        'coupon_id'
+        'coupon_id',
+        'material_id'
     ];
 
     public function studentSubscribedSessions()

@@ -1,3 +1,8 @@
+<style>
+   #select_sessions,.select2-selection{
+    height: auto !important;
+   }
+</style>
 
 <div  class="form-group row align-items-center" id="schedule_form">
    <div class="col-md-10" id="schedule">
@@ -49,7 +54,7 @@
                @foreach ($item['sessions'] as $index => $session)
                    <tr>
                        <td >
-                           <input type="text" class="form-control session_day" name="session_day_display_{{ $index }}" disabled value="{{ __($session->day) }}" placeholder="{{ __($session->day) }}" readonly>
+                           <input style="min-width:100px ;" type="text" class="form-control session_day" name="session_day_display_{{ $index }}" disabled value="{{ __($session->day) }}" placeholder="{{ __($session->day) }}" readonly>
                            <input type="hidden" name="session_day_{{ $index }}" value="{{ $session->day }}">
 
                        </td>
@@ -62,7 +67,7 @@
                            <input type="time" class="form-control" name="session_time_{{ $index }}" value="{{ $session->time }}">
                        </td>
                        <td>
-                           <input type="text" class="form-control" name="session_title_{{ $index }}" value="{{ $session->title }}">
+                           <input  style="min-width:100px ;" type="text" class="form-control" name="session_title_{{ $index }}" value="{{ $session->title }}">
                        </td>
                        @if (!$item->published)
                        <td>
@@ -221,7 +226,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="groupModalLabel">{{ __('add_group') }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -246,7 +251,7 @@
                         </div>
                         <div class="form-group">
                             <label for="select_sessions">{{ __('Select Sessions') }}</label>
-                            <select multiple class="form-control" id="select_sessions">
+                            <select multiple class="form-control" id="select_sessions" style="height: auto !important;">
                                 @foreach ($item['sessions'] as $session)
                                     <option value="{{ $session->id }}">{{ $session->title }} - {{ __($session->day )}} ({{ $session->date }}) - {{ $session->time }}</option>
                                 @endforeach

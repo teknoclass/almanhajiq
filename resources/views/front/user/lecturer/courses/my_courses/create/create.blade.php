@@ -127,24 +127,10 @@
                                             @endforeach
                                         </select>
                                     </div>
-
-                                    <div class="form-group col-6">
-                                        <label>{{ __('category') }}
-                                            <span class="text-danger">*</span></label>
-                                        <select id="category_id" name="category_id" class="form-control" required>
-                                            <option value="" selected disabled>{{ __('category_select') }}</option>
-                                            @foreach ($categories as $category)
-                                                <option value="{{ @$category->value }}"
-                                                    {{ @$item->category_id == $category->value ? 'selected' : '' }}>
-                                                    {{ @$category->name }} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
                                     <div class="form-group col-6">
                                         <label>{{ __('level') }}
                                             <span class="text-danger">*</span></label>
-                                        <select id="level_id" name="level_id" class="form-control   " required>
+                                        <select name="level_id" class="form-control   " required>
                                             <option value="" selected disabled>{{ __('level_select') }}</option>
                                             @foreach ($levels as $level)
                                                 <option value="{{ @$level->value }}"
@@ -153,8 +139,8 @@
                                             @endforeach
                                         </select>
                                     </div>
-
-                                        <div class="form-group col-6">
+                                  
+                                    <div class="form-group col-6">
                                             <label>{{ __('grade_level') }}
                                                 <span class="text-danger">*</span></label>
                                             <select id="grade_level_id"  name="grade_level_id" class="form-control" required>
@@ -166,15 +152,28 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                  
                                         <div class="form-group col-6">
                                             <label>{{ __('grade_sub_level') }}
                                                 <span class="text-danger">*</span></label>
                                             <select id="sub_level_id" name="grade_sub_level" class="form-control" required>
                                                 <option value="" selected disabled>{{ __('grade_sub_level') }}</option>
-
-
+                                                @if(isset($item)) <option value="{{@App\Models\Category::find(@$item->grade_sub_level)->value ?? ''}}" selected>{{@App\Models\Category::find(@$item->grade_sub_level)->name ?? ""}} </option> @endif
                                             </select>
                                         </div>
+
+                                        <div class="form-group col-6">
+                                        <label>{{ __('material') }}
+                                            <span class="text-danger">*</span></label>
+                                        <select id="material_id" name="material_id" class="form-control" required>
+                                            <option value="" selected disabled>{{ __('material_select') }}</option>
+                                            @foreach($materials as $material)
+                                                <option value="{{ @$category->value }}"
+                                                    {{ @$item->material_id == $material->value ? 'selected' : '' }}>
+                                                    {{ @$material->name }} </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 <script>
     const select1 = document.getElementById("grade_level_id");
     const select2 = document.getElementById("sub_level_id");
@@ -479,6 +478,28 @@
                     $('.link').show();
                 }
             }
+
+            $(document).ready(function() {
+                $('#grade_level_id').change(function() {
+                    let id = $(this).val();
+                    $('#sub_level_id').prop('disabled', !id);
+                    $('#sub_level_id').empty().append('<option selected readonly disabled value="">{{__('grade_sub_level')}}</option>');
+
+                        if (id) {
+                            $.ajax({
+                                url: `/get-sub-levels/${id}`,
+                                type: 'GET',
+                                success: function(response) {
+                                    $('#sub_level_id').empty();
+
+                                    response.forEach(function(response) {
+                                        $('#sub_level_id').append(`<option value="${response.id}">${response.name}</option>`);
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
         </script>
     @endpush
 @endsection

@@ -46,7 +46,13 @@ class SocialMediaSeeder extends Seeder
                 'name' => 'سناب شات',
                 'icon' => 'fa-snapchat',
                 'class' => 'sn'
-            ]
+            ],
+            [
+                'key' => 'whatsapp',
+                'name' => 'واتساب',
+                'icon' => 'fa-whatsapp',
+                'class' => 'sn'
+            ],
         ];
 
         foreach ($social_media as $sm) {

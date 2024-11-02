@@ -22,12 +22,12 @@
             },
         },
         {
-            title: '{{__('category')}}',
+            title: '{{__('material')}}',
             data: function(data) {
-                if(data.category==null){
+                if(data.material==null){
                     return '';
                 }else{
-                    return data.category.name;
+                    return data.material.name;
                 }
             },
         },
@@ -55,21 +55,20 @@
                 var status = {
                     'being_processed': {
                         'title': '{{__('being_processed')}}',
-                        'class': 'badge bg-dark',
+                        'class': 'badge bg-warning badge-custom',
                     },
                     'ready': {
                         'title': '{{__('ready')}}',
-                        'class': 'badge bg-primary',
+                        'class': 'badge bg-info badge-custom',
                     },
                     'accepted': {
                         'title': '{{__('accepted')}}',
-                        'class': 'badge bg-success',
+                        'class': 'badge bg-success badge-custom',
                     },
                     'unaccepted': {
                         'title': '{{__('unaccepted')}}',
-                        'class': 'badge bg-danger',
+                        'class': 'badge bg-danger badge-custom',
                     }
-
                 };
                 return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
             }

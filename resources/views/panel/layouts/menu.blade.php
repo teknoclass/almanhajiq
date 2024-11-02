@@ -168,7 +168,7 @@
                 ],
             ],
         ],
-        [
+       /* [
             'name' => __('course_category'),
             'type' => '',
             'href' => 'javascript:;',
@@ -193,7 +193,7 @@
                     'sub_menu' => [],
                 ],
             ],
-        ],
+        ], */
         [
             'name' => __('course_languages'),
             'type' => '',
@@ -759,32 +759,32 @@
             'icon' => '/assets/panel/media/icons/duotone/General/Fire.svg',
             'sub_menu' => [],
         ],
-        [
-            'name' => __('banks'),
-            'type' => '',
-            'href' => 'javascript:;',
-            'id' => 'pages',
-            'permissions' => 'show_banks',
-            'all_permissions' => ['show_banks'],
-            'icon' => '/assets/panel/media/icons/duotone/Home/Building.svg',
-            'sub_menu' => [
-                [
-                    'name' => __('all'),
-                    'type' => '',
-                    'href' => route('panel.categories.all.index', ['parent' => 'banks']),
-                    'permissions' => 'show_banks',
-                    'all_permissions' => ['show_banks'],
-                    'sub_menu' => [],
-                ],
-                [
-                    'name' => __('add'),
-                    'type' => '',
-                    'href' => route('panel.categories.create.index', ['parent' => 'banks']),
-                    'permissions' => 'show_banks',
-                    'sub_menu' => [],
-                ],
-            ],
-        ],
+      //  [
+        //    'name' => __('banks'),
+          //  'type' => '',
+            //'href' => 'javascript:;',
+           // 'id' => 'pages',
+           // 'permissions' => 'show_banks',
+           // 'all_permissions' => ['show_banks'],
+           // 'icon' => '/assets/panel/media/icons/duotone/Home/Building.svg',
+           // 'sub_menu' => [
+             //   [
+               //     'name' => __('all'),
+                 //   'type' => '',
+                  //  'href' => route('panel.categories.all.index', ['parent' => 'banks']),
+                   // 'permissions' => 'show_banks',
+                   // 'all_permissions' => ['show_banks'],
+                  //  'sub_menu' => [],
+               // ],
+               // [
+                 //   'name' => __('add'),
+                  //  'type' => '',
+                  //  'href' => route('panel.categories.create.index', ['parent' => 'banks']),
+                  //  'permissions' => 'show_banks',
+                  //  'sub_menu' => [],
+               // ],
+           // ],
+        //],
         [
             'name' => __('system_setting'),
             'type' => 'headeing_menu',

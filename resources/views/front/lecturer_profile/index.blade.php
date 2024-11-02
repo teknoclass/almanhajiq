@@ -47,7 +47,7 @@
         {{-- <div class="row mb-5">
             <div class="col-12">
                 <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('index') }}">الرئيسية</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('index') }}">{{__('home')}}</a></li>
                     <li class="breadcrumb-item"><a href="#">الملف الشخصي</a></li>
                     <li class="breadcrumb-item active">{{ @$lecturer->name }}</li>
                 </ol>
@@ -62,7 +62,7 @@
             @if (@$lecturerExpertise->isNotEmpty())
                 <div class="row mb-5">
                     <div class="col-12 mb-4">
-                        <h2 class="font-bold"> الخبرات </h2>
+                        <h2 class="font-bold"> {{__('experiences')}} </h2>
                     </div>
                     <div class="row">
                         <div class="col-12">
@@ -70,9 +70,9 @@
                                 <table class="table table-cart mb-3">
                                     <thead>
                                         <tr>
-                                            <td width="25%">التاريخ</td>
-                                            <td width="20%">الخبرة</td>
-                                            <td>الوصف</td>
+                                            <td width="25%">{{__('date')}}</td>
+                                            <td width="20%">{{__('experience')}}</td>
+                                            <td>{{__('description_title')}}</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -141,7 +141,7 @@
                 <div class="row mb-5">
                     <div class="col-12">
                         <div class="data-rating d-flex align-items-center mb-4">
-                            <h2 class="font-bold">التقييمات ({{ @$lecturer->reviews_count }}) </h2>
+                            <h2 class="font-bold">{{__('rate')}} ({{ @$lecturer->reviews_count }}) </h2>
                         </div>
                     </div>
 

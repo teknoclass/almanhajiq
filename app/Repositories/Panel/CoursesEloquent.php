@@ -38,10 +38,11 @@ class CoursesEloquent
     public function getDataTable()
     {
 
-        $data = Courses::select('id', 'category_id', 'user_id', 'status')
+        $data = Courses::select('id', 'category_id', 'user_id', 'status','material_id')
                        ->with('translations:courses_id,title,locale')
                        ->with('category')
                        ->with('lecturer')
+                       ->with('material')
                        ->withCount('students')
                        ->orderByDesc('created_at')->get();
 
@@ -125,9 +126,9 @@ class CoursesEloquent
         $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
         $data['grade_children_levels']      = Category::where('parent', 'grade_levels')->get();
 
-        $data['categories'] = Category::query()->select('id', 'value', 'parent')
+        $data['materials'] = Category::query()->select('id', 'value', 'parent')
                                       ->with('translations:category_id,name,locale')
-                                      ->where('parent', 'course_categories')
+                                      ->where('parent', 'joining_course')
                                       ->orderByDesc('created_at')->get();
 
 

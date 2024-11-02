@@ -270,7 +270,7 @@ function sendNotification($title, $text, $user_id, $user_type, $action_type = nu
 
 function sendEmail($title, $msg, $to)
 {
-    if(env('APP_ENV') != 'local') {
+    // if(env('APP_ENV') != 'local') {
         $send = Mail::to($to)->send(new ReplayMail($title, $msg, $to));
         if (!$send) {
             $message = 'حدث خطأ غير متوقع';
@@ -281,7 +281,7 @@ function sendEmail($title, $msg, $to)
             ];
             return $response;
         }
-    }
+    // }
 
     $response = [
         'message' => 'تم الإرسال بنجاح',
@@ -690,13 +690,13 @@ function quickRandom($length = 16)
 
 function defaultCountryCode()
 {
-    return '20';
+    return '964';
 }
 
 
 function defaultCountrySlug()
 {
-    return 'eg';
+    return 'iraq';
 }
 
 function uploadvideo($file, $custome_path='', $is_full_path=false)

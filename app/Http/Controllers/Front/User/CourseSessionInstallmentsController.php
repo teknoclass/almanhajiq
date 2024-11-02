@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
 use App\Models\{StudentSessionInstallment,CourseSession};
 use App\Services\PaymentService;
+use Illuminate\Support\Facades\DB;
 
 class CourseSessionInstallmentsController extends Controller
 {
@@ -57,21 +58,33 @@ class CourseSessionInstallmentsController extends Controller
 
     public function confirmPayment(Request $request)
     {
-        $paymentDetails = session('payment-'.auth('web')->user()->id);
+        DB::beginTransaction();
+        try
+        {
+            $paymentDetails = session('payment-'.auth('web')->user()->id);
 
-        $item = StudentSessionInstallment::updateOrCreate([
-            'student_id' => auth('web')->user()->id,
-            'course_id' => $paymentDetails['course_id'],
-            'access_until_session_id' => $paymentDetails['transactionable_id'],
-        ]);
+            $item = StudentSessionInstallment::updateOrCreate([
+                'student_id' => auth('web')->user()->id,
+                'course_id' => $paymentDetails['course_id'],
+                'access_until_session_id' => $paymentDetails['transactionable_id'],
+            ]);
 
-        $this->paymentService->createTransactionRecord($paymentDetails);
+            $this->paymentService->createTransactionRecord($paymentDetails);
 
-        session()->forget('payment-'.auth('web')->user()->id);
+            $this->paymentService->storeBalance($paymentDetails);
 
-        $course_id = $paymentDetails['course_id'];
+            session()->forget('payment-'.auth('web')->user()->id);
 
-        return redirect(url("/user/courses/curriculum/item/".$course_id));
+            $course_id = $paymentDetails['course_id'];
+
+            DB::commit(); 
+
+            return redirect(url("/user/courses/curriculum/item/".$course_id));
+        } catch (\Exception $e)
+        {
+            DB::rollback(); 
+            return url('/payment-failure'); 
+        }
     }
 
 }

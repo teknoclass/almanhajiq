@@ -13,6 +13,9 @@ class BlogEloquent
         $data['slider_posts'] = Posts::latest()
         ->select('id', 'image','created_at','user_id','category_id')
         ->with(['translations:posts_id,title,locale,text', 'user:id,name,image'])
+        ->when(isset(request()->category_id),function($q){
+            $q->where('category_id',request()->category_id);
+        })
         ->take(4)->get();
 
         $data['categories'] =Category::query()->select('id', 'value','image')
@@ -21,6 +24,9 @@ class BlogEloquent
         $data['latest_posts'] = Posts::latest()
         ->select('id', 'image','created_at','user_id','category_id')
         ->with(['translations:posts_id,title,locale,text', 'user:id,name,image'])
+        ->when(isset(request()->category_id),function($q){
+            $q->where('category_id',request()->category_id);
+        })
         ->take(4)->get();
 
         if ($data['slider_posts'] == '' || $data['latest_posts'] == '' ) {

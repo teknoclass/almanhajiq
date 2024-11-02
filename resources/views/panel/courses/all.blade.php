@@ -16,7 +16,16 @@
     ],
    ]
 @endphp
+<style>
+   .badge-custom {
+    border-radius: 0; 
+    padding: 0.5em 1em; 
+    display: inline-block; 
+    color:white;
+    border-radius: 20%;
+}
 
+</style>
 
 
    <!--begin::Entry-->

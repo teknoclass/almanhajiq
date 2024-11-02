@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
 use App\Models\{CourseSessionSubscription,CourseSession,CourseSessionsGroup};
 use App\Services\PaymentService;
+use Illuminate\Support\Facades\DB;
 
 class CourseSessionSubscriptionsController extends Controller
 {
@@ -68,55 +69,67 @@ class CourseSessionSubscriptionsController extends Controller
 
     public function confirmSubscribe()
     {
-        $paymentDetails = session('payment-'.auth('web')->user()->id);
-
-        $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
-
-        if($paymentDetails['purchase_type'] == "group")
+        DB::beginTransaction();
+        try
         {
-           $sessions = CourseSession::where('group_id', $paymentDetails['transactionable_id'])->get();
+            $paymentDetails = session('payment-'.auth('web')->user()->id);
 
-           foreach($sessions as $session)
-           {
-                if(! in_array( $session->id,$studentSubscribedSessionsIds))
-                {
+            $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+
+            if($paymentDetails['purchase_type'] == "group")
+            {
+            $sessions = CourseSession::where('group_id', $paymentDetails['transactionable_id'])->get();
+
+            foreach($sessions as $session)
+            {
+                    if(! in_array( $session->id,$studentSubscribedSessionsIds))
+                    {
+                        CourseSessionSubscription::create([
+                            'student_id' => auth('web')->user()->id,
+                            'course_session_id' => $session->id,
+                            'status' => 1,
+                            'subscription_date' => now(),
+                            'course_session_group_id' => $session->group_id,
+                            'related_to_group_subscription' => 1,
+                            'course_id' => $session->course_id
+                        ]);
+                    }
+            }
+            }
+            elseif($paymentDetails['purchase_type'] == "session")
+            {
+            $session = CourseSession::find($paymentDetails['transactionable_id']);
+
+            if(! in_array($session->id, $studentSubscribedSessionsIds))
+            {
                     CourseSessionSubscription::create([
                         'student_id' => auth('web')->user()->id,
                         'course_session_id' => $session->id,
                         'status' => 1,
                         'subscription_date' => now(),
                         'course_session_group_id' => $session->group_id,
-                        'related_to_group_subscription' => 1,
+                        'related_to_group_subscription' => 0,
                         'course_id' => $session->course_id
                     ]);
                 }
-           }
-        }
-        elseif($paymentDetails['purchase_type'] == "session")
-        {
-           $session = CourseSession::find($paymentDetails['transactionable_id']);
-
-           if(! in_array($session->id, $studentSubscribedSessionsIds))
-           {
-                CourseSessionSubscription::create([
-                    'student_id' => auth('web')->user()->id,
-                    'course_session_id' => $session->id,
-                    'status' => 1,
-                    'subscription_date' => now(),
-                    'course_session_group_id' => $session->group_id,
-                    'related_to_group_subscription' => 0,
-                    'course_id' => $session->course_id
-                ]);
             }
+
+            $this->paymentService->createTransactionRecord($paymentDetails);
+
+            $this->paymentService->storeBalance($paymentDetails);
+
+            session()->forget('payment-'.auth('web')->user()->id);
+
+            $course_id = $paymentDetails['course_id'];
+
+            DB::commit(); 
+
+            return redirect(url("/user/courses/curriculum/item/".$course_id));
+        } catch (\Exception $e)
+        {
+            DB::rollback(); 
+            return url('/payment-failure'); 
         }
-
-        $this->paymentService->createTransactionRecord($paymentDetails);
-
-        session()->forget('payment-'.auth('web')->user()->id);
-
-        $course_id = $paymentDetails['course_id'];
-
-        return redirect(url("/user/courses/curriculum/item/".$course_id));
     }
 
    

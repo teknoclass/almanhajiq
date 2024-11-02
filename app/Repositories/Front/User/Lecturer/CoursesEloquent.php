@@ -84,11 +84,18 @@ class CoursesEloquent extends HelperEloquent
                 'status',
                 'total_sales',
                 'created_at',
+                'material_id'
             )
             ->with('translations:courses_id,title,locale,description')
             ->with('evaluation')
             ->with([
                 'category' => function ($query) {
+                    $query->select('id', 'value', 'parent')
+                        ->with('translations:category_id,name,locale');
+                }
+            ])
+            ->with([
+                'material' => function ($query) {
                     $query->select('id', 'value', 'parent')
                         ->with('translations:category_id,name,locale');
                 }
@@ -188,10 +195,10 @@ class CoursesEloquent extends HelperEloquent
             ->orderByDesc('created_at')->get();
 
         $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
-        $data['categories']      = Category::query()->select('id', 'value', 'parent')
-            ->with('translations:category_id,name,locale')
-            ->where('parent', 'course_categories')
-            ->orderByDesc('created_at')->get();
+        $data['materials'] = Category::query()->select('id', 'value', 'parent')
+        ->with('translations:material_id,name,locale')
+        ->where('parent', 'joining_course')
+        ->orderByDesc('created_at')->get();
 
         $data['age_categories'] = Category::query()->select('id', 'value', 'parent')
             ->with('translations:category_id,name,locale')

@@ -47,8 +47,9 @@
                 @if (@$categories)
                     @foreach ($categories as $category)
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <div class="mx-1 item-categ {{ $loop->first ? 'active' : '' }}"
+                        <a href="{{url('/blog?category_id='.@$category->value)}}">     <div class="mx-1 item-categ {{ $category->value == request()->category_id ? 'active' : '' }}"
                                 data-filter="{{ @$category->name }}">{{ @$category->name }}</div>
+                        </a>
                         </div>
                     @endforeach
                 @endif

@@ -282,7 +282,10 @@ $(document).on('click', '.confirm-free-registeration', function(event) {
                 success: function(response) {
                     $(submit_free_reg_btn).attr("disabled", false);
                     if (response.status) {
-                        toastr.success(response.message);
+                        if(!response.payment)
+                        {
+                            toastr.success(response.message);
+                        }
                         if (response.redirect_url) {
                             $('#load').show();
                             window.location = response.redirect_url;

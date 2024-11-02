@@ -7,6 +7,8 @@
     <div class="courses-content">
         <div class="mb-2 mx-1 single-courses" style="min-height: 260px">
             <div class="item-courses {{ @$course->is_delete == 1 ? 'deletedCourse' : '' }}">
+        
+                @if(@$course->material)
                 <div class="category">
                     <div class="icon">
                         <svg width="121" height="32" viewBox="0 0 121 32" fill="none"
@@ -16,8 +18,9 @@
                                 fill="#6F2B90"></path>
                         </svg>
                     </div>
-                    <span class="cate-title">{{ @$course->category->name }}</span>
+                    <span class="cate-title">{{ @$course->material->name ?? ''}}</span>
                 </div>
+                @endif
                 <div class="p-3">
                     <div class="courses-images">
                         <a href="{{ @$is_subscriber ? @$url_curriculum : @$url_course }}">
@@ -54,15 +57,23 @@
                     {{-- <div class="courses-price flex-fill">
                         <span class="sale-parice font-bold text-color-third">{!! @$course->getPriceDisc() !!}</span>
                     </div> --}}
-                    @if (@$is_subscriber || in_array($course->id, studentSubscriptionCoursessIds()) || in_array($course->id, studentInstallmentsCoursessIds()))
-                        <a href="{{ @$url_curriculum }}"
-                            class="primary-btn p-1 w-100 d-block text-center border-0 rounded-0 py-2">
-                            {{ __('entry_to_lessons') }}
-                        </a>
-                    @else
+                    @if(@auth('web')->user()->role != "marketer")
+                        @if (@$is_subscriber || in_array($course->id, studentSubscriptionCoursessIds()) || in_array($course->id, studentInstallmentsCoursessIds()))
+                            <a href="{{ @$url_curriculum }}"
+                                class="primary-btn p-1 w-100 d-block text-center border-0 rounded-0 py-2">
+                                {{ __('entry_to_lessons') }}
+                            </a>
+                        @else
+                            <a href="{{ @$url_course }}"
+                                class="primary-btn p-1 w-100 d-block text-center border-0 rounded-0 py-2">
+                                {{ __('register_now') }}
+                            </a>
+                        @endif
+
+                    @else 
                         <a href="{{ @$url_course }}"
                             class="primary-btn p-1 w-100 d-block text-center border-0 rounded-0 py-2">
-                            {{ __('register_now') }}
+                            {{ __('view') }}
                         </a>
                     @endif
                 </div>

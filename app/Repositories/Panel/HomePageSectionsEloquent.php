@@ -11,10 +11,7 @@ class HomePageSectionsEloquent
     public function getDataTable()
     {
 
-
-
-
-        $data = HomePageSettings::orderByDesc('created_at')->get();
+        $data = HomePageSettings::whereNotIn('section_key',['our_messages','our_partner','our_teams'])->orderByDesc('created_at')->get();
         return Datatables::of($data)
             ->addIndexColumn()
             ->make(true);
@@ -22,8 +19,6 @@ class HomePageSectionsEloquent
 
     public function storeOrders($request)
     {
-
-
         $c = 1;
         foreach ($request->orderItems as $op) {
             $item = HomePageSettings::findorfail($op);
@@ -31,7 +26,6 @@ class HomePageSectionsEloquent
             $item->update();
             $c++;
         }
-
 
      $message =__('message_done');
         $status = true;

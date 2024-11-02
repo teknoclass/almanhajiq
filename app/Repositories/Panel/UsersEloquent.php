@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
+use App\Http\Requests\Panel\UsersRequest;
 
 class UsersEloquent
 {
     public function getDataTable()
     {
-
         $data = User::orderByDesc('created_at')
                     ->select(
                         'id',
@@ -49,9 +49,9 @@ class UsersEloquent
                          })
                          ->addColumn('role', function($row) {
                              $roles = [
-                                 'student' => ['title' => 'طالب', 'class' => 'badge bg-success role-badge'],
-                                 'lecturer' => ['title' => 'محاضر', 'class' => 'badge bg-primary role-badge'],
-                                 'marketer' => ['title' => 'مسوق', 'class' => 'badge bg-warning role-badge']
+                                 'student' => ['title' => 'طالب', 'class' => 'badge bg-success role-badge badge-custom'],
+                                 'lecturer' => ['title' => 'محاضر', 'class' => 'badge bg-primary role-badge badge-custom'],
+                                 'marketer' => ['title' => 'مسوق', 'class' => 'badge bg-warning role-badge badge-custom']
                              ];
 
                              return '<span class="label font-weight-bold label-lg ' . $roles[$row->role]['class'] . ' label-inline">' . $roles[$row->role]['title'] . '</span>';
@@ -61,7 +61,6 @@ class UsersEloquent
                          ->orderColumns(['name', 'email', 'role'], '-:column $1')
                          ->make(true);
     }
-
 
     //    public function getDataTableMarketers()
     //    {
@@ -127,58 +126,74 @@ class UsersEloquent
     //            ->make(true);
     //    }
 
-    public function store($request)
+    public function store(UsersRequest $request)
     {
-        $data                  = $request->all();
-        $data['password_c']    = $request->get('password');
-        $data['password']      = bcrypt($request->get('password'));
-        $data['is_validation'] = 1;
-        $data['add_by']        = User::ADD_BY_ADMIN;
-        $data['image']         = $request->get('image') ? $request->get('image') : 'avatar.png';
+        DB::beginTransaction();
+        try
+        {
+            $data                  = $request->all();
+            $data['password_c']    = $request->get('password');
+            $data['password']      = bcrypt($request->get('password'));
+            $data['is_validation'] = 1;
+            $data['add_by']        = User::ADD_BY_ADMIN;
+            $data['image']         = $request->get('image') ? $request->get('image') : 'avatar.png';
+
+            $user = User::updateOrCreate(['id' => 0], $data);
+
+            sendEmail(__('login'),__('email').": ".$request->email." ".__('password').": ".$request->password,$request->email);
+
+            if ($request->file('id_image')) {
+                //path
+                $custome_path   = 'users/' . $user->id . '/id_image';
+                $id_image       = $custome_path . '/' . uploadFile($request->file('id_image'), $custome_path);
+                $user->id_image = str_replace('/', '-', $id_image);
+                $user->update();
+            }
+
+            if ($request->file('job_proof_image')) {
+                //path
+                $custome_path          = 'users/' . $user->id . '/job_proof_image';
+                $job_proof_image       = $custome_path . '/' . uploadFile($request->file('job_proof_image'), $custome_path);
+                $user->job_proof_image = str_replace('/', '-', $job_proof_image);
+                $user->update();
+
+            }
+
+            if ($request->file('cv_file')) {
+                //path
+                $custome_path  = 'users/' . $user->id . '/cv_file';
+                $cv_file       = $custome_path . '/' . uploadFile($request->file('cv_file'), $custome_path);
+                $user->cv_file = str_replace('/', '-', $cv_file);
+                $user->update();
+
+            }
 
 
-        $user = User::updateOrCreate(['id' => 0], $data);
+            $message = __('message_done');
+            $status  = true;
 
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
 
-        if ($request->file('id_image')) {
-            //path
-            $custome_path   = 'users/' . $user->id . '/id_image';
-            $id_image       = $custome_path . '/' . uploadFile($request->file('id_image'), $custome_path);
-            $user->id_image = str_replace('/', '-', $id_image);
-            $user->update();
+            DB::commit(); 
+
+            return $response;
+
+        } catch (\Exception $e)
+        {
+            DB::rollback(); 
+            $response = [
+                'message' => $e->getMessage(),
+                'status' => false,
+            ];
+
+           return $response;
         }
-
-        if ($request->file('job_proof_image')) {
-            //path
-            $custome_path          = 'users/' . $user->id . '/job_proof_image';
-            $job_proof_image       = $custome_path . '/' . uploadFile($request->file('job_proof_image'), $custome_path);
-            $user->job_proof_image = str_replace('/', '-', $job_proof_image);
-            $user->update();
-
-        }
-
-        if ($request->file('cv_file')) {
-            //path
-            $custome_path  = 'users/' . $user->id . '/cv_file';
-            $cv_file       = $custome_path . '/' . uploadFile($request->file('cv_file'), $custome_path);
-            $user->cv_file = str_replace('/', '-', $cv_file);
-            $user->update();
-
-        }
-
-
-        $message = __('message_done');
-        $status  = true;
-
-        $response = [
-            'message' => $message,
-            'status' => $status,
-        ];
-
-        return $response;
     }
 
-    public function update($id, $request)
+    public function update($id, UsersRequest $request)
     {
         $data = $request->all();
         if (filled($data['password'])) {

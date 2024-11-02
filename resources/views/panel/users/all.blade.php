@@ -77,7 +77,7 @@
                <!--end::Search Form-->
                <!--end: Search Form-->
                <!--begin: Datatable-->
-                <div class="form-group">
+                <div class="form-group" style="width: 300px;">
 
                     <label for="category"> {{__('choose_role')}}</label>
                     <select class="form-control" id="category">
@@ -89,6 +89,7 @@
                         @endforeach
                     </select>
                 </div>
+                <br>
                <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
                 <table class="table table-bordered data-table" id="datatable">
                     <thead>

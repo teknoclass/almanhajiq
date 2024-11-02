@@ -36,22 +36,7 @@ class RolesEloquent
             $role->name = $request->name;
             $role->save();
 
-            if (isset($request->permissions) && count($request->permissions) > 0) {
-                foreach ($request->permissions as $item) {
-                    $permission = Permission::firstOrCreate(['name' => $item]);
-                    if (!isset($permission)) {
-                        $message =__('message_error');
-                        $status = false;
-                        $response = [
-                            'message' => $message,
-                            'status' => $status,
-                        ];
-
-                        return $response;
-                    }
-                    $permission->assignRole($role);
-                }
-            }
+            $role->syncPermissions($request->permissions);
 
             DB::commit();
             $message =__('message_done');
@@ -90,27 +75,8 @@ class RolesEloquent
 
             $role = new Role();
             $role = $role->updateOrCreate(['id' => $id], $request->all());
-            $role->syncPermissions([]);
-
-
-            if (isset($request->permissions) && count($request->permissions) > 0) {
-                foreach ($request->permissions as $item) {
-                    $permission = Permission::firstOrCreate(['name' => $item]);
-                    if (!isset($permission)) {
-                        $message =__('message_error');
-                        $status = false;
-                        $response = [
-                            'message' => $message,
-                            'status' => $status,
-                        ];
-
-                        return $response;
-                    }
-
-                    $permission->assignRole($role);
-                }
-            }
-
+            $role->syncPermissions($request->permissions);
+            
             DB::commit();
             $message =__('message_done');
             $status = true;

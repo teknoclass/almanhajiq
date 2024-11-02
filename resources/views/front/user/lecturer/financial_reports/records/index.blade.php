@@ -6,28 +6,28 @@
 		    [
 		        'title' => __('total_balance'),
 		        'currency' => __('currency'),
-		        'icon' => "dollar",
+		        'icon' => "iqd",
 		        'value' => number_format(@$available_balance, 2),
                 'type' => 'financial-record',
 		    ],
 		    /*[
 		        'title' => __('suspended_balance'),
 		        'currency' => __('currency'),
-		        'icon' => "dollar",
+		        'icon' => "iqd",
 		        'value' => number_format(@$suspended_balance, 2),
                 'type' => 'financial-record',
 		    ],
 		    [
 		        'title' => __('retractable'),
 		        'currency' => __('currency'),
-		        'icon' => "dollar",
+		        'icon' => "iqd",
 		        'value' => number_format(@$retractable_balance, 2),
                 'type' => 'financial-record',
 		    ],*/
 		   /* [
 		        'title' => __('system_commission'),
 		        'currency' => "%",
-		        'icon' => "dollar",
+		        'icon' => "iqd",
 		        'value' => getSystemCommission(auth()->id()) == '' ? 0 : getSystemCommission(auth()->id()),
 		    ],*/
 		];

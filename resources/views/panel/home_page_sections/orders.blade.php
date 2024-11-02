@@ -112,7 +112,7 @@ var kanban = new jKanban({
          'id': '_inprocess',
          'title': '{{$title_page}}',
          'item': [
-             @foreach(@$sections as $section)
+             @foreach(@$sections->whereNotIn('section_key',['our_messages','our_partner','our_teams']) as $section)
              {
                  'title': '<input name="orderItems[]" type="hidden" value="'+"{{@$section->id}}"+'"<span class="font-weight-bold">'+"{{@$section->title}}"+'</span>'
              },
