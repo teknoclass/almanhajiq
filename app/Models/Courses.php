@@ -120,7 +120,7 @@ class Courses extends Model
 
     public function scopeFilterByCategories($q, $search)
     {
-        return $q->whereIn('category_id', $search);
+        return $q->whereIn('material_id', $search);
     //   return $q->where('category_id', $search);
     }
 

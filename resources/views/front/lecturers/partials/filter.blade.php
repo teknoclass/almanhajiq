@@ -190,8 +190,8 @@
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <label class="mb-0 dropdown-item ps-1">
                                                     <input class="filter-lecturers form-check-input" type="checkbox"
-                                                        name="material_id" value="{{ @$material->value }}"
-                                                        {{ in_array($material->value, $selected_materials) ? 'checked' : '' }} />
+                                                        name="material_id" value="{{ @$material->id }}"
+                                                        {{ in_array($material->id, $selected_materials) ? 'checked' : '' }} />
                                                     <span>{{ @$material->name }}</span>
                                                 </label>
                                             </div>

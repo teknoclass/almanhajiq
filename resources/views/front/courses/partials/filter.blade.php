@@ -76,7 +76,7 @@
                                             @foreach ($level->getSubChildren() as $child)
                                                 <div class="d-flex align-items-center justify-content-between">
                                                     <label class="mb-0 dropdown-item">
-                                                        <input class="filter-courses  form-check-input" type="radio"
+                                                        <input class="filter-courses  form-check-input grade_level_idInput" type="radio"
                                                             name="grade_level_id" value="{{ @$child->id }}"
                                                             onchange="$('#categoryAccordion').show()" />
                                                         <span>{{ @$child->name }}</span>

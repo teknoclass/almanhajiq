@@ -47,18 +47,18 @@
                                 }
                             @endphp
                             <div id="categoryContent" class="dropdown-menu px-2">
-                                <div class="d-flex flex-column gap-3">
-                                    @foreach ($categories as $category)
+                                <div class="d-flex flex-column gap-3 material_ids">
+                                   {{-- @foreach ($categories as $category)
                                         <div class="d-flex align-items-center justify-content-between">
                                             <label class="mb-0 dropdown-item">
                                                 <input class="filter-courses form-check-input category-radio"
-                                                    type="radio" name="category_id" value="{{ $category->value }}"
+                                                    type="radio" name="category_id" value="{{ $category->id }}"
                                                     data-name="{{ $category->name }}"
-                                                    {{ $category->value == $selected_category ? 'checked' : '' }} />
+                                                    {{ $category->id == $selected_category ? 'checked' : '' }} />
                                                 <span>{{ $category->name }}</span>
                                             </label>
                                         </div>
-                                    @endforeach
+                                    @endforeach --}}
                                 </div>
                             </div>
                         </div>
@@ -233,6 +233,37 @@
                     });
                 }
             });
+
+
+            
+
+             
+            $('.grade_level_idInput').change(function() {
+                    let id = $(this).val();
+             
+                        if (id) {
+                            $.ajax({
+                                url: `/get-materials/${id}`,
+                                type: 'GET',
+                                success: function(response) {
+                                    $('.material_ids').html("");
+                                    response.forEach(function(response) {
+                                    $('.material_ids').append(`
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <label class="mb-0 dropdown-item">
+                                            <input class="filter-courses form-check-input category-radio"
+                                                type="radio" name="category_id" value="${response.id}"
+                                                data-name="${response.name}" />
+                                            <span>${response.name}</span>
+                                        </label>
+                                        </div>
+                                    `);
+                                });
+
+                                }
+                            });
+                        }
+                    });
 
        
     });

@@ -18,7 +18,7 @@ class CoursesEloquent
     {
         $data = $this->getData($request);
 
-        $data['categories']  = Category::getCategoriesByParent('course_categories')->orderByDesc('created_at')->get();
+        // $data['categories']  = Category::getCategoriesByParent('course_categories')->orderByDesc('created_at')->get();
 
         $data['languages']  = Category::getCategoriesByParent('course_languages')->orderByDesc('created_at')->get();
 
@@ -27,6 +27,11 @@ class CoursesEloquent
         $data['age_categories']  = Category::getCategoriesByParent('age_categories')->orderByDesc('created_at')->get();
         $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
         $data['grade_sub_level']      = Category::where('parent', 'grade_levels')->get();
+
+        // materials
+        $parent = Category::select('id', 'value', 'parent', 'key')->where('key', "joining_course")->first();
+        $data['categories'] = Category::query()->select('id', 'value', 'parent', 'key')->where('parent', $parent->key)
+        ->orderByDesc('created_at')->with(['translations:category_id,name,locale', 'parent'])->get();
 
         return $data;
     }
@@ -71,23 +76,23 @@ class CoursesEloquent
             $data['courses'] = $data['courses']->filterByTitle($title);
         }
 
-        $price_type = $request->get('price_type');
-        if ($price_type != '') {
-            $data['courses'] = $data['courses']->filterByPrice($price_type);
-        }
+        // $price_type = $request->get('price_type');
+        // if ($price_type != '') {
+        //     $data['courses'] = $data['courses']->filterByPrice($price_type);
+        // }
 
-        if ($price_type == 'paid') {
-            $price_from = $request->get('price_from');
-            $price_to = $request->get('price_to');
-            if ($price_from != '' || $price_to != '') {
-                $data['courses'] = $data['courses']->filterByPriceRange($price_from, $price_to);
-            }
-        }
+        // if ($price_type == 'paid') {
+        //     $price_from = $request->get('price_from');
+        //     $price_to = $request->get('price_to');
+        //     if ($price_from != '' || $price_to != '') {
+        //         $data['courses'] = $data['courses']->filterByPriceRange($price_from, $price_to);
+        //     }
+        // }
 
-        $course_type = $request->get('course_type');
-        if ($course_type != '') {
-            $data['courses'] = $data['courses']->filterByType($course_type);
-        }
+        // $course_type = $request->get('course_type');
+        // if ($course_type != '') {
+        //     $data['courses'] = $data['courses']->filterByType($course_type);
+        // }
 
         try {
             $category_ids = $request->get('category_ids');
@@ -97,21 +102,21 @@ class CoursesEloquent
         } catch (\Exception $e) {
         }
 
-        try {
-            $language_ids = $request->get('language_ids');
-            if ($language_ids) {
-                $data['courses'] = $data['courses']->filterByLanguages(json_decode($language_ids));
-            }
-        } catch (\Exception $e) {
-        }
+        // try {
+        //     $language_ids = $request->get('language_ids');
+        //     if ($language_ids) {
+        //         $data['courses'] = $data['courses']->filterByLanguages(json_decode($language_ids));
+        //     }
+        // } catch (\Exception $e) {
+        // }
 
-        try {
-            $level_ids = $request->get('level_ids');
-            if ($level_ids) {
-                $data['courses'] = $data['courses']->filterByLevels(json_decode($level_ids));
-            }
-        } catch (\Exception $e) {
-        }
+        // try {
+        //     $level_ids = $request->get('level_ids');
+        //     if ($level_ids) {
+        //         $data['courses'] = $data['courses']->filterByLevels(json_decode($level_ids));
+        //     }
+        // } catch (\Exception $e) {
+        // }
 
         try {
 
@@ -124,13 +129,13 @@ class CoursesEloquent
         } catch (\Exception $e) {
         }
 
-        try {
-            $age_range_ids = $request->get('age_range_ids');
-            if ($age_range_ids) {
-                $data['courses'] = $data['courses']->filterByAgeRanges(json_decode($age_range_ids));
-            }
-        } catch (\Exception $e) {
-        }
+        // try {
+        //     $age_range_ids = $request->get('age_range_ids');
+        //     if ($age_range_ids) {
+        //         $data['courses'] = $data['courses']->filterByAgeRanges(json_decode($age_range_ids));
+        //     }
+        // } catch (\Exception $e) {
+        // }
 
 
         try {
@@ -141,21 +146,21 @@ class CoursesEloquent
         } catch (\Exception $e) {
         }
 
-        try {
-            $grade_level_id = $request->get('grade_level_id');
-            if ($grade_level_id && $grade_level_id != "") {
-                $data['courses'] = $data['courses']->where('grade_level_id',$grade_level_id);
-            }
-        } catch (\Exception $e) {
-        }
+        // try {
+        //     $grade_level_id = $request->get('grade_level_id');
+        //     if ($grade_level_id && $grade_level_id != "") {
+        //         $data['courses'] = $data['courses']->where('grade_level_id',$grade_level_id);
+        //     }
+        // } catch (\Exception $e) {
+        // }
 
-        try {
-            $grade_sub_level = $request->get('grade_sub_level');
-            if ($grade_sub_level&& $grade_sub_level != "") {
-                $data['courses'] = $data['courses']->where('grade_sub_level',$grade_sub_level);
-            }
-        } catch (\Exception $e) {
-        }
+        // try {
+        //     $grade_sub_level = $request->get('grade_sub_level');
+        //     if ($grade_sub_level&& $grade_sub_level != "") {
+        //         $data['courses'] = $data['courses']->where('grade_sub_level',$grade_sub_level);
+        //     }
+        // } catch (\Exception $e) {
+        // }
 
         $data['lecturers'] = $data['courses'] ->with([
             'lecturers.lecturerSetting' => function ($query) {
