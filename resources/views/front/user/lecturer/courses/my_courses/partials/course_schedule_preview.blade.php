@@ -84,7 +84,7 @@
                                         <th>{{ __('date') }}</th>
                                         <th>{{ __('group') }}</th>
                                         <th>{{ __('time') }}</th>
-                                        <th>{{ __('status') }}</th>
+                                        <th>{{ __('request') }}</th>
                                         <th>{{ __('actions') }}</th>
                                         <th>{{ __('Start Session') }}</th>
 
@@ -101,8 +101,10 @@
                                             <td>{{ $session->time }}</td>
                                             <td>
 
-                                                {{__($session->teacherRequests->first()?->status)??''}}
+                                              {{__('status')}} :  {{__($session->teacherRequests->first()?->status)??''}}
 
+                                                <br>
+                                              {{__('type')}} : {{__($session->teacherRequests->first()?->type)??''}}
                                             </td>
                                             @php
                                                 $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
@@ -113,16 +115,18 @@
                                             @endphp
 
                                             <td>
-                                                @if(!$isSessionInPast)
+                                                @if(!$isSessionInPast && ( !@$session->teacherRequests->first() || (@$session->teacherRequests->first() && @$session->teacherRequests->first()?->status == "rejected") ) )
 
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                            data-bs-target="#cancelModal" id="cancelButton"><span
-                                                            class="far  fa-cancel"></span><label>{{ __('cancel')}}</label>
+                                                            data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm " style="width:100px">
+                                                           
+                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
                                                     </button>
 
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                            data-bs-target="#postPoneModal" id="postPoneButton"><span
-                                                            class="far  fa-calendar"></span><label>{{ __('postpone')}}</label>
+                                                            data-bs-target="#postPoneModal" id="postPoneButton" class="btn btn-primary btn-sm "
+                                                             style="width:100px;margin-top:5px">
+                                                            <i class="fa fa-calendar"></i>  {{ __('postpone')}}
                                                     </button>
 
                                                 @endif

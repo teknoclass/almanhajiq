@@ -1,5 +1,5 @@
-@extends('panel.layouts.index',['sub_title' =>__('course_sessions_requests') ,'is_active'=>'posts'])
-@section('title',  __('course_sessions_requests'))
+@extends('panel.layouts.index',['sub_title' =>__('course_session_requests') ,'is_active'=>'posts'])
+@section('title',  __('course_session_requests'))
 @section('contion')
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
         @php
@@ -9,7 +9,7 @@
             'link'=>route('panel.home'),
             ],
             [
-            'title'=>__('course_sessions_requests'),
+            'title'=>__('course_session_requests'),
             'link'=>'#',
             ],
             ]
@@ -21,13 +21,13 @@
 
             <!--begin::Container-->
             <div class="container">
-                @include('panel.layouts.breadcrumb',['breadcrumb_links'=>$breadcrumb_links,'title_page'=>__('course_sessions_requests'),])
+                @include('panel.layouts.breadcrumb',['breadcrumb_links'=>$breadcrumb_links,'title_page'=>__('course_session_requests'),])
                 <!--begin::Card-->
                 <div class="card card-custom">
                     <div class="card-header flex-wrap border-0 pt-6 pb-0">
                         <div class="card-title">
                             <h3 class="card-label">
-                                {{__('course_sessions_requests')}}
+                                {{__('course_session_requests')}}
                             </h3>
                         </div>
                         <div class="card-toolbar">

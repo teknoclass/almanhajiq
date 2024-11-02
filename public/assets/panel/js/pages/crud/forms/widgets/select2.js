@@ -133,7 +133,7 @@ var KTSelect2 = function () {
 
 
         function formatRepoCustomerSelection(repo) {
-            return repo.title || repo.text;
+            return repo.title || repo.text || repo.name;
         }
 
         $("#search_students").select2({

@@ -20,7 +20,8 @@
                     <!-- Hidden inputs for lesson and user details -->
 
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-success" >{{__('send request')}}</button>
+                     <br>
+                    <button type="submit" class="btn btn-success btn-sm" >{{__('send request')}}</button>
                 </form>
             </div>
             <div class="modal-footer">
@@ -59,7 +60,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('close')}}</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">{{__('close')}}</button>
             </div>
         </div>
     </div>

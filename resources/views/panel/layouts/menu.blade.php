@@ -82,11 +82,11 @@
                     'permissions' => 'show_course_ratings',
                     'sub_menu' => [],
                 ],
-                            [
-                    'name' => __('private_lessons_requests'),
-                    'type' => 'private_lessons_requests',
+                [
+                    'name' => __('course_session_requests'),
+                    'type' => '',
                     'href' => route('panel.CourseSessionRequests.index'),
-                    'permissions' => 'show_private_lessons',
+                    'permissions' => 'show_courses',
                     'sub_menu' => [],
                 ]
             ],

@@ -1,11 +1,11 @@
-@extends('panel.layouts.index',['sub_title' =>__('private_lessons_requests') ,'is_active'=>'posts'])
+@extends('panel.layouts.index',['sub_title' =>__('course_session_requests') ,'is_active'=>'posts'])
 @section('contion')
     @php
         $item = isset($item) ? $item: null;
     @endphp
 
     @php
-        $title_page=__('private_lessons_requests');
+        $title_page=__('edit');
 
        $breadcrumb_links=[
        [
@@ -13,8 +13,8 @@
        'link'=>route('panel.home'),
        ],
         [
-       'title'=>__('private_lessons_requests'),
-       'link'=>route('panel.PrivateLessonRequests.index'),
+       'title'=>__('course_session_requests'),
+       'link'=>route('panel.CourseSessionRequests.index'),
                 ],
        [
        'title'=>$title_page,
@@ -29,15 +29,42 @@
             @include('panel.layouts.breadcrumb',['breadcrumb_links'=>$breadcrumb_links,'title_page'=>$title_page,])
             <!--begin::Container-->
             <!--begin::Form-->
-            <form id="form" id="form" method="{{isset($item) ? 'POST' : 'POST'}}" to="{{url()->current()}}">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">{{__('details')}}</div>
+                </div>
+                <div class="card-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>{{__('student')}}</th>
+                        <th>{{@$item->user->name??''}}</th>
+                    </tr>
+                    <tr>
+                        <th>{{__('course')}}</th>
+                        <th>{{@$item->courseSession->course->title??''}}</th>
+                    </tr>
+                    <tr>
+                        <th>{{__('status')}}</th>
+                        <th>{{__($item->status)}}</th>
+                    </tr>
+                </table>
+                </div>
+            </div>
+            @if($item->status == "pending")
+            <form id="form" id="form" method="{{isset($item) ? 'POST' : 'POST'}}" to="{{url()->current()}}" class="col-6">
                 @csrf
                 <input class="form-control border-primary" type="text" hidden name="request_id" id="request_id" value="{{$item->id}}" >
-                <select class="form-control b-10" id="statusSelect" name="status" required>
+                <br>
+              
+                <select class="form-control col-6 b-10" id="statusSelect" name="status" required style="margin-bottom: 10px !important;">
                     <option selected disabled value="pending">{{__('pending')}}</option>
                     <option value="accepted">{{__('Accept')}}</option>
                     <option value="rejected" >{{__('Reject')}}</option>
 
                 </select>
+              
+                <br>
+                <br>
 
                 @if($item->type === 'postpone')
                     <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group" id="date-group" style="display:none;">
@@ -59,8 +86,12 @@
                     <label  for="custom_date">{{__('admin_response')}}</label>
                     <input type="text" class="form-control" id="admin_response"  name="admin_response">
                 @endif
+                <br>
+                <br>
                 <button type="submit" class="btn btn-success" >{{__('change')}}</button>
-            </form>        </div>
+            </form>   
+            @endif
+        </div>
 
         <script>
 

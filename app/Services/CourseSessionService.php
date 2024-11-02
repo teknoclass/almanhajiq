@@ -241,7 +241,12 @@ class CourseSessionService
 
                              return implode('<br>', $links); // Join links with line breaks
                          })
-
+                         ->editColumn('status',function($row){
+                            return __($row->status);
+                         })
+                         ->editColumn('type',function($row){
+                            return __($row->type);
+                         })
                          ->addColumn('action', 'panel.courses.partials.course_sessions.partials.actions')
 
                          ->rawColumns(['action', 'files'])

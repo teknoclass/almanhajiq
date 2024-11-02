@@ -133,13 +133,15 @@
                                                         @if(!$isSessionInPast)
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#cancelModal" id="cancelButton"><span
-                                                                    class="far  fa-cancel"></span><label>{{ __('cancel')}}</label>
+                                                            data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm " style="width:100px">
+                                                           
+                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
                                                             </button>
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#postPoneModal" id="postPoneButton"><span
-                                                                    class="far  fa-calendar"></span><label>{{ __('postpone')}}</label>
+                                                                    data-bs-target="#postPoneModal" id="postPoneButton" class="btn btn-primary btn-sm "
+                                                                    style="width:100px;margin-top:5px">
+                                                                    <i class="fa fa-calendar"></i>  {{ __('postpone')}}
                                                             </button>
                                                     
                                                     @endif
@@ -256,14 +258,15 @@
                                                     <td>
                                                     @if(!$isSessionInPast)
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#cancelModal" id="cancelButton"><span
-                                                                    class="far  fa-cancel"></span><label>{{ __('cancel')}}</label>
+                                                            data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm " style="width:100px">
+                                                           
+                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
                                                             </button>
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#postPoneModal" id="postPoneButton">
-                                                            <span
-                                                                class="far  fa-calendar"></span><label>{{ __('postpone')}}</label>
+                                                                    data-bs-target="#postPoneModal" id="postPoneButton" class="btn btn-primary btn-sm "
+                                                                    style="width:100px;margin-top:5px">
+                                                                    <i class="fa fa-calendar"></i>  {{ __('postpone')}}
                                                             </button>
                                                     @endif
                                                     </td>
