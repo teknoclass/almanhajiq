@@ -131,7 +131,6 @@ class Courses extends Model
 
     public function scopeFilterByGradeSubLevel($q, $search)
     {
-        Log::alert($search);
         return $q->where('grade_sub_level', $search);
     }
     public function scopeFilterByLevels($q, $search)
@@ -199,7 +198,7 @@ class Courses extends Model
 
     public function material()
     {
-        return $this->hasOne('App\Models\Category', 'value', 'material_id')->where('parent', 'joining_course');
+        return $this->hasOne('App\Models\Category', 'id', 'material_id')->where('parent', 'joining_course');
     }
 
     public function level()
