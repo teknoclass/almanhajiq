@@ -13,4 +13,11 @@ class LevelsControllers extends Controller
 
         return response()->json($data);
     }
+
+    public function getMaterials($id)
+    {
+        $data =  Category::where('parent', 'joining_course')->where('grade_sub_level_id',$id)->get();
+
+        return response()->json($data);
+    }
 }

@@ -59,7 +59,7 @@ class AuthEloquent extends HelperEloquent
             $redirect_url       = null;
             if($request->role == User::LECTURER)
             {
-                $data['material_id']       = 1;
+                $data['material_id']       = $request->material_id;
                 $data['dob']               = $request->dob;
                 $join_request =  JoinAsTeacherRequests::updateOrCreate(['id' => 0], $data);
                 if ($request->file('id_image')) {

@@ -167,11 +167,7 @@
                                             <span class="text-danger">*</span></label>
                                         <select id="material_id" name="material_id" class="form-control" required>
                                             <option value="" selected disabled>{{ __('material_select') }}</option>
-                                            @foreach($materials as $material)
-                                                <option value="{{ @$category->value }}"
-                                                    {{ @$item->material_id == $material->value ? 'selected' : '' }}>
-                                                    {{ @$material->name }} </option>
-                                            @endforeach
+                                            @if(isset($item)) <option value="{{@App\Models\Category::find(@$item->material_id)->value ?? ''}}" selected>{{@App\Models\Category::find(@$item->material_id)->name ?? ""}} </option> @endif
                                         </select>
                                     </div>
 <script>
@@ -483,7 +479,6 @@
                 $('#grade_level_id').change(function() {
                     let id = $(this).val();
                     $('#sub_level_id').prop('disabled', !id);
-                    $('#sub_level_id').empty().append('<option selected readonly disabled value="">{{__('grade_sub_level')}}</option>');
 
                         if (id) {
                             $.ajax({
@@ -491,7 +486,7 @@
                                 type: 'GET',
                                 success: function(response) {
                                     $('#sub_level_id').empty();
-
+                                    $('#sub_level_id').empty().append('<option selected readonly disabled value="">{{__('grade_sub_level')}}</option>');
                                     response.forEach(function(response) {
                                         $('#sub_level_id').append(`<option value="${response.id}">${response.name}</option>`);
                                     });
@@ -499,6 +494,27 @@
                             });
                         }
                     });
+
+                    $('#sub_level_id').change(function() {
+                    let id = $(this).val();
+                    $('#material_id').prop('disabled', !id);
+
+                        if (id) {
+                            $.ajax({
+                                url: `/get-materials/${id}`,
+                                type: 'GET',
+                                success: function(response) {
+                                    $('#material_id').empty();
+                                    $('#material_id').empty().append('<option selected readonly disabled value="">{{__('material')}}</option>');
+                                    response.forEach(function(response) {
+                                        $('#material_id').append(`<option value="${response.id}">${response.name}</option>`);
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+
                 });
         </script>
     @endpush

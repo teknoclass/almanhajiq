@@ -1050,6 +1050,7 @@
     "grade_levels": "المراحل العلمية",
     "grade_level": "المرحلة العلمية",
     "grade_sub_level": "الصفوف العلمية",
+    "grade_sub_level_id": "الصف العلمى",
     "Add Group": "إضافة مجموعة",
     "enter_group_title": "أدخل عنوان المجموعة",
     "add_group": "إضافة مجموعة",

@@ -16,7 +16,7 @@ class Category extends Model
     use SoftDeletes;
     use Translatable;
 
-    protected $fillable = ['parent','number','value','image','currency_exchange_rate'];
+    protected $fillable = ['parent','number','value','image','currency_exchange_rate','parent_id','grade_sub_level_id'];
 
     public $translatedAttributes  = ['name','description','currency_name'];
 

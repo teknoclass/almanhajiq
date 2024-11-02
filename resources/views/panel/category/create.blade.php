@@ -63,6 +63,47 @@
 
                         @endforeach
 
+                        @if(@$parent == "grade_levels")
+                        <label>{{__('grade_level')}} <span class="text-danger">*</span></label>
+                        <select class="form-control" name="parent_id" required>
+                        <option value="" selected disabled>{{ __('level_select') }}</option>
+                           @foreach($grade_levels as $grade_level)
+                              <option @if(isset($item) && $grade_level->id == $item->parent_id) selected @endif value="{{$grade_level->id}}">{{$grade_level->name}}</option>
+                           @endforeach
+                        </select>
+                        @endif
+
+                        @if(@$parent == "joining_course")
+                           @php 
+                           $cat = @App\Models\Category::find(@$item->grade_sub_level_id);
+                           
+                           $parentCat = @App\Models\Category::find(@$cat->parent_id);
+                           @endphp
+                        <div class="form-group ">
+                           <label>{{ __('grade_level') }}
+                              <span class="text-danger">*</span></label>
+                           <select id="grade_level_id" name="grade_level_id" class="form-control" required>
+                              <option value="" selected disabled>{{ __('level_select') }}</option>
+                              @foreach ($grade_levels as $grade_level)
+                                    <option @if(isset($item) && $grade_level->id == @$parentCat->id) selected @endif value="{{ $grade_level->id }}" data-child="{{ json_encode($grade_level->getSubChildren()) }}"{{ old('grade_level_id', @$item->grade_level_id) == $grade_level->id ? 'selected' : '' }}>
+                                       {{ $grade_level->name }}
+                                    </option>
+                              @endforeach
+                           </select>
+                        </div>
+                                   
+                           <div class="form-group ">
+                              <label>{{ __('grade_sub_level_id') }}
+                                 <span class="text-danger">*</span></label>
+                              <select id="sub_level_id" name="grade_sub_level_id" class="form-control" required>
+                                 <option value="" selected disabled>{{ __('grade_sub_level') }}</option>
+                                 @if(isset($item)) <option value="{{@App\Models\Category::find(@$item->grade_sub_level_id)->value ?? ''}}" selected>{{@App\Models\Category::find(@$item->grade_sub_level_id)->name ?? ""}} </option> @endif
+                              </select>
+                           </div>
+
+                        @endif
+
+
                         @if(@$category->key=='countries')
                            @foreach(locales() as $locale => $value)
 
@@ -74,7 +115,7 @@
                            </div>
 
                            @endforeach
-
+   
                         <div class="form-group">
                            <label>{{__('currency_exchange_rate')}}
                               <span class="text-danger">*</span></label>
@@ -203,7 +244,31 @@
    @else
         <script src="{{asset('assets/panel/js/pages/crud/forms/editors/tinymceEN.js')}}?v=1"></script>
    @endif
+   <script>
+            $(document).ready(function() {
+                $('#grade_level_id').change(function() {
+                    let id = $(this).val();
+                    $('#sub_level_id').prop('disabled', !id);
+                    $('#sub_level_id').empty().append('<option selected readonly disabled value="">{{__('grade_sub_level')}}</option>');
 
+                        if (id) {
+                            $.ajax({
+                                url: `/get-sub-levels/${id}`,
+                                type: 'GET',
+                                success: function(response) {
+                                    $('#sub_level_id').empty();
+
+                                    response.forEach(function(response) {
+                                        $('#sub_level_id').append(`<option value="${response.id}">${response.name}</option>`);
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+
+             
+            </script>
    @endpush
 
    @stop

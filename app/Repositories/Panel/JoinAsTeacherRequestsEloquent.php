@@ -116,6 +116,7 @@ class JoinAsTeacherRequestsEloquent
                     'add_by'        => User::ADD_BY_ADMIN,
                     'gender'        => $item->gender,
                     'dob'           => $item->dob,
+                    'material_id'   => $item->material_id,
                 ]);
 
                 $title = 'نتيجة تقييم طلب الانضمام كمدرب';

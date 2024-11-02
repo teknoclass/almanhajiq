@@ -276,6 +276,11 @@ class UsersEloquent
                                   ->where('parent', 'lecturers_majors')
                                   ->orderByDesc('created_at')->get();
 
+        // materials
+        $parent = Category::select('id', 'value', 'parent', 'key')->where('key', "joining_course")->first();
+        $data['materials'] = Category::query()->select('id', 'value', 'parent', 'key')->where('parent', $parent->key)
+        ->orderByDesc('created_at')->with(['translations:category_id,name,locale', 'parent'])->get();
+
         $data['languages'] = Category::getCategoriesByParent('course_languages')->get();
 
         return $data;
