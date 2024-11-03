@@ -156,6 +156,7 @@ Route::group(
             Route::get('/', [LoginActivityController::class, 'index'])->name('index');
             Route::get('/data', [LoginActivityController::class, 'getDataTable'])->name('data');
         });
+        Route::delete('/{id}', [LoginActivityController::class, 'delete'])->name('delete');
     });
 
 

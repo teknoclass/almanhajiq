@@ -30,6 +30,11 @@
             data: 'date',
             title: '{{__('date')}}',
         },
+        {
+            data: 'action',
+            title: '{{__('action')}}',
+            orderable: false, searchable: false
+        }
     ];
     window.search = "{{__('search')}}";
     window.rows = "{{__('rows')}}";
