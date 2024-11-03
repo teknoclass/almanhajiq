@@ -36,6 +36,9 @@ class CourseSessionService
                 'message' => $message,
                 'status' => $status,
             ];
+
+            sendNotifications('  طلب تاجيل جلسة',' طلب تاجيل مدرس لجلسة ','course_session_request',$courseSessionRequest->id,'show_courses','admin');
+
         } catch (\Exception $exception) {
             $message = __("can't postpone lesson date");
             $status = false;
@@ -75,6 +78,8 @@ class CourseSessionService
                 'message' => $message,
                 'status' => $status,
             ];
+
+            sendNotifications(' طلب الغاء جلسة',' طلب الغاء مدرس لجلسة ','course_session_request',$courseSessionRequest->id,'show_courses','admin');
         } catch (\Exception $exception) {
             $message =__( "can't cancel lesson date");
             $status = false;
