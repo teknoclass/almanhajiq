@@ -37,7 +37,15 @@ class CourseSessionService
                 'status' => $status,
             ];
 
-            sendNotifications('  طلب تاجيل جلسة',' طلب تاجيل مدرس لجلسة ','course_session_request',$courseSessionRequest->id,'show_courses','admin');
+            if($data->user_type == "teacher")
+            {
+                sendNotifications('  طلب تاجيل جلسة',' طلب تاجيل مدرس لجلسة ','course_session_request',$courseSessionRequest->id,'show_courses','admin');
+            }else{
+                $userId = $courseSessionRequest->courseSession->course->user_id;
+                sendNotification(' طلب تاجيل جلسة',' طلب تاجيل طالب لجلسة  ',
+                $userId,'user', 'course_session_request',
+                $courseSessionRequest->id);
+            }
 
         } catch (\Exception $exception) {
             $message = __("can't postpone lesson date");
@@ -79,7 +87,15 @@ class CourseSessionService
                 'status' => $status,
             ];
 
-            sendNotifications(' طلب الغاء جلسة',' طلب الغاء مدرس لجلسة ','course_session_request',$courseSessionRequest->id,'show_courses','admin');
+            if($data->user_type == "teacher")
+            {
+                sendNotifications(' طلب الغاء جلسة',' طلب الغاء مدرس لجلسة ','course_session_request',$courseSessionRequest->id,'show_courses','admin');
+            }else{
+                $userId = $courseSessionRequest->courseSession->course->user_id;
+                sendNotification(' طلب تاجيل جلسة',' طلب الغاء طالب لجلسة  ',
+                $userId,'user', 'course_session_request',
+                $courseSessionRequest->id);
+            }
         } catch (\Exception $exception) {
             $message =__( "can't cancel lesson date");
             $status = false;
