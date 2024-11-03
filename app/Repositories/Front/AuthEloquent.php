@@ -268,8 +268,11 @@ class AuthEloquent extends HelperEloquent
                 }
                 $user->update();
 
-                // send mail to wait till management confirm
-                $this->notify_welcom_lecturer($user);
+                if($user->role == "lecturer")
+                {
+                    // send mail to wait till management confirm
+                    $this->notify_welcom_lecturer($user);
+                }
 
                 return
                     [
@@ -317,15 +320,15 @@ class AuthEloquent extends HelperEloquent
         $user = $this->getUser($is_web);
 
         $diff_in_hours = diffInHours($user->last_send_validation_code, Carbon::now());
-        if ($user->try_num_validation > 2 &&  $diff_in_hours == 0) {
+        // if ($user->try_num_validation > 2 &&  $diff_in_hours == 0) {
 
-            return
-                [
-                    'message' => __('message.unable_to_resend_try_again_in_an_hour'),
-                    'alert_class' => 'alert-danger',
-                    'status' => false,
-                ];
-        }
+        //     return
+        //         [
+        //             'message' => __('message.unable_to_resend_try_again_in_an_hour'),
+        //             'alert_class' => 'alert-danger',
+        //             'status' => false,
+        //         ];
+        // }
 
         $user->sendVerificationCode();
         $user->try_num_validation = $user->try_num_validation + 1;

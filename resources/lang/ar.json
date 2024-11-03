@@ -155,7 +155,7 @@
     "message.you_try_a_lot_and_a_new_code_is_sent_to_you": "قمت بالمحاولة كثيره ويتم ارسال لك كود جديد",
     "message.enter_a_valid_activation_code": "نأسف! كود التحقق غير صحيح",
     "message.unable_to_resend_try_again_in_an_hour": "لا يمكن اعادة الارسال ,حاول بعد ساعة",
-    "message.cant_try_now": "لا يمكن المحاولة الان , حاول بعد ساعة",
+    "message.cant_try_now": "لا يمكن المحاولة الان , حاول مجددا",
     "message.can_not_withdraw_less_than": "لا يمكن سحب اقل من",
     "message.resend_successfully": "تم إعادة الارسال بنجاح",
     "message.the_start_date_does_not_correspond_to_the_first_day": "تاريخ البدء غير متوافق مع اول يوم",

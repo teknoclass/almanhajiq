@@ -164,7 +164,7 @@
     "message.you_try_a_lot_and_a_new_code_is_sent_to_you": "You have tried a lot, and a new code has been sent to you",
     "message.enter_a_valid_activation_code": "Sorry! Invalid activation code",
     "message.unable_to_resend_try_again_in_an_hour": "Unable to resend, please try again in an hour",
-    "message.cant_try_now": "Can't try now, try again in an hour",
+    "message.cant_try_now": "Can't try now, try again ",
     "message.can_not_withdraw_less_than": "Cannot withdraw less than",
     "message.resend_successfully": "Resend successfully",
     "message.the_start_date_does_not_correspond_to_the_first_day": "The start date does not correspond to the first day",
