@@ -1137,7 +1137,9 @@
     "grade_sub_level_id":"Grade Sub Level",
     "course_session_requests":"Course Sessions Requests",
     "request":"Request",
-    "Suggested Dates" : "Suggested Dates"
+    "Suggested Dates" : "Suggested Dates",
+    "chosen_date":"Chosen Date"
+
 
  
     

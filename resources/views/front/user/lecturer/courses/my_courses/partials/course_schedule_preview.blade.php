@@ -100,11 +100,12 @@
                                             <td>{{ $session->group?->title??__('no_group') }}</td>
                                             <td>{{ $session->time }}</td>
                                             <td>
-
+                                                @if($session->teacherRequests->first())
                                               {{__('status')}} :  {{__($session->teacherRequests->first()?->status)??''}}
 
                                                 <br>
                                               {{__('type')}} : {{__($session->teacherRequests->first()?->type)??''}}
+                                              @endif
                                             </td>
                                             @php
                                                 $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);

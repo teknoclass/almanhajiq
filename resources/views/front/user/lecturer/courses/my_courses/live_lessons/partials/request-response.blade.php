@@ -28,6 +28,7 @@
 
 
 <td>
+    @if($request->status == "pending")
     <button class="btn btn-secondary"
             data-id="{{ @$request->id }}"
             data-type="{{ @$request->type }}"
@@ -38,6 +39,7 @@
             id="respondRequestButton">
         <span class="far fa-flag"></span>&nbsp;{{ __('edit')}}
     </button>
+    @endif
 
 </td>
 </tr>

@@ -89,12 +89,12 @@
                         <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group" id="date-group" >
 
                         </div>
-
-                    <button type="submit" class="btn btn-success" >{{__('change')}}</button>
+<br><br>
+                    <button type="submit" class="btn btn-success btn-sm" >{{__('change')}}</button>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('close')}}</button>
+                <button type="button" class="btn btn-secondary  btn-sm" data-dismiss="modal">{{__('close')}}</button>
             </div>
         </div>
     </div>

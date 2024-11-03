@@ -1188,7 +1188,8 @@
     "material":"المادة",
     "course_session_requests":"طلبات جلسات الدورات",
     "request":"الطلب",
-    "Suggested Dates" : "المواعيد المقترحة"
+    "Suggested Dates" : "المواعيد المقترحة",
+    "chosen_date":"التاريخ المختار"
 
 
 }

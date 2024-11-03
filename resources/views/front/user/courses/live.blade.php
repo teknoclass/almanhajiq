@@ -116,9 +116,12 @@
                                                     <td>{{ $session->time }}</td>
 
                                                     <td>
+                                                        @if($session->studentRequests->first())
+                                                        {{__('status')}} :  {{__($session->studentRequests->first()?->status)??''}}
 
-                                                        {{__($session->studentRequests->first()?->status)??''}}
-
+                                                        <br>
+                                                        {{__('type')}} : {{__($session->studentRequests->first()?->type)??''}}
+                                                        @endif
                                                     </td>
                                                     @php
                                                         $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
@@ -130,10 +133,11 @@
                                                     @endphp
                                                     @if(isCourseonStudentCourse(@$course->id) || isStudentSubscribeToSession($session->id) || in_array($session->id,installementdLessonsIds(@$course->id)))
                                                     <td>
-                                                        @if(!$isSessionInPast)
+                                                        
+                                                    @if(!$isSessionInPast && ( !@$session->studentRequests->first() || (@$session->studentRequests->first() && @$session->studentRequests->first()?->status == "rejected") ) )
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                            data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm " style="width:100px">
+                                                            data-bs-target="#cancelModal"  id="cancelButton" class="btn btn-danger btn-sm "  style="width:100px;margin-top:5px">
                                                            
                                                             <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
                                                             </button>
@@ -256,9 +260,10 @@
                                                             
                                                     </td>
                                                     <td>
-                                                    @if(!$isSessionInPast)
+                                                      
+                                                    @if(!$isSessionInPast && ( !@$session->studentRequests->first() || (@$session->studentRequests->first() && @$session->studentRequests->first()?->status == "rejected") ) )
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                            data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm " style="width:100px">
+                                                            data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm "  style="width:100px;margin-top:5px">
                                                            
                                                             <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
                                                             </button>

@@ -47,6 +47,10 @@
                         <th>{{__('status')}}</th>
                         <th>{{__($item->status)}}</th>
                     </tr>
+                    <tr>
+                        <th>{{__('chosen_date')}}</th>
+                        <th>{{__($item->chosen_date)}}</th>
+                    </tr>
                 </table>
                 </div>
             </div>

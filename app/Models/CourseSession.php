@@ -30,11 +30,13 @@ class CourseSession extends Model
 
     public function studentRequests()
     {
-        return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','student');
+        return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','student')
+        ->where('user_id',auth('web')->user()->id);
     }
     public function teacherRequests()
     {
-        return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','teacher');
+        return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','teacher')
+        ->where('user_id',auth('web')->user()->id);
     }
 
     public function requests()

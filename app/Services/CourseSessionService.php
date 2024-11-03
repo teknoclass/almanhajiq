@@ -222,6 +222,8 @@ class CourseSessionService
         else {
             $data->orderByDesc('course_sessions_requests.created_at');
         }
+        $data->distinct('id');
+
         return Datatables::of($data)
                          ->addIndexColumn()
 

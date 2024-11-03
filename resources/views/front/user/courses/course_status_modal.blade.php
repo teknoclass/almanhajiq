@@ -56,7 +56,8 @@
                     <!-- Hidden inputs for lesson and user details -->
 
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-success" >{{__('send request')}}</button>
+                     <br>
+                    <button type="submit" class="btn btn-success btn-sm" >{{__('send request')}}</button>
                 </form>
             </div>
             <div class="modal-footer">
