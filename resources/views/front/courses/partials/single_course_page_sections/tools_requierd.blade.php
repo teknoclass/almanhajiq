@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="col-12 col-lg-5">
-                @include('front.courses.partials.single_course_page_sections.certificate_desc')
+               {{-- @include('front.courses.partials.single_course_page_sections.certificate_desc') --}}
             </div>
         </div>
     </div>

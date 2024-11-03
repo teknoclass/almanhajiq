@@ -2,8 +2,8 @@
     <div>
         <div class="card-course px-3">
             <div class="card-body">
-
-                @if (@$live_sessions)
+                @php $live_sessions = @$course->sessions; @endphp
+                @if (@$live_sessions && $live_sessions->isNotEmpty())
                     <div class="col-lg-12">
                         <div class="course-content border-light-primary bg-white">
                             <div class="course-content-body">
@@ -47,7 +47,8 @@
                                     </div>
 
                                     <ul id="curriculum-section" class="col-12 collapse course-widget-list">
-                                        <div class="schedule-info mt-2 d-flex align-items-center gap-2">
+                                    @foreach($live_sessions->unique('day') as $lesson)  
+                                    <div class="schedule-info mt-2 d-flex align-items-center gap-2">
                                             <span>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">
@@ -58,18 +59,21 @@
                                             </span>
 
                                             {{__('date')}}:
-                                            @foreach($live_sessions->unique('day') as $lesson)
+                                          
                                             <h6 class="text-black flex-fill">
 
                                                     {{__($lesson->day)}}&nbsp;
 
                                             </h6>
                                             <span class="time">
+                                                {{__($lesson->date)}}&nbsp;
+                                            </span>
+                                            <span class="time">
                                                 {{__($lesson->time)}}&nbsp;
                                             </span>
-                                            @endforeach
                                         </div>
-                                        @foreach ($live_sessions as $lesson)
+                                        @endforeach
+                                      {{--  @foreach ($live_sessions as $lesson)
 
 
                                                 <li>
@@ -121,7 +125,7 @@
                                                     </div>
                                                 </li>
 
-                                        @endforeach
+                                        @endforeach --}}
                                     </ul>
                                 </div>
                             </div>

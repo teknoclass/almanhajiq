@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class Courses extends Model
 {
@@ -440,6 +441,19 @@ class Courses extends Model
         }
 
         return $duration;
+    }
+
+    public function getDurationInDays()
+    {
+        if (!empty($this->start_date) && !empty($this->end_date))
+        {
+            $start_date = Carbon::parse($this->start_date);
+            $end_date = Carbon::parse($this->end_date);
+    
+            return $start_date->diffInDays($end_date);
+        }
+
+        return 0;
     }
 
     public function cost()

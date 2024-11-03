@@ -22,39 +22,58 @@
                 </div>
                 @endif
                 <div class="p-3">
-                    <div class="courses-images">
+                    <div class="courses-images ">
                         <a href="{{ @$is_subscriber ? @$url_curriculum : @$url_course }}">
                             <img src="{{ imageUrl(@$course->image) }}" alt="{{ @$course->title }}" loading="lazy" />
                         </a>
                     </div>
                     <div class="courses-content">
-                        <a class="title"
+                        <br>
+                    <p class="text-color-muted">
+                        <a class="title  " style="font-size: 17px;"
                             href="{{ @$is_subscriber ? @$url_curriculum : @$url_course }}">{{ @$course->title }}
                             @if ($course->is_delete == 1)
                                 <span class="fs-6 text-danger">{{ __('deleted_course') }}</span>
                             @endif
                         </a>
+                    </p>
 
                         <div class="courses-meta">
                             <span
                                 class="text-color-muted">{{ Illuminate\Support\Str::limit(strip_tags($course->description), $limit = 71, $end = '...') }}
                             </span>
                         </div>
+                        <p class="text-color-muted" style="font-size: 13px;">
+                            <span class="fw-bold text-color-primary">{{ __('grade_level') }}:</span>
+                            {{@App\Models\Category::find(@$course->grade_level_id)->name ?? ""}} 
+                        </p>
+                    
+                        <p class="text-color-muted" style="font-size: 13px;">
+                            <span class="fw-bold text-color-primary">{{ __('grade_sub_level_id') }}:</span>
+                            {{@App\Models\Category::find(@$course->grade_sub_level)->name ?? ""}} 
+                        </p>
+                    
                         <div class="info">
-                            {{-- <div class="info-item d-flex gap-2 mb-2">
-                                <div class="image"><img
+                      
+                            <div class="info-item d-flex gap-2 mb-2">
+                               {{--<div class="image"><img
                                         src="{{ asset('assets/front/images/newimages/courses-time-icon.png') }}"
-                                        alt="time icon"></div>
+                                        alt="time icon"></div>--}}
                                 <p class="text-color-muted">
-                                    <span class="fw-bold text-color-primary">{{ __('duration') }}:</span>
-                                    {{ @$course->duration }}
+                                    <span class="fw-bold text-color-primary">{{ __('type') }}:</span>
+                                    {{ __(@$course->type) }}
+                                </p><br>
+                                <p class="text-color-muted">
+                                    <span class="fw-bold text-color-primary">{{ __('price') }}:</span>
+                                    {!! @$course->getPriceDisc() !!}
                                 </p>
-                            </div> --}}
+                            </div> 
+                            
                         </div>
                     </div>
                 </div>
                 <div class="">
-                    {{-- <div class="courses-price flex-fill">
+                  {{--  <div class="courses-price flex-fill">
                         <span class="sale-parice font-bold text-color-third">{!! @$course->getPriceDisc() !!}</span>
                     </div> --}}
                     @if(@auth('web')->user()->role != "marketer")

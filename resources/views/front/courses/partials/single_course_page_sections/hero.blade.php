@@ -122,8 +122,20 @@
                                 </svg>
                             </span>
                             <div class="text">
-                                {{__('type')}} : {{__(@$course->type) }}
-                            </div>
+                                {{__('type')}} : {{__(@$course->type) }} 
+                                <br>
+                          
+                            @if(@App\Models\Category::find(@$course->grade_level_id)->name != "" )
+                            {{ __('grade_level') }}:
+                            {{@App\Models\Category::find(@$course->grade_level_id)->name ?? ""}} 
+                                <br>
+                            @endif 
+                        @if(@App\Models\Category::find(@$course->grade_sub_level)->name != "")
+                        {{ __('grade_sub_level_id') }}:
+                            {{@App\Models\Category::find(@$course->grade_sub_level)->name ?? ""}} 
+                        
+                        @endif
+                        </div>
                         </div>
                         <div class="info my-2 d-flex gap-2 flex-wrap">
                             <span>

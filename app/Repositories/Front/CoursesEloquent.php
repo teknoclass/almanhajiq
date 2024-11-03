@@ -48,7 +48,11 @@ class CoursesEloquent
             'category_id',
             'is_active',
             'user_id',
-            'material_id'
+            'material_id',
+            'level_id',
+            'grade_level_id',
+            'grade_sub_level',
+            'end_date'
         )
         ->with('translations:courses_id,title,locale,description')
         ->with([
@@ -134,7 +138,11 @@ class CoursesEloquent
                 'can_subscribe_to_session',
                 'published',
                 'open_installments',
-                'material_id'
+                'material_id',
+                'level_id',
+                'grade_level_id',
+                'grade_sub_level',
+                'end_date'
             )
             ->with('translations:courses_id,title,locale,description,welcome_text_for_registration,certificate_text')
             ->with([
@@ -261,6 +269,10 @@ class CoursesEloquent
                 'type',
                 'category_id',
                 'is_active',
+                'level_id',
+                'grade_level_id',
+                'grade_sub_level',
+                'end_date'
             )
             ->with('translations:courses_id,title,locale,description')
             ->with([

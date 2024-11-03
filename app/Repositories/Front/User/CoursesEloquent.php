@@ -162,7 +162,8 @@ class CoursesEloquent extends HelperEloquent
         $course_type = $request->get('course_type');
 
         $data['courses'] = Courses::withTrashed()->active()->accepted()
-            ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','material_id')
+            ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','material_id',
+            'level_id','grade_level_id','grade_sub_level','end_date')
             ->with('translations:courses_id,title,locale,description')
             ->with(['category' => function ($query) {
                 $query->select('id', 'value', 'parent')
@@ -223,7 +224,8 @@ class CoursesEloquent extends HelperEloquent
     public function getCourse($course_id)
     {
         $course = Courses::withTrashed()->active()->accepted()
-        ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','material_id')
+        ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','material_id',
+        'level_id','grade_level_id','grade_sub_level','end_date')
         ->with('translations:courses_id,title,locale,description')
         ->where('id', $course_id)
         ->addSelect([
