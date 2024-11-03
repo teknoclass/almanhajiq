@@ -44,11 +44,11 @@
                 <form id="postponeRequestForm" data-url="{{route('user.lecturer.course.curriculum.live_lesson.requests.postpone')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <label for="dates">{{__('Suggested Dates')}}:</label>
-                    <input class="form-control" type="date" name="suggested_dates[]"   min="{{ @$session->date }}" required>
-                    <input class="form-control" type="date" name="suggested_dates[]"  min="{{ @$session->date }}" required>
-                    <input class="form-control" type="date" name="suggested_dates[]"  min="{{ @$session->date }}" required>
-                    <input class="form-control" type="text" hidden name="course_session_id" id="course_session_id" value="" >
-                    <input class="form-control" type="text" hidden name="user_type" id="user_type" value="teacher" >
+                    <input class="form-control suggested_dates " type="date" name="suggested_dates[]"    required>
+                    <input class="form-control suggested_dates" type="date" name="suggested_dates[]"  required>
+                    <input class="form-control suggested_dates" type="date" name="suggested_dates[]"   required>
+                    <input class="form-control suggested_dates" type="text" hidden name="course_session_id" id="course_session_id" value="" >
+                    <input class="form-control suggested_dates" type="text" hidden name="user_type" id="user_type" value="teacher" >
 
 
                     <!-- File inputs -->

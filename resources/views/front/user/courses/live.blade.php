@@ -143,7 +143,8 @@
                                                             </button>
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#postPoneModal" id="postPoneButton" class="btn btn-primary btn-sm "
+                                                                    id="postPoneButton" class="btn btn-primary btn-sm "
+                                                                        data-date="{{$session->date}}"
                                                                     style="width:100px;margin-top:5px">
                                                                     <i class="fa fa-calendar"></i>  {{ __('postpone')}}
                                                             </button>
@@ -269,7 +270,8 @@
                                                             </button>
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#postPoneModal" id="postPoneButton" class="btn btn-primary btn-sm "
+                                                                    id="postPoneButton" class="btn btn-primary btn-sm "
+                                                                        data-date="{{$session->date}}"
                                                                     style="width:100px;margin-top:5px">
                                                                     <i class="fa fa-calendar"></i>  {{ __('postpone')}}
                                                             </button>
@@ -466,6 +468,12 @@ $(document).on('click','.bigBlueSessonBtnModal',function(){
     $('#bigBlueSessonTable').modal('show');
 });
 
+    //open modal
+    $(document).on('click','#postPoneButton',function(){
+                    var minDate = $(this).data('date');
+                    $('.suggested_dates').attr('min',minDate);
+                    $('#postPoneModal').modal('show');
+                });
 });
     </script>
 @endpush

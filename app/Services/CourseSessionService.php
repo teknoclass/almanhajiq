@@ -112,12 +112,31 @@ class CourseSessionService
                 'chosen_date' => $data->chosen_date?? null,
                 'admin_response' => $data->admin_response??null,
             ]);
-
+           
             if ($data->status == 'accepted') {
                 if ($lessonRequest->type == 'postpone') {
                     $this->updateLessonDate($lessonRequest);
+                   
+                    sendNotification('قبول طلب التاجيل','تم الموافقة على طلب تاجيلك للجلسة  ',
+                    $lessonRequest->user_id,'user', 'course_session_request',
+                    $lessonRequest->id);
                 } else {
                     $this->cancelLesson($lessonRequest);
+                  
+                    sendNotification('قبول طلب الغاء الجلسة','تم الموافقة على طلب الغاءك للجلسة  ',
+                    $lessonRequest->user_id,'user', 'course_session_request',
+                    $lessonRequest->id);
+                }
+            }else{
+                if ($lessonRequest->type == 'postpone') {
+                  
+                    sendNotification('رفض طلب التاجيل الجلسة','تم رفض طلب تاجيلك للجلسة  ',
+                    $lessonRequest->user_id,'user', 'course_session_request',
+                    $lessonRequest->id);
+                } else {
+                    sendNotification('رفض طلب الغاء الجلسة','تم رفض طلب الغاءك للجلسة  ',
+                    $lessonRequest->user_id,'user', 'course_session_request',
+                    $lessonRequest->id);
                 }
             }
             $message = __("lesson request updated");
