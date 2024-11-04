@@ -103,6 +103,7 @@
                                                 <th>{{ __('actions') }}</th>
                                                 <th>{{ __('Start Session') }}</th>
                                                 <th>{{ __('password') }}</th>
+                                                <th>{{ __('recording_link') }}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -174,15 +175,20 @@
                                                     <td>
                                                     @if ($isSessionNow)
                                                     @if(! $session->public_password)
-                                                        <p style="color:#8B0000;font-size:13px">{{__('waiting_password')}}</p>
+                                                        <p style="color:#8B0000;font-size:13px" >{{__('waiting_password')}}</p>
                                                         @else
-                                                            {{ $session->public_password }}
+                                                          <p class="pass {{$session->id}}">  {{ $session->public_password }}</p>
                                                     @endif
+                                                    @endif
+                                                    </td>
+                                                    <td>
+                                                    @if($isSessionInPast)
+                                                        <a target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
                                                     @endif
                                                     </td>
 
                                                 @else
-                                                <td colspan="2"><p style="color:#8B0000">{{__('you_not_subscribed')}}</p></td>
+                                                <td colspan="3"><p style="color:#8B0000">{{__('you_not_subscribed')}}</p></td>
                                                 @endif
 
                                                 
@@ -223,6 +229,7 @@
                                                 <th>{{ __('Start Session') }}</th>
                                                 <th>{{ __('action') }}</th>
                                                 <th>{{ __('password') }}</th>
+                                                <th>{{ __('recording_link') }}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -290,9 +297,14 @@
                                                             @endif
                                                         </div>
                                                     </td>
+                                                    <td>
+                                                    @if($isSessionInPast)
+                                                        <a target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
+                                                    @endif
+                                                    </td>
                                                     
                                                     @else
-                                                    <td colspan="3">
+                                                    <td colspan="4">
                                                         <p style="color:#8B0000">{{__('you_not_subscribed')}}</p>
                                                     </td>
                                                     @endif
@@ -396,12 +408,9 @@
                 method="POST">
                 @csrf
                 <input hidden id="modelSessionId" name="id">
-                <label> {{__('name')}}
-                    <input class="form-control" value=""
-                            name="userName">
-                </label>
+               
                 <label>{{__('password')}}
-                    <input class="form-control" value=""
+                    <input class="form-control sessionPass" value=""
                             name="password">
                 </label>
                 <br><br>
@@ -465,6 +474,8 @@ $(document).on('click','.payInstallment',function(){
 $(document).on('click','.bigBlueSessonBtnModal',function(){
     var id = $(this).attr('alt');
     $('#modelSessionId').val(id);
+    var pass = $('.pass'+'.'+id).text();
+    $('.sessionPass').val(pass);
     $('#bigBlueSessonTable').modal('show');
 });
 

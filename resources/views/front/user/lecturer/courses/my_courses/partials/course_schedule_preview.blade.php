@@ -87,7 +87,6 @@
                                         <th>{{ __('request') }}</th>
                                         <th>{{ __('actions') }}</th>
                                         <th>{{ __('Start Session') }}</th>
-
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -146,13 +145,15 @@
                                                     <button class="btn btn-warning"
                                                             disabled>{{ __('starting_soon') }}</button>
                                                 @elseif ($isSessionInPast)
-                                                    <button class="btn btn-secondary"
-                                                            disabled>{{ __('Ended') }}</button>
+                                                     
+                                                <p class="text-center">{{ __('Ended') }}</p>
+                                                <a class="btn btn-secondary" target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
                                                 @else
                                                     <button class="btn btn-primary"
                                                             disabled>{{ __('did_not_start_yet') }}</button>
 
                                             </td>
+                                          
 
                                             @endif
                                             @endforeach

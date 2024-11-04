@@ -260,7 +260,10 @@ Route::get('/migrate',function(){
         "2024_10_31_180444_add_material_id_to_users_table.php",
 
         //categories
-        "2024_11_01_233045_add_grade_sub_level_id_column_to_categories_table.php"
+        "2024_11_01_233045_add_grade_sub_level_id_column_to_categories_table.php",
+
+        //course_sessions
+        "2024_11_04_135359_add_meeting_id_to_course_sessions_table.php"
 
     ];
 

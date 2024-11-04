@@ -33,11 +33,11 @@
                                     'href' => route('courses.index'),
                                 ],
 
-                                [
+                               /* [
                                     'title' => __('packages'),
                                     'is_active' => @$is_active == 'packages' ? 'active' : '',
                                     'href' => route('packages.index'),
-                                ],
+                                ], */
 
                                 [
                                     'title' => __('blog'),

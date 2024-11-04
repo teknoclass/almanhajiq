@@ -859,19 +859,19 @@ class CourseCurriculumEloquent extends HelperEloquent
             abort(404);
         }
 
-        $getRecordingsParams = new GetRecordingsParameters();
-        $live_lesson_id = 'live_lesson_id_'.$lesson->id;
-        $getRecordingsParams->meetingId = $live_lesson_id;
+        // $getRecordingsParams = new GetRecordingsParameters();
+        // $live_lesson_id = 'live_lesson_id_'.$lesson->id;
+        // $getRecordingsParams->meetingId = $live_lesson_id;
 
-        $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
+        // $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
 
-        if (!empty($recordings)) {
-            $firstRecording = $recordings[0];
+        // if (!empty($recordings)) {
+        //     $firstRecording = $recordings[0];
 
-            $playbackURL = $firstRecording['playback']['format'][0]['url'];
+        //     $playbackURL = $firstRecording['playback']['format'][0]['url'];
 
-            $lesson->recording_link = $playbackURL;
-        }
+        //     $lesson->recording_link = $playbackURL;
+        // }
 
         $lesson->meeting = "finished";
         $lesson->update();

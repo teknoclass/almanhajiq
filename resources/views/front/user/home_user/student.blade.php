@@ -30,12 +30,12 @@
 		        'icon' => 'fa-calendar',
 		        'count' => @$upcoming_private_lessons_count,
 		    ],
-		    [
-		        'title' => __('my_packages'),
-		        'route' => route('user.packages.index'),
-		        'icon' => 'fa-calendar',
-		        'count' => @$my_packages_count,
-		    ],
+		   // [
+		     //   'title' => __('my_packages'),
+		      //  'route' => route('user.packages.index'),
+		      //  'icon' => 'fa-calendar',
+		       // 'count' => @$my_packages_count,
+		   // ],
 		];
 	@endphp
 

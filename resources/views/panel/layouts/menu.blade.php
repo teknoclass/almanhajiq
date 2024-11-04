@@ -117,7 +117,7 @@
             ],
         ],
 
-        [
+      /*  [
             'name' => __('packages'),
             'type' => '',
             'href' => 'javascript:;',
@@ -142,7 +142,7 @@
                     'sub_menu' => [],
                 ],
             ],
-        ],
+        ], */
         [
             'name' => __('certificate_templates'),
             'type' => '',
