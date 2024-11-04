@@ -144,7 +144,7 @@ class CourseSession extends Model
 
         $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
 
-        if (!empty($recordings)) {
+        if (!empty($recordings) && isset($recordings[0])) {
             $firstRecording = $recordings[0];
 
             $playbackURL = $firstRecording['playback']['format'][0]['url'];
