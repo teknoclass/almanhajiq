@@ -182,7 +182,7 @@
                                                     @endif
                                                     </td>
                                                     <td>
-                                                    @if($isSessionInPast)
+                                                    @if($isSessionInPast && $session->getRecording() != "")
                                                         <a target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
                                                     @endif
                                                     </td>
@@ -298,7 +298,7 @@
                                                         </div>
                                                     </td>
                                                     <td>
-                                                    @if($isSessionInPast)
+                                                    @if($isSessionInPast && $session->getRecording() != "")
                                                         <a target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
                                                     @endif
                                                     </td>

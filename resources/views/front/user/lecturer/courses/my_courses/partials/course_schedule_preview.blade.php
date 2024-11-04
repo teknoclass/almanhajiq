@@ -147,7 +147,9 @@
                                                 @elseif ($isSessionInPast)
                                                      
                                                 <p class="text-center">{{ __('Ended') }}</p>
+                                                @if($session->getRecording() != "")
                                                 <a class="btn btn-secondary" target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
+                                                @endif
                                                 @else
                                                     <button class="btn btn-primary"
                                                             disabled>{{ __('did_not_start_yet') }}</button>
