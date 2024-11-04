@@ -189,7 +189,7 @@ class CoursesEloquent extends HelperEloquent
                 });
             });
         })
-       
+
             // to show the ongoing courses at first
             ->selectSub('SELECT MAX(user_courses.is_end) FROM user_courses WHERE user_courses.course_id = courses.id', 'is_end')
             ->addSelect([

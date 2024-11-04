@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        if ($request->is('api/*')) {
+        /* if ($request->is('api/*')) {
 
             if ($e instanceof ApiException) {
                 Log::error($e->getMessage());
@@ -77,7 +77,7 @@ class Handler extends ExceptionHandler
                 new ErrorResponse('Internal Server Error', Response::HTTP_INTERNAL_SERVER_ERROR),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
-        }
+        } */
 
         // For non-API routes, use the default handling
         return parent::render($request, $e);

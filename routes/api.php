@@ -4,11 +4,15 @@ use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\API\LiveSessionController;
 use App\Http\Controllers\Api\PagesController;
+use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\TeacherController;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Route;
+use Twilio\Rest\Api\V2010\Account\Call\PaymentContext;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,3 +87,34 @@ Route::group(['middleware' => 'language', 'prefix' => 'live-sessions'], function
 });
 
 Route::get('/teacher/{id}', [TeacherController::class, 'findTeacherById'])->name('teacher')->middleware('language');
+
+//payment
+
+Route::group(['middleware' => 'language', 'prefix' => 'payment'], function () {
+
+    Route::post('/fullCourse',[PaymentController::class,'fullSubscribe']);
+    Route::get('/full-subscribe-course-confirm',[PaymentController::class,'fullConfirmSubscribe']);
+
+
+    Route::post('/subscribe-to-course-sessions',[PaymentController::class,'subscribe']);
+    Route::get('/subscribe-to-course-sessions-confirm',[PaymentController::class,'confirmSubscribe']);
+    Route::get('/subscribe-to-course-group-confirm',[PaymentController::class,'confirmSubscribeGroup']);
+
+
+
+
+});
+
+//course session
+
+
+Route::group(['middleware' => 'language', 'prefix' => 'courseSession'], function () {
+
+    Route::post('/join',[LiveSessionController::class,'joinLiveSession']);
+
+
+});
+
+
+
+
