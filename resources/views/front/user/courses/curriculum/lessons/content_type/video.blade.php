@@ -2,7 +2,7 @@
     <div class="col-12">
         @switch(@$course_item->storage)
             @case('upload')
-            <video class="player" id="videoPlayer" controls>
+            <video class="player" id="videoPlayer" controls preload="auto">
                     <source type="video/mp4">
                 </video>
                 @break

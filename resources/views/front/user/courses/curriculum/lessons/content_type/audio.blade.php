@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-12">
   
-    <audio class="player" id="audioPlayer" controls>
+    <audio class="player" id="audioPlayer" controls preload="auto">
                     <source type="audio/mp3">
     </audio>
     </div>

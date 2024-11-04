@@ -731,7 +731,7 @@ class CourseCurriculumEloquent extends HelperEloquent
 
     public function getCourse($course_id)
     {
-        $course = Courses::withTrashed()->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete')
+        $course = Courses::withTrashed()->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','lessons_follow_up')
         ->with('translations:courses_id,title,locale,description')
         ->where('id', $course_id)
         ->addSelect([

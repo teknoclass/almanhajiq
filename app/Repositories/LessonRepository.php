@@ -55,8 +55,12 @@ class LessonRepository extends BaseRepository
 
             $data['downloadable'] = isset($data['downloadable']) ? 1 : 0;
             $data['status'] = isset($data['status']) ? 'active' : 'inactive';
-
-            $data['file'] = FileUploadService::handleFileUpload($data,$request, $data['course_id'], $data['file_type'], $data['video_type'] ?? null);
+            if($request->file('upload'))
+            {
+                $data['file'] = FileUploadService::handleFileUpload($data,$request, $data['course_id'], $data['file_type'], $data['video_type'] ?? null);
+            }else{
+                $data['file'] = CourseLessons::find( $data['id'])->file ?? "";
+            }
 
             $item = CourseLessons::updateOrCreate(['id' => $data['id']], $data)->createTranslation($request);
 
