@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
 use App\Models\{CourseSessionSubscription,CourseSession,CourseSessionsGroup};
 use App\Services\PaymentService;
+use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
 
 class CourseSessionSubscriptionsController extends Controller
@@ -22,6 +23,18 @@ class CourseSessionSubscriptionsController extends Controller
     }
 
     public function subscribe(Request $request)
+    {
+        $course = Courses::find($request->id);
+
+        if($request->payment_type == "gateway")
+        {
+            return $this->paymentGateway($request);
+        }else{
+            return $this->zainCash($request);
+        }
+    }
+
+    public function paymentGateway(Request $request)
     {
         $response = $this->paymentService->processPayment([
             "amount" => $request->price,
@@ -65,6 +78,11 @@ class CourseSessionSubscriptionsController extends Controller
                 'message' => __('message.unexpected_error'),
             ];
         } 
+    }
+
+    public function zainCash(Request $request)
+    {
+
     }
 
     public function confirmSubscribe()

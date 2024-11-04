@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
 use App\Models\{StudentSessionInstallment,CourseSession};
 use App\Services\PaymentService;
+use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
 
 class CourseSessionInstallmentsController extends Controller
@@ -21,6 +22,18 @@ class CourseSessionInstallmentsController extends Controller
     }
 
     public function pay(Request $request)
+    {
+        $course = Courses::find($request->id);
+
+        if($request->payment_type == "gateway")
+        {
+            return $this->paymentGateway($request);
+        }else{
+            return $this->zainCash($request);
+        }
+    }
+
+    public function paymentGateway(Request $request)
     {
        $response = $this->paymentService->processPayment([
             "amount" => $request->price,
@@ -54,6 +67,11 @@ class CourseSessionInstallmentsController extends Controller
                 'message' => __('message.unexpected_error'),
             ];
         }  
+    }
+
+    public function zainCash(Request $request)
+    {
+
     }
 
     public function confirmPayment(Request $request)
