@@ -7,7 +7,7 @@
   
     <div class="payment-option-card" id="credit-card">
         <img src="{{asset('assets/front/images/qi-logo.png')}}" alt="Credit Card">
-        <h3>Qi</h3>
+        <h3>{{__('visa_master')}}</h3>
         
         <button 
         style="color:white;font-size:16px;font-weight:normal"
@@ -27,7 +27,7 @@
   
     <div class="payment-option-card" id="credit-card">
         <img src="{{asset('assets/front/images/zain-cash.png')}}" alt="Credit Card">
-        <h3>Zain cash</h3>
+        <h3>{{__('zain_cash')}}</h3>
     
         <button 
         style="color:white;font-weight:normal"

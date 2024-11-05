@@ -964,7 +964,7 @@ function sendOtpToWhatsapp($to_mobile,$otp)
 
 function genereatePaymentOrderID()
 {
-    return preg_replace('/[^A-Za-z]/', '', Str::random(10)).rand(1,1000);
+    return preg_replace('/[^A-Za-z]/', '', Str::random(10)).rand(1,1000).rand(1,10);
 }
 
 function checkIfstudentFullySubscribeOnCourse($course_id)

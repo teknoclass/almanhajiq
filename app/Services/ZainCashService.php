@@ -29,7 +29,7 @@ class ZainCashService
     {
         try {
         $orderId = genereatePaymentOrderID();
-        $token = $this->generateToken($amount,$orderId,$redirectUrl,"book");
+        $token = $this->generateToken($amount,$orderId,$redirectUrl,$service_type);
 
         //POSTing data to ZainCash API
         $data_to_post = array();
