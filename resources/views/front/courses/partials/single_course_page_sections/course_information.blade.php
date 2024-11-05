@@ -58,14 +58,14 @@
                                         stroke-linejoin="round" />
                                 </svg>
                             </span>
-                            <span class="num">{{$course->getDurationInMonths()}}</span>
+                            <span class="num">{{$course->getDurationInDays()}} {{__('days')}}</span>
                         </div>
                     </div>
                 </div>
                     @endif
                 <div class="col-6 col-md-3 mb-3">
                     <div class="content">
-                        <h4 class="text-color-muted-02 mb-3">{{ __('level') }}</h4>
+                        <h4 class="text-color-muted-02 mb-3">{{ __('grade_level') }}</h4>
                         <div>
                             <span>
                                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
@@ -82,7 +82,7 @@
                                         stroke-linejoin="round" />
                                 </svg>
                             </span>
-                            <span class="num">{{__($course->level()->first()->name)}}</span>
+                            <span class="num">{{@App\Models\Category::find(@$course->grade_level_id)->name ?? ""}} </span>
                         </div>
                     </div>
                 </div>

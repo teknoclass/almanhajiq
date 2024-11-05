@@ -31,15 +31,16 @@
                                             @if ( @$course->priceDetails && (@$course->priceDetails->price != '' || @$course->priceDetails->price != 0) )
                                             <div class="col-12">
                                                 <div class="form-group text-center my-1">
-                                                    <button id="submit_free_reg_btn" type="button"
-                                                        class="secondary-btn p-1 confirm-free-registeration"
+                                                <a href="{{ url('/user/full-select-payment-method', ['course_id' => $course->id ?? '']) }}"
+                                                id="stop-submit_free_reg_btn" type="button"
+                                                        class="secondary-btn p-1 stop-confirm-free-registeration"
                                                         data-url="{{ url('user/full-subscribe-course') }}"
                                                         data-id="{{ @$course->id }}"
                                                         data-to="{{ route('user.courses.curriculum.item', ['course_id' => $course->id]) }}"
                                                         data-marketer_coupon="{{ request('marketer_coupon') }}"
                                                         data-is_relpad_page="true">
                                                         {{ __('register_now') }} 
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
                                         @else
@@ -121,8 +122,8 @@
                                                       <br>
                                                       <br>
                                                         @if(! in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id || @$currentInstallment == $untilLesson) )
-                                                        <a style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
-                                                         class="payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}" data-price="{{$installment->price}}">{{__('payment')}} 
+                                                        <a href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $untilLesson ?? '','price' => $installment->price]) }}" style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
+                                                         class="stop-payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}" data-price="{{$installment->price}}">{{__('payment')}} 
                                                         </a>
                                                         @elseif(in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id) )
                                                         <a style="position:absolute;bottom:5px;text-align:center;cursor:not-allowed;background-color:gray"
@@ -149,44 +150,4 @@
             
 @push('front_js')
     <script src="{{ asset('assets/front/js/post.js') }}"></script>
- 
-
-    <script>
-    $(document).ready(function(){
-
-        $(document).on('click','.payInstallment',function(){
-            var id = $(this).attr('alt');
-            var course_id = "{{@$course->id}}";
-            var price = $(this).data('price');
-           
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{url('/user/pay-to-course-session-installment')}}",
-                data:{id:id,course_id:course_id,price:price},
-                method: 'post',
-                success: function (response) {
-                    $(".payInstallment"+"."+id).attr('disabled',true);
-                    $(".payInstallment"+"."+id).css({
-                        "pointer-events": "none",  
-                        "opacity": "0.5",          
-                        "cursor": "not-allowed"   
-                    });
-
-                    if(response.status_msg == "error")
-                    {
-                        customSweetAlert(
-                            response.status_msg,
-                            response.message,
-                        );
-                    }
-                    window.location.href = response.payment_link;
-                }
-            });
-          
-        });
-
-    });
-    </script>
 @endpush

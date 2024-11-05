@@ -82,11 +82,11 @@
                     'permissions' => 'show_course_ratings',
                     'sub_menu' => [],
                 ],
-                            [
-                    'name' => __('private_lessons_requests'),
-                    'type' => 'private_lessons_requests',
+                [
+                    'name' => __('course_session_requests'),
+                    'type' => '',
                     'href' => route('panel.CourseSessionRequests.index'),
-                    'permissions' => 'show_private_lessons',
+                    'permissions' => 'show_courses',
                     'sub_menu' => [],
                 ]
             ],
@@ -117,7 +117,7 @@
             ],
         ],
 
-        [
+      /*  [
             'name' => __('packages'),
             'type' => '',
             'href' => 'javascript:;',
@@ -142,7 +142,7 @@
                     'sub_menu' => [],
                 ],
             ],
-        ],
+        ], */
         [
             'name' => __('certificate_templates'),
             'type' => '',
@@ -221,27 +221,27 @@
             ],
         ],
         [
-            'name' =>__('grade_levels'),
+            'name' =>__('grade_sub_level'),
             'type' => '',
             'href' => 'javascript:;',
             'id' => 'pages',
-            'permissions' => 'show_grade_levels',
-            'all_permissions' => ['show_grade_levels'],
+            'permissions' => 'show_course_categories',
+            'all_permissions' => ['show_course_categories'],
             'icon' => '/assets/panel/media/icons/duotone/Devices/Server.svg',
             'sub_menu' => [
                 [
                     'name' => __('all'),
                     'type' => '',
                     'href' => route('panel.categories.all.index', ['parent' => 'grade_levels']),
-                    'permissions' => 'show_grade_levels',
-                    'all_permissions' => ['show_grade_levels'],
+                    'permissions' => 'show_course_categories',
+                    'all_permissions' => ['show_course_categories'],
                     'sub_menu' => [],
                 ],
                 [
                     'name' => __('add'),
                     'type' => '',
                     'href' => route('panel.categories.create.index', ['parent' => 'grade_levels']),
-                    'permissions' => 'show_grade_levels',
+                    'permissions' => 'show_course_categories',
                     'sub_menu' => [],
                 ],
             ],

@@ -5,6 +5,7 @@ namespace App\Repositories\Front;
 use App\Models\Pages;
 use App\Models\OurMessages;
 use App\Models\OurTeams;
+use App\Models\OurPartners;
 
 class PagesEloquent
 {
@@ -28,6 +29,10 @@ class PagesEloquent
 
         $data['teams'] = OurTeams::select('id', 'image')
             ->with('translations:our_teams_id,name,job,description,locale')->get();
+
+        $data['partners'] = OurPartners::select('id','image')->
+        with('translations:our_partners_id,title,locale')
+            ->orderByDesc('created_at')->get();
 
         if ($data['item'] == '') {
             abort(404);

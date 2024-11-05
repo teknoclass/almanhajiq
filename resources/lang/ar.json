@@ -155,7 +155,7 @@
     "message.you_try_a_lot_and_a_new_code_is_sent_to_you": "قمت بالمحاولة كثيره ويتم ارسال لك كود جديد",
     "message.enter_a_valid_activation_code": "نأسف! كود التحقق غير صحيح",
     "message.unable_to_resend_try_again_in_an_hour": "لا يمكن اعادة الارسال ,حاول بعد ساعة",
-    "message.cant_try_now": "لا يمكن المحاولة الان , حاول بعد ساعة",
+    "message.cant_try_now": "لا يمكن المحاولة الان , انتظر دقائق ثم اعد المحاولة",
     "message.can_not_withdraw_less_than": "لا يمكن سحب اقل من",
     "message.resend_successfully": "تم إعادة الارسال بنجاح",
     "message.the_start_date_does_not_correspond_to_the_first_day": "تاريخ البدء غير متوافق مع اول يوم",
@@ -1047,9 +1047,10 @@
     "lesson postpone request sent": "تم إرسال طلب تأجيل الدرس",
     "can't postpone lesson date": "لا يمكن تأجيل موعد الدرس",
     "my_live_lessons_requests": "طلبات دروسي الخصوصية",
-    "grade_levels": "المراحل العلمية",
-    "grade_level": "المرحلة العلمية",
-    "grade_sub_level": "الصفوف العلمية",
+    "grade_levels": "المراحل الدراسية",
+    "grade_level": "المرحلة الدراسية",
+    "grade_sub_level": "الصفوف الدراسية",
+    "grade_sub_level_id": "الصف الدراسي",
     "Add Group": "إضافة مجموعة",
     "enter_group_title": "أدخل عنوان المجموعة",
     "add_group": "إضافة مجموعة",
@@ -1184,7 +1185,18 @@
     "and_We_will_mail_you_with_your_login_credintials_after_admin_confirmation":"سوف نرسل لكم بيانات الدخول بعد موافقة الادمن",
     "dob":"تاريخ الميلاد",
     "iraq_currency":"الدينار العراقي",
-    "material":"المادة"
+    "material":"المادة",
+    "course_session_requests":"طلبات جلسات الدورات",
+    "request":"الطلب",
+    "Suggested Dates" : "المواعيد المقترحة",
+    "chosen_date":"التاريخ المختار",
+    "recording_link":"رابط التسجيل",
+    "select_payment_method":"اختر طريقة الدفع",
+    "select_method":"اختر وتابع الدفع",
+    "amount_must_exceed_1000_iqd":"المبلغ يجب أن يكون اكبر من 1000 دينار عراقي",
+    "visa_master":"بطاقة بنكية - (فيزا-ماستر كارد)",
+    "zain_cash":"زين كاش"
+
 
 
 }

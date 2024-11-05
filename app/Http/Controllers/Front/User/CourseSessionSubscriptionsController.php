@@ -9,26 +9,51 @@ use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
 use App\Models\{CourseSessionSubscription,CourseSession,CourseSessionsGroup};
 use App\Services\PaymentService;
+use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CourseSessionSubscriptionsController extends Controller
 {
 
     protected PaymentService $paymentService;
+    protected ZainCashService $zainCashService;
 
     public function __construct()
     {
        $this->paymentService = new PaymentService();
+       $this->zainCashService = new ZainCashService();
+    }
+
+    public function selectPaymentMethod(Request $request)
+    {
+        $data['id'] = $request->id;
+        $data['course_id'] = $request->course_id;
+        $data['type'] = $request->type;
+        $data['price'] = $request->price;
+
+        return view('front.payment-options.offer-subscription', $data);
     }
 
     public function subscribe(Request $request)
+    {
+        if($request->payment_type == "gateway")
+        {
+            return $this->paymentGateway($request);
+        }else{
+            return $this->zainCash($request);
+        }
+    }
+
+    public function paymentGateway(Request $request)
     {
         $response = $this->paymentService->processPayment([
             "amount" => $request->price,
             "currency" => "IQD",
             "successUrl" => url('/user/subscribe-to-course-sessions-confirm')
         ]);  
-        
+      
         if($request->type == "group")
         {
             $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
@@ -58,6 +83,53 @@ class CourseSessionSubscriptionsController extends Controller
             return  $response = [
                 'status_msg' => 'success',
                 'payment_link' => $response['data']['link']
+            ];
+        }else{
+            return  $response = [
+                'status_msg' => 'error',
+                'message' => __('message.unexpected_error'),
+            ];
+        } 
+    }
+
+    public function zainCash(Request $request)
+    {
+        if($request->type == "group")
+        {
+            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSessionsGroup";
+        }else{
+            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSession";
+        }
+
+        $response = $this->zainCashService->processPayment($request->price,
+        url('/user/subscribe-to-course-sessions-confirm'), $description);  
+      
+       
+        if(isset($response['id']))
+        {
+            $paymentDetails = [
+                "description" => $description,
+                "orderId" => $response['orderId'],
+                "payment_id" => $response['id'],
+                "amount" => $request->price,
+                "transactionable_type" => $transactionable_type,
+                "transactionable_id" => $request->target_id,
+                "brand" => "zaincash",
+                "transaction_id" => $response['referenceNumber'],
+                'course_id' => $request->course_id,
+                "purchase_type" => $request->type
+            ];
+    
+            session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
+
+            $transaction_id = $response['id'];
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+
+            return  $response = [
+                'status_msg' => 'success',
+                'payment_link' => $paymentUrl
             ];
         }else{
             return  $response = [
@@ -124,11 +196,13 @@ class CourseSessionSubscriptionsController extends Controller
 
             DB::commit(); 
 
-            return redirect(url("/user/courses/curriculum/item/".$course_id));
-        } catch (\Exception $e)
+            return redirect("/user/courses/curriculum/item/".$course_id);
+        }
+        catch (\Exception $e)
         {
             DB::rollback(); 
-            return url('/payment-failure'); 
+            Log::error($e->getMessage());
+            return redirect('/payment-failure'); 
         }
     }
 

@@ -163,7 +163,7 @@ class PaymentController extends Controller
                 ['course_details' => ['title' => $title]],
                 ['payment_link' => [
                     'name' => 'iq',
-                    'image' => imageUrl(''),
+                    'image' => imageUrl('visa.png'),
                     'link' => $response['data']['link']
                 ]]
             ],Response::HTTP_OK);

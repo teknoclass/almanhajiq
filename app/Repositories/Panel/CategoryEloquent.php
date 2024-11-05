@@ -37,7 +37,14 @@ class CategoryEloquent
             Category::query()->select('id', 'value', 'parent', 'key')
                 ->with('translations:category_id,name,locale')
                 ->whereNull('parent')->get();
-
+        $data['parent'] = $parent;
+        if($parent == "grade_levels")
+        {
+            $data['grade_levels'] =  Category::query()->select('id', 'value', 'parent', 'key')
+            ->with('translations:category_id,name,locale')
+            ->where('key','grade_levels')->get();
+        }
+        $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
         $data['category'] = Category::query()->where('key', $parent)->first();
 
         return $data;
@@ -46,7 +53,15 @@ class CategoryEloquent
     public function edit($parent, $id)
     {
         $data['item'] = Category::find($id);
+        if($parent == "grade_levels")
+        {
+            $data['grade_levels'] =  Category::query()->select('id', 'value', 'parent', 'key')
+            ->with('translations:category_id,name,locale')
+            ->where('key','grade_levels')->get();
+        }
+        $data['parent'] = $parent;
         $data['category'] = Category::query()->where('key', $parent)->first();
+        $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
         if (!$data['item']) {
             abort(404);
         }
@@ -59,16 +74,24 @@ class CategoryEloquent
     {
         DB::beginTransaction();
         try {
-            $parent = Category::select('id', 'key', 'parent', 'value')->where('key', $parent)->first();
+            if($parent == "grade_levels")
+            {
+                $request['parent'] = "grade_levels";
+                $request['key'] = null;
+                $request['value'] = Category::find($request->parent_id)->value ?? null;
+                Category::updateOrCreate(['id' => 0], $request->all())->createTranslation($request);
+            }else{
+                
+                $parent = Category::select('id', 'key', 'parent', 'value')->where('key', $parent)->first();
 
-            $request['parent'] = $parent->key;
+                $request['parent'] = $parent->key;
 
-            $value = Category::select('id', 'key', 'parent', 'value')->where('parent', $parent->key)->withTrashed()->max('value');
+                $value = Category::select('id', 'key', 'parent', 'value')->where('parent', $parent->key)->withTrashed()->max('value');
 
-            $request['value'] = $value + 1;;
+                $request['value'] = $value + 1;;
 
-            Category::updateOrCreate(['id' => 0], $request->all())->createTranslation($request);
-
+                Category::updateOrCreate(['id' => 0], $request->all())->createTranslation($request);
+            }
             DB::commit();
             $message = __('message_done');
             $status = true;
@@ -91,12 +114,19 @@ class CategoryEloquent
     {
         DB::beginTransaction();
         try {
-            $parent = Category::select('id', 'key', 'parent', 'value')->where('key', $parent)->first();
+            if($parent == "grade_levels")
+            {
+                $request['parent'] = "grade_levels";
+                $request['key'] = null;
+                $request['value'] = Category::find($request->parent_id)->value ?? null;
+                Category::updateOrCreate(['id' => $id], $request->all())->createTranslation($request);
+            }else{
+                $parent = Category::select('id', 'key', 'parent', 'value')->where('key', $parent)->first();
 
-            $request['parent'] = $parent->key;
+                $request['parent'] = $parent->key;
 
-            Category::updateOrCreate(['id' => $id], $request->all())->createTranslation($request);
-
+                Category::updateOrCreate(['id' => $id], $request->all())->createTranslation($request);
+            }
             DB::commit();
             $message = __('message_done');
             $status = true;

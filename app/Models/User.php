@@ -447,9 +447,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
         public function scopeFilterByMaterials($q, $search)
         {
-            return $q->whereHas('materials', function ($q) use ($search) {
-                $q->whereIn('category_id', $search);
-            });
+            // return $q->whereHas('materials', function ($q) use ($search) {
+            //     $q->whereIn('category_id', $search);
+            // });
+
+            return $q->whereIn('material_id', $search);
         }
 
         public function scopeFilterByLanguages($q, $search)

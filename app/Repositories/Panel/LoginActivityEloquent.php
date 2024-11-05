@@ -44,8 +44,33 @@ class LoginActivityEloquent
                                  });
                              }
                          })
-                         ->rawColumns(['role'])
+                         ->addColumn('action', 'panel.login_activity.partials.actions')
+                         ->rawColumns(['role','action'])
                          ->make(true);
 
+    }
+
+    public function delete($id)
+    {
+        $item = LoginActivity::find($id);
+        if ($item) {
+            $item->delete();
+            $message = __('delete_done');
+            $status = true;
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
+            return $response;
+        }
+        $message = __('message_error');
+        $status = false;
+
+        $response = [
+            'message' => $message,
+            'status' => $status,
+        ];
+
+        return $response;
     }
 }

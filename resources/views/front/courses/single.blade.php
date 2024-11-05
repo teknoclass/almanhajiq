@@ -44,11 +44,25 @@
                         'blade' => 'latest_reviews',
                     ]
                     : null,
-                @$course->faqs && @$course->faqs->isNotEmpty()
+                    @$course->faqs && @$course->faqs->isNotEmpty()
                     ? [
                         'title' => __('faqs'),
                         'tab' => 'faqs',
                         'blade' => 'faqs',
+                    ]
+                    : null,
+                    @$course->forWhomThisCourse && @$course->forWhomThisCourse->isNotEmpty()
+                    ? [
+                        'title' => __('tools_requierd'),
+                        'tab' => 'tools_requierd',
+                        'blade' => 'tools_requierd',
+                    ]
+                    : null,
+                @$course->whatWillYouLearn && @$course->whatWillYouLearn->isNotEmpty()
+                    ? [
+                        'title' => __('what_learn'),
+                        'tab' => 'what_learn',
+                        'blade' => 'what_learn',
                     ]
                     : null,
                 !@$course->isSubscriber() && !checkUser('lecturer') && !checkUser('marketer')

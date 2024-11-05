@@ -107,171 +107,10 @@
                 </div>
             </div>
         </div>
-       {{-- <div class="col-12 col-md-6 col-lg-4 mb-4">
-            <div class="progress-box">
-                <div class="row">
-                    <div class="col-6 mb-2">
-                        <div class="d-flex aling-items-center justify-content-center flex-wrap text">
-                            <span class="flex-fill">
-                                مهارات التواصل
-                            </span>
-                            <span>
-                                98%
-                            </span>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="75"
-                            aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-color-secondary" style="width: 98%"></div>
-                        </div>
-                    </div>
-                    <div class="col-6 mb-2">
-                        <div class="d-flex aling-items-center justify-content-center flex-wrap text">
-                            <span class="flex-fill">
-                                معرفته بالمادة
-                            </span>
-                            <span>
-                                99%
-                            </span>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="75"
-                            aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-color-secondary" style="width: 99%"></div>
-                        </div>
-                    </div>
-                    <div class="col-6 mb-2">
-                        <div class="d-flex aling-items-center justify-content-center flex-wrap text">
-                            <span class="flex-fill">
-                                مهارات حل المشكلات
-                            </span>
-                            <span>
-                                78%
-                            </span>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="75"
-                            aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-color-secondary" style="width: 78%"></div>
-                        </div>
-                    </div>
-                    <div class="col-6 mb-2">
-                        <div class="d-flex aling-items-center justify-content-center flex-wrap text">
-                            <span class="flex-fill">
-                                قدراته التحفيزية
-                            </span>
-                            <span>
-                                100%
-                            </span>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="75"
-                            aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-color-secondary" style="width: 98%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>--}}
-    </div>
-    <!--
-    <div class="row gap-3 gap-lg-0">
-        <div class="col-lg-3">
-            <div class="bg-light-green h-100 rounded-15 d-flex flex-column justify-content-between p-3 text-center">
-                <div class="data-rating d-flex align-items-center justify-content-center"><span class="d-flex"
-                        data-rating="{{ @$lecturer->getRating() }}"><i class="far fa-star"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i
-                            class="far fa-star"></i></span><span class="pt-1">{{ @$lecturer->getRating() }}</span>
-                </div>
-                <div class="row row-cols-6 justify-content-center row-cols-md-4 row-cols-lg-3 gx-lg-2">
-                    <div class="col-4">
-                        <div class="bg-light-green mb-2 text-center rounded-10 py-3">
-                            <h3 class="font-medium">{{ $teacherPrivateLessonsCount }}</h3>
-                            <h6>مرات الحجز</h6>
-                        </div>
-                    </div>
-
-                    <div class="col-4">
-                        <div class="bg-light-green mb-2 text-center rounded-10 py-3">
-                            <h3 class="font-medium">{{ $teacherStudentsPrivateLessonsCount }}</h3>
-                            <h6>عدد الطلاب</h6>
-                        </div>
-                    </div>
-
-                </div>
-                @if (@$lecturer->id != auth()->id())
-<a class="btn btn-outline-secondary py-2 px-2 mt-2" style="width:100%"
-                        href="{{ route('user.chat.open.chat', @$lecturer->id) }}">
-                        <i class="fa-solid fa-comment-dots me-1"></i>
-                        {{ __('start_chat') }}
-                    </a>
-
-                    <a class="btn btn-success py-2 px-2 mt-2" href="javascript:void()" onclick="show_appoinments_tab()"
-                        style="width:100%">
-                        <i class="fa-regular fa-calendar-check"></i>
-                        {{ __('Test_Reservation') }}
-                    </a>
-@endif
-            </div>
-        </div>
-        {{-- <div class="col-lg-6">
-            <div class="d-flex flex-column justify-content-between h-100">
-                @if (@$lecturerSetting->abstract || @$lecturerMaterials->isNotEmpty() || @$lecturerLanguages->isNotEmpty())
-                    <div class="bg-light-green rounded-15 p-3 mb-3">
-                        <div class="mb-1">
-
-                             @if (@$lecturerSetting->abstract)
-                                <h5 class="font-medium"><i class="fa-solid fa-certificate"></i> {{ @$lecturerSetting->abstract }}</h5>
-                            @endif
-                            <!--<div class="d-block font-14 text-gray mt-1">
-                                <span><i class="fa-solid fa-school"></i> المناهج:</span>
-                                <span class="occupation">المنهج المصري, </span><span class="occupation">المنهج السعودي</span>
-                            </div>-->
-
-                             @if (@$lecturerLanguages->isNotEmpty())
-                                <div class="d-block font-14 text-gray mt-2" style="line-height: 1.8;">
-                                    <span><i class="fa-solid fa-language"></i> اللغات: </span>
-                                    @foreach ($lecturerLanguages as $language)
-                                        <span class="experience">{{ @$language->name }}</span>
-                                    @endforeach
-                                </div>
-                            @endif
-                             <div class="d-block font-14 text-gray mt-2" style="line-height: 1.8;">
-                                @if (@$lecturerMaterials->isNotEmpty())
-                                    <span><i class="fa-solid fa-file-video"></i> المواد: </span>
-                                    @foreach ($lecturerMaterials as $material)
-                                        <span class="experience">{{ @$material->name }}</span>
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                {{-- <div class="row gx-lg-2">
-                     @if (@$lecturer->country->name)
-                        <div class="col-6 col-lg-3">
-                            <div class="bg-light-green mb-3 text-center rounded-10 py-3" style="height: 100px;">
-                                <h6><i class="fa-solid fa-flag"></i> الدولة</h6>
-                                <h3 class="font-medium mb-2">{{ @$lecturer->country->name }}</h3>
-                            </div>
-                        </div>
-                    @endif
-                     @if (@$lecturer->gender)
-                        <div class="col-6 col-lg-3">
-                            <div class="bg-light-green mb-3 text-center rounded-10 py-3" style="height: 100px;">
-                                <h6><i class="fa-solid fa-user"></i> الجنس</h6>
-                                <h3 class="font-medium mb-2">{{ __(@$lecturer->gender) }}</h3>
-                            </div>
-                        </div>
-                    @endif
-
-                     @if (@$lecturer->motherLang)
-                        <div class="col-6 col-lg-3">
-                            <div class="bg-light-green mb-6 text-center rounded-10 py-3" style="height: 100px;">
-                                <h6><i class="fa-solid fa-language"></i> {{ __('mother_language') }}</h6>
-                                <span class="h5 mb-2">{{ @$lecturer->motherLang->name }}</span>
-                            </div>
-                        </div>
-                    @endif
-                </div> --}}
-        {{-- @if (@$lecturerSetting->description || @$lecturerSetting->twitter || @$lecturerSetting->facebook || @$lecturerSetting->youtube || @$lecturerSetting->instagram) --}}
-        {{-- @if (@$lecturerSetting->description)
+     
+                
+        @if (@$lecturerSetting->description || @$lecturerSetting->twitter || @$lecturerSetting->facebook || @$lecturerSetting->youtube || @$lecturerSetting->instagram) 
+         @if (@$lecturerSetting->description)
                     <div class="bg-light-green rounded-15 p-3 lecturer-description-div">
                          @if (@$lecturerSetting->description)
                             <div class="mb-1">
@@ -327,13 +166,14 @@
                                 <li><a class="in" href="{{@$lecturerSetting->instagram }}"><i class="fa-brands fa-instagram"></i></a></li>
                                 @endif
                             </ul>
-                        </div>
+                            </div>
+                            </div>
+                        @endif
                     </div>
                 @endif
-                    </div>
                 @endif
             </div>
-        </div> --}}
+        </div> 
         {{-- <div class="col-lg-3">
             <div class="bg-light-green h-100 rounded-15 p-3 mb-3">
                 <div class="position-relative image-coach">
@@ -354,7 +194,6 @@
             </div>
         </div> --}}
     </div>
--->
 </div>
 
 @push('front_js')

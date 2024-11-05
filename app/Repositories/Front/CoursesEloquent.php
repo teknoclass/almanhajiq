@@ -18,7 +18,7 @@ class CoursesEloquent
     {
         $data = $this->getData($request);
 
-        $data['categories']  = Category::getCategoriesByParent('course_categories')->orderByDesc('created_at')->get();
+        // $data['categories']  = Category::getCategoriesByParent('course_categories')->orderByDesc('created_at')->get();
 
         $data['languages']  = Category::getCategoriesByParent('course_languages')->orderByDesc('created_at')->get();
 
@@ -28,139 +28,80 @@ class CoursesEloquent
         $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
         $data['grade_sub_level']      = Category::where('parent', 'grade_levels')->get();
 
+        // materials
+        $parent = Category::select('id', 'value', 'parent', 'key')->where('key', "joining_course")->first();
+        $data['categories'] = Category::query()->select('id', 'value', 'parent', 'key')->where('parent', $parent->key)
+        ->orderByDesc('created_at')->with(['translations:category_id,name,locale', 'parent'])->get();
+
         return $data;
     }
 
     public function getData($request, $count_itmes = 8)
     {
         $data['courses'] = Courses::active()->accepted()->subscribed()
-            ->select(
-                'id',
-                'image',
-                'start_date',
-                'duration',
-                'type',
-                'category_id',
-                'is_active',
-                'user_id',
-                'material_id'
-            )
-            ->with('translations:courses_id,title,locale,description')
-            ->with([
-                'category' => function ($query) {
-                    $query->select('id', 'value', 'parent')
-                        ->with('translations:category_id,name,locale');
-                }
-            ])
-            ->with([
-                'material' => function ($query) {
-                    $query->select('id', 'value', 'parent')
-                        ->with('translations:category_id,name,locale');
-                }
-            ])
-            ->addSelect([
-                'progress' => UserCourse::select('progress')
-                    ->whereColumn('course_id', 'courses.id')
-                    ->where('user_id', auth()->id())->limit(1)
-            ])
-            ->withCount('items')
-            ->orderBy('id', 'desc');
-
-        $title = $request->get('title');
-        if ($title != '') {
-            $data['courses'] = $data['courses']->filterByTitle($title);
-        }
-
-        $price_type = $request->get('price_type');
-        if ($price_type != '') {
-            $data['courses'] = $data['courses']->filterByPrice($price_type);
-        }
-
-        if ($price_type == 'paid') {
-            $price_from = $request->get('price_from');
-            $price_to = $request->get('price_to');
-            if ($price_from != '' || $price_to != '') {
-                $data['courses'] = $data['courses']->filterByPriceRange($price_from, $price_to);
+        ->select(
+            'id',
+            'image',
+            'start_date',
+            'duration',
+            'type',
+            'category_id',
+            'is_active',
+            'user_id',
+            'material_id',
+            'level_id',
+            'grade_level_id',
+            'grade_sub_level',
+            'end_date'
+        )
+        ->with('translations:courses_id,title,locale,description')
+        ->with([
+            'category' => function ($query) {
+                $query->select('id', 'value', 'parent')
+                    ->with('translations:category_id,name,locale');
             }
-        }
-
-        $course_type = $request->get('course_type');
-        if ($course_type != '') {
-            $data['courses'] = $data['courses']->filterByType($course_type);
-        }
-
-        try {
-            $category_ids = $request->get('category_ids');
-            if ($category_ids) {
-                $data['courses'] = $data['courses']->filterByCategories(json_decode($category_ids));
+        ])
+        ->with([
+            'material' => function ($query) {
+                $query->select('id', 'value', 'parent')
+                    ->with('translations:category_id,name,locale');
             }
-        } catch (\Exception $e) {
-        }
+        ])
+        ->addSelect([
+            'progress' => UserCourse::select('progress')
+                ->whereColumn('course_id', 'courses.id')
+                ->where('user_id', auth()->id())->limit(1)
+        ])
+        ->withCount('items')
+        ->orderBy('id', 'desc')
+        ->when($request->get('title') && $request->get('title') != "" ,function($q) use($request){
+            $search = $request->get('title');
+            return $q->whereHas('translations', function ($q) use ($search) {
+                return $q->where('title', 'like', '%' . $search . '%');
+            });
+        })
+        ->when($request->get('category_ids') && $request->get('category_ids') != "" ,function($q) use($request){
+            $search = json_decode($request->get('category_ids'));
 
-        try {
-            $language_ids = $request->get('language_ids');
-            if ($language_ids) {
-                $data['courses'] = $data['courses']->filterByLanguages(json_decode($language_ids));
-            }
-        } catch (\Exception $e) {
-        }
+            return $q->whereIn('material_id', $search);
+        })
+        ->when($request->get('grade_sub_level') && $request->get('grade_sub_level') != "" ,function($q) use($request){
+            $search = json_decode($request->get('grade_sub_level'));
 
-        try {
-            $level_ids = $request->get('level_ids');
-            if ($level_ids) {
-                $data['courses'] = $data['courses']->filterByLevels(json_decode($level_ids));
-            }
-        } catch (\Exception $e) {
-        }
+            return $q->where('grade_sub_level', $search);
+        })
+        ->when($request->get('id') && $request->get('id') != "" ,function($q) use($request){
+            $search = $request->get('id');
 
-        try {
-
-            $grade_sub_level = $request->get('grade_sub_level');
-
-            if ($grade_sub_level) {
-
-                $data['courses'] = $data['courses']->filterByGradeSubLevel(json_decode($grade_sub_level));
-            }
-        } catch (\Exception $e) {
-        }
-
-        try {
-            $age_range_ids = $request->get('age_range_ids');
-            if ($age_range_ids) {
-                $data['courses'] = $data['courses']->filterByAgeRanges(json_decode($age_range_ids));
-            }
-        } catch (\Exception $e) {
-        }
+            return $q->where('id', $search);
+        });
 
 
-        try {
-            $id = $request->get('id');
-            if ($id && $id != "") {
-                $data['courses'] = $data['courses']->where('id',$id);
-            }
-        } catch (\Exception $e) {
-        }
-
-        try {
-            $grade_level_id = $request->get('grade_level_id');
-            if ($grade_level_id && $grade_level_id != "") {
-                $data['courses'] = $data['courses']->where('grade_level_id',$grade_level_id);
-            }
-        } catch (\Exception $e) {
-        }
-
-        try {
-            $grade_sub_level = $request->get('grade_sub_level');
-            if ($grade_sub_level&& $grade_sub_level != "") {
-                $data['courses'] = $data['courses']->where('grade_sub_level',$grade_sub_level);
-            }
-        } catch (\Exception $e) {
-        }
-
-        $data['lecturers'] = $data['courses'] ->with([
+        $data['lecturers'] = [];
+        $data['courses']->with([
             'lecturers.lecturerSetting' => function ($query) {
                 $query->select('id', 'user_id', 'video_thumbnail', 'video_type', 'video', 'exp_years', 'twitter', 'facebook', 'instagram', 'youtube')
-                      ->with('translations:lecturer_setting_id,abstract,description,position,locale');
+                    ->with('translations:lecturer_setting_id,abstract,description,position,locale');
             }
         ])->paginate(9);
 
@@ -197,7 +138,11 @@ class CoursesEloquent
                 'can_subscribe_to_session',
                 'published',
                 'open_installments',
-                'material_id'
+                'material_id',
+                'level_id',
+                'grade_level_id',
+                'grade_sub_level',
+                'end_date'
             )
             ->with('translations:courses_id,title,locale,description,welcome_text_for_registration,certificate_text')
             ->with([
@@ -324,6 +269,10 @@ class CoursesEloquent
                 'type',
                 'category_id',
                 'is_active',
+                'level_id',
+                'grade_level_id',
+                'grade_sub_level',
+                'end_date'
             )
             ->with('translations:courses_id,title,locale,description')
             ->with([

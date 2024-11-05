@@ -34,4 +34,10 @@ class LoginActivityController extends Controller
         return $this->login_activity->getDataTable();
     }
 
+    public function delete($id)
+    {
+        $response = $this->login_activity->delete($id);
+        return $this->response_api($response['status'], $response['message']);
+    }
+
 }

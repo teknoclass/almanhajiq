@@ -22,8 +22,10 @@
                                     <div class="me-2 ms-auto text-black curriculum-head-widget-icon"><i
                                             class="fa-solid fa-chevron-down"></i></div>
                                 </div>
+                             {{--  <div id="curriculum-section-{{ @$section->id }}"
+                                    class="col-12 mx-2 collapse {{ @$selected_curriculum_item_id == @$item->id ? 'show' : '' }}"> --}}
                                 <div id="curriculum-section-{{ @$section->id }}"
-                                    class="col-12 mx-2 collapse {{ @$selected_curriculum_item_id == @$item->id ? 'show' : '' }}">
+                                    class="col-12 mx-2 collapse {{ !@$course->lessons_follow_up ? 'show' : '' }}">
                                     @foreach ($section_items as $key2 => $s_item)
                                         @php
                                             $lesson = @$s_item->itemable;

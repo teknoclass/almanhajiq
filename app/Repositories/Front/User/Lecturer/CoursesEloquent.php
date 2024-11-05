@@ -196,7 +196,7 @@ class CoursesEloquent extends HelperEloquent
 
         $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
         $data['materials'] = Category::query()->select('id', 'value', 'parent')
-        ->with('translations:material_id,name,locale')
+        ->with('translations:category_id,name,locale')
         ->where('parent', 'joining_course')
         ->orderByDesc('created_at')->get();
 

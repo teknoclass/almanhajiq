@@ -108,33 +108,13 @@
             var course_id = "{{@$course->id}}";
             var price = $('.sessionGroupId option:selected').data('price');
 
-            if(target_id != "")
-            {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{url('/user/subscribe-to-course-sessions')}}",
-                data:{target_id:target_id,type:type,price:price,course_id:course_id},
-                method: 'post',
-                success: function (response) {
-                    $('.sessionGroupId option[value="' + target_id + '"]').remove();
-                    if(response.status_msg == "error")
-                    {
-                        customSweetAlert(
-                            response.status_msg,
-                            response.message,
-                        );
-                    }
-                    window.location.href = response.payment_link;
-                }
-            });
-            }else{
-                customSweetAlert(
-                        'error',
-                         'اختر الوحدة من فضلك',
-                    );
-            }
+            var url = "{{ url('/user/session-select-payment-method') }}" + 
+              "/" + course_id + 
+              "/" + target_id + 
+              "/" + price +
+              "/group";
+
+             window.location.href = url;
         });
 
         $(document).on('click','.subscribeToSession',function(){
@@ -143,35 +123,15 @@
             var course_id = "{{@$course->id}}";
             var price = $('.sessionId option:selected').data('price');
 
-            if(target_id != "")
-            {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{url('/user/subscribe-to-course-sessions')}}",
-                data:{target_id:target_id,type:type,price:price,course_id:course_id},
-                method: 'post',
-                success: function (response) {
-                    $('.sessionId option[value="' + target_id + '"]').remove();
-                    if(response.status_msg == "error")
-                    {
-                        customSweetAlert(
-                            response.status_msg,
-                            response.message,
-                        );
-                    }
-                    window.location.href = response.payment_link;
-                }
-            });
-            }else{
-                customSweetAlert(
-                        'error',
-                         'اختر الدرس من فضلك',
-                    );
-            }
-        });
+            var url = "{{ url('/user/session-select-payment-method') }}" + 
+              "/" + course_id + 
+              "/" + target_id + 
+              "/" + price +
+              "/session";
 
-    });
+             window.location.href = url;
+
+       });
+   });
     </script>
 @endpush

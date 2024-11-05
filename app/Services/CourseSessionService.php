@@ -36,6 +36,17 @@ class CourseSessionService
                 'message' => $message,
                 'status' => $status,
             ];
+
+            if($data->user_type == "teacher")
+            {
+                sendNotifications('  طلب تاجيل جلسة',' طلب تاجيل مدرس لجلسة ','course_session_request',$courseSessionRequest->id,'show_courses','admin');
+            }else{
+                $userId = $courseSessionRequest->courseSession->course->user_id;
+                sendNotification(' طلب تاجيل جلسة',' طلب تاجيل طالب لجلسة  ',
+                $userId,'user', 'course_session_request',
+                $courseSessionRequest->id);
+            }
+
         } catch (\Exception $exception) {
             $message = __("can't postpone lesson date");
             $status = false;
@@ -75,6 +86,16 @@ class CourseSessionService
                 'message' => $message,
                 'status' => $status,
             ];
+
+            if($data->user_type == "teacher")
+            {
+                sendNotifications(' طلب الغاء جلسة',' طلب الغاء مدرس لجلسة ','course_session_request',$courseSessionRequest->id,'show_courses','admin');
+            }else{
+                $userId = $courseSessionRequest->courseSession->course->user_id;
+                sendNotification(' طلب تاجيل جلسة',' طلب الغاء طالب لجلسة  ',
+                $userId,'user', 'course_session_request',
+                $courseSessionRequest->id);
+            }
         } catch (\Exception $exception) {
             $message =__( "can't cancel lesson date");
             $status = false;
@@ -112,12 +133,31 @@ class CourseSessionService
                 'chosen_date' => $data->chosen_date?? null,
                 'admin_response' => $data->admin_response??null,
             ]);
-
+           
             if ($data->status == 'accepted') {
                 if ($lessonRequest->type == 'postpone') {
                     $this->updateLessonDate($lessonRequest);
+                   
+                    sendNotification('قبول طلب التاجيل','تم الموافقة على طلب تاجيلك للجلسة  ',
+                    $lessonRequest->user_id,'user', 'course_session_request',
+                    $lessonRequest->id);
                 } else {
                     $this->cancelLesson($lessonRequest);
+                  
+                    sendNotification('قبول طلب الغاء الجلسة','تم الموافقة على طلب الغاءك للجلسة  ',
+                    $lessonRequest->user_id,'user', 'course_session_request',
+                    $lessonRequest->id);
+                }
+            }else{
+                if ($lessonRequest->type == 'postpone') {
+                  
+                    sendNotification('رفض طلب التاجيل الجلسة','تم رفض طلب تاجيلك للجلسة  ',
+                    $lessonRequest->user_id,'user', 'course_session_request',
+                    $lessonRequest->id);
+                } else {
+                    sendNotification('رفض طلب الغاء الجلسة','تم رفض طلب الغاءك للجلسة  ',
+                    $lessonRequest->user_id,'user', 'course_session_request',
+                    $lessonRequest->id);
                 }
             }
             $message = __("lesson request updated");
@@ -222,6 +262,8 @@ class CourseSessionService
         else {
             $data->orderByDesc('course_sessions_requests.created_at');
         }
+        $data->distinct('id');
+
         return Datatables::of($data)
                          ->addIndexColumn()
 
@@ -241,7 +283,12 @@ class CourseSessionService
 
                              return implode('<br>', $links); // Join links with line breaks
                          })
-
+                         ->editColumn('status',function($row){
+                            return __($row->status);
+                         })
+                         ->editColumn('type',function($row){
+                            return __($row->type);
+                         })
                          ->addColumn('action', 'panel.courses.partials.course_sessions.partials.actions')
 
                          ->rawColumns(['action', 'files'])

@@ -27,7 +27,7 @@ class ApiCourseFilterResource extends JsonResource
             'id' => $this->id,
             'image' => imageUrl($this->image,'100x100'),
             'title' => $translation->title??$this->title,
-            'teacher' => $this->lecturer->name,
+            'teacher' => $this->lecturer->name ?? "",
             'description' => $translation->description??$this->description,
             'category' => collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name??$this->categoy?->title,
             'price' => $this->priceDetails?->price,

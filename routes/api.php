@@ -4,12 +4,14 @@ use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\LecturerController;
 use App\Http\Controllers\Api\LiveSessionController;
 use App\Http\Controllers\Api\PagesController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\TeacherController;
+use App\Http\Controllers\Api\UserProfileController;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Route;
 use Twilio\Rest\Api\V2010\Account\Call\PaymentContext;
@@ -100,10 +102,8 @@ Route::group(['prefix' => 'payment'], function () {
     Route::get('/subscribe-to-course-sessions-confirm',[PaymentController::class,'confirmSubscribe']);
     Route::get('/subscribe-to-course-group-confirm',[PaymentController::class,'confirmSubscribeGroup']);
 
-
-
-
 });
+
 
 //course session
 
@@ -115,6 +115,19 @@ Route::group(['middleware' => 'language', 'prefix' => 'courseSession'], function
 
 });
 
+Route::group(['middleware' => 'language', 'prefix' => 'lecturer'], function () {
+
+    Route::get('/',[LecturerController::class,'index']);
+
+
+});
+
+Route::group(['middleware' => 'language', 'prefix' => 'user'], function () {
+
+    Route::get('/myCourses',[UserProfileController::class,'myCourses']);
+
+
+});
 
 
 

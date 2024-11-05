@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Front\User\CourseSessionsController;
 use App\Http\Controllers\Panel\LiveSessionsController;
+use App\Http\Controllers\Panel\CoursesSessionsController;
 use App\Http\Controllers\Panel\PrivateLessonRequestsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Panel\Auth\LoginController;
@@ -155,6 +156,7 @@ Route::group(
             Route::get('/', [LoginActivityController::class, 'index'])->name('index');
             Route::get('/data', [LoginActivityController::class, 'getDataTable'])->name('data');
         });
+        Route::delete('/{id}', [LoginActivityController::class, 'delete'])->name('delete');
     });
 
 
@@ -816,16 +818,7 @@ Route::group(
             Route::post('/{id}', [PrivateLessonRequestsController::class, 'update'])->name('update');
         });
     });
-    Route::group(['prefix' => 'course_session_requests', 'as' => 'CourseSessionRequests.'], function() {
-        Route::get('/', [CourseSessionsController::class, 'index'])->name('index');
-        Route::post('/respond', [CourseSessionsController::class, 'respondToRequest'])->name('respond');
-        Route::get('/data', [CourseSessionsController::class, 'getDataTable'])->name('data');
-
-        Route::group(['prefix' => 'edit', 'as' => 'edit.'], function() {
-            Route::get('/{id}', [CourseSessionsController::class, 'edit'])->name('index');
-            Route::post('/{id}', [CourseSessionsController::class, 'update'])->name('update');
-        });
-    });
+  
 
     //private_lessons
     Route::group(['prefix' => 'packages', 'as' => 'packages.', 'middleware' => 'permission:show_private_lessons'], function () {
@@ -869,6 +862,18 @@ Route::group(
         Route::delete('/{id}', [CourseStudentsController::class, 'delete'])->name('delete');
         Route::get('/get-course-info', [CourseStudentsController::class, 'getCourseInfo'])->name('getCourseInfo');
         Route::post('/operation', [CourseStudentsController::class, 'operation'])->name('operation');
+    });
+
+    Route::group(['prefix' => 'course_session_requests', 'as' => 'CourseSessionRequests.', 'middleware' => 'permission:show_courses'], function() {
+    
+        Route::get('/', [CoursesSessionsController::class, 'index'])->name('index');
+        Route::post('/respond', [CoursesSessionsController::class, 'respondToRequest'])->name('respond');
+        Route::get('/data', [CoursesSessionsController::class, 'getDataTable'])->name('data');
+
+        Route::group(['prefix' => 'edit', 'as' => 'edit.'], function() {
+            Route::get('/{id}', [CoursesSessionsController::class, 'edit'])->name('index');
+            Route::post('/{id}', [CoursesSessionsController::class, 'update'])->name('update');
+        });
     });
 
     //certificateTemplates

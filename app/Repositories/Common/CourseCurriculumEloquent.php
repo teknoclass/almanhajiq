@@ -731,7 +731,7 @@ class CourseCurriculumEloquent extends HelperEloquent
 
     public function getCourse($course_id)
     {
-        $course = Courses::withTrashed()->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete')
+        $course = Courses::withTrashed()->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','lessons_follow_up')
         ->with('translations:courses_id,title,locale,description')
         ->where('id', $course_id)
         ->addSelect([
@@ -859,19 +859,19 @@ class CourseCurriculumEloquent extends HelperEloquent
             abort(404);
         }
 
-        $getRecordingsParams = new GetRecordingsParameters();
-        $live_lesson_id = 'live_lesson_id_'.$lesson->id;
-        $getRecordingsParams->meetingId = $live_lesson_id;
+        // $getRecordingsParams = new GetRecordingsParameters();
+        // $live_lesson_id = 'live_lesson_id_'.$lesson->id;
+        // $getRecordingsParams->meetingId = $live_lesson_id;
 
-        $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
+        // $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
 
-        if (!empty($recordings)) {
-            $firstRecording = $recordings[0];
+        // if (!empty($recordings)) {
+        //     $firstRecording = $recordings[0];
 
-            $playbackURL = $firstRecording['playback']['format'][0]['url'];
+        //     $playbackURL = $firstRecording['playback']['format'][0]['url'];
 
-            $lesson->recording_link = $playbackURL;
-        }
+        //     $lesson->recording_link = $playbackURL;
+        // }
 
         $lesson->meeting = "finished";
         $lesson->update();

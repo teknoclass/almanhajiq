@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
+use BigBlueButton\Parameters\GetRecordingsParameters;
 
 class CourseSession extends Model
 {
@@ -17,7 +18,7 @@ class CourseSession extends Model
 
     protected $fillable = ['course_id', 'day', 'date', 'time',
 
-    'title', 'group_id','public_password','status', 'price'];
+    'title', 'group_id','public_password','status', 'price', 'meeting_id'];
 
     public function course()
     {
@@ -37,11 +38,13 @@ class CourseSession extends Model
     }
     public function studentRequests()
     {
-        return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','student');
+        return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','student')
+        ->where('user_id',auth('web')->user()->id);
     }
     public function teacherRequests()
     {
-        return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','teacher');
+        return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','teacher')
+        ->where('user_id',auth('web')->user()->id);
     }
 
     public function requests()
@@ -97,8 +100,11 @@ class CourseSession extends Model
     public function createLiveSession (){
         $attendeePW = $this->generateSimplePassword(8);
         $moderatorPW = $this->generateSimplePassword(8);
+        $meeting_id = "course_session_with_id_".$this->id.time();
+        $this->meeting_id = $meeting_id;
+
         Bigbluebutton::create([
-            'meetingID'      => $this->id,
+            'meetingID'      => $meeting_id,
             'meetingName'    => $this->title,
             'record'         => true,
             'attendeePW'     => $attendeePW,
@@ -109,7 +115,7 @@ class CourseSession extends Model
         $this->public_password = $attendeePW;
         $this->save();
         $url =  Bigbluebutton::join([
-            'meetingID' => $this->id,
+            'meetingID' => $this->meeting_id,
             'userName'  => auth()->user()->name,
             'role'      => 'MODERATOR',
             'password'  => $moderatorPW
@@ -121,8 +127,8 @@ class CourseSession extends Model
     public function joinLiveSession($request) {
         try {
             $response = Bigbluebutton::join([
-                'meetingID' => $request->id,
-                'userName' => $request->userName,
+                'meetingID' => $this->meeting_id,
+                'userName' => auth('web')->user()->name,
                 'password' => $request->password,
 
             ]);
@@ -134,5 +140,26 @@ class CourseSession extends Model
             Log::error('Error joining live session: ', ['error' => $e->getMessage()]);
             return response()->json(['error' => 'Could not join session.'], 500);
         }
+    }
+
+    public function getRecording()
+    {
+        $link = "";
+
+        $getRecordingsParams = new GetRecordingsParameters();
+        $getRecordingsParams->meetingId = $this->meeting_id;
+
+        $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
+
+        if (!empty($recordings) && isset($recordings[0])) {
+            $firstRecording = $recordings[0];
+
+            $playbackURL = $firstRecording['playback']['format'][0]['url'];
+
+            $link = $playbackURL;
+        }
+
+
+        return $link;
     }
 }

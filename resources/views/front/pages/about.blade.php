@@ -23,7 +23,7 @@
 
         <section class="about-section section-padding">
             <div class="container">
-                <h2 class="title-section mb-5 text-center">من نحن؟</h2>
+                <h2 class="title-section mb-5 text-center"> {{__('about_us')}}</h2>
                 <div class="row">
                     <div class="col-12 col-md-6 col-xl-4 mb-4">
                         <div class="item">
@@ -42,11 +42,15 @@
                                 </svg>
                             </div>
                             <div class="info col-6 mx-auto">
-                                <h6 class="title">متى تأسس</h6>
+                                <h6 class="title">  {{__('when_founded')}}</h6>
+                                @if(!@$settings->valueOf('when_founded_'.app()->getLocale()))
                                 <p>
                                     تأسس منصة المنهج لطلاب المداؤس في العراق عام 2018, برؤية
                                     جديدة لشمولية التعليم
                                 </p>
+                                @else 
+                                {!! @$settings->valueOf('when_founded_'.app()->getLocale()) !!}
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -67,10 +71,14 @@
                                 </svg>
                             </div>
                             <div class="info col-6 mx-auto">
-                                <h6 class="title">الرؤية</h6>
+                                <h6 class="title">{{__('our_vision')}}</h6>
+                                @if(!@$settings->valueOf('our_vision_'.app()->getLocale()))
                                 <p>
                                     جعل عملية التعليم أسهل عن طريق جعلها رقمية و توحيد المناهج في منصة واحدة شاملة.
                                 </p>
+                                @else 
+                                {!! @$settings->valueOf('our_vision_'.app()->getLocale()) !!}
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -92,64 +100,44 @@
                                 </svg>
                             </div>
                             <div class="info col-6 mx-auto">
-                                <h6 class="title">مخرجتنا</h6>
+                                <h6 class="title">{{__('our_exports')}}</h6>
+                                @if(!@$settings->valueOf('our_exports_'.app()->getLocale()))
                                 <p>
                                     للمدونات التعليمية، وقراءة الكتب ، الفيديوهات التعليمية والمتنوعة ، والأستماع...
                                 </p>
+                                @else 
+                                {!! @$settings->valueOf('our_exports_'.app()->getLocale()) !!}
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        @if (@$partners && @$partners->isNotEmpty())
         <section class="section-padding founders">
             <div class="container">
                 <h3 class="text-black mb-4">المؤسسون</h3>
                 <div class="swiper-container">
                     <div class="swiper-wrapper">
+                       
+                    @foreach ($partners as $partner)
                         <div class="swiper-slide">
                             <div class="img-founder">
-                                <img src="{{ asset('assets/front/images/img-01.png') }}" alt="founder-img">
+                                <img src="{{ imageUrl(@$partner->image) }}" alt="founder-img">
                             </div>
                             <div class="info">
-                                <h5 class="job-title">الرئيس التنفيذي</h5>
-                                <h4>السيد أحمد على المناعي</h4>
+                                <h5 class="job-title">{{ @$partner->title }}</h5>
+                                
                             </div>
                         </div>
-                        <div class="swiper-slide">
-                            <div class="img-founder">
-                                <img src="{{ asset('assets/front/images/img-03.png') }}" alt="founder-img">
-                            </div>
-                            <div class="info">
-                                <h5 class="job-title">المؤسس</h5>
-                                <h4>السيد غانم بن سعد آل سعد</h4>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="img-founder">
-                                <img src="{{ asset('assets/front/images/img-03.png') }}" alt="founder-img">
-                            </div>
-                            <div class="info">
-                                <h5 class="job-title">المدير التنفيذي</h5>
-                                <h4>الدكتور شوكت طه طلافحه</h4>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="img-founder">
-                                <img src="{{ asset('assets/front/images/img-03.png') }}" alt="founder-img">
-                            </div>
-                            <div class="info">
-                                <h5 class="job-title">المؤسس</h5>
-                                <h4>السيد غانم بن سعد آل سعد</h4>
-                            </div>
-                        </div>
+                     @endforeach
                     </div>
                 </div>
             </div>
         </section>
+        @endif
         <div>
-
-            @include('front.home.sections.partners')
 
             @include('front.home.sections.teams')
 

@@ -164,7 +164,7 @@
     "message.you_try_a_lot_and_a_new_code_is_sent_to_you": "You have tried a lot, and a new code has been sent to you",
     "message.enter_a_valid_activation_code": "Sorry! Invalid activation code",
     "message.unable_to_resend_try_again_in_an_hour": "Unable to resend, please try again in an hour",
-    "message.cant_try_now": "Can't try now, try again in an hour",
+    "message.cant_try_now": "Can't try now, try again wait minutes ",
     "message.can_not_withdraw_less_than": "Cannot withdraw less than",
     "message.resend_successfully": "Resend successfully",
     "message.the_start_date_does_not_correspond_to_the_first_day": "The start date does not correspond to the first day",
@@ -1133,7 +1133,25 @@
     "and_We_will_mail_you_with_your_login_credintials_after_admin_confirmation":"We will send you a mail with login credintials after admin confirmation",
     "dob":"Date of Birth",
     "iraq_currency":"IQD",
-    "material":"Material"
+    "material":"Material",
+    "grade_sub_level_id":"Grade Sub Level",
+    "course_session_requests":"Course Sessions Requests",
+    "request":"Request",
+    "Suggested Dates" : "Suggested Dates",
+    "chosen_date":"Chosen Date",
+    "select_payment_method":"Select Payment Method",
+    "select_method":"Select and process payment",
+    "amount_must_exceed_1000_iqd":"Amount must exceed 1000 iqd",
+    "visa_master":"Banking Payment (Visa-MasterCard)",
+    "zain_cash":"Zain Cash"
+
+
+
+
+
+ 
+    
+
 
 
 

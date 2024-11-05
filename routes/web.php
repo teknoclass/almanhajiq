@@ -63,6 +63,7 @@ Route::group(
 
     //levels
     Route::get('get-sub-levels/{id}', [LevelsControllers::class, 'getSubLevels']);
+    Route::get('get-materials/{id}', [LevelsControllers::class, 'getMaterials']);
 
     // private lessons
     /*Route::group(['prefix' => '/private-lessons', 'as' => 'private_lessons.'], function () {
@@ -256,7 +257,16 @@ Route::get('/migrate',function(){
         "2024_10_31_163741_add_material_id_to_courses_table.php",
 
         //users
-        "2024_10_31_180444_add_material_id_to_users_table.php"
+        "2024_10_31_180444_add_material_id_to_users_table.php",
+
+        //categories
+        "2024_11_01_233045_add_grade_sub_level_id_column_to_categories_table.php",
+
+        //course_sessions
+        "2024_11_04_135359_add_meeting_id_to_course_sessions_table.php",
+
+        //transactions
+        "2024_11_05_133910_change_brand_to_be_string_on_transactios_table.php"
 
     ];
 

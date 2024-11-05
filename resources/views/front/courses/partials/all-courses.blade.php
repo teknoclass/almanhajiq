@@ -2,7 +2,7 @@
     @if(isset($courses) && count(@$courses)>0)
 
         <div class="row">
-            @if(request('category_ids'))
+           {{--@if(request('category_ids'))
                 @foreach ($lecturers as $lecturer)
                     @include('front.courses.partials.teachers', ['lecturer' => $lecturer])
                 @endforeach
@@ -11,7 +11,11 @@
             @foreach ($courses as $course)
                 @include('front.courses.partials.course', ['course' => $course])
             @endforeach
-            @endif
+            @endif --}}
+
+            @foreach ($courses as $course)
+                @include('front.courses.partials.course', ['course' => $course])
+            @endforeach
         </div>
 
         <nav>

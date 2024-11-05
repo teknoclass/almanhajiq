@@ -312,6 +312,21 @@ $item = isset($item) ? $item: null;
                                    required id="max_student_no" placeholder=""/>
                         </div>
 
+   
+                        <div class="form-group lecturer_fields">
+                           <label>{{__('material')}}
+                                 <span class="text-danger">*</span></label>
+                           <select id="material_id" name="material_id"
+                                    class="form-control mb-5"
+                                    required>
+                                 <option value="" selected
+                                       disabled>{{__('material_select')}}</option>
+                                       @foreach($materials as $material)
+                                       <option @if(isset($item) && $item->material_id == $material->id) selected @endif value="{{$material->id}}">{{$material->name}}</option>
+                                       @endforeach
+                           </select>
+                        </div>
+                                        
 
 
 

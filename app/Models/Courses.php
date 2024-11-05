@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class Courses extends Model
 {
@@ -120,7 +121,7 @@ class Courses extends Model
 
     public function scopeFilterByCategories($q, $search)
     {
-        return $q->whereIn('category_id', $search);
+        return $q->whereIn('material_id', $search);
     //   return $q->where('category_id', $search);
     }
 
@@ -131,7 +132,6 @@ class Courses extends Model
 
     public function scopeFilterByGradeSubLevel($q, $search)
     {
-        Log::alert($search);
         return $q->where('grade_sub_level', $search);
     }
     public function scopeFilterByLevels($q, $search)
@@ -199,7 +199,7 @@ class Courses extends Model
 
     public function material()
     {
-        return $this->hasOne('App\Models\Category', 'value', 'material_id')->where('parent', 'joining_course');
+        return $this->hasOne('App\Models\Category', 'id', 'material_id')->where('parent', 'joining_course');
     }
 
     public function level()
@@ -441,6 +441,19 @@ class Courses extends Model
         }
 
         return $duration;
+    }
+
+    public function getDurationInDays()
+    {
+        if (!empty($this->start_date) && !empty($this->end_date))
+        {
+            $start_date = Carbon::parse($this->start_date);
+            $end_date = Carbon::parse($this->end_date);
+    
+            return $start_date->diffInDays($end_date);
+        }
+
+        return 0;
     }
 
     public function cost()

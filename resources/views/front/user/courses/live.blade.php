@@ -80,7 +80,8 @@
                 <div class="card-header" style="background-color:slategrey;width:auto;padding:10px;color:white;text-align:center">
                     {{__('next_inst_date')}}: {{$nextInstallmentDate}}
                     <a style="cursor: pointer;"
-                        class="payInstallment {{$nextInstallment->course_session_id}} btn btn-sm primary-btn " alt="{{$nextInstallment->course_session_id}}">{{__('payment')}}
+                     href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $nextInstallment->course_session_id ?? '','price' => $nextInstallment->price]) }}"
+                        class=" {{$nextInstallment->course_session_id}} btn btn-sm primary-btn " alt="{{$nextInstallment->course_session_id}}">{{__('payment')}}
                     </a>
                 </div>
                 @endif
@@ -103,6 +104,7 @@
                                                 <th>{{ __('actions') }}</th>
                                                 <th>{{ __('Start Session') }}</th>
                                                 <th>{{ __('password') }}</th>
+                                                <th>{{ __('recording_link') }}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -116,9 +118,12 @@
                                                     <td>{{ $session->time }}</td>
 
                                                     <td>
+                                                        @if($session->studentRequests->first())
+                                                        {{__('status')}} :  {{__($session->studentRequests->first()?->status)??''}}
 
-                                                        {{__($session->studentRequests->first()?->status)??''}}
-
+                                                        <br>
+                                                        {{__('type')}} : {{__($session->studentRequests->first()?->type)??''}}
+                                                        @endif
                                                     </td>
                                                     @php
                                                         $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
@@ -130,16 +135,20 @@
                                                     @endphp
                                                     @if(isCourseonStudentCourse(@$course->id) || isStudentSubscribeToSession($session->id) || in_array($session->id,installementdLessonsIds(@$course->id)))
                                                     <td>
-                                                        @if(!$isSessionInPast)
+                                                        
+                                                    @if(!$isSessionInPast && ( !@$session->studentRequests->first() || (@$session->studentRequests->first() && @$session->studentRequests->first()?->status == "rejected") ) )
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#cancelModal" id="cancelButton"><span
-                                                                    class="far  fa-cancel"></span><label>{{ __('cancel')}}</label>
+                                                            data-bs-target="#cancelModal"  id="cancelButton" class="btn btn-danger btn-sm "  style="width:100px;margin-top:5px">
+                                                           
+                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
                                                             </button>
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#postPoneModal" id="postPoneButton"><span
-                                                                    class="far  fa-calendar"></span><label>{{ __('postpone')}}</label>
+                                                                    id="postPoneButton" class="btn btn-primary btn-sm "
+                                                                        data-date="{{$session->date}}"
+                                                                    style="width:100px;margin-top:5px">
+                                                                    <i class="fa fa-calendar"></i>  {{ __('postpone')}}
                                                             </button>
                                                     
                                                     @endif
@@ -167,15 +176,20 @@
                                                     <td>
                                                     @if ($isSessionNow)
                                                     @if(! $session->public_password)
-                                                        <p style="color:#8B0000;font-size:13px">{{__('waiting_password')}}</p>
+                                                        <p style="color:#8B0000;font-size:13px" >{{__('waiting_password')}}</p>
                                                         @else
-                                                            {{ $session->public_password }}
+                                                          <p class="pass {{$session->id}}">  {{ $session->public_password }}</p>
                                                     @endif
+                                                    @endif
+                                                    </td>
+                                                    <td>
+                                                    @if($isSessionInPast && $session->getRecording() != "")
+                                                        <a target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
                                                     @endif
                                                     </td>
 
                                                 @else
-                                                <td colspan="2"><p style="color:#8B0000">{{__('you_not_subscribed')}}</p></td>
+                                                <td colspan="3"><p style="color:#8B0000">{{__('you_not_subscribed')}}</p></td>
                                                 @endif
 
                                                 
@@ -216,6 +230,7 @@
                                                 <th>{{ __('Start Session') }}</th>
                                                 <th>{{ __('action') }}</th>
                                                 <th>{{ __('password') }}</th>
+                                                <th>{{ __('recording_link') }}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -254,16 +269,19 @@
                                                             
                                                     </td>
                                                     <td>
-                                                    @if(!$isSessionInPast)
+                                                      
+                                                    @if(!$isSessionInPast && ( !@$session->studentRequests->first() || (@$session->studentRequests->first() && @$session->studentRequests->first()?->status == "rejected") ) )
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#cancelModal" id="cancelButton"><span
-                                                                    class="far  fa-cancel"></span><label>{{ __('cancel')}}</label>
+                                                            data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm "  style="width:100px;margin-top:5px">
+                                                           
+                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
                                                             </button>
 
                                                             <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    data-bs-target="#postPoneModal" id="postPoneButton">
-                                                            <span
-                                                                class="far  fa-calendar"></span><label>{{ __('postpone')}}</label>
+                                                                    id="postPoneButton" class="btn btn-primary btn-sm "
+                                                                        data-date="{{$session->date}}"
+                                                                    style="width:100px;margin-top:5px">
+                                                                    <i class="fa fa-calendar"></i>  {{ __('postpone')}}
                                                             </button>
                                                     @endif
                                                     </td>
@@ -280,9 +298,14 @@
                                                             @endif
                                                         </div>
                                                     </td>
+                                                    <td>
+                                                    @if($isSessionInPast && $session->getRecording() != "")
+                                                        <a target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
+                                                    @endif
+                                                    </td>
                                                     
                                                     @else
-                                                    <td colspan="3">
+                                                    <td colspan="4">
                                                         <p style="color:#8B0000">{{__('you_not_subscribed')}}</p>
                                                     </td>
                                                     @endif
@@ -386,12 +409,9 @@
                 method="POST">
                 @csrf
                 <input hidden id="modelSessionId" name="id">
-                <label> {{__('name')}}
-                    <input class="form-control" value=""
-                            name="userName">
-                </label>
+               
                 <label>{{__('password')}}
-                    <input class="form-control" value=""
+                    <input class="form-control sessionPass" value=""
                             name="password">
                 </label>
                 <br><br>
@@ -455,9 +475,17 @@ $(document).on('click','.payInstallment',function(){
 $(document).on('click','.bigBlueSessonBtnModal',function(){
     var id = $(this).attr('alt');
     $('#modelSessionId').val(id);
+    var pass = $('.pass'+'.'+id).text();
+    $('.sessionPass').val(pass);
     $('#bigBlueSessonTable').modal('show');
 });
 
+    //open modal
+    $(document).on('click','#postPoneButton',function(){
+                    var minDate = $(this).data('date');
+                    $('.suggested_dates').attr('min',minDate);
+                    $('#postPoneModal').modal('show');
+                });
 });
     </script>
 @endpush

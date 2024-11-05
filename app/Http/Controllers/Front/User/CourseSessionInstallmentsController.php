@@ -9,18 +9,42 @@ use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
 use App\Models\{StudentSessionInstallment,CourseSession};
 use App\Services\PaymentService;
+use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CourseSessionInstallmentsController extends Controller
 {
     protected PaymentService $paymentService;
+    protected ZainCashService $zainCashService;
 
     public function __construct()
     {
-       $this->paymentService = new PaymentService();
+        $this->paymentService = new PaymentService();
+        $this->zainCashService = new ZainCashService();
+    }
+
+    public function selectPaymentMethod(Request $request)
+    {
+        $data['course_id'] = $request->course_id;
+        $data['id'] = $request->id;
+        $data['price'] = $request->price;
+
+        return view('front.payment-options.installment-subscription', $data);
     }
 
     public function pay(Request $request)
+    {
+        if($request->payment_type == "gateway")
+        {
+            return $this->paymentGateway($request);
+        }else{
+            return $this->zainCash($request);
+        }
+    }
+
+    public function paymentGateway(Request $request)
     {
        $response = $this->paymentService->processPayment([
             "amount" => $request->price,
@@ -56,6 +80,42 @@ class CourseSessionInstallmentsController extends Controller
         }  
     }
 
+    public function zainCash(Request $request)
+    {
+        $response = $this->zainCashService->processPayment($request->price,
+        url('/user/pay-to-course-session-installment-confirm'),"دفع قسط جلسات دورة");  
+        
+        if(isset($response['id']))
+        {
+            $paymentDetails = [
+                "description" => "دفع قسط جلسات دورة",
+                "orderId" => $response['orderId'],
+                "payment_id" => $response['id'],
+                "amount" => $request->price,
+                "transactionable_type" => "App\\Models\\CourseSession",
+                "transactionable_id" => $request->id,
+                "brand" => "zaincash",
+                "transaction_id" => $response['referenceNumber'],
+                'course_id' => $request->course_id
+            ];
+    
+            session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
+
+            $transaction_id = $response['id'];
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+
+            return  $response = [
+                'status_msg' => 'success',
+                'payment_link' => $paymentUrl
+            ];
+        }else{
+            return  $response = [
+                'status_msg' => 'error',
+                'message' => __('message.unexpected_error'),
+            ];
+        }  
+    }
+
     public function confirmPayment(Request $request)
     {
         DB::beginTransaction();
@@ -79,11 +139,13 @@ class CourseSessionInstallmentsController extends Controller
 
             DB::commit(); 
 
-            return redirect(url("/user/courses/curriculum/item/".$course_id));
-        } catch (\Exception $e)
+            return redirect("/user/courses/curriculum/item/".$course_id);
+        }
+        catch (\Exception $e)
         {
             DB::rollback(); 
-            return url('/payment-failure'); 
+            Log::error($e->getMessage());
+            return redirect('/payment-failure'); 
         }
     }
 

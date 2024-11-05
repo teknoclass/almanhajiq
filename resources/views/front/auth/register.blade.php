@@ -118,6 +118,21 @@
                                        </select>
                                     </div>
 
+                                    @php 
+                                    // materials
+                                    $parent = App\Models\Category::select('id', 'value', 'parent', 'key')->where('key', "joining_course")->first();
+                                    $materials = App\Models\Category::query()->select('id', 'value', 'parent', 'key')->where('parent', $parent->key)
+                                    ->orderByDesc('created_at')->with(['translations:category_id,name,locale', 'parent'])->get();
+                                    @endphp
+                                    <div class="form-group select-contry d-none gender-div">
+                                        <select required class="form-control selectpicker" name="material_id" type="text">
+                                            <option value="" disabled readonly selected>{{__('material')}}</option>
+                                            @foreach($materials as $material)
+                                            <option value="{{$material->id}}">{{$material->name}}</option>
+                                          @endforeach
+                                       </select>
+                                    </div>
+
                                     <div class="form-group d-none gender-div">
                                         <h3>{{ __('dob') }}</h3>
                                         <input name="dob" id="" type="date" class="form-control">
