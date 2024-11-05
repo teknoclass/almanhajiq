@@ -18,7 +18,7 @@
     content="{{ isset($sub_desc) ? $sub_desc : @$settings->valueOf('description_' . app()->getLocale()) }}" />
 <meta name="keywords"
     content="{{ isset($sub_key_words) ? $sub_key_words : @$settings->valueOf('tags_' . app()->getLocale()) }}" />
-<link rel="icon" type="image/png" href="{{ asset('assets/favicon.ico') }}">
+{{--<link rel="icon" type="image/png" href="{{ asset('assets/favicon.ico') }}">--}}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="shortcut icon" href="{{ imageUrl(getSeting('logo')) }}" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
