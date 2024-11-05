@@ -561,15 +561,15 @@ class CourseCurriculumEloquent extends HelperEloquent
             ->addSelect([
                 'progress' => UserCourse::select('progress')
                     ->whereColumn('course_id', 'courses.id')
-                    ->where('user_id', auth()->id()),
+                    ->where('user_id', auth()->id())->limit(1),
 
                 'is_end' => UserCourse::select('is_end')
                     ->whereColumn('course_id', 'courses.id')
-                    ->where('user_id', auth()->id()),
+                    ->where('user_id', auth()->id())->limit(1),
 
                 'is_rating' => UserCourse::select('is_rating')
                     ->whereColumn('course_id', 'courses.id')
-                    ->where('user_id', auth()->id()),
+                    ->where('user_id', auth()->id())->limit(1),
             ])
             ->withCount('items')
             ->withCount('students')
@@ -737,11 +737,11 @@ class CourseCurriculumEloquent extends HelperEloquent
         ->addSelect([
             'is_end' => UserCourse::select('is_end')
                 ->whereColumn('course_id', 'courses.id')
-                ->where('user_id', auth()->id()),
+                ->where('user_id', auth()->id())->limit(1),
 
             'is_rating' => UserCourse::select('is_rating')
                 ->whereColumn('course_id', 'courses.id')
-                ->where('user_id', auth()->id()),
+                ->where('user_id', auth()->id())->limit(1),
         ]);
 
 
