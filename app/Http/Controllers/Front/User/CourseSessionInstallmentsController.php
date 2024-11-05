@@ -12,6 +12,7 @@ use App\Services\PaymentService;
 use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CourseSessionInstallmentsController extends Controller
 {
@@ -139,7 +140,12 @@ class CourseSessionInstallmentsController extends Controller
             DB::commit(); 
 
             return redirect("/user/courses/curriculum/item/".$course_id);
-        } catch (\Exception $e)
+        }
+        catch (NotFoundHttpException $e)
+        {
+            return redirect("/user/courses/curriculum/item/".$course_id);
+        }
+        catch (\Exception $e)
         {
             DB::rollback(); 
             Log::error($e->getMessage());
