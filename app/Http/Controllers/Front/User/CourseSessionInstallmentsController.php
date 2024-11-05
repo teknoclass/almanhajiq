@@ -145,7 +145,7 @@ class CourseSessionInstallmentsController extends Controller
         {
             DB::rollback(); 
             Log::error($e->getMessage());
-            return redirect(url('/payment-failure')); 
+            return redirect('/payment-failure'); 
         }
     }
 
