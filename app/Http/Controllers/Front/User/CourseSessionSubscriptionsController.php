@@ -195,7 +195,7 @@ class CourseSessionSubscriptionsController extends Controller
 
             DB::commit(); 
 
-            return redirect(url("/user/courses/curriculum/item/".$course_id));
+            return redirect("/user/courses/curriculum/item/".$course_id);
         } catch (\Exception $e)
         {
             DB::rollback(); 
