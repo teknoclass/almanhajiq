@@ -253,6 +253,7 @@ $(document).on('click', '.confirm-category', function(event) {
 $(document).on('click', '.confirm-free-registeration', function(event) {
     var url = $(this).data('url');
     var id = $(this).data('id');
+    var payment_type = $(this).data('payment_type');
     var marketer_coupon = $(this).data('marketer_coupon');
     var redirectUrl = $(this).data('to');
     var submit_free_reg_btn = $('#submit_free_reg_btn');
@@ -278,7 +279,7 @@ $(document).on('click', '.confirm-free-registeration', function(event) {
                 url: url,
                 method: 'post',
                 type: 'json',
-                data: { id, marketer_coupon },
+                data: { id, marketer_coupon,payment_type },
                 success: function(response) {
                     $(submit_free_reg_btn).attr("disabled", false);
                     if (response.status) {

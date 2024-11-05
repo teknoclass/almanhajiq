@@ -4,6 +4,7 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use \Firebase\JWT\JWT;
 
 class ZainCashService
 {
@@ -19,49 +20,56 @@ class ZainCashService
         $this->merchantId = env('ZAINCASH_MERCHANT_ID');
         $this->msisdn = env('ZAINCASH_MSISDN');
         $this->secretKey = env('ZAINCASH_SECRET_KEY');
-        $this->baseUrl = env('ZAINCASH_BASE_URL');
+        $this->tUrl = env('ZAINCASH_TO_URL');
+        $this->rUrl = env('ZAINCASH_REDIRECT_URL');
+       
     }
 
-    public function generatePaymentUrl($amount, $orderId, $redirectUrl)
+    public function processPayment($amount, $redirectUrl, $service_type)
     {
-        $token = $this->generateToken();
-
-        $data = [
-            'msisdn' => $this->msisdn,
-            'amount' => $amount,
-            'orderid' => $orderId,
-            'redirecturl' => $redirectUrl,
-            'token' => $token,
-        ];
-
         try {
-            $response = $this->client->post("{$this->baseUrl}/checkout", [
-                'json' => $data,
-            ]);
+        $orderId = genereatePaymentOrderID();
+        $token = $this->generateToken($amount,$orderId,$redirectUrl,"book");
 
-            $result = json_decode($response->getBody(), true);
+        //POSTing data to ZainCash API
+        $data_to_post = array();
+        $data_to_post['token'] = urlencode($token);
+        $data_to_post['merchantId'] =  $this->merchantId ;
+        $data_to_post['lang'] = app()->getLocale();
+        $options = array(
+        'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data_to_post),
+        ),
+        );
+        $context  = stream_context_create($options);
+        $response= file_get_contents($this->tUrl , false, $context);
 
-            return $result['payment_url'] ?? null;
+        return json_decode($response, true);
+        
         } catch (\Exception $e) {
-            Log::error("Zain Cash Payment URL Generation Failed: " . $e->getMessage());
-            return null;
-        }
+            return ['error' => $e->getMessage()];
+        } 
     }
 
-    private function generateToken()
+    private function generateToken($amount,$orderId,$redirectUrl,$service_type)
     {
-        $payload = [
-            'amount' => 'the amount',
-            'msisdn' => $this->msisdn,
-            'orderid' => 'your_order_id',
-            'redirecturl' => 'your_redirect_url'
+        $data = [
+            'amount'  => $amount,        
+            'serviceType'  => $service_type,          
+            'msisdn'  => $this->msisdn, 
+            'orderId'  => $orderId,
+            'redirectUrl'  => $redirectUrl,
+            'iat'  => time(),
+            'exp'  => time()+60*60*4
         ];
+        
+        $token = JWT::encode(
+            $data,    
+            $this->secretKey ,'HS256' 
+        );
 
-        $signature = hash_hmac('sha256', json_encode($payload), $this->secretKey);
-
-        return base64_encode(json_encode([
-            'payload' => $payload,
-            'signature' => $signature,
-        ]));
+        return $token;
     }
 }

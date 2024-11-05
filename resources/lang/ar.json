@@ -1190,7 +1190,10 @@
     "request":"الطلب",
     "Suggested Dates" : "المواعيد المقترحة",
     "chosen_date":"التاريخ المختار",
-    "recording_link":"رابط التسجيل"
+    "recording_link":"رابط التسجيل",
+    "select_payment_method":"اختر طريقة الدفع",
+    "select_method":"اختر وتابع الدفع",
+    "amount_must_exceed_1000_iqd":"المبلغ يجب أن يكون اكبر من 1000 دينار عراقي"
 
 
 

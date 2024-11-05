@@ -11,15 +11,27 @@ use App\Models\{Courses, UserCourse};
 use App\Services\PaymentService;
 use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CourseFullSubscriptionsController extends Controller
 {
 
     protected PaymentService $paymentService;
+    protected ZainCashService $zainCashService;
 
     public function __construct()
     {
        $this->paymentService = new PaymentService();
+       $this->zainCashService = new ZainCashService();
+    }
+
+    public function selectPaymentMethod(Request $request)
+    {
+        $course = Courses::find($request->course_id);
+        $data['course_id'] = $request->course_id;
+        $data['price'] =  $course->priceDetails->price??0;
+
+        return view('front.payment-options.full-subscription', $data);
     }
 
     public function fullSubscribe(Request $request)
@@ -36,6 +48,8 @@ class CourseFullSubscriptionsController extends Controller
 
     public function paymentGateway(Request $request)
     {
+        $course = Courses::find($request->id);
+
         $response = $this->paymentService->processPayment([
             "amount" => $course->priceDetails->price??0,
             "currency" => "IQD",
@@ -75,7 +89,43 @@ class CourseFullSubscriptionsController extends Controller
  
     public function zainCash(Request $request)
     {
+        $course = Courses::find($request->id);
 
+        $response = $this->zainCashService->processPayment($course->priceDetails->price??0,
+        url('/user/full-subscribe-course-confirm'),"اشتراك كلى فى دورة"); 
+        
+        if(isset($response['id']))
+        {
+            $paymentDetails = [
+                "description" => 'اشتراك كلى فى الدورة',
+                "orderId" => $response['orderId'],
+                "payment_id" => $response['id'],
+                "amount" => $course->priceDetails->price??0,
+                "transactionable_type" => "App\\Models\\Courses",
+                "transactionable_id" => $course->id,
+                "brand" => "zaincash",
+                "transaction_id" => $response['referenceNumber'],
+                'course_id' => $course->id,
+                "purchase_type" => $request->type
+            ];
+    
+            session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
+ 
+            $transaction_id = $response['id'];
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+
+            return  $response = [
+                'status_msg' => 'success',
+                'status' => 200,
+                'payment' => true,
+                'redirect_url' => $paymentUrl
+            ];
+        }else{
+            return  $response = [
+                'status_msg' => 'error',
+                'message' => __('message.unexpected_error'),
+            ];
+        } 
     }
 
     public function fullConfirmSubscribe()
@@ -108,7 +158,8 @@ class CourseFullSubscriptionsController extends Controller
         } catch (\Exception $e)
         {
             DB::rollback(); 
-            return url('/payment-failure'); 
+            Log::error($e->getMessage());
+            return redirect(url('/payment-failure')); 
         }
     }
  

@@ -1138,7 +1138,13 @@
     "course_session_requests":"Course Sessions Requests",
     "request":"Request",
     "Suggested Dates" : "Suggested Dates",
-    "chosen_date":"Chosen Date"
+    "chosen_date":"Chosen Date",
+    "select_payment_method":"Select Payment Method",
+    "select_method":"Select and process payment",
+    "amount_must_exceed_1000_iqd":"Amount must exceed 1000 iqd"
+
+
+
 
 
  
