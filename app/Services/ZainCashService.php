@@ -72,4 +72,40 @@ class ZainCashService
 
         return $token;
     }
+
+    public function checkPaymentStatus($id)
+    {
+        //building data
+        $data = [
+          'id'  => $id,                
+          'msisdn'  => env('ZAINCASH_MSISDN'),
+          'iat'  => time(),
+          'exp'  => time()+60*60*4
+        ];
+        
+        //Encoding Token
+        $newtoken = JWT::encode(
+        $data, //Data to be encoded in the JWT
+        env('ZAINCASH_SECRET_KEY') ,'HS256'
+        );
+        
+        $rUrl = env('ZAIN_CASH_CHECK_STATUS');
+       
+        //POST data to ZainCash API
+        $data_to_post = array();
+        $data_to_post['token'] = urlencode($newtoken);
+        $data_to_post['merchantId'] = env('ZAINCASH_MERCHANT_ID');
+        $options = array(
+        'http' => array(
+        'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method' => 'POST',
+        'content' => http_build_query($data_to_post),
+        ),
+        );
+        $context = stream_context_create($options);
+        $response = file_get_contents($rUrl, false, $context);
+        
+        return json_decode($response, true);
+    }
+
 }
