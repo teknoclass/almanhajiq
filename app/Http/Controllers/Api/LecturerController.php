@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LecturerCollection;
+use App\Http\Resources\TeacherCollection;
 use App\Http\Response\SuccessResponse;
 use Illuminate\Http\Request;
 use App\Repositories\Front\LecturersEloquent;
@@ -22,7 +23,7 @@ class LecturerController extends Controller
     {
         $data = $this->lecturers->getData($request);
 
-        $collection = new LecturerCollection($data['lecturers']);
+        $collection = new TeacherCollection($data['lecturers']);
 
         $respone = new SuccessResponse(__('message.operation_accomplished_successfully'),$collection,Response::HTTP_OK);
 
