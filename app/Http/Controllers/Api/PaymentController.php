@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\User;
 use App\Models\Courses;
 use App\Models\UserCourse;
 use App\Models\Transactios;
@@ -58,7 +59,11 @@ class PaymentController extends Controller
 
             $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
                 ['course_details' => new ApiCourseResource($course)],
-                ['payment_link' => $response['data']['link']]
+                ['payment_link' => [
+                    'name' => 'iq',
+                    'image' => imageUrl(''),
+                    'link' => $response['data']['link']
+                ]]
             ],Response::HTTP_OK);
 
             return response()->success($response);
@@ -85,7 +90,7 @@ class PaymentController extends Controller
             UserCourse::create([
                 "course_id" => $paymentDetails['transactionable_id'],
                 "user_id" => $paymentDetails['user_id'],
-                "lecturer_id" => Courses::find($paymentDetails['transactionable_id'])->user_id??null,
+                "lecturer_id" => Courses::find($paymentDetails['transactionable_id'])->user_id,
                 "subscription_token"  => $paymentDetails['payment_id'],
                 "is_paid" => 1,
                 "is_complete_payment" => 1,
@@ -130,9 +135,12 @@ class PaymentController extends Controller
         {
             $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
             $transactionable_type = "App\\Models\\CourseSessionsGroup";
+            $title = CourseSessionsGroup::find($request->target_id)->title??"";
+
         }else{
             $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
             $transactionable_type = "App\\Models\\CourseSession";
+            $title = CourseSession::find($request->target_id)->title??"";
         }
 
         if(isset($response['data']['link']))
@@ -152,8 +160,12 @@ class PaymentController extends Controller
 
 
             $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
-                //['course_details' => new ApiCourseResource($course)],
-                ['payment_link' => $response['data']['link']]
+                ['course_details' => ['title' => $title]],
+                ['payment_link' => [
+                    'name' => 'iq',
+                    'image' => imageUrl(''),
+                    'link' => $response['data']['link']
+                ]]
             ],Response::HTTP_OK);
 
             return response()->success($response);
@@ -174,14 +186,16 @@ class PaymentController extends Controller
             $paymentDetails->is_paid = 1;
             $paymentDetails->save();
 
-            $studentSubscribedSessionsIds = auth('api')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+            $user = User::find($paymentDetails['user_id']);
+
+            $studentSubscribedSessionsIds = $user->studentSubscribedSessions()->pluck('course_session_id')->toArray();
 
             $session = CourseSession::find($paymentDetails['transactionable_id']);
 
             if(! in_array($session->id, $studentSubscribedSessionsIds))
             {
                 CourseSessionSubscription::create([
-                    'student_id' => auth('`api`')->user()->id,
+                    'student_id' => $paymentDetails['user_id'],
                     'course_session_id' => $session->id,
                     'status' => 1,
                     'subscription_date' => now(),
@@ -193,7 +207,7 @@ class PaymentController extends Controller
 
 
 
-            $this->paymentService->storeBalanceApi($paymentDetails);
+            $this->paymentService->storeBalanceApi($paymentDetails,'session');
 
 
 
@@ -222,7 +236,9 @@ class PaymentController extends Controller
             $paymentDetails->is_paid = 1;
             $paymentDetails->save();
 
-            $studentSubscribedSessionsIds = auth('api')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+            $user = User::find($paymentDetails['user_id']);
+
+            $studentSubscribedSessionsIds = $user->studentSubscribedSessions()->pluck('course_session_id')->toArray();
 
             $sessions = CourseSession::where('group_id', $paymentDetails['transactionable_id'])->get();
 
@@ -231,7 +247,7 @@ class PaymentController extends Controller
                     if(! in_array( $session->id,$studentSubscribedSessionsIds))
                     {
                         CourseSessionSubscription::create([
-                            'student_id' => auth('api')->user()->id,
+                            'student_id' => $paymentDetails['user_id'],
                             'course_session_id' => $session->id,
                             'status' => 1,
                             'subscription_date' => now(),
@@ -243,7 +259,7 @@ class PaymentController extends Controller
             }
 
 
-            $this->paymentService->storeBalanceApi($paymentDetails);
+            $this->paymentService->storeBalanceApi($paymentDetails,'group');
 
 
 

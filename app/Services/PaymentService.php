@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\{Transactios,Balances, Courses};
+use App\Models\{Transactios,Balances, Courses, CourseSession};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
@@ -154,10 +154,9 @@ class PaymentService
             'amount_before_commission' => $amount_before_commission,
         ]);
     }
-    public function storeBalanceApi($paymentDetails)
+    public function storeBalanceApi($paymentDetails , $type = 'course')
     {
-        $course = Courses::find($paymentDetails['transactionable_id']);
-        $lecturer = $course->lecturer;
+        $lecturer = $this->getLecturer($type , $paymentDetails['transactionable_id']);
 
         $amount_before_commission = $paymentDetails['amount'];
         $system_commission = ($lecturer->system_commission > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
@@ -177,6 +176,29 @@ class PaymentService
             'amount' => $amount,
             'amount_before_commission' => $amount_before_commission,
         ]);
+    }
+
+    function getLecturer($type , $id){
+
+        switch($type){
+            case 'course' :
+
+                $course = Courses::find($id);
+                return $lecturer = $course->lecturer;
+                break;
+
+            case 'session' :
+                $session = CourseSession::find($id);
+                return $lecturer = $session->course->lecturer;
+                break;
+
+            case 'group' :
+                $session = CourseSession::where('group_id',$id)->first();
+                return $lecturer = $session->course->lecturer;
+                break;
+        }
+
+
     }
 
 }

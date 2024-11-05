@@ -90,7 +90,7 @@ Route::get('/teacher/{id}', [TeacherController::class, 'findTeacherById'])->name
 
 //payment
 
-Route::group(['middleware' => 'language', 'prefix' => 'payment'], function () {
+Route::group(['prefix' => 'payment'], function () {
 
     Route::post('/fullCourse',[PaymentController::class,'fullSubscribe']);
     Route::get('/full-subscribe-course-confirm',[PaymentController::class,'fullConfirmSubscribe']);
