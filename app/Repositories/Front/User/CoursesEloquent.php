@@ -196,11 +196,11 @@ class CoursesEloquent extends HelperEloquent
             ->addSelect([
                 'progress' => UserCourse::select('progress')
                     ->whereColumn('course_id', 'courses.id')
-                    ->where('user_id', $user_id),
+                    ->where('user_id', $user_id)->limit(1),
 
                 'is_rating' => UserCourse::select('is_rating')
                     ->whereColumn('course_id', 'courses.id')
-                    ->where('user_id', $user_id),
+                    ->where('user_id', $user_id)->limit(1),
             ])
             ->withCount('items')
             ->orderBy('is_end', 'asc')
@@ -231,11 +231,11 @@ class CoursesEloquent extends HelperEloquent
         ->addSelect([
             'is_end' => UserCourse::select('is_end')
                 ->whereColumn('course_id', 'courses.id')
-                ->where('user_id', auth()->id()),
+                ->where('user_id', auth()->id())->limit(1),
 
             'is_rating' => UserCourse::select('is_rating')
                 ->whereColumn('course_id', 'courses.id')
-                ->where('user_id', auth()->id()),
+                ->where('user_id', auth()->id())->limit(1),
         ])
         ->first();
         return $course;

@@ -146,6 +146,14 @@ class CourseSessionSubscriptionsController extends Controller
         {
             $paymentDetails = session('payment-'.auth('web')->user()->id);
 
+            //check payment status
+            $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
+
+            if($statusCheck['status'] != "completed")
+            {
+                return redirect('/payment-failure'); 
+            }
+
             $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
 
             if($paymentDetails['purchase_type'] == "group")

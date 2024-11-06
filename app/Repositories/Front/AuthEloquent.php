@@ -17,6 +17,7 @@ use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthEloquent extends HelperEloquent
 {
@@ -210,8 +211,20 @@ class AuthEloquent extends HelperEloquent
                     ];
             }
 
-            $device_token=$request->device_token;
-            Auth::user()->update(['device_token'=>$device_token]);
+            if (Auth('web')->user()->role == "student" && Auth('web')->user()->session_token)
+            {
+                $this->guard()->logout();
+                $response = [
+                    'message' => __('you_are_currently_loggined'),
+                    'status' => false,
+                ];
+                return $response;
+            }
+    
+            $session_token = Str::random(60);
+
+            $device_token = $request->device_token;
+            Auth::user()->update(['device_token'=>$device_token,'session_token'=>$session_token]);
 
             return
                 [
@@ -344,8 +357,12 @@ class AuthEloquent extends HelperEloquent
 
     public function singout($request)
     {
-        $this->guard()->logout();
+        $user = auth()->guard('web')->user();
+        $user->session_token = null;
+        $user->save();
 
+        $this->guard()->logout();
+        
         // $request->session()->invalidate();
 
         return redirect()->route('user.auth.login');

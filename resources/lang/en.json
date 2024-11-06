@@ -1143,7 +1143,8 @@
     "select_method":"Select and process payment",
     "amount_must_exceed_1000_iqd":"Amount must exceed 1000 iqd",
     "visa_master":"Banking Payment (Visa-MasterCard)",
-    "zain_cash":"Zain Cash"
+    "zain_cash":"Zain Cash",
+    "you_are_currently_loggined":"You are already logged in on another device"
 
 
 

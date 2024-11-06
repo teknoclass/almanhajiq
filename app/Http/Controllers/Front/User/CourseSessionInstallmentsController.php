@@ -123,6 +123,14 @@ class CourseSessionInstallmentsController extends Controller
         {
             $paymentDetails = session('payment-'.auth('web')->user()->id);
 
+            //check payment status
+            $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
+
+            if($statusCheck['status'] != "completed")
+            {
+                return redirect('/payment-failure'); 
+            }
+
             $item = StudentSessionInstallment::updateOrCreate([
                 'student_id' => auth('web')->user()->id,
                 'course_id' => $paymentDetails['course_id'],

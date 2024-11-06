@@ -135,6 +135,13 @@ class CourseFullSubscriptionsController extends Controller
         try
         {
             $paymentDetails = session('payment-'.auth('web')->user()->id);
+            //check payment status
+            $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
+
+            if($statusCheck['status'] != "completed")
+            {
+                return redirect('/payment-failure'); 
+            }
     
             //user course create
             UserCourse::create([
