@@ -205,7 +205,7 @@
                                             $isSessionNow = $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15;
                                         @endphp
 
-                                        @if($isSessionNow  && $session->meeting_status != "finished")
+                                        @if($isSessionNow && $session->meeting_status != "finished")
                                             <span><a
                                                     href="{{ route('panel.courses.live.createLiveSession', $session->id) }}"
                                                     class="btn btn-primary">Start Session</a></span>

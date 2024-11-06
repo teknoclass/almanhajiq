@@ -102,6 +102,7 @@ class CourseSession extends Model
         $moderatorPW = $this->generateSimplePassword(8);
         $meeting_id = "course_session_with_id_".$this->id.time();
         $this->meeting_id = $meeting_id;
+        $this->meeting_status = "started";
 
         Bigbluebutton::create([
             'meetingID'      => $meeting_id,

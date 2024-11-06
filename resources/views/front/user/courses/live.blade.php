@@ -135,10 +135,13 @@
                                                     @if(isCourseonStudentCourse(@$course->id) || isStudentSubscribeToSession($session->id) || in_array($session->id,installementdLessonsIds(@$course->id)))
                                                   
                                                     <td>
-                                                        @if($isSessionNow  && $session->meeting_status != "finished")
+                                                        @if($isSessionNow  && $session->meeting_status == "started")
                                                         <button type="button" class="btn btn-primary bigBlueSessonBtnModal" alt = "{{$session->id}}">
                                                                 {{__('go_to_live_session')}}
                                                             </button>
+                                                        @elseif($isSessionNow  && $session->meeting_status == "")
+                                                        <button class="btn btn-warning"
+                                                                    disabled>{{ __('starting_soon') }}</button>
                                                         @elseif ($isSessionStartingSoon)
                                                             <button class="btn btn-warning"
                                                                     disabled>{{ __('starting_soon') }}</button>
@@ -230,7 +233,7 @@
                                                     @if(isCourseonStudentCourse(@$course->id) || isStudentSubscribeToSession($session->id) || in_array($session->id,installementdLessonsIds(@$course->id)))
                                                     <td>
                                                    
-                                                            @if ($isSessionNow  && $session->meeting_status != "finished")
+                                                            @if ($isSessionNow  && $session->meeting_status == "started")
                                                                 <button type="button" class="btn btn-primary bigBlueSessonBtnModal" alt = "{{$session->id}}">
                                                                     {{__('go_to_live_session')}}
                                                                 </button>
@@ -253,7 +256,7 @@
                                                         <div>
 
                                                           
-                                                            @if ($isSessionNow  && $session->meeting_status != "finished")
+                                                            @if ($isSessionNow  && $session->meeting_status == "started")
                                                         
                                                             @if(! $session->public_password)
                                                                 <p style="color:#8B0000;font-size:13px">{{__('waiting_password')}}</p>
