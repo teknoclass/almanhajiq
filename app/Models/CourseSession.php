@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 use BigBlueButton\Parameters\GetRecordingsParameters;
@@ -29,6 +30,12 @@ class CourseSession extends Model
         return $this->belongsTo(CourseSessionsGroup::class);
     }
 
+    public function canAccess($userId)
+    {
+        return DB::table('course_session_subscriptions')
+                 ->where(['course_session_id'=> $this->id,'student_id'=> $userId])
+                 ->exists();
+    }
     public function studentRequests()
     {
         return $this->hasMany(CourseSessionsRequest::class,'course_session_id')->where('user_type','student')
@@ -138,7 +145,7 @@ class CourseSession extends Model
     public function getRecording()
     {
         $link = "";
-       
+
         $getRecordingsParams = new GetRecordingsParameters();
         $getRecordingsParams->meetingId = $this->meeting_id;
 
@@ -151,7 +158,7 @@ class CourseSession extends Model
 
             $link = $playbackURL;
         }
-        
+
 
         return $link;
     }

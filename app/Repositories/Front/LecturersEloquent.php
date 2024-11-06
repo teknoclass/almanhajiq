@@ -34,18 +34,10 @@ class LecturersEloquent
     public function getData($request, $count_itmes=8)
     {
 
-        $data['lecturers'] = User::select(
-                'id',
-                'name',
-                'mobile',
-                'image',
-                'gender',
-                'city',
-                'dob',
-                'belongs_to_awael'
-            )->where('role', 'lecturer')
+        $data['lecturers'] = User::where('role', 'lecturer')
              ->where('is_validation', 1)
-        ->orderBy('id', 'desc');
+            ->orderBy('id', 'desc')
+            ->with(['LecturerSetting', 'motherLang', 'ratings']);
 
         $data['lecturers_has_lessons'] = User::where('role', 'lecturer')
             ->whereHas('teacherPrivateLessons', function ($q) {

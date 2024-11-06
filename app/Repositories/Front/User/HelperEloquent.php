@@ -11,7 +11,7 @@ class HelperEloquent
         if ($is_web) {
             $user = auth('web')->user();
         } else {
-            $user = auth()->user();
+            $user = auth('api')->user();
         }
         return $user;
     }

@@ -1027,7 +1027,8 @@
     "session_not_found":"الجلسة غير موجودة",
     "choose_pls":"اختر من فضلك",
     "can_subscribe_to_session_group":"امكانية اشتراك الطلاب فى مجموعة جلسات",
-    "can_subscribe_to_session":"امكانية اشتراك الطلاب فى جلسة منفردة"
+    "can_subscribe_to_session":"امكانية اشتراك الطلاب فى جلسة منفردة",
+    
 
 
 }

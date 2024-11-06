@@ -17,10 +17,14 @@ class TeacherResource extends JsonResource
      */
     public function toArray($request)
     {
+        $lecturerSettingTranslation = collect($this->lecturerSetting?->translations)->firstWhere('locale', $locale ?? 'ar');
 
         return [
             'id'=>$this->id,
             'name'=>$this->name,
+            'description'=>$lecturerSettingTranslation ?$lecturerSettingTranslation->description: $this->lecturerSetting?->description,
+            'position'=>$lecturerSettingTranslation ?$lecturerSettingTranslation->position: $this->lecturerSetting?->position,
+
             'image'=>imageUrl($this->image,'100x100'),
             'experience'=>$this->lecturerSetting?->exp_years,
             'mother_lang'=>$this->motherLang?->name,

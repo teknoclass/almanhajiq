@@ -18,17 +18,27 @@ class StudentResource extends JsonResource
      */
     public function toArray($request)
     {
+
         $locale = App::getLocale();
 
-        return [
+        $data =  [
             'id'=>$this->id,
             'email'=>$this->email,
             'name'=>$this->name,
             'role'=>$this->role ,
             'image'=> imageUrl($this->image,'100x100'),
             'mobile'=>$this->mobile,
+            'country_code'=>$this->code_country,
+            'info'=>[
+                'courses_count'=>count($this->courses),
+                'private_lessons_count'=>count($this->privateLessons),
+            ],
             'country'=> isset($this->country)?collect($this->country['translations'])->firstWhere('locale', $locale??'en')->name??'':'',
-            'token'=> $this->token->token,
         ];
+        if ($this->token)
+        {
+            $data['token']=$this->token;
+        }
+        return $data;
     }
 }

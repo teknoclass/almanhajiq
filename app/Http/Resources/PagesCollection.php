@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources;
 
-class MaterialCollection extends MainCollection
+class PagesCollection extends MainCollection
 {
     public function __construct($resource)
     {
         parent::__construct($resource, __('materials'));
     }
 }
+

@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Resources;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\App;
 
-class MaterialResource extends JsonResource
+class TeacherReviewsResource extends JsonResource
 {
 
     /**
@@ -17,11 +17,13 @@ class MaterialResource extends JsonResource
      */
     public function toArray($request)
     {
-        $locale = App::getLocale();
-        $translation = collect($this->translations)->firstWhere('locale', $locale ?? 'ar');
+
         return [
-            'id'=> $this->id,
-            'name'=> $translation ? $translation->name : $this->name,
+            'id'=>$this->id,
+            'comment_text'=>$this->comment_text,
+            'rate'=>$this->rate,
+            'user'=>$this->user?->name,
+            'image'=>$this->user?->image,
 
         ];
     }

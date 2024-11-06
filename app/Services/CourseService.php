@@ -3,12 +3,22 @@
 namespace App\Services;
 
 use App\Http\Requests\Api\FilterRequest;
+use App\Models\Category;
 use App\Models\Courses;
+use App\Models\CourseSessionSubscription;
 use App\Models\UserCourse;
+use App\Repositories\CourseRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CourseService extends MainService
 {
+    public  CourseRepository $courseRepository;
+    public function __construct(CourseRepository $courseRepository)
+    {
+        $this->courseRepository= $courseRepository;
+    }
+
     public function courseFilter(FilterRequest $filterRequest): array
     {
         $courses = Courses::active()
@@ -59,6 +69,7 @@ class CourseService extends MainService
 
         if ($filterRequest->has('material_id')) {
             $courses = $courses->filterByCategories([$filterRequest->material_id]);
+
             $courses = $courses->with([
                 'lecturers.lecturerSetting' => function($query) {
                     $query->select(
@@ -96,6 +107,7 @@ class CourseService extends MainService
                           ->where('grade_sub_level', $filterRequest->grade_sub_level_id);
 
         if ($filterRequest->has('material_id')) {
+
             $courses = $courses->filterByCategories([$filterRequest->material_id]);
         }
 
@@ -108,4 +120,70 @@ class CourseService extends MainService
         );
 
     }
+
+    public function getById($id){
+        try {
+            $course = $this->courseRepository->findByIdWith($id,count:[
+                'students',
+                'groups as groups_count' => function($query) {
+                    $query->select(DB::raw('COUNT(DISTINCT group_id)'));
+                },
+                'sessions']);
+
+            if ($course) {
+                $course->groups = $course->groups->unique('id');
+            }
+            return $this->createResponse(
+                __('message.success'),
+                true,
+                $course
+            );
+        }
+
+        catch (\Exception  $exception){
+            Log::error($exception->getMessage());
+            return $this->createResponse(
+                __('message.not_found'),
+                false,
+                null
+            );
+        }
+
+    }
+
+
+    public function getCourseByUserId($request,$id){
+        try {
+            $user = $request->attributes->get('user');
+
+            $isSub = $this->courseRepository->getCourseByUserId($user,$id)?->course;
+            $course = $this->courseRepository->findById($id);
+            if ($course){
+                $course->setAttribute('is_sub', (int)!is_null($isSub));
+            }
+
+            if (!$course) {
+                return $this->createResponse(
+                    __('message.not_found'),
+                    false,
+                    null
+                );
+            }
+            return $this->createResponse(
+                __('message.success'),
+                true,
+                $course
+            );
+        }
+        catch (\Exception  $exception){
+            Log::error($exception->getMessage());
+            return $this->createResponse(
+                __('message.not_found'),
+                false,
+                null
+            );
+        }
+
+    }
+
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\Api\ForgetPasswordRequest;
 use App\Http\Requests\Api\RestPasswordRequest;
 use App\Http\Requests\Api\StudentRequest;
 use App\Http\Requests\Api\TeacherRequest;
+use App\Http\Requests\Api\UpdateStudentRequest;
 use App\Http\Requests\Front\SignInRequest;
 use App\Mail\ResetPasswordEmail;
 use App\Models\User;
@@ -84,15 +85,26 @@ class AuthService extends MainService
             DB::beginTransaction();
 
             $data                = $studentRequest->all();
+            $data['validation_code']    = '0000';
             $data['password_c']  = $studentRequest->get('password');
             $data['password']    = Hash::make($studentRequest->get('password'));
-            $data['validation_code']    = '0000';
             $user =  $this->userRepository->updateOrCreateUser($data);
-            $token          = $user->createToken('Laravel Password Grant Client')->accessToken;
+            $token = $user->createToken('auth_token')->plainTextToken;
 
 
             $message = __('message.operation_accomplished_successfully');
-             $user->sendVerificationCode();
+//            try {
+//                $user->sendVerificationCode();
+//            }
+//            catch (\Exception $exception){
+//                DB::rollback();
+//                Log::error($exception->getMessage());
+//                return $this->createResponse(
+//                    __('message.message.unexpected_error'),
+//                    false,
+//                    null
+//                );
+//            }
             DB::commit();
             $user->token = $token;
             return $this->createResponse(
@@ -117,7 +129,7 @@ class AuthService extends MainService
         $user     = $this->userRepository->getUserByEmail($request->email);
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
-                $token        = $user->createToken('Laravel Password Grant Client')->accessToken;
+                $token = $user->createToken('auth_token')->plainTextToken;
                 $user->token  = $token;
                 return $this->createResponse(
                     __('message.operation_accomplished_successfully'),
@@ -199,6 +211,67 @@ class AuthService extends MainService
             $user
         );
     }
+
+    public function deleteUser($request): array
+    {
+        DB::beginTransaction();
+
+        try {
+            $user = $request->user();
+
+            if (!$user) {
+                return $this->createResponse(
+                    __('message.user_does_not_exist'),
+                    false,
+                    null
+                );
+            }
+
+
+            $user->delete();
+
+            DB::commit();
+
+            return $this->createResponse(
+                __('delete_done'),
+                true,
+                null
+            );
+
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            Log::alert($e->getMessage());
+
+            return $this->createResponse(
+                __('message.unexpected_error'),
+                false,
+                null
+            );
+        }
+    }
+    public function logout($request): array
+    {
+        $user = $request->user();
+        $request->user()->currentAccessToken()->delete();
+        if ($user) {
+            $user->tokens()->delete();
+
+            return $this->createResponse(
+                __('logout_success'),
+                true,
+                null
+            );
+        }
+
+        return $this->createResponse(
+            __('message.user_does_not_exist'),
+            false,
+            null
+        );
+    }
+
+
     private function handleFileUploads($request, $item, $data)
     {
         $data['id_image']        = $this->uploadAndFormatFile($request, 'id_image', $item->id);

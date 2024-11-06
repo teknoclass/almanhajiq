@@ -20,7 +20,7 @@ class ApiCourseResource extends JsonResource
         $gradeSubLevel = Category::where('id',$this->grade_sub_level)->with('translations')->first();
         $locale = App::getLocale();
 
-        return [
+        $data =  [
             'id'=>$this->id,
             'image'=>imageUrl($this->image,'100x100'),
             'title'=>collect($this->translations)->firstWhere('locale', $locale??'en')->title ,
@@ -31,6 +31,11 @@ class ApiCourseResource extends JsonResource
             'price'=>$this->priceDetails?->price,
             'rate'=>$this->rate,
             'discount_price'=>$this->priceDetails?->discount_price,
+            'is_sub'=>0
         ];
+        if ($this->is_sub){
+            $data['is_sub']=1;
+        }
+        return $data;
     }
 }

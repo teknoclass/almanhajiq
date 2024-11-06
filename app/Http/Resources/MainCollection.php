@@ -24,20 +24,19 @@ abstract class MainCollection extends ResourceCollection
      */
     public function toArray($request)
     {
+
         if ($this->resource instanceof AbstractPaginator){
             return [
-                'current_page' => $this->currentPage(),
+
                 $this->collectionKey => $this->collection,
-                'first_page_url' => $this->url(1),
-                'from' => $this->firstItem(),
-                'last_page' => $this->lastPage(),
-                'last_page_url' => $this->url($this->lastPage()),
-                'next_page_url' => $this->nextPageUrl(),
-                'path' => $this->path(),
-                'per_page' => $this->perPage(),
-                'prev_page_url' => $this->previousPageUrl(),
-                'to' => $this->lastItem(),
-                'total' => $this->total(),
+                "pagination"=>[
+                    'current_page' => $this->currentPage(),
+                    'from' => $this->firstItem(),
+                    'last_page' => $this->lastPage(),
+                    'per_page' => $this->perPage(),
+                    'to' => $this->lastItem(),
+                    'total' => $this->total(),
+                ]
             ];
         }
         return   [$this->collectionKey => $this->collection];
