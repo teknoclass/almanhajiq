@@ -213,6 +213,7 @@ class AuthEloquent extends HelperEloquent
 
             if (Auth('web')->user()->role == "student" && Auth('web')->user()->session_token)
             {
+                $this->guard()->logout();
                 $response = [
                     'message' => __('you_are_currently_loggined'),
                     'status' => false,
