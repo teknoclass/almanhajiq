@@ -853,7 +853,7 @@ class CourseCurriculumEloquent extends HelperEloquent
 
         $data['user'] = $this->getUser($is_web);
 
-        $lesson = CourseLiveLesson::where('id', $id)->first();
+        $lesson = CourseSession::where('id', $id)->first();
 
         if ($lesson=='') {
             abort(404);
@@ -873,7 +873,7 @@ class CourseCurriculumEloquent extends HelperEloquent
         //     $lesson->recording_link = $playbackURL;
         // }
 
-        $lesson->meeting = "finished";
+        $lesson->meeting_status = "finished";
         $lesson->update();
 
         return true;

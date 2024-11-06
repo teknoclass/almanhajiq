@@ -18,7 +18,7 @@ class CourseSession extends Model
 
     protected $fillable = ['course_id', 'day', 'date', 'time',
 
-    'title', 'group_id','public_password','status', 'price', 'meeting_id'];
+    'title', 'group_id','public_password','status', 'price', 'meeting_id','meeting_status'];
 
     public function course()
     {
@@ -106,6 +106,8 @@ class CourseSession extends Model
         Bigbluebutton::create([
             'meetingID'      => $meeting_id,
             'meetingName'    => $this->title,
+            'autoStartRecording' => true, 
+            'allowStartStopRecording' => false, 
             'record'         => true,
             'attendeePW'     => $attendeePW,
             'moderatorPW'    => $moderatorPW,
@@ -126,13 +128,13 @@ class CourseSession extends Model
 
     public function joinLiveSession($request) {
         try {
+            
             $response = Bigbluebutton::join([
                 'meetingID' => $this->meeting_id,
                 'userName' => auth('web')->user()->name,
-                'password' => $request->password,
+                'password' => trim($request->password),
 
             ]);
-
             Log::info('Join Live Session Response: ', ['response' => $response]);
 
             return $response;
