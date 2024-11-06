@@ -212,7 +212,7 @@
                                         <div class="icon-chevron me-1 d-flex"><i class="fa-solid fa-circle-chevron-left"></i></div>
                                     </div>
                                     <div class="col">
-                                        <a class="d-flex align-items-center col-auto" href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'assignment', 'id'=>$assignment->item->id]) }}">
+                                        <a class="d-flex align-items-center col-auto" @if($assignment->item) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'assignment', 'id'=>$assignment->item->id]) }}" @endif>
                                             <p class="ms-2">{{ $assignment->item->title }}</p>
                                         </a>
                                     </div>
