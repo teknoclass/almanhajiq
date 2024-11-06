@@ -265,22 +265,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="form-group col-6">
-                                        <label>{{ __('open_installments') }}
-                                            <span class="text-danger"></span></label>
-                                        <select id="open_installments" name="open_installments" class="form-control   "
-                                            required>
-                                            <option value="" selected disabled>{{ __('type_select') }} </option>
-
-                                            <option value="1" {{ @$item->open_installments == 1 ? 'selected' : '' }}>
-                                                {{ __('yes') }}
-                                            </option>
-                                            <option value="0" {{ @$item->open_installments == 0 ? 'selected' : '' }}>
-                                                {{ __('no') }}
-                                            </option>
-
-                                        </select>
-                                    </div>
+                                   
 
                                     <div class="form-group col-6">
                                         <label>{{__('start_date')}}

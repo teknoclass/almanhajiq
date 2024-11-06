@@ -505,18 +505,18 @@ class Courses extends Model
         {
             if($user && $user->country) {
                 // $price         = ceil($user->country->currency_exchange_rate * $price) . " ".$user->country->currency_name;
-                $price         = ceil($user->country->currency_exchange_rate * $price) . " ". __('currency');
+                $price         = number_format($user->country->currency_exchange_rate * $price,2) . " ". __('currency');
                 if($discount_price){
                     $price = "<del>" . $price . "</del> &nbsp;";
                     // $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ".$user->country->currency_name;
-                    $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ". __('currency');
+                    $discount_price = number_format($user->country->currency_exchange_rate * $discount_price,2) . " ". __('currency');
                     $price .=  $discount_price;
                 }
             } else {
-                $price = $price . ' ' . __('currency') . ' ';
+                $price = number_format($price,2) . ' ' . __('currency') . ' ';
                 if($discount_price){
                     $price           = "<del>" . $price . "</del> &nbsp;";
-                    $discount_price  = $discount_price . ' ' . __('currency') . ' ';
+                    $discount_price  = number_format($discount_price,2) . ' ' . __('currency') . ' ';
                     $price          .=  $discount_price;
                 }
             }
