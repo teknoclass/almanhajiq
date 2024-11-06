@@ -29,14 +29,17 @@ class ApiSingleCourseResource extends JsonResource
         $curriculumItems = $curriculumItems->merge(collect(new ApiGroupCollection($this->groups)));
         $curriculumItems = $curriculumItems->merge(collect(new ApiSessionCollection($this->sessions->whereNull('group_id'))));
         $curriculumItems = $curriculumItems->merge(collect(new ApiCurriculumItemCollection($this->items)));
-        $sessionDays = $this->sessions->pluck('day', 'time')->toArray();
-
-        $formattedDays = implode(',', array_map(
+        $sessionDays = $this->sessions()->select('day', 'time')->get();
+        foreach($sessionDays as $sessionDay){
+            $sessionDay->day = __($sessionDay->day);
+        }
+        /* $formattedDays = implode(',', array_map(
             fn($time, $day) => "{$day} - {$time}",
             array_keys($sessionDays),
             array_values($sessionDays)
-        ));
+        )); */
         $data =  [
+            'ttt' => app()->getLocale(),
             'id' => $this->id,
             'slider' => [
                ['type'=>'image','media' => imageUrl($this->image,'100x100')],
@@ -62,7 +65,7 @@ class ApiSingleCourseResource extends JsonResource
             'duration' => $this->getDurationInMonths(),
             'max_students' => 10,
             'session_days' =>  [
-                'days'=>$formattedDays
+                'days'=>$sessionDays
             ],
             'description' => $translation->description ?? $this->description,
             'category' => collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name ?? $this->category?->title,

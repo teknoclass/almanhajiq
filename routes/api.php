@@ -78,7 +78,7 @@ Route::get('/FAQ', [SettingsController::class, 'faqs'])->name('faqs')->middlewar
 
 Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('language');
 
-Route::group(['middleware' => 'language', 'prefix' => 'courses'], function () {
+Route::group([ 'prefix' => 'courses'], function () {
     Route::post('/filter', [CourseController::class, 'courseFilter'])->name('filter');
     Route::get('/{id}', [CourseController::class, 'getCourse'])->name('singleCourse')->middleware(['check.sanctum.token']);
     Route::get('/purchase-options/{id}', [CourseSessionsController::class, 'purchaseOptions'])->name('session_groups')->middleware(['check.sanctum.token']);

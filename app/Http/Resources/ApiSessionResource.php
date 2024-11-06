@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApiSessionResource extends JsonResource
 {
@@ -24,24 +25,37 @@ class ApiSessionResource extends JsonResource
             $isSub = $request->get('user') ? (int) $this->canAccess($request->get('user')->id) : 0;
         }
         $join_url  = '';
-        if ($isSub==1 &&  $this->password!=null){
-            $join_url = URL::temporarySignedRoute(
-                'user.courses.live.joinLiveSession',
-                now()->addMinutes(5),
-                [
-                    'id' => $this->id,
-                    'userName' => $request->user()->name,
-                    'password' => $this->public_password
-                ]
-            );
+        $meetType = '';
+        if ($isSub==1 &&  $this->public_password!=null){
+
+            $sessionDateTime = \Carbon\Carbon::parse($this->date . ' ' . $this->time);
+            $isSessionInPast = $sessionDateTime->isPast();
+
+            if($isSessionInPast){
+                $join_url = $this->getRecording();
+                $meetType = 'recorded';
+            }else{
+                $join_url = URL::temporarySignedRoute(
+                    'user.courses.live.joinLiveSession',
+                    now()->addMinutes(5),
+                    [
+                        'id' => $this->id,
+                        'userName' => $request->user()->name,
+                        'password' => $this->public_password
+                    ]
+                );
+                $meetType = 'live';
+            }
+
         }
         return [
             'id' => $this->id,
+
             'course_id' => $this->course_id,
             'item_type' => 'session',
             'is_sub' => $isSub,
             'join_url' => $join_url,
-
+            'meeting_type' => $meetType,
             'session' => [
                 'group_id' => $this->group_id,
                 'price' => $this->price,
