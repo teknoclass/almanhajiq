@@ -158,7 +158,7 @@
                                                 <span class="text-danger">*</span></label>
                                             <select id="sub_level_id" name="grade_sub_level" class="form-control" required>
                                                 <option value="" selected disabled>{{ __('grade_sub_level') }}</option>
-                                                @if(isset($item)) <option value="{{@App\Models\Category::find(@$item->grade_sub_level)->value ?? ''}}" selected>{{@App\Models\Category::find(@$item->grade_sub_level)->name ?? ""}} </option> @endif
+                                                @if(isset($item)) <option value="{{@App\Models\Category::find(@$item->grade_sub_level)->id ?? ''}}" selected>{{@App\Models\Category::find(@$item->grade_sub_level)->name ?? ""}} </option> @endif
                                             </select>
                                         </div>
 
@@ -167,7 +167,7 @@
                                             <span class="text-danger">*</span></label>
                                         <select id="material_id" name="material_id" class="form-control" required>
                                             <option value="" selected disabled>{{ __('material_select') }}</option>
-                                            @if(isset($item)) <option value="{{@App\Models\Category::find(@$item->material_id)->value ?? ''}}" selected>{{@App\Models\Category::find(@$item->material_id)->name ?? ""}} </option> @endif
+                                            @if(isset($item)) <option value="{{@App\Models\Category::find(@$item->material_id)->id ?? ''}}" selected>{{@App\Models\Category::find(@$item->material_id)->name ?? ""}} </option> @endif
                                         </select>
                                     </div>
 <script>
