@@ -15,17 +15,17 @@
 					<form id="form" action="{{route('contact.store')}}" to="#" method="POST">
                         @csrf
 						<div class="form-group">
-							<input class="form-control" type="text" name="name" placeholder="{{ __('full_name') }}" />
+							<input class="form-control" required type="text" name="name" placeholder="{{ __('full_name') }}" />
 						</div>
 						<div class="form-group">
-							<input class="form-control" type="text" name="email" placeholder="{{ __('email') }} " />
+							<input class="form-control" type="email" name="email" placeholder="{{ __('email') }} " required />
 						</div>
 						<div class="form-group d-flex border rounded-pill selectpicker-country bg-white">
                             <input type="hidden" name="code_country"  class="code_counrty form-control">
                             <input type="hidden" name="slug_country"   class="slug_country form-control">
                             <input
                                 type="text" minlength="10" maxlength="10" name="mobile"
-                                required placeholder="{{__('mobile')}}"
+                                required placeholder="{{__('mobile')}}" min="10" 
                                 class="form-control mobile-number "
                                 id="phone" />
 
@@ -37,10 +37,10 @@
                             </select> --}}
 						</div>
 						<div class="form-group">
-							<input class="form-control" type="text" name="subject" placeholder="{{ __('subject') }}" />
+							<input required class="form-control" type="text" name="subject" placeholder="{{ __('subject') }}" />
 						</div>
 						<div class="form-group">
-							<textarea class="form-control p-3" rows="4" name="text" placeholder="{{ __('message') }}"></textarea>
+							<textarea required class="form-control p-3" rows="4" name="text" placeholder="{{ __('message') }}"></textarea>
 						</div>
 						<div class="form-group mt-4">
 							<button class="btn btn-primary w-100 font-medium rounded-pill" type="submit"  id="btn_submit">
