@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\CourseSession;
 use App\Models\CourseSessionsRequest;
 use App\Models\Transactios;
+use App\Models\UserCourse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -133,29 +134,48 @@ class CourseSessionService
                 'chosen_date' => $data->chosen_date?? null,
                 'admin_response' => $data->admin_response??null,
             ]);
-           
+
+            $course_session_id = $lessonRequest->course_session_id;
+
             if ($data->status == 'accepted') {
                 if ($lessonRequest->type == 'postpone') {
                     $this->updateLessonDate($lessonRequest);
-                   
-                    sendNotification('قبول طلب التاجيل','تم الموافقة على طلب تاجيلك للجلسة  ',
+
+                    //to lecturer
+                    sendNotification('قبول طلب التاجيل',' تم الموافقة على طلب تاجيلك للجلسة  '.'( '. @CourseSession::find($course_session_id)->title .' )',
                     $lessonRequest->user_id,'user', 'course_session_request',
                     $lessonRequest->id);
+
+                    //to students
+                    $course_id = @CourseSession::find($course_session_id)->course_id;
+                    $userIds = @UserCourse::where('course_id',$course_id)->pluck('user_id')->toArray();
+
+                    sendNotifications('قبول طلب التاجيل',' تم الموافقة على طلب تاجيل المحاضر للجلسة  '.'( '. @CourseSession::find($course_session_id)->title .' )','course_session_request',
+                    $lessonRequest->id,null,"user",$userIds);
+                    
                 } else {
                     $this->cancelLesson($lessonRequest);
-                  
-                    sendNotification('قبول طلب الغاء الجلسة','تم الموافقة على طلب الغاءك للجلسة  ',
+
+                    //to lecturer
+                    sendNotification('قبول طلب الغاء الجلسة',' تم الموافقة على طلب الغاءك للجلسة  '.'( '. @CourseSession::find($course_session_id)->title .' )',
                     $lessonRequest->user_id,'user', 'course_session_request',
                     $lessonRequest->id);
+
+                    //to students
+                    $course_id = @CourseSession::find($course_session_id)->course_id;
+                    $userIds = @UserCourse::where('course_id',$course_id)->pluck('user_id')->toArray();
+
+                    sendNotifications('قبول طلب الغاء الجلسة',' تم الموافقة على طلب الغاء المحاضر للجلسة  '.'( '. @CourseSession::find($course_session_id)->title .' )','course_session_request',
+                    $lessonRequest->id,null,"user",$userIds);
                 }
             }else{
                 if ($lessonRequest->type == 'postpone') {
                   
-                    sendNotification('رفض طلب التاجيل الجلسة','تم رفض طلب تاجيلك للجلسة  ',
+                    sendNotification('رفض طلب التاجيل الجلسة',' تم رفض طلب تاجيلك للجلسة  '.'( '. @CourseSession::find($course_session_id)->title .' )',
                     $lessonRequest->user_id,'user', 'course_session_request',
                     $lessonRequest->id);
                 } else {
-                    sendNotification('رفض طلب الغاء الجلسة','تم رفض طلب الغاءك للجلسة  ',
+                    sendNotification('رفض طلب الغاء الجلسة','تم رفض طلب الغاءك للجلسة  '.'( '. @CourseSession::find($course_session_id)->title .' )',
                     $lessonRequest->user_id,'user', 'course_session_request',
                     $lessonRequest->id);
                 }
