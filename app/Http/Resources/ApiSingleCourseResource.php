@@ -68,7 +68,7 @@ class ApiSingleCourseResource extends JsonResource
                 'days'=>$sessionDays
             ],
             'description' => $translation->description ?? $this->description,
-            'category' => collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name ?? $this->category?->title,
+            'category' => $this->category ? collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name ?? $this->category?->title : "",
             'price' => $this->priceDetails?->price??0,
             'discount_price' => $this->priceDetails?->discount_price??0,
             'rate' => $this->rate,
