@@ -49,20 +49,20 @@ class CourseSessionInstallmentsController extends Controller
        $response = $this->paymentService->processPayment([
             "amount" => $request->price,
             "currency" => "IQD",
-            "successUrl" => url('/user/pay-to-course-session-installment-confirm')
+            "finishPaymentUrl" => url('/user/pay-to-course-session-installment-confirm'),
+            "notificationUrl" => url('/user/pay-to-course-session-installment-confirm'),
         ]);  
         
-        if(isset($response['data']['link']))
+        if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "description" => "دفع قسط جلسات دورة",
-                "orderId" => $response['data']['orderId'],
-                "payment_id" => $response['data']['token'],
+                "orderId" => $response['requestId'],
+                "payment_id" => $response['paymentId'],
                 "amount" => $request->price,
                 "transactionable_type" => "App\\Models\\CourseSession",
                 "transactionable_id" => $request->id,
                 "brand" => "card",
-                "transaction_id" => $response['data']['transactionId'],
                 'course_id' => $request->course_id
             ];
     
@@ -70,7 +70,7 @@ class CourseSessionInstallmentsController extends Controller
 
             return  $response = [
                 'status_msg' => 'success',
-                'payment_link' => $response['data']['link']
+                'payment_link' => $response['formUrl']
             ];
         }else{
             return  $response = [
@@ -133,7 +133,7 @@ class CourseSessionInstallmentsController extends Controller
 
             //check qi payment status
             $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
-
+    
             if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
             {
                 return redirect('/payment-failure'); 
@@ -161,6 +161,8 @@ class CourseSessionInstallmentsController extends Controller
         {
             DB::rollback(); 
             Log::error($e->getMessage());
+            Log::error($e->getFile());
+            Log::error($e->getLine());
             return redirect('/payment-failure'); 
         }
     }
