@@ -269,7 +269,9 @@ Route::get('/migrate',function(){
         "2024_11_05_133910_change_brand_to_be_string_on_transactios_table.php",
 
         //users
-        "2024_11_05_225728_add_session_token_to_users_table.php"
+        "2024_11_05_225728_add_session_token_to_users_table.php",
+
+        "2024_11_07_002222_add_meeting_status_to_course_sessions_table.php"
 
     ];
 

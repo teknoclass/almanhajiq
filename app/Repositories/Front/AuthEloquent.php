@@ -306,8 +306,8 @@ class AuthEloquent extends HelperEloquent
 
     public function notify_welcom_lecturer($user)
     {
-        $title                       = 'إنشاء حساب جديد';
-        $text_msg    = "تم إنشاء حساب مدرس جديد علي المنصة،";
+        $title                       = 'إنشاء حساب ';
+        $text_msg    = "تم إنشاء حساب مدرس";
         $text_msg   .= "وجاري التحقق من البيانات وتفعيل الحساب في اقرب وقت،";
         $text_msg   .= "وإبلاغكم ببيانات التسجيل.";
         // $text                        = " تم إنشاء حساب مدرس جديد، وجاري التحقق من البيانات وتفعيل الحساب في اقرب وقت، وإبلاغكم ببيانات التسجيل. ";
@@ -320,7 +320,7 @@ class AuthEloquent extends HelperEloquent
         Notifications::insert($notification);
         sendWebNotification($user->id, 'user', $title, $text_msg);
 
-        $text_msg    = "<p>تم إنشاء حساب مدرس جديد علي المنصة،</p>";
+        $text_msg    = "<p>تم إنشاء حساب مدرس </p>";
         $text_msg   .= "<p>وجاري التحقق من البيانات وتفعيل الحساب في اقرب وقت،</p>";
         $text_msg   .= "<p>وإبلاغكم ببيانات التسجيل.</p>";
         sendEmail($title, $text_msg,  $user->email);

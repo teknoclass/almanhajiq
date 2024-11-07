@@ -529,7 +529,7 @@ Route::group(
     });
 
     //courses
-    Route::group(['prefix' => 'courses', 'as' => 'courses.','middleware' => 'permission:show_courses'], function () {
+    Route::group(['prefix' => 'courses', 'as' => 'courses.'], function () {
 
 
         Route::get('/search/{type}', [CoursesController::class, 'search'])->name('search');

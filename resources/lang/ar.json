@@ -1196,7 +1196,9 @@
     "amount_must_exceed_1000_iqd":"المبلغ يجب أن يكون اكبر من 1000 دينار عراقي",
     "visa_master":"بطاقة بنكية - (فيزا-ماستر كارد)",
     "zain_cash":"زين كاش",
-    "you_are_currently_loggined":"لا يمكن تسجيل دخول حاليا لان حسابك مسجل دخول فى جهاز اخر"
+    "you_are_currently_loggined":"لا يمكن تسجيل دخول حاليا لان حسابك مسجل دخول فى جهاز اخر",
+    "please_choose_group":"اختر وحدة اولا",
+    "please_choose_session":"اختر جلسة اولا"
 
 
 

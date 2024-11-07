@@ -101,7 +101,6 @@
                                                 <th>{{ __('group') }}</th>
                                                 <th>{{ __('time') }}</th>
                                                 <th>{{ __('status') }}</th>
-                                                <th>{{ __('actions') }}</th>
                                                 <th>{{ __('Start Session') }}</th>
                                                 <th>{{ __('password') }}</th>
                                                 <th>{{ __('recording_link') }}</th>
@@ -134,30 +133,15 @@
 
                                                     @endphp
                                                     @if(isCourseonStudentCourse(@$course->id) || isStudentSubscribeToSession($session->id) || in_array($session->id,installementdLessonsIds(@$course->id)))
+                                                  
                                                     <td>
-                                                        
-                                                    @if(!$isSessionInPast && ( !@$session->studentRequests->first() || (@$session->studentRequests->first() && @$session->studentRequests->first()?->status == "rejected") ) )
-
-                                                            <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                            data-bs-target="#cancelModal"  id="cancelButton" class="btn btn-danger btn-sm "  style="width:100px;margin-top:5px">
-                                                           
-                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
-                                                            </button>
-
-                                                            <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    id="postPoneButton" class="btn btn-primary btn-sm "
-                                                                        data-date="{{$session->date}}"
-                                                                    style="width:100px;margin-top:5px">
-                                                                    <i class="fa fa-calendar"></i>  {{ __('postpone')}}
-                                                            </button>
-                                                    
-                                                    @endif
-                                                    </td>
-                                                    <td>
-                                                        @if($isSessionNow )
+                                                        @if($isSessionNow  && $session->meeting_status == "started")
                                                         <button type="button" class="btn btn-primary bigBlueSessonBtnModal" alt = "{{$session->id}}">
                                                                 {{__('go_to_live_session')}}
                                                             </button>
+                                                        @elseif($isSessionNow  && $session->meeting_status == "")
+                                                        <button class="btn btn-warning"
+                                                                    disabled>{{ __('starting_soon') }}</button>
                                                         @elseif ($isSessionStartingSoon)
                                                             <button class="btn btn-warning"
                                                                     disabled>{{ __('starting_soon') }}</button>
@@ -174,7 +158,7 @@
                                                     </td>
                                               
                                                     <td>
-                                                    @if ($isSessionNow)
+                                                    @if ($isSessionNow && $session->meeting_status != "finished")
                                                     @if(! $session->public_password)
                                                         <p style="color:#8B0000;font-size:13px" >{{__('waiting_password')}}</p>
                                                         @else
@@ -183,13 +167,13 @@
                                                     @endif
                                                     </td>
                                                     <td>
-                                                    @if($isSessionInPast && $session->getRecording() != "")
+                                                    @if($session->getRecording() != "" && $session->meeting_status == "finished")
                                                         <a target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
                                                     @endif
                                                     </td>
 
                                                 @else
-                                                <td colspan="3"><p style="color:#8B0000">{{__('you_not_subscribed')}}</p></td>
+                                                <td colspan="2"><p style="color:#8B0000">{{__('you_not_subscribed')}}</p></td>
                                                 @endif
 
                                                 
@@ -228,7 +212,6 @@
                                                 <th>{{ __('date') }}</th>
                                                 <th>{{ __('time') }}</th>
                                                 <th>{{ __('Start Session') }}</th>
-                                                <th>{{ __('action') }}</th>
                                                 <th>{{ __('password') }}</th>
                                                 <th>{{ __('recording_link') }}</th>
                                             </tr>
@@ -250,7 +233,7 @@
                                                     @if(isCourseonStudentCourse(@$course->id) || isStudentSubscribeToSession($session->id) || in_array($session->id,installementdLessonsIds(@$course->id)))
                                                     <td>
                                                    
-                                                            @if ($isSessionNow )
+                                                            @if ($isSessionNow  && $session->meeting_status == "started")
                                                                 <button type="button" class="btn btn-primary bigBlueSessonBtnModal" alt = "{{$session->id}}">
                                                                     {{__('go_to_live_session')}}
                                                                 </button>
@@ -268,28 +251,12 @@
 
                                                             
                                                     </td>
-                                                    <td>
-                                                      
-                                                    @if(!$isSessionInPast && ( !@$session->studentRequests->first() || (@$session->studentRequests->first() && @$session->studentRequests->first()?->status == "rejected") ) )
-                                                    <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                            data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm "  style="width:100px;margin-top:5px">
-                                                           
-                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
-                                                            </button>
-
-                                                            <button data-bs-toggle="modal" data-id="{{ $session->id }}"
-                                                                    id="postPoneButton" class="btn btn-primary btn-sm "
-                                                                        data-date="{{$session->date}}"
-                                                                    style="width:100px;margin-top:5px">
-                                                                    <i class="fa fa-calendar"></i>  {{ __('postpone')}}
-                                                            </button>
-                                                    @endif
-                                                    </td>
+                                           
                                                     <td>
                                                         <div>
 
                                                           
-                                                            @if ($isSessionNow)
+                                                            @if ($isSessionNow  && $session->meeting_status == "started")
                                                         
                                                             @if(! $session->public_password)
                                                                 <p style="color:#8B0000;font-size:13px">{{__('waiting_password')}}</p>
@@ -299,13 +266,13 @@
                                                         </div>
                                                     </td>
                                                     <td>
-                                                    @if($isSessionInPast && $session->getRecording() != "")
+                                                    @if($session->getRecording() != "" && $session->meeting_status == "finished")
                                                         <a target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
                                                     @endif
                                                     </td>
                                                     
                                                     @else
-                                                    <td colspan="4">
+                                                    <td colspan="3">
                                                         <p style="color:#8B0000">{{__('you_not_subscribed')}}</p>
                                                     </td>
                                                     @endif
