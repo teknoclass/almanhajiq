@@ -205,7 +205,7 @@
                                                     <input type="datetime-local"
                                                            class="form-control mb-5 "
                                                            name="start_date"
-                                                           value="{{@item->start_date }}"
+                                                           value="{{@$item->start_date }}"
                                                     />
 
                                                 </div>
