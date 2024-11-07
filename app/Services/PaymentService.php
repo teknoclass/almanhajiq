@@ -171,7 +171,7 @@ class PaymentService
             'becomes_retractable_at' => now(),
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
             'user_type' => 'lecturer',
-            'user_id' => $lecturer->id,
+            'user_id' => $lecturer->id ?? null,
             'system_commission' => $system_commission,
             'amount' => $amount,
             'amount_before_commission' => $amount_before_commission,
