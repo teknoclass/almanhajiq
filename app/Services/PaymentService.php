@@ -159,7 +159,7 @@ class PaymentService
         $lecturer = $this->getLecturer($type , $paymentDetails['transactionable_id']);
 
         $amount_before_commission = $paymentDetails['amount'];
-        $system_commission = ($lecturer->system_commission > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
+        $system_commission = ($lecturer->system_commission ?? 0 > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
         $amount = $amount_before_commission - $system_commission;
 
         Balances::create([
