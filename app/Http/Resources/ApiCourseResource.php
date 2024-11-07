@@ -27,8 +27,8 @@ class ApiCourseResource extends JsonResource
             'description'=>collect($this->translations)->firstWhere('locale', $locale??'en')->description ,
             'grade_sub_level'=>$gradeSubLevel ? collect($gradeSubLevel->translations)->firstWhere('locale', $locale??'en')->name : "",
             'category' => $this->category ? collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name??$this->categoy?->title : "",
-            'lecturer'=>$this->lecturer->name,
-            'price'=>$this->priceDetails?->price,
+            'lecturer'=>$this->lecturer->name ?? null,
+            'price'=>$this->priceDetails?->price ?? null,
             'rate'=>$this->rate,
             'discount_price'=>$this->priceDetails?->discount_price,
             'is_sub'=>0
