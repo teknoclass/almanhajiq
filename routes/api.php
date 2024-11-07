@@ -102,6 +102,9 @@ Route::group(['prefix' => 'payment'], function () {
     Route::get('/subscribe-to-course-sessions-confirm',[PaymentController::class,'confirmSubscribe']);
     Route::get('/subscribe-to-course-group-confirm',[PaymentController::class,'confirmSubscribeGroup']);
 
+    Route::post('/pay-to-course-session-installment',[PaymentController::class,'paymentGateway']);
+    Route::get('/pay-to-course-session-installment-confirm',[PaymentController::class,'confirmPayment']);
+
 });
 
 
