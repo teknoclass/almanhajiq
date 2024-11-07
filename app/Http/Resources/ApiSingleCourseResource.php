@@ -57,7 +57,7 @@ class ApiSingleCourseResource extends JsonResource
             'teacher'=>[
                 'id' => $this->lecturer->id ?? null,
                 'name' => $this->lecturer->name ?? null,
-                'teacher_rating' => $this->lecturer->getRating() ?? null,
+                'teacher_rating' => $this->lecturer ? $this->lecturer->getRating() : null,
                 'image' => imageUrl($this->lecturer->image ?? null,'100x100'),
 
             ],
