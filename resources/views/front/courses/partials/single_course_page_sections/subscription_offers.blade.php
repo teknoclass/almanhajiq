@@ -51,7 +51,7 @@
                                             <div class="card-body">
                                                 <label>{{__('session_group')}}</label>
                                                 <select class="form-control sessionGroupId">
-                                                    <option value="">{{__('choose_pls')}}</option>
+                                                    <option disabled readonly selected value="">{{__('choose_pls')}}</option>
                                                 @foreach($sessionGroups as $sessionGroup)
                                                     <option data-price="{{$sessionGroup->price}}"  value="{{$sessionGroup->id}}">{{$sessionGroup->title}}  ({{__('price')}} : {{$sessionGroup->price}})</option>
                                                 @endforeach
@@ -71,7 +71,7 @@
                                             <div class="card-body">
                                             <label>{{__('lesson')}}</label>
                                                 <select class="form-control sessionId">
-                                                    <option value="">{{__('choose_pls')}}</option>
+                                                    <option disabled readonly selected value="">{{__('choose_pls')}}</option>
                                                 @foreach($sessions as $session)
                                                     <option data-price="{{$session->price}}"  value="{{$session->id}}">{{$session->title}} ({{__('price')}} : {{$session->price}})</option>
                                                 @endforeach
@@ -104,32 +104,48 @@
     $(document).ready(function(){
         $(document).on('click','.subscribeToSessionGroup',function(){
             var target_id = $('.sessionGroupId').val();
-            var type = "group";
-            var course_id = "{{@$course->id}}";
-            var price = $('.sessionGroupId option:selected').data('price');
+            if (target_id !== null && target_id !== undefined)
+            {  
+                var type = "group";
+                var course_id = "{{@$course->id}}";
+                var price = $('.sessionGroupId option:selected').data('price');
 
-            var url = "{{ url('/user/session-select-payment-method') }}" + 
-              "/" + course_id + 
-              "/" + target_id + 
-              "/" + price +
-              "/group";
+                var url = "{{ url('/user/session-select-payment-method') }}" + 
+                "/" + course_id + 
+                "/" + target_id + 
+                "/" + price +
+                "/group";
 
-             window.location.href = url;
+                window.location.href = url;
+            }else{
+                customSweetAlert(
+                        'error',
+                        "{{__('please_choose_group')}}"
+                    );
+            }
         });
 
         $(document).on('click','.subscribeToSession',function(){
             var target_id = $('.sessionId').val();
-            var type = "session";
-            var course_id = "{{@$course->id}}";
-            var price = $('.sessionId option:selected').data('price');
+            if (target_id !== null && target_id !== undefined)
+            {    
+                var type = "session";
+                var course_id = "{{@$course->id}}";
+                var price = $('.sessionId option:selected').data('price');
 
-            var url = "{{ url('/user/session-select-payment-method') }}" + 
-              "/" + course_id + 
-              "/" + target_id + 
-              "/" + price +
-              "/session";
+                var url = "{{ url('/user/session-select-payment-method') }}" + 
+                "/" + course_id + 
+                "/" + target_id + 
+                "/" + price +
+                "/session";
 
-             window.location.href = url;
+                window.location.href = url;
+            }else{
+                customSweetAlert(
+                        'error',
+                        "{{__('please_choose_session')}}"
+                    );
+            }
 
        });
    });

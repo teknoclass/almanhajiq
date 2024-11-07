@@ -92,6 +92,7 @@
                                     <tbody>
 
                                     @foreach ($item['sessions'] as $session)
+                                    
                                         <tr>
                                             <td>{{ $session->title }}</td>
                                             <td>{{__($session->day)}}</td>
@@ -137,7 +138,7 @@
                                             <td>
 
 
-                                                @if($isSessionNow)
+                                                @if($isSessionNow && $session->meeting_status != "finished")
                                                     <span><a
                                                             href="{{ route('user.lecturer.live.createLiveSession', $session->id) }}"
                                                             class="btn btn-primary">{{ __('Start Session') }}</a></span>
@@ -147,7 +148,7 @@
                                                 @elseif ($isSessionInPast)
                                                      
                                                 <p class="text-center">{{ __('Ended') }}</p>
-                                                @if($session->getRecording() != "")
+                                                @if($session->getRecording() != "" && $session->meeting_status == "finished")
                                                 <a class="btn btn-secondary" target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
                                                 @endif
                                                 @else
@@ -204,7 +205,7 @@
                                             $isSessionNow = $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15;
                                         @endphp
 
-                                        @if($isSessionNow)
+                                        @if($isSessionNow && $session->meeting_status != "finished")
                                             <span><a
                                                     href="{{ route('panel.courses.live.createLiveSession', $session->id) }}"
                                                     class="btn btn-primary">Start Session</a></span>
