@@ -44,7 +44,7 @@ class PaymentService
                 'currency' => $paymentDetails['currency'],
                 'locale' => app()->getLocale(),
                 'timestamp' => now()->toIso8601String(),
-                'finishPaymentUrl' => $paymentDetails['finishPaymentUrl'],
+                'finishPaymentUrl' => $paymentDetails['successUrl'],
                 'notificationUrl' => $paymentDetails['notificationUrl'],
                 'customerInfo' => [
                     "firstName" => auth('web')->user()->name,
@@ -103,23 +103,29 @@ class PaymentService
     {
         try {
 
+            $auth = base64_encode("{$this->paymentUserName}:{$this->paymentPassword}");
+
             $payload = [
-                'order' => [
-                    'amount' => $paymentDetails['amount'],
-                    'currency' => $paymentDetails['currency'],
-                    'orderId' => $paymentDetails['orderId'],
-                ],
+                'requestId' => $paymentDetails['orderId'],
+                'withoutAuthenticate' => true,
+                'amount' => $paymentDetails['amount'],
+                'currency' => $paymentDetails['currency'],
+                'locale' => app()->getLocale(),
                 'timestamp' => now()->toIso8601String(),
-                'successUrl' => $paymentDetails['successUrl'],
-                'failureUrl' => url('/payment-failure'),
-                'cancelUrl' => url('/payment-cancelled'),
-                'webhookUrl' => url('/payment-webhook'),
+                'finishPaymentUrl' => $paymentDetails['successUrl'],
+                'notificationUrl' => $paymentDetails['notificationUrl'],
+                'customerInfo' => [
+                    "firstName" => auth('api')->user()->name,
+                    "phone" => auth('api')->user()->mobile,
+                    "email" => auth('api')->user()->email
+                ]
             ];
 
             $response = Http::withHeaders([
-                'Authorization' =>  $this->apiKey,
+                'Authorization' => "Basic {$auth}",
+                'X-Terminal-Id' => $this->paymentTerminalID,
                 'Content-Type' => 'application/json',
-            ])->post($this->apiUrl2, $payload);
+            ])->post("{$this->apiUrl}/payment", $payload);
 
             if ($response->successful()) {
                 $paymentResponse = $response->json();

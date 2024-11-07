@@ -16,7 +16,6 @@ use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
 use App\Http\Resources\ApiCourseResource;
 use App\Models\CourseSessionSubscription;
-use App\Models\StudentSessionInstallment;
 use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends Controller
@@ -37,19 +36,19 @@ class PaymentController extends Controller
             "amount" => $course->priceDetails->price??0,
             "currency" => "IQD",
             "successUrl" => url('/api/payment/full-subscribe-course-confirm'),
-            'orderId' => $orderId
+            'orderId' => $orderId,
+            'notificationUrl' => ''
         ]);
-        if(isset($response['data']['link']))
+        if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "description" => 'اشتراك كلى فى الدورة',
-                "orderId" => $response['data']['orderId'],
-                "payment_id" => $response['data']['token'],
-                "amount" => $course->priceDetails->price??0,
+                "orderId" => $response['requestId'],
+                "payment_id" => $response['paymentId'],
+                "amount" => $course->getPriceForPayment(),
                 "transactionable_type" => "App\\Models\\Courses",
                 "transactionable_id" => $course->id,
-                "brand" => "master",
-                "transaction_id" => $response['data']['transactionId'],
+                "brand" => "card",
                 'course_id' => $course->id,
                 "purchase_type" => $request->type,
             ];
@@ -63,7 +62,7 @@ class PaymentController extends Controller
                 ['payment_link' => [
                     'name' => 'iq',
                     'image' => imageUrl('visa.png'),
-                    'link' => $response['data']['link']
+                    'link' => $response['formUrl']
                 ]]
             ],Response::HTTP_OK);
 
@@ -71,7 +70,6 @@ class PaymentController extends Controller
 
 
         }else{
-            return $response;
             $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
@@ -82,7 +80,7 @@ class PaymentController extends Controller
         DB::beginTransaction();
         try
         {
-            $cartId = $request->get('CartID');
+            $cartId = $request->get('requestId');
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
@@ -129,7 +127,8 @@ class PaymentController extends Controller
             "amount" => $request->price,
             "currency" => "IQD",
             "successUrl" => $redirect,
-            "orderId" => $orderId
+            "orderId" => $orderId,
+            'notificationUrl' => ''
         ]);
 
         if($request->type == "group")
@@ -148,13 +147,12 @@ class PaymentController extends Controller
         {
             $paymentDetails = [
                 "description" => $description,
-                "orderId" => $response['data']['orderId'],
-                "payment_id" => $response['data']['token'],
+                "orderId" => $response['requestId'],
+                "payment_id" => $response['paymentId'],
                 "amount" => $request->price,
                 "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
-                "brand" => "master",
-                "transaction_id" => $response['data']['transactionId'],
+                "brand" => "card",
             ];
 
             $this->paymentService->createTransactionRecordApi($paymentDetails);
@@ -181,7 +179,7 @@ class PaymentController extends Controller
         DB::beginTransaction();
         try
         {
-            $cartId = $request->get('CartID');
+            $cartId = $request->get('requestId');
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
@@ -231,7 +229,7 @@ class PaymentController extends Controller
         DB::beginTransaction();
         try
         {
-            $cartId = $request->get('CartID');
+            $cartId = $request->get('requestId');
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
@@ -276,76 +274,6 @@ class PaymentController extends Controller
             return response()->error($response);
         }
     }
-
-
-    public function paymentGateway(Request $request)
-    {
-       $response = $this->paymentService->processPayment([
-            "amount" => $request->price,
-            "currency" => "IQD",
-            "successUrl" => url('/user/pay-to-course-session-installment-confirm')
-        ]);
-
-        if(isset($response['data']['link']))
-        {
-            $paymentDetails = [
-                "description" => "دفع قسط جلسات دورة",
-                "orderId" => $response['data']['orderId'],
-                "payment_id" => $response['data']['token'],
-                "amount" => $request->price,
-                "transactionable_type" => "App\\Models\\CourseSession",
-                "transactionable_id" => $request->id,
-                "brand" => "master",
-                "transaction_id" => $response['data']['transactionId'],
-                'course_id' => $request->course_id
-            ];
-
-            session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
-
-            return  $response = [
-                'status_msg' => 'success',
-                'payment_link' => $response['data']['link']
-            ];
-        }else{
-            return  $response = [
-                'status_msg' => 'error',
-                'message' => __('message.unexpected_error'),
-            ];
-        }
-    }
-
-    public function confirmPayment(Request $request)
-    {
-        DB::beginTransaction();
-        try
-        {
-            $paymentDetails = session('payment-'.auth('web')->user()->id);
-
-            $item = StudentSessionInstallment::updateOrCreate([
-                'student_id' => auth('web')->user()->id,
-                'course_id' => $paymentDetails['course_id'],
-                'access_until_session_id' => $paymentDetails['transactionable_id'],
-            ]);
-
-            $this->paymentService->createTransactionRecord($paymentDetails);
-
-            $this->paymentService->storeBalance($paymentDetails);
-
-            session()->forget('payment-'.auth('web')->user()->id);
-
-            $course_id = $paymentDetails['course_id'];
-
-            DB::commit();
-
-            return redirect("/user/courses/curriculum/item/".$course_id);
-        }
-        catch (\Exception $e)
-        {
-            DB::rollback();
-            return redirect('/payment-failure');
-        }
-    }
-
 
 
 
