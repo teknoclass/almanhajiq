@@ -23,13 +23,19 @@ class ApiCourseFilterResource extends JsonResource
             ?? collect($this->translations)
                 ->firstWhere('locale', 'en');
 
+        if($this->category != null){
+            $category = collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name??$this->categoy?->title;
+        }else{
+            $category = "";
+        }
+
         return [
             'id' => $this->id,
             'image' => imageUrl($this->image,'100x100'),
             'title' => $translation->title??$this->title,
             'teacher' => $this->lecturer->name ?? "",
             'description' => $translation->description??$this->description,
-            'category' => collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name??$this->categoy?->title,
+            'category' => $category,
             'price' => $this->priceDetails?->price,
             'discount_price' => $this->priceDetails?->discount_price,
             'rate'=>$this->rate,

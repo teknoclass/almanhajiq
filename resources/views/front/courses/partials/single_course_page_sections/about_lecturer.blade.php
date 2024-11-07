@@ -1,10 +1,14 @@
 @php
     $lecturer = @$course->lecturers;
+    if($lecturer)
+    {
     $lecturer_url = route('lecturerProfile.index', [
-        'id' => $lecturer->id,
+        'id' => @$lecturer->id,
         'name' => mergeString(@$lecturer->name, ''),
     ]);
+    }
 @endphp
+@if($lecturer)
 <div class="tab" id="{{ @$tab }}">
     <div class="row">
         <div class="col-12">
@@ -118,3 +122,4 @@
         </div>
     </div>
 </div>
+@endif

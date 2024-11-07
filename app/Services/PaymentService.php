@@ -8,11 +8,20 @@ use Illuminate\Support\Facades\Http;
 class PaymentService
 {
     private $apiUrl;
+    private $paymentUserName;
+    private $paymentPassword;
+    private $paymentTerminalID;
+    private $apiUrl2;
     private $apiKey;
 
     public function __construct()
     {
         $this->apiUrl = env('PAYMENT_API_URL');
+        $this->paymentUserName = env('PAYMENT_API_USERNAME');
+        $this->paymentPassword = env('PAYMENT_API_PASSWORD');
+        $this->paymentTerminalID = env('PAYMENT_API_TERMINAL_ID');
+
+        $this->apiUrl2 = env('PAYMENT_API_URL2');
         $this->apiKey = env('PAYMENT_API_KEY');
     }
 
@@ -26,23 +35,29 @@ class PaymentService
     {
         try {
 
+            $auth = base64_encode("{$this->paymentUserName}:{$this->paymentPassword}");
+
             $payload = [
-                'order' => [
-                    'amount' => $paymentDetails['amount'],
-                    'currency' => $paymentDetails['currency'],
-                    'orderId' => genereatePaymentOrderID(),
-                ],
+                'requestId' => genereatePaymentOrderID(),
+                'withoutAuthenticate' => true,
+                'amount' => $paymentDetails['amount'],
+                'currency' => $paymentDetails['currency'],
+                'locale' => app()->getLocale(),
                 'timestamp' => now()->toIso8601String(),
-                'successUrl' => $paymentDetails['successUrl'],
-                'failureUrl' => url('/payment-failure'),
-                'cancelUrl' => url('/payment-cancelled'),
-                'webhookUrl' => url('/payment-webhook'),
+                'finishPaymentUrl' => $paymentDetails['finishPaymentUrl'],
+                'notificationUrl' => $paymentDetails['notificationUrl'],
+                'customerInfo' => [
+                    "firstName" => auth('web')->user()->name,
+                    "phone" => auth('web')->user()->mobile,
+                    "email" => auth('web')->user()->email
+                ]
             ];
 
             $response = Http::withHeaders([
-                'Authorization' =>  $this->apiKey,
+                'Authorization' => "Basic {$auth}",
+                'X-Terminal-Id' => $this->paymentTerminalID,
                 'Content-Type' => 'application/json',
-            ])->post($this->apiUrl, $payload);
+            ])->post("{$this->apiUrl}/payment", $payload);
 
             if ($response->successful()) {
                 $paymentResponse = $response->json();
@@ -55,6 +70,35 @@ class PaymentService
             return ['error' => $e->getMessage()];
         }
     }
+
+    /**
+     *
+     * @param string $paymentId
+    */
+    public function checkPaymentStatus($paymentId)
+    {
+        try{
+
+            $auth = base64_encode("{$this->paymentUserName}:{$this->paymentPassword}");
+
+            $response = Http::withHeaders([
+                'Authorization' => "Basic {$auth}",
+                'X-Terminal-Id' => $this->paymentTerminalID,
+                'Content-Type' => 'application/json',
+            ])->get("{$this->apiUrl}/payment/{$paymentId}/status");
+
+            if ($response->successful()) {
+                $statusResponse = $response->json();
+
+                return $statusResponse;
+            } else {
+                return $response->json();
+            }
+        } catch (\Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
+    }
+
     public function processPaymentApi(array $paymentDetails): array
     {
         try {
@@ -75,7 +119,7 @@ class PaymentService
             $response = Http::withHeaders([
                 'Authorization' =>  $this->apiKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->apiUrl, $payload);
+            ])->post($this->apiUrl2, $payload);
 
             if ($response->successful()) {
                 $paymentResponse = $response->json();
@@ -134,32 +178,35 @@ class PaymentService
     {
         $course = Courses::find($paymentDetails['course_id']);
         $lecturer = $course->lecturer;
+        if($lecturer)
+        {
+            $amount_before_commission = $paymentDetails['amount'];
+            $system_commission = ($lecturer->system_commission > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
+            $amount = $amount_before_commission - $system_commission;
 
-        $amount_before_commission = $paymentDetails['amount'];
-        $system_commission = ($lecturer->system_commission > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
-        $amount = $amount_before_commission - $system_commission;
-
-        Balances::create([
-            'description' => $paymentDetails['description'],
-            'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
-            'transaction_id' => $paymentDetails['transactionable_id'] ?? null,
-            'type' => 'deposit',
-            'is_retractable' => 1,
-            'becomes_retractable_at' => now(),
-            'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
-            'user_type' => 'lecturer',
-            'user_id' => $lecturer->id,
-            'system_commission' => $system_commission,
-            'amount' => $amount,
-            'amount_before_commission' => $amount_before_commission,
-        ]);
+            Balances::create([
+                'description' => $paymentDetails['description'],
+                'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
+                'transaction_id' => $paymentDetails['transactionable_id'] ?? null,
+                'type' => 'deposit',
+                'is_retractable' => 1,
+                'becomes_retractable_at' => now(),
+                'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
+                'user_type' => 'lecturer',
+                'user_id' => $lecturer->id,
+                'system_commission' => $system_commission,
+                'amount' => $amount,
+                'amount_before_commission' => $amount_before_commission,
+            ]);
+        }
     }
+
     public function storeBalanceApi($paymentDetails , $type = 'course')
     {
         $lecturer = $this->getLecturer($type , $paymentDetails['transactionable_id']);
 
         $amount_before_commission = $paymentDetails['amount'];
-        $system_commission = ($lecturer->system_commission > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
+        $system_commission = ($lecturer->system_commission ?? 0 > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
         $amount = $amount_before_commission - $system_commission;
 
         Balances::create([
@@ -171,7 +218,7 @@ class PaymentService
             'becomes_retractable_at' => now(),
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
             'user_type' => 'lecturer',
-            'user_id' => $lecturer->id,
+            'user_id' => $lecturer->id ?? null,
             'system_commission' => $system_commission,
             'amount' => $amount,
             'amount_before_commission' => $amount_before_commission,

@@ -276,7 +276,7 @@
                                             <input type="datetime-local"
                                                 class="form-control   "
                                                 name="start_date"
-                                                value="{{(isset($item) && $item->start_date!='')?$item->start_date :'' }}"
+                                                value="{{@$item->start_date }}"
                                             />
 
                                         </div>
@@ -290,7 +290,7 @@
                                             <input type="datetime-local"
                                                 class="form-control   "
                                                 name="end_date"
-                                                value="{{(isset($item) && $item->end_date!='')?$item->end_date :'' }}"
+                                                value="{{@$item->end_date }}"
                                             />
 
                                         </div>

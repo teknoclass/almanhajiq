@@ -71,7 +71,7 @@ class PaymentController extends Controller
 
 
         }else{
-
+            return $response;
             $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }

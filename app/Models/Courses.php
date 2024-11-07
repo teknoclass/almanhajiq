@@ -474,6 +474,14 @@ class Courses extends Model
         }
     }
 
+    public function getPriceForPayment()
+    {
+        $price_details = $this->priceDetails()->first();
+        $price  =  $price_details->discount_price ?? $price_details->price;
+
+        return $price;
+    }
+
     public function getPrice()
     {
         $price_details = $this->priceDetails()->first();
@@ -503,22 +511,11 @@ class Courses extends Model
             return __('price_types.free');
         } else
         {
-            if($user && $user->country) {
-                // $price         = ceil($user->country->currency_exchange_rate * $price) . " ".$user->country->currency_name;
-                $price         = number_format($user->country->currency_exchange_rate * $price,2) . " ". __('currency');
-                if($discount_price){
-                    $price = "<del>" . $price . "</del> &nbsp;";
-                    // $discount_price = ceil($user->country->currency_exchange_rate * $discount_price) . " ".$user->country->currency_name;
-                    $discount_price = number_format($user->country->currency_exchange_rate * $discount_price,2) . " ". __('currency');
-                    $price .=  $discount_price;
-                }
-            } else {
-                $price = number_format($price,2) . ' ' . __('currency') . ' ';
-                if($discount_price){
-                    $price           = "<del>" . $price . "</del> &nbsp;";
-                    $discount_price  = number_format($discount_price,2) . ' ' . __('currency') . ' ';
-                    $price          .=  $discount_price;
-                }
+            $price = number_format($price,2) . ' ' . __('currency') . ' ';
+            if($discount_price){
+                $price           = "<del>" . $price . "</del> &nbsp;";
+                $discount_price  = number_format($discount_price,2) . ' ' . __('currency') . ' ';
+                $price          .=  $discount_price;
             }
             return $price;
         }
