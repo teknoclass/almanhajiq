@@ -602,32 +602,7 @@
             'icon' => '/assets/panel/media/icons/duotone/Tools/Pantone.svg',
             'sub_menu' => [],
         ],
-        [
-            'name' => 'مواقع السوشيال ميديا',
-            'type' => '',
-            'href' => 'javascript:;',
-            'id' => 'pages',
-            'permissions' => 'show_categories',
-            'all_permissions' => ['show_categories'],
-            'icon' => '/assets/panel/media/icons/duotone/Tools/Roller.svg',
-            'sub_menu' => [
-                [
-                    'name' => __('all'),
-                    'type' => '',
-                    'href' => route('panel.categories.all.index', ['parent' => 'social_media_items']),
-                    'permissions' => 'show_categories',
-                    'all_permissions' => ['show_categories'],
-                    'sub_menu' => [],
-                ],
-                [
-                    'name' => __('add'),
-                    'type' => '',
-                    'href' => route('panel.categories.create.index', ['parent' => 'social_media_items']),
-                    'permissions' => 'show_categories',
-                    'sub_menu' => [],
-                ],
-            ],
-        ],
+       
         [
             'name' => __('users'),
             'type' => 'headeing_menu',
