@@ -51,7 +51,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'page'], function () {
 
 // Auth routes with sanctum and language middleware
 Route::middleware(['language', 'auth:sanctum'])->group(function () {
-    Route::post('/user/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user/delete', [AuthController::class, 'deleteUser']);
 });
 
