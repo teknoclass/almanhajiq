@@ -11,6 +11,8 @@ class PaymentService
     private $paymentUserName;
     private $paymentPassword;
     private $paymentTerminalID;
+    private $apiUrl2;
+    private $apiKey;
 
     public function __construct()
     {
@@ -18,6 +20,9 @@ class PaymentService
         $this->paymentUserName = env('PAYMENT_API_USERNAME');
         $this->paymentPassword = env('PAYMENT_API_PASSWORD');
         $this->paymentTerminalID = env('PAYMENT_API_TERMINAL_ID');
+
+        $this->apiUrl2 = env('PAYMENT_API_URL2');
+        $this->apiKey = env('PAYMENT_API_KEY');
     }
 
     /**
@@ -73,7 +78,7 @@ class PaymentService
     public function checkPaymentStatus($paymentId)
     {
         try{
-            
+
             $auth = base64_encode("{$this->paymentUserName}:{$this->paymentPassword}");
 
             $response = Http::withHeaders([
@@ -114,7 +119,7 @@ class PaymentService
             $response = Http::withHeaders([
                 'Authorization' =>  $this->apiKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->apiUrl, $payload);
+            ])->post($this->apiUrl2, $payload);
 
             if ($response->successful()) {
                 $paymentResponse = $response->json();
@@ -178,7 +183,7 @@ class PaymentService
             $amount_before_commission = $paymentDetails['amount'];
             $system_commission = ($lecturer->system_commission > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
             $amount = $amount_before_commission - $system_commission;
-       
+
             Balances::create([
                 'description' => $paymentDetails['description'],
                 'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
