@@ -61,7 +61,7 @@ class CourseSessionInstallmentsController extends Controller
                 "amount" => $request->price,
                 "transactionable_type" => "App\\Models\\CourseSession",
                 "transactionable_id" => $request->id,
-                "brand" => "master",
+                "brand" => "card",
                 "transaction_id" => $response['data']['transactionId'],
                 'course_id' => $request->course_id
             ];
@@ -123,10 +123,18 @@ class CourseSessionInstallmentsController extends Controller
         {
             $paymentDetails = session('payment-'.auth('web')->user()->id);
 
-            //check payment status
+            //check zain cash payment status
             $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
 
-            if($statusCheck['status'] != "completed")
+            if($paymentDetails["brand"] == "zaincash" && $statusCheck["status"] != "completed")
+            {
+                return redirect('/payment-failure'); 
+            }
+
+            //check qi payment status
+            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+
+            if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
             {
                 return redirect('/payment-failure'); 
             }

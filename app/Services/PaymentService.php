@@ -8,12 +8,16 @@ use Illuminate\Support\Facades\Http;
 class PaymentService
 {
     private $apiUrl;
-    private $apiKey;
+    private $paymentUserName;
+    private $paymentPassword;
+    private $paymentTerminalID;
 
     public function __construct()
     {
         $this->apiUrl = env('PAYMENT_API_URL');
-        $this->apiKey = env('PAYMENT_API_KEY');
+        $this->paymentUserName = env('PAYMENT_API_USERNAME');
+        $this->paymentPassword = env('PAYMENT_API_PASSWORD');
+        $this->paymentTerminalID = env('PAYMENT_API_TERMINAL_ID');
     }
 
     /**
@@ -26,23 +30,29 @@ class PaymentService
     {
         try {
 
+            $auth = base64_encode("{$this->paymentUserName}:{$this->paymentPassword}");
+
             $payload = [
-                'order' => [
-                    'amount' => $paymentDetails['amount'],
-                    'currency' => $paymentDetails['currency'],
-                    'orderId' => genereatePaymentOrderID(),
-                ],
+                'requestId' => genereatePaymentOrderID(),
+                'withoutAuthenticate' => true,
+                'amount' => $paymentDetails['amount'],
+                'currency' => $paymentDetails['currency'],
+                'locale' => app()->getLocale(),
                 'timestamp' => now()->toIso8601String(),
-                'successUrl' => $paymentDetails['successUrl'],
-                'failureUrl' => url('/payment-failure'),
-                'cancelUrl' => url('/payment-cancelled'),
-                'webhookUrl' => url('/payment-webhook'),
+                'finishPaymentUrl' => $paymentDetails['finishPaymentUrl'],
+                'notificationUrl' => $paymentDetails['notificationUrl'],
+                'customerInfo' => [
+                    "firstName" => auth('web')->user()->name,
+                    "phone" => auth('web')->user()->mobile,
+                    "email" => auth('web')->user()->email
+                ]
             ];
 
             $response = Http::withHeaders([
-                'Authorization' =>  $this->apiKey,
+                'Authorization' => "Basic {$auth}",
+                'X-Terminal-Id' => $this->paymentTerminalID,
                 'Content-Type' => 'application/json',
-            ])->post($this->apiUrl, $payload);
+            ])->post("{$this->apiUrl}/payment", $payload);
 
             if ($response->successful()) {
                 $paymentResponse = $response->json();
@@ -55,6 +65,35 @@ class PaymentService
             return ['error' => $e->getMessage()];
         }
     }
+
+    /**
+     *
+     * @param string $paymentId
+    */
+    public function checkPaymentStatus($paymentId)
+    {
+        try{
+            
+            $auth = base64_encode("{$this->paymentUserName}:{$this->paymentPassword}");
+
+            $response = Http::withHeaders([
+                'Authorization' => "Basic {$auth}",
+                'X-Terminal-Id' => $this->paymentTerminalID,
+                'Content-Type' => 'application/json',
+            ])->get("{$this->apiUrl}/payment/{$paymentId}/status");
+
+            if ($response->successful()) {
+                $statusResponse = $response->json();
+
+                return $statusResponse;
+            } else {
+                return $response->json();
+            }
+        } catch (\Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
+    }
+
     public function processPaymentApi(array $paymentDetails): array
     {
         try {

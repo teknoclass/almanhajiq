@@ -72,7 +72,7 @@ class CourseSessionSubscriptionsController extends Controller
                 "amount" => $request->price,
                 "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
-                "brand" => "master",
+                "brand" => "card",
                 "transaction_id" => $response['data']['transactionId'],
                 'course_id' => $request->course_id,
                 "purchase_type" => $request->type
@@ -146,14 +146,22 @@ class CourseSessionSubscriptionsController extends Controller
         {
             $paymentDetails = session('payment-'.auth('web')->user()->id);
 
-            //check payment status
+            //check zain cash payment status
             $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
 
-            if($statusCheck['status'] != "completed")
+            if($paymentDetails["brand"] == "zaincash" && $statusCheck["status"] != "completed")
             {
                 return redirect('/payment-failure'); 
             }
 
+            //check qi payment status
+            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+
+            if($paymentDetails["brand"] == "card" && $statusCheck["status"] == "SUCCESS")
+            {
+                return redirect('/payment-failure'); 
+            }
+    
             $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
 
             if($paymentDetails['purchase_type'] == "group")
