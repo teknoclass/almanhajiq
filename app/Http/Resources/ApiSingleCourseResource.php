@@ -55,10 +55,10 @@ class ApiSingleCourseResource extends JsonResource
             'can_subscribe_to_session_group' => $this->can_subscribe_to_session_group,
             'open_installments' => $this->open_installments,
             'teacher'=>[
-                'id' => $this->lecturer->id,
-                'name' => $this->lecturer->name,
-                'teacher_rating' => $this->lecturer->getRating(),
-                'image' => imageUrl($this->lecturer->image,'100x100'),
+                'id' => $this->lecturer->id ?? null,
+                'name' => $this->lecturer->name ?? null,
+                'teacher_rating' => $this->lecturer ? $this->lecturer->getRating() : null,
+                'image' => imageUrl($this->lecturer->image ?? null,'100x100'),
 
             ],
 
@@ -68,7 +68,7 @@ class ApiSingleCourseResource extends JsonResource
                 'days'=>$sessionDays
             ],
             'description' => $translation->description ?? $this->description,
-            'category' => collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name ?? $this->category?->title,
+            'category' => $this->category ? collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name ?? $this->category?->title : "",
             'price' => $this->priceDetails?->price??0,
             'discount_price' => $this->priceDetails?->discount_price??0,
             'rate' => $this->rate,
