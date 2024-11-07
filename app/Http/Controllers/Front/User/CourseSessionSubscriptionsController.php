@@ -51,7 +51,8 @@ class CourseSessionSubscriptionsController extends Controller
         $response = $this->paymentService->processPayment([
             "amount" => $request->price,
             "currency" => "IQD",
-            "successUrl" => url('/user/subscribe-to-course-sessions-confirm')
+            "finishPaymentUrl" => url('/user/subscribe-to-course-sessions-confirm'),
+            "notificationUrl" => url('/user/subscribe-to-course-sessions-confirm'),
         ]);  
       
         if($request->type == "group")
@@ -63,17 +64,16 @@ class CourseSessionSubscriptionsController extends Controller
             $transactionable_type = "App\\Models\\CourseSession";
         }
 
-        if(isset($response['data']['link']))
+        if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "description" => $description,
-                "orderId" => $response['data']['orderId'],
-                "payment_id" => $response['data']['token'],
+                "orderId" => $response['requestId'],
+                "payment_id" => $response['paymentId'],
                 "amount" => $request->price,
                 "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
-                "brand" => "master",
-                "transaction_id" => $response['data']['transactionId'],
+                "brand" => "card",
                 'course_id' => $request->course_id,
                 "purchase_type" => $request->type
             ];
@@ -82,7 +82,7 @@ class CourseSessionSubscriptionsController extends Controller
 
             return  $response = [
                 'status_msg' => 'success',
-                'payment_link' => $response['data']['link']
+                'payment_link' => $response['formUrl']
             ];
         }else{
             return  $response = [
@@ -146,14 +146,22 @@ class CourseSessionSubscriptionsController extends Controller
         {
             $paymentDetails = session('payment-'.auth('web')->user()->id);
 
-            //check payment status
+            //check zain cash payment status
             $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
 
-            if($statusCheck['status'] != "completed")
+            if($paymentDetails["brand"] == "zaincash" && $statusCheck["status"] != "completed")
             {
                 return redirect('/payment-failure'); 
             }
 
+            //check qi payment status
+            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+    
+            if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
+            {
+                return redirect('/payment-failure'); 
+            }
+    
             $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
 
             if($paymentDetails['purchase_type'] == "group")
@@ -203,13 +211,15 @@ class CourseSessionSubscriptionsController extends Controller
             $course_id = $paymentDetails['course_id'];
 
             DB::commit(); 
-
+          
             return redirect("/user/courses/curriculum/item/".$course_id);
         }
         catch (\Exception $e)
         {
             DB::rollback(); 
             Log::error($e->getMessage());
+            Log::error($e->getFile());
+            Log::error($e->getLine());
             return redirect('/payment-failure'); 
         }
     }

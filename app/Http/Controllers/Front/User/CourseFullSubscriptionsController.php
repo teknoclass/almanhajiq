@@ -30,7 +30,7 @@ class CourseFullSubscriptionsController extends Controller
     {
         $course = Courses::find($request->course_id);
         $data['course_id'] = $request->course_id;
-        $data['price'] =  $course->priceDetails->price??0;
+        $data['price'] =  $course->getPriceForPayment();
 
         return view('front.payment-options.full-subscription', $data);
     }
@@ -52,22 +52,22 @@ class CourseFullSubscriptionsController extends Controller
         $course = Courses::find($request->id);
 
         $response = $this->paymentService->processPayment([
-            "amount" => $course->priceDetails->price??0,
+            "amount" => $course->getPriceForPayment(),
             "currency" => "IQD",
-            "successUrl" => url('/user/full-subscribe-course-confirm')
+            "finishPaymentUrl" => url('/user/full-subscribe-course-confirm'),
+            "notificationUrl" => url('/user/full-subscribe-course-confirm')
         ]);  
-     
-        if(isset($response['data']['link']))
+  
+        if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "description" => 'اشتراك كلى فى الدورة',
-                "orderId" => $response['data']['orderId'],
-                "payment_id" => $response['data']['token'],
-                "amount" => $course->priceDetails->price??0,
+                "orderId" => $response['requestId'],
+                "payment_id" => $response['paymentId'],
+                "amount" => $course->getPriceForPayment(),
                 "transactionable_type" => "App\\Models\\Courses",
                 "transactionable_id" => $course->id,
-                "brand" => "master",
-                "transaction_id" => $response['data']['transactionId'],
+                "brand" => "card",
                 'course_id' => $course->id,
                 "purchase_type" => $request->type
             ];
@@ -78,7 +78,7 @@ class CourseFullSubscriptionsController extends Controller
                 'status_msg' => 'success',
                 'status' => 200,
                 'payment' => true,
-                'redirect_url' => $response['data']['link']
+                'redirect_url' => $response['formUrl']
             ];
         }else{
             return  $response = [
@@ -92,7 +92,7 @@ class CourseFullSubscriptionsController extends Controller
     {
         $course = Courses::find($request->id);
 
-        $response = $this->zainCashService->processPayment($course->priceDetails->price??0,
+        $response = $this->zainCashService->processPayment($course->getPriceForPayment(),
         url('/user/full-subscribe-course-confirm'),"اشتراك كلى فى دورة"); 
         
         if(isset($response['id']))
@@ -101,7 +101,7 @@ class CourseFullSubscriptionsController extends Controller
                 "description" => 'اشتراك كلى فى الدورة',
                 "orderId" => $response['orderId'],
                 "payment_id" => $response['id'],
-                "amount" => $course->priceDetails->price??0,
+                "amount" => $course->getPriceForPayment(),
                 "transactionable_type" => "App\\Models\\Courses",
                 "transactionable_id" => $course->id,
                 "brand" => "zaincash",
@@ -135,14 +135,23 @@ class CourseFullSubscriptionsController extends Controller
         try
         {
             $paymentDetails = session('payment-'.auth('web')->user()->id);
-            //check payment status
+            
+            //check zain cash payment status
             $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
 
-            if($statusCheck['status'] != "completed")
+            if($paymentDetails["brand"] == "zaincash" && $statusCheck["status"] != "completed")
             {
                 return redirect('/payment-failure'); 
             }
+
+            //check qi payment status
+            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
     
+            if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
+            {
+                return redirect('/payment-failure'); 
+            }
+
             //user course create
             UserCourse::create([
                 "course_id" => $paymentDetails['course_id'],
@@ -168,6 +177,8 @@ class CourseFullSubscriptionsController extends Controller
         {
             DB::rollback(); 
             Log::error($e->getMessage());
+            Log::error($e->getFile());
+            Log::error($e->getLine());
             return redirect('/payment-failure'); 
         }
     }
