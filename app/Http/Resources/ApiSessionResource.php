@@ -30,7 +30,7 @@ class ApiSessionResource extends JsonResource
         $now = now();
         if ($isSub==1 &&  $this->public_password!=null){
 
-            $isSessionInPast = $sessionDateTime->isPast() && $sessionDateTime->diffInMinutes($now) <= 120;
+            $isSessionInPast = $sessionDateTime->isPast() && $sessionDateTime->diffInMinutes($now) >= 120;
 
             if($isSessionInPast){
                 $join_url = $this->getRecording();
@@ -43,7 +43,6 @@ class ApiSessionResource extends JsonResource
         }
         return [
             'id' => $this->id,
-            'diff' => $sessionDateTime->diffInMinutes($now),
             'course_id' => $this->course_id,
             'item_type' => 'session',
             'is_sub' => $isSub,
