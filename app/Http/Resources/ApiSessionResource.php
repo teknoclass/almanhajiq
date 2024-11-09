@@ -41,7 +41,8 @@ class ApiSessionResource extends JsonResource
                     [
                         'id' => $this->id,
                         'userName' => $request->user()->name,
-                        'password' => $this->public_password
+                        'password' => $this->public_password,
+                        'method' => 'POST'
                     ]
                 );
                 $meetType = 'live';
