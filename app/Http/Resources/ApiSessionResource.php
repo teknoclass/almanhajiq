@@ -35,7 +35,7 @@ class ApiSessionResource extends JsonResource
                 $join_url = $this->getRecording();
                 $meetType = 'recorded';
             }else{
-                $join_url = $this->joinLiveSession();
+                $join_url = $this->joinLiveSessionV2();
                 $meetType = 'live';
             }
 
