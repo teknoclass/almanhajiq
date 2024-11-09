@@ -28,6 +28,7 @@ class StudentResource extends JsonResource
             'role'=>$this->role ,
             'image'=> imageUrl($this->image,'100x100'),
             'mobile'=>$this->mobile,
+            'is_validation' => $this->is_validation ?? 0,
             'country_code'=>$this->code_country,
             'info'=>[
                 'courses_count'=>count($this->courses),

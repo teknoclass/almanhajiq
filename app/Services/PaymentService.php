@@ -1,9 +1,10 @@
 <?php
 namespace App\Services;
 
-use App\Models\{Transactios,Balances, Courses, CourseSession};
+use App\Models\UserCourse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Models\{Transactios,Balances, Courses, CourseSession};
 
 class PaymentService
 {
@@ -249,6 +250,31 @@ class PaymentService
                 $session = CourseSession::where('group_id',$id)->first();
                 return $lecturer = $session->course->lecturer;
                 break;
+        }
+
+
+    }
+
+
+    function buyFree($request){
+
+        $courseId = $request->get('course_id');
+
+        $course = Courses::find($courseId);
+
+        if($course->isFree()){
+            UserCourse::create([
+                "course_id" => $request->get('course_id'),
+                "user_id" => auth('api')->id,
+                "lecturer_id" => Courses::find($request->get('course_id'))->user_id,
+                "is_paid" => 1,
+                "is_complete_payment" => 1,
+            ]);
+
+            return true;
+
+        }else{
+            return false;
         }
 
 

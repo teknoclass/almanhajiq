@@ -107,8 +107,8 @@ class CourseSession extends Model
         Bigbluebutton::create([
             'meetingID'      => $meeting_id,
             'meetingName'    => $this->title,
-            'autoStartRecording' => true, 
-            'allowStartStopRecording' => false, 
+            'autoStartRecording' => true,
+            'allowStartStopRecording' => false,
             'record'         => true,
             'attendeePW'     => $attendeePW,
             'moderatorPW'    => $moderatorPW,
@@ -129,11 +129,28 @@ class CourseSession extends Model
 
     public function joinLiveSession($request) {
         try {
-            
+
             $response = Bigbluebutton::join([
                 'meetingID' => $this->meeting_id,
                 'userName' => auth('web')->user()->name,
                 'password' => trim($request->password),
+
+            ]);
+            Log::info('Join Live Session Response: ', ['response' => $response]);
+
+            return $response;
+        } catch (\Exception $e) {
+            Log::error('Error joining live session: ', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Could not join session.'], 500);
+        }
+    }
+    public function joinLiveSessionV2($type = 'web') {
+        try {
+
+            $response = Bigbluebutton::join([
+                'meetingID' => $this->meeting_id,
+                'userName' => auth($type)->user()->name,
+                'password' => $this->public_password,
 
             ]);
             Log::info('Join Live Session Response: ', ['response' => $response]);

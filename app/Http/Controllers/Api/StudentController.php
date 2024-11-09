@@ -71,4 +71,26 @@ class StudentController extends Controller
         return response()->success($response);
     }
 
+    function verify(Request $request){
+        $response = $this->authService->verify($request);
+        if($response['status']){
+            $response     = new SuccessResponse($response['message'],null, Response::HTTP_OK);
+            return response()->success($response);
+        }else{
+            $response     = new ErrorResponse($response['message'], Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+    }
+
+    function resend(Request $request){
+        $response = $this->authService->resend($request);
+        if($response['status']){
+            $response     = new SuccessResponse($response['message'],null, Response::HTTP_OK);
+            return response()->success($response);
+        }else{
+            $response     = new ErrorResponse($response['message'], Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+    }
+
 }

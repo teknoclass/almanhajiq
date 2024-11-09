@@ -1028,7 +1028,7 @@
     "choose_pls":"اختر من فضلك",
     "can_subscribe_to_session_group":"امكانية اشتراك الطلاب فى مجموعة جلسات",
     "can_subscribe_to_session":"امكانية اشتراك الطلاب فى جلسة منفردة",
-    
+    "unable_to_send_try_again_in_few_minutes" : "لا يمكن الارسال الان حاول مجددا خلال عدة دقائق"
 
 
 }

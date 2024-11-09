@@ -51,6 +51,8 @@ Route::group(['middleware' => 'language', 'prefix' => 'page'], function () {
 
 // Auth routes with sanctum and language middleware
 Route::middleware(['language', 'auth:sanctum'])->group(function () {
+    Route::post('/verify',[StudentController::class,'verify']);
+    Route::post('/resendCode',[StudentController::class,'resend']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user/delete', [AuthController::class, 'deleteUser']);
 });
@@ -97,6 +99,7 @@ Route::group(['prefix' => 'payment'], function () {
     Route::post('/fullCourse',[PaymentController::class,'fullSubscribe']);
     Route::get('/full-subscribe-course-confirm',[PaymentController::class,'fullConfirmSubscribe']);
 
+    Route::post('buyFree',[PaymentController::class,'buyFree']);
 
     Route::post('/subscribe-to-course-sessions',[PaymentController::class,'subscribe']);
     Route::get('/subscribe-to-course-sessions-confirm',[PaymentController::class,'confirmSubscribe']);

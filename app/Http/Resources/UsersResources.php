@@ -20,6 +20,7 @@ class UsersResources extends JsonResource
             'image'=>$this->image ,
             'role'=>$this->role ,
             'email'=>$this->email,
+            'is_validation' => $this->is_validation
 
         ];
         if ($this->token){

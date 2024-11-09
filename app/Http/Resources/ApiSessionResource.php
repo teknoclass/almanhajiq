@@ -26,32 +26,21 @@ class ApiSessionResource extends JsonResource
         }
         $join_url  = '';
         $meetType = '';
+
         if ($isSub==1 &&  $this->public_password!=null){
 
-            $sessionDateTime = \Carbon\Carbon::parse($this->date . ' ' . $this->time);
-            $isSessionInPast = $sessionDateTime->isPast();
 
-            if($isSessionInPast){
+            if($this->meeting_status == "finished"){
                 $join_url = $this->getRecording();
                 $meetType = 'recorded';
             }else{
-                $join_url = URL::temporarySignedRoute(
-                    'user.courses.live.joinLiveSession',
-                    now()->addMinutes(5),
-                    [
-                        'id' => $this->id,
-                        'userName' => $request->user()->name,
-                        'password' => $this->public_password,
-                        'method' => 'POST'
-                    ]
-                );
+                $join_url = $this->joinLiveSessionV2();
                 $meetType = 'live';
             }
 
         }
         return [
             'id' => $this->id,
-
             'course_id' => $this->course_id,
             'item_type' => 'session',
             'is_sub' => $isSub,

@@ -270,9 +270,22 @@ class PaymentController extends Controller
         } catch (\Exception $e)
         {
             DB::rollback();
-            $response = new ErrorResponse($e->getMessage(),Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
+    }
+
+    function buyFree(Request $request){
+        $response = $this->paymentService->buyFree($request);
+
+        if($response){
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+            return response()->success($response);
+        }else{
+            $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
     }
 
 

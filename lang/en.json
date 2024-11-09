@@ -992,9 +992,10 @@
     "can_subscribe_to_session":"Can Subscribe to Single Session",
     "message.sorry_your_account_has_been_deactivated_please_check_with_the_admin":"Sorry, your account has been de activated. Please check with the admin",
     "dob":"Date of birth",
-    "recording_link":"Recording Link"
+    "recording_link":"Recording Link",
+    "unable_to_send_try_again_in_few_minutes" : "uUnable to send try again in few minutes"
 
-    
+
 
 
 }

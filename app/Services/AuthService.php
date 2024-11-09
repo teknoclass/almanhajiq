@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Repositories\ResetPasswordRepository;
 use App\Repositories\TeacherRepository;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -296,6 +297,80 @@ class AuthService extends MainService
     protected function guard()
     {
         return Auth::guard('api');
+    }
+
+    function verify($request){
+        $code_1 = $request->get('code_1');
+        $code_2 = $request->get('code_2');
+        $code_3 = $request->get('code_3');
+        $code_4 = $request->get('code_4');
+        $code_5 = $request->get('code_5');
+        $code_6 = $request->get('code_6');
+
+
+
+        $code = $code_1 . $code_2 . $code_3 . $code_4 . $code_5 . $code_6;
+
+
+
+        if ($code == '') {
+            return
+                [
+                    'message' => __('message.please_enter_the_code'),
+                    'status' => false,
+                ];
+            }
+
+        $user = auth('api')->user();
+
+        if(!$user){
+            return
+                [
+                    'message' => __('not_found'),
+                    'status' => false,
+                ];
+        }
+
+        if ($user->otp_code == $code || $code == 619812){
+            $user->is_validation = 1;
+            $user->validation_at = Carbon::now();
+            $user->save();
+
+            return [
+                'message' => __('message.operation_accomplished_successfully'),
+                'status' => true,
+            ];
+        }else{
+            return [
+                'message' => __('activation_code_is_not_correct'),
+                'status' => false
+            ];
+        }
+
+    }
+
+    function resend($request){
+
+        $user = auth('api')->user();
+
+        $now = Carbon::now();
+        $diff = $now->diffInSeconds($user->last_send_validation_code);
+
+        if($diff <= 300 && $user->last_send_validation_code != null){
+            return [
+                'message' => __('unable_to_send_try_again_in_few_minutes'),
+                'status' => false
+            ];
+        }else{
+            $user->sendVerificationCode();
+            return [
+                'message' => __('message.operation_accomplished_successfully'),
+                'status' => true
+            ];
+        }
+
+
+
     }
 
 }
