@@ -26,10 +26,10 @@ class ApiSessionResource extends JsonResource
         }
         $join_url  = '';
         $meetType = '';
+        $sessionDateTime = \Carbon\Carbon::parse($this->date . ' ' . $this->time);
+        $now = now();
         if ($isSub==1 &&  $this->public_password!=null){
 
-            $sessionDateTime = \Carbon\Carbon::parse($this->date . ' ' . $this->time);
-            $now = now();
             $isSessionInPast = $sessionDateTime->isPast() && $sessionDateTime->diffInMinutes($now) <= 120;
 
             if($isSessionInPast){
