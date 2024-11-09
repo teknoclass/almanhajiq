@@ -29,7 +29,8 @@ class ApiSessionResource extends JsonResource
         if ($isSub==1 &&  $this->public_password!=null){
 
             $sessionDateTime = \Carbon\Carbon::parse($this->date . ' ' . $this->time);
-            $isSessionInPast = $sessionDateTime->isPast();
+            $now = now();
+            $isSessionInPast = $sessionDateTime->isPast() && $sessionDateTime->diffInMinutes($now) <= 120;
 
             if($isSessionInPast){
                 $join_url = $this->getRecording();
