@@ -35,16 +35,7 @@ class ApiSessionResource extends JsonResource
                 $join_url = $this->getRecording();
                 $meetType = 'recorded';
             }else{
-                $join_url = URL::temporarySignedRoute(
-                    'user.courses.live.joinLiveSession',
-                    now()->addMinutes(5),
-                    [
-                        'id' => $this->id,
-                        'userName' => $request->user()->name,
-                        'password' => $this->public_password,
-                        'method' => 'POST'
-                    ]
-                );
+                $join_url = $this->joinLiveSession();
                 $meetType = 'live';
             }
 
