@@ -26,13 +26,11 @@ class ApiSessionResource extends JsonResource
         }
         $join_url  = '';
         $meetType = '';
-        $sessionDateTime = \Carbon\Carbon::parse($this->date . ' ' . $this->time);
-        $now = now();
+        
         if ($isSub==1 &&  $this->public_password!=null){
 
-            $isSessionInPast = $sessionDateTime->isPast() && $sessionDateTime->diffInMinutes($now) >= 120;
 
-            if($isSessionInPast){
+            if($this->meeting_status == "finished"){
                 $join_url = $this->getRecording();
                 $meetType = 'recorded';
             }else{
