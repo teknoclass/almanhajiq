@@ -43,7 +43,7 @@ class ApiSessionResource extends JsonResource
         }
         return [
             'id' => $this->id,
-
+            'diff' => $sessionDateTime->diffInMinutes($now),
             'course_id' => $this->course_id,
             'item_type' => 'session',
             'is_sub' => $isSub,
