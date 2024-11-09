@@ -449,7 +449,7 @@ class Courses extends Model
         {
             $start_date = Carbon::parse($this->start_date);
             $end_date = Carbon::parse($this->end_date);
-    
+
             return $start_date->diffInDays($end_date);
         }
 
@@ -561,6 +561,20 @@ class Courses extends Model
     // last_item
     function getLastItemAttribute() {
         return CourseCurriculum::active()->where('course_id', $this->id)->order('desc')->first();
+    }
+
+    function isFree() {
+
+        if($this->priceDetails != null){
+            if($this->priceDetails->price != null && $this->priceDetails->price > 0){
+                if($this->priceDetails->discount_price > 0 || is_null($this->priceDetails->discount_price)){
+                    return false;
+                }
+
+            }
+        }
+        return true;
+
     }
 
 
