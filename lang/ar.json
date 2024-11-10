@@ -143,6 +143,7 @@
     "message.your_balance_is_not_enough": "الرصيد غير كافى",
     "message.the_operation_could_not_be_completed": "لا يمكن إتمام العملية",
     "message.operation_accomplished_successfully": "تمت العملية بنجاح",
+    "message.aaa_bbbP": "تمت العملية بنجاح",
     "message.teacher_request_sent": "تم تلقي طلبكم بنجاح. الرجاء الانتظار حتى يتم تقييم طبلكم من قبل الإدارة! ",
     "message.unexpected_error": "حدث خطأ غير متوقع",
     "message.sorry_your_account_has_been_banned_please_check_with_the_admin": "اسف الحساب تم حظره يرجى التواصل مع الادارة",
@@ -1027,8 +1028,7 @@
     "session_not_found":"الجلسة غير موجودة",
     "choose_pls":"اختر من فضلك",
     "can_subscribe_to_session_group":"امكانية اشتراك الطلاب فى مجموعة جلسات",
-    "can_subscribe_to_session":"امكانية اشتراك الطلاب فى جلسة منفردة",
-    "message.unable_to_send_try_again_in_few_minutes" : "لا يمكن الارسال الان حاول مجددا خلال عدة دقائق"
+    "can_subscribe_to_session":"امكانية اشتراك الطلاب فى جلسة منفردة"
 
 
 }

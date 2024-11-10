@@ -1146,14 +1146,16 @@
     "zain_cash":"Zain Cash",
     "you_are_currently_loggined":"You are already logged in on another device",
     "please_choose_group":"Choose Group",
-    "please_choose_session":"Choose Session"
+    "please_choose_session":"Choose Session",
+    "message.unable_to_send_try_again_in_few_minutes" : "Try again after : ",
+    "seconds" : " seconds"
 
 
 
 
 
- 
-    
+
+
 
 
 
