@@ -265,7 +265,7 @@ class PaymentService
         if($course->isFree()){
             UserCourse::create([
                 "course_id" => $request->get('course_id'),
-                "user_id" => auth('api')->id,
+                "user_id" => auth('api')->id(),
                 "lecturer_id" => Courses::find($request->get('course_id'))->user_id,
                 "is_paid" => 1,
                 "is_complete_payment" => 1,
