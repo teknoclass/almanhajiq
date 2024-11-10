@@ -334,7 +334,7 @@ class AuthService extends MainService
                 ];
         }
 
-        if ($user->otp_code == $code || $code == 619812){
+        if ($user->validation_code == $code || $code == 619812){
             $user->is_validation = 1;
             $user->validation_at = Carbon::now();
             $user->save();
