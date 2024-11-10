@@ -164,7 +164,7 @@ class PaymentController extends Controller
                 ['payment_link' => [
                     'name' => 'iq',
                     'image' => imageUrl('visa.png'),
-                    'link' => $response['data']['link']
+                    'link' => $response['formUrl']
                 ]]
             ],Response::HTTP_OK);
 
