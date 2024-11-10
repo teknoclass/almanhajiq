@@ -105,6 +105,7 @@ class PaymentController extends Controller
         } catch (\Exception $e)
         {
             DB::rollback();
+            return redirect('/payment-failure');
             $response = new ErrorResponse($e->getMessage(),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
