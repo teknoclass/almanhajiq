@@ -361,7 +361,7 @@ class AuthService extends MainService
 
         if($diff <= 300 && $user->last_send_validation_code != null){
             return [
-                'message' => __('unable_to_send_try_again_in_few_minutes'),
+                'message' => __('message.unable_to_send_try_again_in_few_minutes'),
                 'status' => false
             ];
         }else{
