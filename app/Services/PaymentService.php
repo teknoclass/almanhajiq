@@ -136,7 +136,8 @@ class PaymentService
                 return $response->json();
             }
         } catch (\Exception $e) {
-            return ['error' => $e->getMessage()];
+            return ['error' => $e->getMessage(),
+        'status' => "FAILED"];
         }
     }
 
