@@ -91,7 +91,7 @@ class AuthService extends MainService
             $data['password']    = Hash::make($studentRequest->get('password'));
             $user =  $this->userRepository->updateOrCreateUser($data);
             $token = $user->createToken('auth_token')->plainTextToken;
-
+            $user->sendVerificationCode();
 
             $message = __('message.operation_accomplished_successfully');
 //            try {
@@ -130,6 +130,9 @@ class AuthService extends MainService
         $user     = $this->userRepository->getUserByEmail($request->email);
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
+                if($user->is_validation == 0 || $user->is_validation == null){
+                    $user->sendVerificationCode();
+                }
                 $token = $user->createToken('auth_token')->plainTextToken;
                 $user->token  = $token;
                 return $this->createResponse(
@@ -349,7 +352,7 @@ class AuthService extends MainService
 
     }
 
-    function resend($request){
+    function resend(){
 
         $user = auth('api')->user();
 
