@@ -144,7 +144,7 @@ class PaymentController extends Controller
             $title = CourseSession::find($request->target_id)->title??"";
         }
 
-        if(isset($response['data']['link']))
+        if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "description" => $description,
@@ -170,6 +170,7 @@ class PaymentController extends Controller
 
             return response()->success($response);
         }else{
+            //return $response;
             $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
