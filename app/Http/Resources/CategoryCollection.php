@@ -6,7 +6,7 @@ class CategoryCollection extends MainCollection
 {
     public function __construct($resource)
     {
-        parent::__construct($resource, $resource->first()->parent);
+        parent::__construct($resource, 'materials');
     }
 }
 
