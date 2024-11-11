@@ -477,7 +477,6 @@ function uploadImageBySendingFile($image, $custome_path='', $is_full_path=false)
 
     $extension = $image->getClientOriginalExtension();
     $imagename = 'image_' . time() . mt_rand() . '.' . $extension;
-
     $originalName = str_replace('.' . $extension, '', $image->getClientOriginalName());
     $image->move($path, $imagename);
 

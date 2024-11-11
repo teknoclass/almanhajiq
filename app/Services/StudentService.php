@@ -33,6 +33,12 @@ class StudentService extends MainService
 
             $data = $request->all();
 
+            if ($request->file('file')) {
+                //path
+                $image = uploadImage($request->all());
+                $data['image'] = str_replace('/', '-', $image);
+            }
+
             $user->update($data);
 
             DB::commit();
