@@ -69,7 +69,7 @@ class PaymentController extends Controller
                 ['course_details' => new ApiCourseResource($course)],
                 ['payment_link' => [
                     'name' => 'iq',
-                    'image' => imageUrl('qi-logo.png'),
+                    'image' => asset('qi-logo.png'),
                     'link' => $response['formUrl']
                 ]]
             ],Response::HTTP_OK);
@@ -171,7 +171,7 @@ class PaymentController extends Controller
                 ['course_details' => ['title' => $title]],
                 ['payment_link' => [
                     'name' => 'iq',
-                    'image' => imageUrl('qi-logo.png'),
+                    'image' => asset('qi-logo.png'),
                     'link' => $response['formUrl']
                 ]]
             ],Response::HTTP_OK);
