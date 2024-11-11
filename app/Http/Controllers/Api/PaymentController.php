@@ -32,8 +32,16 @@ class PaymentController extends Controller
 
         $course = Courses::find($request->id);
         $orderId = genereatePaymentOrderID();
+        $price = 0;
+        if($course->priceDetails != null){
+            if($course->priceDetails->discount_price != null){
+                $price = $course->priceDetails->discount_price;
+            }else{
+                $price = $course->priceDetails->price;
+            }
+        }
         $response = $this->paymentService->processPaymentApi([
-            "amount" => $course->priceDetails->price??0,
+            "amount" => $price??0,
             "currency" => "IQD",
             "successUrl" => url('/api/payment/full-subscribe-course-confirm'),
             'orderId' => $orderId,
