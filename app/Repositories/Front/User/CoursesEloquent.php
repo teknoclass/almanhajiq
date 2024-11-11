@@ -157,6 +157,8 @@ class CoursesEloquent extends HelperEloquent
     public function myCourses($request, $is_web = true, $count_itmes = 9, $use_filters = true, $only_is_end = false)
     {
         $data['user'] = $this->getUser($is_web);
+        if($is_web)$type = 'web';
+        else $type = 'api';
 
         $user_id = $data['user']->id;
         $course_type = $request->get('course_type');
@@ -175,9 +177,9 @@ class CoursesEloquent extends HelperEloquent
                     ->with('translations:category_id,name,locale');
             }
              ])
-        ->where(function($query)  use ($user_id, $only_is_end) {
-            $query->where('id',studentSubscriptionCoursessIds('api'));
-            $query->orWhere('id',studentInstallmentsCoursessIds('api'));
+        ->where(function($query)  use ($user_id, $only_is_end,$type) {
+            $query->where('id',studentSubscriptionCoursessIds($type));
+            $query->orWhere('id',studentInstallmentsCoursessIds($type));
 
             $query->orWhereHas('students', function (Builder $query) use ($user_id, $only_is_end) {
                 $query->where('user_id', $user_id)
