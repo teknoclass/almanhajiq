@@ -21,13 +21,12 @@ class SubGradeResource extends JsonResource
     {
         $locale = App::getLocale();
         $translation = collect($this->translations)->firstWhere('locale', $locale ?? 'ar');
-        $materials = Category::getCategoriesByParent('course_categories')->get();
+        $data =  Category::where('parent', 'joining_course')->where('grade_sub_level_id',$this->id)->get();
 
-        $this->materials = $materials;
         return [
             'id'=>$this->id,
             'name'=> $translation ? $translation->name : $this->name,
-           'materials' => collect(new CategoryCollection($this->materials))
+           'materials' => collect(new CategoryCollection($data))
         ];
     }
 }
