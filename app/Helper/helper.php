@@ -870,14 +870,14 @@ function studentSessionGroupSubscriptions()
     return CourseSessionSubscription::where('related_to_group_subscription',1)->where('student_id',auth('web')->user()->id)->get();
 }
 
-function studentSubscriptionCoursessIds()
+function studentSubscriptionCoursessIds($type = 'web')
 {
     if(! auth('web')->check())
     {
         return [];
     }
 
-    return CourseSessionSubscription::where('student_id',auth('web')->user()->id)->pluck('course_id')->toArray();
+    return CourseSessionSubscription::where('student_id',auth($type)->user()->id)->pluck('course_id')->toArray();
 }
 
 function isCourseonStudentCourse($course_id)
@@ -913,14 +913,14 @@ function studentCourseSessionInstallmentsIDs($course_id)
     ->where('student_id',auth('web')->user()->id)->pluck('access_until_session_id')->toArray();
 }
 
-function studentInstallmentsCoursessIds()
+function studentInstallmentsCoursessIds($type = 'web')
 {
     if(! auth('web')->check())
     {
         return [];
     }
 
-    return StudentSessionInstallment::where('student_id',auth('web')->user()->id)->pluck('course_id')->toArray();
+    return StudentSessionInstallment::where('student_id',auth('api')->user()->id)->pluck('course_id')->toArray();
 }
 
 function checkIfInstallmentHasStudents($installment_id)

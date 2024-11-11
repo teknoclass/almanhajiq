@@ -176,8 +176,8 @@ class CoursesEloquent extends HelperEloquent
             }
              ])
         ->where(function($query)  use ($user_id, $only_is_end) {
-            $query->where('id',studentSubscriptionCoursessIds());
-            $query->orWhere('id',studentInstallmentsCoursessIds());
+            $query->where('id',studentSubscriptionCoursessIds('api'));
+            $query->orWhere('id',studentInstallmentsCoursessIds('api'));
 
             $query->orWhereHas('students', function (Builder $query) use ($user_id, $only_is_end) {
                 $query->where('user_id', $user_id)

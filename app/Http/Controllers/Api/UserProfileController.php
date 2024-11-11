@@ -21,7 +21,7 @@ class UserProfileController extends Controller
 
     public function myCourses(Request $request)
     {
-        $data = $this->courses->myCourses($request, false, 9, false);
+        $data = $this->courses->myCourses($request, false, 9);
 
         $collection = new ApiCourseFilterCollection($data['courses']);
 
