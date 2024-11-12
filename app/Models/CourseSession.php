@@ -166,20 +166,26 @@ class CourseSession extends Model
     {
         $link = "";
 
+        $meetingId = $this->meeting_id;
+        
         $getRecordingsParams = new GetRecordingsParameters();
-        $getRecordingsParams->meetingId = $this->meeting_id;
-
+        $getRecordingsParams->meetingId = $meetingId;
         $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
 
-        if (!empty($recordings) && isset($recordings[0])) {
-            $firstRecording = $recordings[0];
+        if (!empty($recordings))
+        {
+            if ($meetingId)
+            {
+                $recording = collect($recordings)->firstWhere('meetingID', $meetingId);
+            }
 
-            $playbackURL = $firstRecording['playback']['format'][0]['url'];
-
-            $link = $playbackURL;
+            if ($recording && isset($recording['playback']['format'][0]['url']))
+            {
+                $link = $recording['playback']['format'][0]['url'];
+            }
         }
-
-
+    
         return $link;
     }
+
 }
