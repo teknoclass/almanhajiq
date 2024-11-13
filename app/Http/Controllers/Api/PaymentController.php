@@ -11,12 +11,19 @@ use App\Models\CourseSession;
 use App\Services\PaymentService;
 use Illuminate\Support\Facades\DB;
 use App\Models\CourseSessionsGroup;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
+use App\Models\CourseSessionInstallment;
 use App\Http\Resources\ApiCourseResource;
 use App\Models\CourseSessionSubscription;
+use App\Models\StudentSessionInstallment;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\ApiPaymentInstallmentsResource;
+use App\Http\Resources\ApiPaymentInstallmentsTimesResource;
+
+use function PHPUnit\Framework\returnSelf;
 
 class PaymentController extends Controller
 {
@@ -69,7 +76,7 @@ class PaymentController extends Controller
                 ['course_details' => new ApiCourseResource($course)],
                 ['payment_link' => [
                     'name' => 'iq',
-                    'image' => 'https://almanhajiq.com/assets/front/images/qi-logo.png',
+                    'image' => url('/assets/front/images/qi-logo.png'),
                     'link' => $response['formUrl']
                 ]]
             ],Response::HTTP_OK);
@@ -294,6 +301,117 @@ class PaymentController extends Controller
         }else{
             $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
+        }
+
+    }
+
+    function paymentGateway(Request $request){
+
+        $orderId = genereatePaymentOrderID();
+
+        $installment = $this->getCurInstallmentPrice($request->course_id);
+
+        if(!$installment){
+            $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
+        $response = $this->paymentService->processPaymentApi([
+            "amount" => $installment->price,
+            "currency" => "IQD",
+            "successUrl" => url('/api/payment/pay-to-course-session-installment-confirm'),
+            "notificationUrl" => url('/api/payment/pay-to-course-session-installment-confirm'),
+            'orderId' => $orderId
+        ]);
+        if($response && $response['status'] == "CREATED")
+        {
+            $paymentDetails = [
+                "description" => "دفع قسط جلسات دورة",
+                "orderId" => $response['requestId'],
+                "payment_id" => $response['paymentId'],
+                "amount" => 1,
+                "transactionable_type" => "App\\Models\\CourseSession",
+                "transactionable_id" => $installment->id,
+                "brand" => "card",
+                'course_id' => $request->course_id
+            ];
+            $this->paymentService->createTransactionRecordApi($paymentDetails);
+
+            $course = Courses::find($request->course_id);
+            $installmetns = $course->installments;
+
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+                'course_details' => [
+                    'course' => new ApiCourseResource($course),
+                    'installments' => ApiPaymentInstallmentsResource::collection($installmetns),
+                    'times' => ApiPaymentInstallmentsTimesResource::collection($installmetns)
+                ],
+                'price' => $installment->price,
+                'payment_link' => [
+                    'name' => 'iq',
+                    'image' => url('/assets/front/images/qi-logo.png'),
+                    'link' => $response['formUrl']
+                ]
+            ],Response::HTTP_OK);
+
+            return response()->success($response);
+        }else{
+            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+    }
+
+    function getCurInstallmentPrice($courseId){
+
+        $last = StudentSessionInstallment::where('course_id',$courseId)->orderBy('access_until_session_id', 'desc')->first();
+        if($last)$id = $last->access_until_session_id;
+        else $id = 0;
+        $installment = CourseSessionInstallment::where('course_id',$courseId)->where('course_session_id','>',$id)->first();
+        return $installment;
+
+
+    }
+
+    function confirmPayment(Request $request){
+        DB::beginTransaction();
+        try
+        {
+            $cartId = $request->get('requestId');
+            $paymentDetails = Transactios::where('order_id',$cartId)->first();
+            $paymentDetails->status = 'completed';
+            $paymentDetails->is_paid = 1;
+            $paymentDetails->save();
+
+            //check qi payment status
+            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+
+            if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
+            {
+                return redirect('/payment-failure');
+            }
+
+            $courseSession = CourseSessionInstallment::find($paymentDetails['transactionable_id']);
+            $item = StudentSessionInstallment::updateOrCreate([
+                'student_id' => $paymentDetails['user_id'],
+                'course_id' => $courseSession->course_id,
+                'access_until_session_id' => $courseSession->course_session_id
+            ]);
+
+
+            $this->paymentService->storeBalanceApi($paymentDetails,'installment');
+
+
+            DB::commit();
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+            return response()->success($response);
+        }
+        catch (\Exception $e)
+        {
+            DB::rollback();
+            Log::error($e->getMessage());
+            Log::error($e->getFile());
+            Log::error($e->getLine());
+            return redirect('/payment-failure');
         }
 
     }

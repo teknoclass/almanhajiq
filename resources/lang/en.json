@@ -1149,7 +1149,8 @@
     "please_choose_session":"Choose Session",
     "message.unable_to_send_try_again_in_few_minutes" : "Try again after : ",
     "seconds" : " seconds",
-    "activation_code_is_not_correct" : "Activation code is not correct"
+    "activation_code_is_not_correct" : "Activation code is not correct",
+    "all_installments_have_been_paid" : "All installments have been paid"
 
 
 

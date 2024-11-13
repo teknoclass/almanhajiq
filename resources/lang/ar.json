@@ -1201,7 +1201,8 @@
     "you_are_currently_loggined":"لا يمكن تسجيل دخول حاليا لان حسابك مسجل دخول فى جهاز اخر",
     "please_choose_group":"اختر وحدة اولا",
     "please_choose_session":"اختر جلسة اولا",
-    "activation_code_is_not_correct" : "كود التحقق غير صحيح"
+    "activation_code_is_not_correct" : "كود التحقق غير صحيح",
+    "all_installments_have_been_paid" : "تم دفع جميع الاقساط"
 
 
 

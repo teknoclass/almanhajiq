@@ -4,7 +4,7 @@ namespace App\Services;
 use App\Models\UserCourse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
-use App\Models\{Transactios,Balances, Courses, CourseSession};
+use App\Models\{Transactios,Balances, Courses, CourseSession, CourseSessionInstallment};
 
 class PaymentService
 {
@@ -250,6 +250,11 @@ class PaymentService
             case 'group' :
                 $session = CourseSession::where('group_id',$id)->first();
                 return $lecturer = $session->course->lecturer;
+                break;
+
+            case 'installment' :
+                $installment = CourseSessionInstallment::find($id);
+                return $installment->courseSession->course->lecturer;
                 break;
         }
 

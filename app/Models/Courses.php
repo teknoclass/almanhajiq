@@ -196,6 +196,9 @@ class Courses extends Model
     {
         return $this->hasOne('App\Models\Category', 'value', 'category_id')->where('parent', 'course_categories');
     }
+    function installments(){
+        return $this->hasMany(CourseSessionInstallment::class,'course_id');
+    }
 
     public function material()
     {
@@ -576,6 +579,8 @@ class Courses extends Model
         return true;
 
     }
+
+
 
 
 }
