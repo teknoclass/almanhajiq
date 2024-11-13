@@ -9,6 +9,7 @@ use App\Models\Transactios;
 use Illuminate\Http\Request;
 use App\Models\CourseSession;
 use App\Services\PaymentService;
+use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
 use App\Models\CourseSessionsGroup;
 use Illuminate\Support\Facades\Log;
@@ -19,22 +20,66 @@ use App\Models\CourseSessionInstallment;
 use App\Http\Resources\ApiCourseResource;
 use App\Models\CourseSessionSubscription;
 use App\Models\StudentSessionInstallment;
+use function PHPUnit\Framework\returnSelf;
 use Symfony\Component\HttpFoundation\Response;
+use \Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 use App\Http\Resources\ApiPaymentInstallmentsResource;
 use App\Http\Resources\ApiPaymentInstallmentsTimesResource;
-
-use function PHPUnit\Framework\returnSelf;
 
 class PaymentController extends Controller
 {
     protected PaymentService $paymentService;
+    protected ZainCashService $zainCashService;
 
     public function __construct()
     {
         $this->paymentService = new PaymentService();
+        $this->zainCashService = new ZainCashService();
+
     }
 
-    public function fullSubscribe(Request $request)
+    function fullSubscribeDetails(Request $request){
+        $course = Courses::find($request->id);
+
+
+
+        $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            'course_details' => new ApiCourseResource($course),
+            'payment_methods' => [
+                [
+                    'name' => 'gateway',
+                    'image' => url('/assets/front/images/qi-logo.png')
+                ],
+                [
+                    'name' => 'zain',
+                    'image' => url('/assets/front/images/zain-cash.png')
+                ]
+            ]
+
+        ],Response::HTTP_OK);
+
+        return response()->success($response);
+
+
+
+    }
+
+    function fullSubscribe(Request $request){
+
+        if($request->payment_type == "gateway")
+        {
+            return $this->fullSubscribeGateway($request);
+        }else{
+            return $this->fullSubscribeZain($request);
+        }
+
+    }
+
+
+
+    public function fullSubscribeGateway($request)
     {
 
         $course = Courses::find($request->id);
@@ -65,7 +110,7 @@ class PaymentController extends Controller
                 "transactionable_id" => $course->id,
                 "brand" => "card",
                 'course_id' => $course->id,
-                "purchase_type" => $request->type,
+                "purchase_type" => $request->payment_type,
             ];
 
             $this->paymentService->createTransactionRecordApi($paymentDetails);
@@ -73,12 +118,7 @@ class PaymentController extends Controller
 
 
             $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
-                ['course_details' => new ApiCourseResource($course)],
-                ['payment_link' => [
-                    'name' => 'iq',
-                    'image' => url('/assets/front/images/qi-logo.png'),
-                    'link' => $response['formUrl']
-                ]]
+                'payment_link' => $response['formUrl']
             ],Response::HTTP_OK);
 
             return response()->success($response);
@@ -90,12 +130,58 @@ class PaymentController extends Controller
         }
     }
 
+    function fullSubscribeZain($request){
+        $orderId = genereatePaymentOrderID();
+        $course = Courses::find($request->id);
+
+        $response = $this->zainCashService->processPaymentApi($course->getPriceForPayment(),
+        url('/api/payment/full-subscribe-course-confirm'),"اشتراك كلى فى دورة",$orderId);
+
+        if(isset($response['id']))
+        {
+            $paymentDetails = [
+                "description" => 'اشتراك كلى فى الدورة',
+                "orderId" => $response['orderId'],
+                "payment_id" => $response['id'],
+                "amount" => $course->getPriceForPayment(),
+                "transactionable_type" => "App\\Models\\Courses",
+                "transactionable_id" => $course->id,
+                "brand" => "zaincash",
+                "transaction_id" => $response['referenceNumber'],
+                'course_id' => $course->id,
+                "purchase_type" => $request->payment_type
+            ];
+
+            $this->paymentService->createTransactionRecordApi($paymentDetails);
+
+            $transaction_id = $response['id'];
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+                'payment_link' => $paymentUrl
+            ],Response::HTTP_OK);
+
+            return response()->success($response);
+        }else{
+            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
+    }
+
+
+
     public function fullConfirmSubscribe(Request $request)
     {
         DB::beginTransaction();
         try
         {
             $cartId = $request->get('requestId');
+            $token = $request->get('token');
+            if($cartId == null){
+                $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
+                $cartId = $data->orderid;
+            }
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
@@ -127,37 +213,69 @@ class PaymentController extends Controller
     }
 
 
+    function subscribeDetails(Request $request){
 
-    public function subscribe(Request $request)
+        if($request->type == "group")
+        {
+            $title = CourseSessionsGroup::find($request->target_id)->title??"";
+
+        }else{
+            $title = CourseSession::find($request->target_id)->title??"";
+        }
+
+        $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            'course_details' => ['title' => $title],
+            'payment_methods' => [
+                [
+                    'name' => 'gateway',
+                    'image' => url('/assets/front/images/qi-logo.png')
+                ],
+                [
+                    'name' => 'zain',
+                    'image' => url('/assets/front/images/zain-cash.png')
+                ]
+        ]],Response::HTTP_OK);
+
+        return response()->success($response);
+
+
+    }
+
+    function subscribe(Request $request){
+        if($request->payment_type == "gateway")
+        {
+            return $this->subscribeGateway($request);
+        }else{
+            return $this->subscribeZain($request);
+        }
+    }
+
+
+    public function subscribeGateway(Request $request)
     {
 
         if($request->type == "group"){
             $redirect = url('/api/payment/subscribe-to-course-group-confirm');
+            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSessionsGroup";
+            $model = CourseSessionsGroup::find($request->target_id);
         }else{
             $redirect = url('/api/payment/subscribe-to-course-sessions-confirm');
+            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSession";
+            $model = CourseSession::find($request->target_id);
         }
         $orderId = genereatePaymentOrderID();
 
-
         $response = $this->paymentService->processPaymentApi([
-            "amount" => $request->price,
+            "amount" => $model->price,
             "currency" => "IQD",
             "successUrl" => $redirect,
             "orderId" => $orderId,
             'notificationUrl' => ''
         ]);
 
-        if($request->type == "group")
-        {
-            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
-            $transactionable_type = "App\\Models\\CourseSessionsGroup";
-            $title = CourseSessionsGroup::find($request->target_id)->title??"";
 
-        }else{
-            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
-            $transactionable_type = "App\\Models\\CourseSession";
-            $title = CourseSession::find($request->target_id)->title??"";
-        }
 
         if($response && $response['status'] == "CREATED")
         {
@@ -165,7 +283,7 @@ class PaymentController extends Controller
                 "description" => $description,
                 "orderId" => $response['requestId'],
                 "payment_id" => $response['paymentId'],
-                "amount" => $request->price,
+                "amount" => $model->price,
                 "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
                 "brand" => "card",
@@ -175,17 +293,63 @@ class PaymentController extends Controller
 
 
             $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
-                ['course_details' => ['title' => $title]],
-                ['payment_link' => [
-                    'name' => 'iq',
-                    'image' => 'https://almanhajiq.com/assets/front/images/qi-logo.png',
-                    'link' => $response['formUrl']
-                ]]
+                'payment_link' => $response['formUrl']
             ],Response::HTTP_OK);
 
             return response()->success($response);
         }else{
-            //return $response;
+            return $response;
+            $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+    }
+
+    function subscribeZain($request){
+        if($request->type == "group")
+        {
+            $model = CourseSessionsGroup::find($request->target_id);
+            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSessionsGroup";
+            $redirect = url('/api/payment/subscribe-to-course-group-confirm');
+
+        }else{
+            $model = CourseSession::find($request->target_id);
+            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
+            $transactionable_type = "App\\Models\\CourseSession";
+            $redirect = url('/api/payment/subscribe-to-course-sessions-confirm');
+
+        }
+        $orderId = genereatePaymentOrderID();
+
+        $response = $this->zainCashService->processPaymentApi($model->price,
+        $redirect, $description,$orderId);
+
+        if(isset($response['id']))
+        {
+            $paymentDetails = [
+                "description" => $description,
+                "orderId" => $response['orderId'],
+                "payment_id" => $response['id'],
+                "amount" => $model->price,
+                "transactionable_type" => $transactionable_type,
+                "transactionable_id" => $request->target_id,
+                "brand" => "zaincash",
+                "transaction_id" => $response['referenceNumber'],
+                'course_id' => $request->course_id,
+                "purchase_type" => $request->type
+            ];
+
+            $this->paymentService->createTransactionRecordApi($paymentDetails);
+
+            $transaction_id = $response['id'];
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+                'payment_link' => $paymentUrl
+            ],Response::HTTP_OK);
+
+            return response()->success($response);
+        }else{
             $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
@@ -197,6 +361,11 @@ class PaymentController extends Controller
         try
         {
             $cartId = $request->get('requestId');
+            $token = $request->get('token');
+            if($cartId == null){
+                $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
+                $cartId = $data->orderid;
+            }
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
@@ -247,6 +416,11 @@ class PaymentController extends Controller
         try
         {
             $cartId = $request->get('requestId');
+            $token = $request->get('token');
+            if($cartId == null){
+                $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
+                $cartId = $data->orderid;
+            }
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
@@ -305,7 +479,52 @@ class PaymentController extends Controller
 
     }
 
-    function paymentGateway(Request $request){
+
+    function installmentDetails(Request $request){
+
+        $installment = $this->getCurInstallmentPrice($request->course_id);
+        if(!$installment){
+            $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
+        $course = Courses::find($request->course_id);
+        $installmetns = $course->installments;
+
+        $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            'course_details' => [
+                'course' => new ApiCourseResource($course),
+                'installments' => ApiPaymentInstallmentsResource::collection($installmetns),
+                'times' => ApiPaymentInstallmentsTimesResource::collection($installmetns)
+            ],
+            'price' => $installment->price,
+            'payment_methods' => [
+                [
+                    'name' => 'gateway',
+                    'image' => url('/assets/front/images/qi-logo.png')
+                ],
+                [
+                    'name' => 'zain',
+                    'image' => url('/assets/front/images/zain-cash.png')
+                ]
+        ]],Response::HTTP_OK);
+
+        return response()->success($response);
+
+    }
+
+    function installment(Request $request){
+        if($request->payment_type == "gateway")
+        {
+            return $this->installmentGateway($request);
+        }else{
+            return $this->installmentZain($request);
+        }
+    }
+
+
+
+    function installmentGateway(Request $request){
 
         $orderId = genereatePaymentOrderID();
 
@@ -329,7 +548,7 @@ class PaymentController extends Controller
                 "description" => "دفع قسط جلسات دورة",
                 "orderId" => $response['requestId'],
                 "payment_id" => $response['paymentId'],
-                "amount" => 1,
+                "amount" => $installment->price,
                 "transactionable_type" => "App\\Models\\CourseSession",
                 "transactionable_id" => $installment->id,
                 "brand" => "card",
@@ -337,21 +556,53 @@ class PaymentController extends Controller
             ];
             $this->paymentService->createTransactionRecordApi($paymentDetails);
 
-            $course = Courses::find($request->course_id);
-            $installmetns = $course->installments;
 
             $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
-                'course_details' => [
-                    'course' => new ApiCourseResource($course),
-                    'installments' => ApiPaymentInstallmentsResource::collection($installmetns),
-                    'times' => ApiPaymentInstallmentsTimesResource::collection($installmetns)
-                ],
-                'price' => $installment->price,
-                'payment_link' => [
-                    'name' => 'iq',
-                    'image' => url('/assets/front/images/qi-logo.png'),
-                    'link' => $response['formUrl']
-                ]
+                'payment_link' => $response['formUrl']
+            ],Response::HTTP_OK);
+
+            return response()->success($response);
+        }else{
+            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+    }
+
+    function installmentZain($request){
+        $orderId = genereatePaymentOrderID();
+
+        $installment = $this->getCurInstallmentPrice($request->course_id);
+
+        if(!$installment){
+            $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
+        $response = $this->zainCashService->processPaymentApi($installment->price,
+        url('/api/payment/pay-to-course-session-installment-confirm'),"دفع قسط جلسات دورة",$orderId);
+
+        if(isset($response['id']))
+        {
+            $paymentDetails = [
+                "description" => "دفع قسط جلسات دورة",
+                "orderId" => $response['orderId'],
+                "payment_id" => $response['id'],
+                "amount" => $installment->price,
+                "transactionable_type" => "App\\Models\\CourseSession",
+                "transactionable_id" => $installment->id,
+                "brand" => "zaincash",
+                "transaction_id" => $response['referenceNumber'],
+                'course_id' => $request->course_id
+            ];
+            $this->paymentService->createTransactionRecordApi($paymentDetails);
+
+
+
+            $transaction_id = $response['id'];
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+                'payment_link' => $paymentUrl
             ],Response::HTTP_OK);
 
             return response()->success($response);
@@ -363,7 +614,7 @@ class PaymentController extends Controller
 
     function getCurInstallmentPrice($courseId){
 
-        $last = StudentSessionInstallment::where('course_id',$courseId)->orderBy('access_until_session_id', 'desc')->first();
+        $last = StudentSessionInstallment::where('course_id',$courseId)->where('student_id',auth('api')->id())->orderBy('access_until_session_id', 'desc')->first();
         if($last)$id = $last->access_until_session_id;
         else $id = 0;
         $installment = CourseSessionInstallment::where('course_id',$courseId)->where('course_session_id','>',$id)->first();
@@ -377,6 +628,11 @@ class PaymentController extends Controller
         try
         {
             $cartId = $request->get('requestId');
+            $token = $request->get('token');
+            if($cartId == null){
+                $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
+                $cartId = $data->orderid;
+            }
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;

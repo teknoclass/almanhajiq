@@ -22,7 +22,7 @@ class ZainCashService
         $this->secretKey = env('ZAINCASH_SECRET_KEY');
         $this->tUrl = env('ZAINCASH_TO_URL');
         $this->rUrl = env('ZAINCASH_REDIRECT_URL');
-       
+
     }
 
     public function processPayment($amount, $redirectUrl, $service_type)
@@ -47,27 +47,56 @@ class ZainCashService
         $response= file_get_contents($this->tUrl , false, $context);
 
         return json_decode($response, true);
-        
+
         } catch (\Exception $e) {
             return ['error' => $e->getMessage()];
-        } 
+        }
     }
+
+
+    public function processPaymentApi($amount, $redirectUrl, $service_type, $orderId)
+    {
+        try {
+        $token = $this->generateToken($amount,$orderId,$redirectUrl,$service_type);
+
+        //POSTing data to ZainCash API
+        $data_to_post = array();
+        $data_to_post['token'] = urlencode($token);
+        $data_to_post['merchantId'] =  $this->merchantId ;
+        $data_to_post['lang'] = app()->getLocale();
+        $options = array(
+        'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data_to_post),
+        ),
+        );
+        $context  = stream_context_create($options);
+        $response= file_get_contents($this->tUrl , false, $context);
+
+        return json_decode($response, true);
+
+        } catch (\Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
+    }
+
 
     private function generateToken($amount,$orderId,$redirectUrl,$service_type)
     {
         $data = [
-            'amount'  => $amount,        
-            'serviceType'  => $service_type,          
-            'msisdn'  => $this->msisdn, 
+            'amount'  => $amount,
+            'serviceType'  => $service_type,
+            'msisdn'  => $this->msisdn,
             'orderId'  => $orderId,
             'redirectUrl'  => $redirectUrl,
             'iat'  => time(),
             'exp'  => time()+60*60*4
         ];
-        
+
         $token = JWT::encode(
-            $data,    
-            $this->secretKey ,'HS256' 
+            $data,
+            $this->secretKey ,'HS256'
         );
 
         return $token;
@@ -77,20 +106,20 @@ class ZainCashService
     {
         //building data
         $data = [
-          'id'  => $id,                
+          'id'  => $id,
           'msisdn'  => env('ZAINCASH_MSISDN'),
           'iat'  => time(),
           'exp'  => time()+60*60*4
         ];
-        
+
         //Encoding Token
         $newtoken = JWT::encode(
         $data, //Data to be encoded in the JWT
         env('ZAINCASH_SECRET_KEY') ,'HS256'
         );
-        
+
         $rUrl = env('ZAIN_CASH_CHECK_STATUS');
-       
+
         //POST data to ZainCash API
         $data_to_post = array();
         $data_to_post['token'] = urlencode($newtoken);
@@ -104,7 +133,7 @@ class ZainCashService
         );
         $context = stream_context_create($options);
         $response = file_get_contents($rUrl, false, $context);
-        
+
         return json_decode($response, true);
     }
 

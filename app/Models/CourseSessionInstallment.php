@@ -38,7 +38,7 @@ class CourseSessionInstallment extends Model
 
     function isPaid(){
 
-        $exist  = StudentSessionInstallment::where('course_id' , $this->course_id)->where('access_until_session_id' , '>=',$this->course_session_id)->exists();
+        $exist  = StudentSessionInstallment::where('course_id' , $this->course_id)->where('student_id',auth('api')->id())->where('access_until_session_id' , '>=',$this->course_session_id)->exists();
 
         if($exist)return true;
         else return false;
@@ -47,7 +47,7 @@ class CourseSessionInstallment extends Model
 
     function isCur(){
 
-        $last = StudentSessionInstallment::where('course_id',$this->course_id)->orderBy('access_until_session_id', 'desc')->first();
+        $last = StudentSessionInstallment::where('course_id',$this->course_id)->where('student_id',auth('api')->id())->orderBy('access_until_session_id', 'desc')->first();
         if($last)$id = $last->access_until_session_id;
         else $id = 0;
         $installment = CourseSessionInstallment::where('course_id',$this->course_id)->where('course_session_id','>',$id)->first();
