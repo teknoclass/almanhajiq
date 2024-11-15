@@ -100,4 +100,9 @@ class CourseAssignments extends Model
         }
     }
 
+    public function assignmentQuestionsCount()
+    {
+        return $this->hasMany(CourseAssignmentQuestions::class, 'course_assignment_id', 'id')->count();
+    }
+
 }

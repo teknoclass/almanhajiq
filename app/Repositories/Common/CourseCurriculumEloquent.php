@@ -2,6 +2,9 @@
 
 namespace App\Repositories\Common;
 
+use App\Http\Resources\ApiCurriculumAssignmentResource;
+use App\Http\Resources\ApiCurriculumLessonResource;
+use App\Http\Resources\ApiCurriculumQuizResource;
 use App\Models\CourseSession;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -313,7 +316,7 @@ class CourseCurriculumEloquent extends HelperEloquent
 
             $section_item = CourseSectionItems::where('course_id', $data['course_id'])
                 ->where('itemable_type', $type)->where('itemable_id', $item_id)->first();
-          
+
             if (!$section_item) abort(404);
 
             $curclm_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $course->id)
@@ -896,6 +899,26 @@ class CourseCurriculumEloquent extends HelperEloquent
 
         $data['url']=$url;
         $data['status']=true;
+
+        return $data;
+    }
+
+    public function getItemApi($id,$type){
+
+
+        switch ($type){
+            case 'lesson' :
+                $data['data'] = new ApiCurriculumLessonResource(CourseLessons::where('id',$id)->with('translations','attachments')->first());
+                break;
+            case 'quiz' :
+                $data['data'] = new ApiCurriculumQuizResource(CourseQuizzes::where('id',$id)->with('translations')->first());
+                break;
+
+            case 'assignment' :
+                $data['data'] = new ApiCurriculumAssignmentResource(CourseAssignments::where('id',$id)->with('translations')->first());
+                break;
+
+        }
 
         return $data;
     }

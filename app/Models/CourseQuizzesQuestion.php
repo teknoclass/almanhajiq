@@ -21,4 +21,9 @@ class CourseQuizzesQuestion extends Model
     {
         return $this->hasMany(CourseQuizzesQuestionsAnswer::class, 'question_id', 'id');
     }
+
+    public function userAnswer()
+    {
+        return $this->hasOne(CourseQuizzesResultsAnswers::class,'question_id','id');
+    }
 }

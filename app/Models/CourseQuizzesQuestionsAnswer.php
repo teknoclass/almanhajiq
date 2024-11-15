@@ -14,4 +14,9 @@ class CourseQuizzesQuestionsAnswer extends Model
 
     public $translatedAttributes = ['title'];
 
+    function question()
+    {
+        return $this->belongsTo(CourseQuizzesQuestion::class,'question_id','id');
+    }
+
 }

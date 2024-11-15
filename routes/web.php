@@ -271,7 +271,10 @@ Route::get('/migrate',function(){
         //users
         "2024_11_05_225728_add_session_token_to_users_table.php",
 
-        "2024_11_07_002222_add_meeting_status_to_course_sessions_table.php"
+        "2024_11_07_002222_add_meeting_status_to_course_sessions_table.php",
+
+        //quiz api
+        "2024_08_17_174646_create_course_quizzes_results_answers_table.php"
 
     ];
 
@@ -281,7 +284,7 @@ Route::get('/migrate',function(){
     }
 
     return "migrations done";
-    
+
 });
 
 //seeder

@@ -2,6 +2,9 @@
 
 namespace App\Repositories\Front\User;
 
+use App\Http\Resources\Quiz\QuestionResource;
+use App\Http\Resources\Quiz\ShowResultQuestionResource;
+use App\Http\Resources\Quiz\StartQuizResource;
 use App\Models\CourseQuizzes;
 use App\Models\CourseQuizzesQuestion;
 use App\Models\CourseQuizzesQuestionsAnswer;
@@ -9,11 +12,12 @@ use App\Models\CourseQuizzesResults;
 use App\Models\Notifications;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use App\Models\CourseQuizzesResultsAnswers;
 
 class QuizEloquent extends HelperEloquent
 {
 
-    public function start($request, $course_id, $id)
+    public function start($request, $course_id, $id, $is_web = true)
     {
         $quiz = CourseQuizzes::where('id', $id)
             ->with([
@@ -24,7 +28,7 @@ class QuizEloquent extends HelperEloquent
             ->with('course')
             ->first();
 
-        $user = auth()->user();
+        $user = $this->getUser($is_web);
 
         if ($quiz) {
             // Does the user started the quiz
@@ -45,11 +49,34 @@ class QuizEloquent extends HelperEloquent
                     'created_at' => now(),
                 ]);
 
+                if(!$is_web){
+                    $quiz = CourseQuizzes::where('id', $id)
+                    ->with([
+                        'quizQuestions' => function ($query) use ($quizResult) {
+                            $query->with('quizzesQuestionsAnswers')
+                            ->with(['userAnswer' => function ($query) use ($quizResult){
+                                $query->where('result_id',$quizResult->id);
+                            }]);
+                        },
+                    ])
+                    ->with('course')
+                    ->first();
+                }
+
                 $data = [
                     'quiz' => $quiz,
                     'quizQuestions' => $quiz->quizQuestions,
                     'quizResult' => $quizResult
                 ];
+
+                if(!$is_web){
+                    $data['quiz'] = new StartQuizResource($data['quiz']);
+                    $data['quizQuestions'] = QuestionResource::collection($data['quizQuestions']);
+                    $end_time = Carbon::createFromFormat('Y-m-d H:i:s', $quizResult->started_at)->addMinutes($quiz->time);
+                    $current = Carbon::now();
+                    $data['remaining_time'] = $current->diffInSeconds($end_time);
+                    unset($data['quizResult']);
+                }
 
                 return $data;
             }
@@ -69,11 +96,34 @@ class QuizEloquent extends HelperEloquent
                         $diffInSeconds = $end_time->diffInSeconds($now);
                         $quiz->time = $diffInSeconds / 60;
 
+                        if(!$is_web){
+                            $quiz = CourseQuizzes::where('id', $id)
+                            ->with([
+                                'quizQuestions' => function ($query) use ($userQuizSolution) {
+                                    $query->with('quizzesQuestionsAnswers')
+                                    ->with(['userAnswer' => function ($query) use ($userQuizSolution){
+                                        $query->where('result_id',$userQuizSolution->id);
+                                    }]);
+                                },
+                            ])
+                            ->with('course')
+                            ->first();
+                        }
+
                         $data = [
                             'quiz' => $quiz,
                             'quizQuestions' => $quiz->quizQuestions,
                             'quizResult' => $userQuizSolution
                         ];
+
+                        if(!$is_web){
+                            $data['quiz'] = new StartQuizResource($data['quiz']);
+                            $data['quizQuestions'] = QuestionResource::collection($data['quizQuestions']);
+                            unset($data['quizResult']);
+                            $end_time = Carbon::createFromFormat('Y-m-d H:i:s', $userQuizSolution->started_at)->addMinutes($quiz->time);
+                            $current = Carbon::now();
+                            $data['remaining_time'] = $current->diffInSeconds($end_time);
+                        }
 
                         return $data;
                     }
@@ -260,6 +310,183 @@ class QuizEloquent extends HelperEloquent
             }
         }
         abort(404);
+    }
+
+    function submitAnswer($request,$is_web = true){
+
+        $user = $this->getUser($is_web);
+
+        $result = CourseQuizzesResults::where('user_id',$user->id)->where('quiz_id',$request['quiz_id'])->first();
+
+        $answer = CourseQuizzesResultsAnswers::updateOrCreate([
+            'result_id' => $result->id,
+            'question_id' => $request['question_id']],[
+            'answer_id' => $request['answer_id'] ?? null,
+            'text_answer' => $request['text_answer'] ?? null
+        ]);
+
+
+
+    }
+
+    function submitResultApi($request,$is_web = true){
+        if($is_web)$guardType = 'web';
+        else $guardType = 'api';
+
+        $user = $this->getUser($is_web);
+        $quizId = $request->get('quiz_id');
+        $quiz = CourseQuizzes::where('id',$quizId)->first();
+        $data['quiz_id'] = $quizId;
+        $data['course_id'] = $quiz->course_id;
+        $results = CourseQuizzesResults::where('quiz_id',$quizId)->where('user_id',$user->id)
+        ->with([
+            'answers' => function ($query){
+                $query->with(['answer' => function($query){
+                    $query->with('question');
+                },
+                'question' => function($query){
+                    $query->with('quizzesQuestionsAnswers');
+                }]);
+            },
+
+        ])
+
+        ->first();
+        if(!$results){
+            $results = CourseQuizzesResults::create([
+                'quiz_id' => $quizId,
+                'user_id' => $user->id,
+                'course_id' => $quiz->course_id,
+                'status' => 'waiting',
+                'results' => '',
+                'user_grade' => 0,
+                'status' => CourseQuizzesResults::$failed,
+                'created_at' => now()
+            ]);
+            // update the progress
+            $course = $quiz->course;
+            if($is_web)$course->updateProgress();
+        }else{
+
+            if($results->result_token != null){
+                $data['message']  = 'quiz_done_before';
+                $data['status'] = false;
+                return $data;
+            }
+            $status = '';
+
+            $now = Carbon::now();
+            $end_time = Carbon::createFromFormat('Y-m-d H:i:s', $results->started_at)->addMinutes($quiz->time);
+
+            $is_passed_time = $now > $end_time;
+            if($is_passed_time){
+
+                $results->update([
+                    'results' => '',
+                    'user_grade' => 0,
+                    'status' => CourseQuizzesResults::$failed,
+                    'created_at' => now()
+                ]);
+
+                // update the progress
+                $course = $quiz->course;
+                if($is_web)$course->updateProgress();
+
+                $data['message'] = 'quiz_time_passed';
+                $data['status'] = false;
+
+                return $data;
+
+
+
+            }else{
+
+                $totalMark = 0;
+                foreach($results->answers as $answer  ){
+                    if($answer->question->type == 'multiple'){
+                        if($answer->answer->correct == 1){
+                            $totalMark += $answer->answer->question->grade;
+                            CourseQuizzesResultsAnswers::where('id',$answer->id)->update(['status' => 1,'mark' => $answer->answer->question->grade]);
+                        }
+                    }else{
+                        if($answer->question->quizzesQuestionsAnswers != null){
+
+                            foreach($answer->question->quizzesQuestionsAnswers as $ans){
+                                if($answer->text_answer == $ans->title){
+                                    $totalMark += $ans->question->grade;
+                                    CourseQuizzesResultsAnswers::where('id',$answer->id)->update(['status' => 1,'mark' => $ans->question->grade]);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                $status = ($totalMark >= $quiz->pass_mark) ? CourseQuizzesResults::$passed : CourseQuizzesResults::$failed;
+
+                $result_token = Hash::make(quickRandom(16)) . $results->id;
+                $result_token = str_replace('%', '', $result_token);
+                $result_token = str_replace('/', '', $result_token);
+                $results->update([
+                    'results' => '',
+                    'user_grade' => $totalMark,
+                    'status' => $status,
+                    'result_token' => $result_token,
+                    'created_at' => now()
+                ]);
+
+                $course = $quiz->course;
+                if($is_web)$course->updateProgress($guardType);
+
+                $data['status'] = true;
+                $data['message'] = __('message.operation_accomplished_successfully');
+
+                return $data;
+
+
+            }
+
+
+        }
+
+
+    }
+
+    function showResultsApi($item_id){
+
+        $quizResult = CourseQuizzesResults::where('quiz_id',$item_id)->where('user_id',auth('api')->id())->first();
+
+        $quiz = CourseQuizzes::where('id', $item_id)
+                    ->with([
+                        'quizQuestions' => function ($query) use ($quizResult) {
+                            $query->with('quizzesQuestionsAnswers')
+                            ->with(['userAnswer' => function ($query) use ($quizResult){
+                                $query->where('result_id',$quizResult->id);
+                            }]);
+                        },
+                    ])
+                    ->with('course')
+                    ->first();
+
+        $questionCount = 0;
+        $correctCount = 0;
+        foreach($quiz->quizQuestions as $quest){
+            $questionCount+=1;
+            foreach($quest->quizzesQuestionsAnswers as $ans){
+                if($ans->correct == 1){
+                    if($quest->type == 'multiple'){
+                        if($ans->id == $quest->user_answer)$correctCount+=1;
+                    }
+                }
+            }
+        }
+        $data['user_grade'] = $quizResult->user_grade;
+        $data['grade'] = $quiz->grade;
+        $data['status'] = $quizResult->status;
+        $quiz = ShowResultQuestionResource::collection($quiz->quizQuestions);
+        $data['question'] = $quiz;
+        $data['questionCount'] = $questionCount;
+        $data['correctCount'] = $correctCount;
+        return $data;
     }
 
 }

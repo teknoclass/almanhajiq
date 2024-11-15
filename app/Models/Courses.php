@@ -326,7 +326,7 @@ class Courses extends Model
         return $completed_items + $completed_section_items;
     }
 
-    public function updateProgress()
+    public function updateProgress($type = 'web')
     {
         $total_items = $this->getTotalItemsCount();
 
@@ -339,7 +339,7 @@ class Courses extends Model
 
         ($progress == 100) ? $is_end = 1 : $is_end = 0;
 
-        $user_course = UserCourse::where(['course_id' => $this->id, 'user_id' => auth()->id()])->first();
+        $user_course = UserCourse::where(['course_id' => $this->id, 'user_id' => auth($type)->id()])->first();
         $user_course->update(['progress' => $progress, 'is_end' => $is_end]);
 
         return true;

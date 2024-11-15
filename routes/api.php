@@ -1,19 +1,21 @@
 <?php
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\BlogController;
-use App\Http\Controllers\Api\CourseController;
-use App\Http\Controllers\Api\CourseSessionsController;
-use App\Http\Controllers\Api\HomeController;
-use App\Http\Controllers\Api\LecturerController;
-use App\Http\Controllers\Api\LiveSessionController;
-use App\Http\Controllers\Api\PagesController;
-use App\Http\Controllers\Api\PaymentController;
-use App\Http\Controllers\Api\SettingsController;
-use App\Http\Controllers\Api\StudentController;
-use App\Http\Controllers\Api\TeacherController;
-use App\Http\Controllers\Api\UserProfileController;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\QuizController;
+use App\Http\Controllers\Api\PagesController;
+use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\CoursesController;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\TeacherController;
+use App\Http\Controllers\Api\LecturerController;
+use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\LiveSessionController;
+use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Api\CourseSessionsController;
 use Twilio\Rest\Api\V2010\Account\Call\PaymentContext;
 
 /*
@@ -112,6 +114,19 @@ Route::group(['prefix' => 'payment'], function () {
     Route::get('/pay-to-course-session-installment-confirm',[PaymentController::class,'confirmPayment']);
 
 });
+
+
+//course curriculum
+Route::get('/itemApi/{id}',[CoursesController::class , 'getItemApi']);
+//quiz
+Route::prefix('quiz')->middleware(['language', 'auth:sanctum'])->group(function(){
+    Route::get('/{id}/start' , [QuizController::class,'start']);
+    Route::get('/{id}/show-results' , [QuizController::class,'showResults']);
+    Route::post('/store-result',[QuizController::class , 'storeResult']);
+    Route::post('/submitAnswer',[QuizController::class,'submitAnswer']);
+});
+
+
 
 
 //course session

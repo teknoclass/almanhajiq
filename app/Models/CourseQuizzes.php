@@ -116,4 +116,9 @@ class CourseQuizzes extends Model
             if (checkUser('student')) return $query->active();
         }
     }
+
+    public function quizQuestionsCount()
+    {
+        return $this->hasMany(CourseQuizzesQuestion::class, 'course_quizzes_id', 'id')->count();
+    }
 }

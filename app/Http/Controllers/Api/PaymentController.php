@@ -627,6 +627,7 @@ class PaymentController extends Controller
         DB::beginTransaction();
         try
         {
+            
             $cartId = $request->get('requestId');
             $token = $request->get('token');
             if($cartId == null){
