@@ -1202,8 +1202,8 @@
     "please_choose_group":"اختر وحدة اولا",
     "please_choose_session":"اختر جلسة اولا",
     "activation_code_is_not_correct" : "كود التحقق غير صحيح",
-    "all_installments_have_been_paid" : "تم دفع جميع الاقساط"
-
+    "all_installments_have_been_paid" : "تم دفع جميع الاقساط",
+    "the_total_marks_of_the_questions_should_be_equal_to_the_exam_score":"المجموع الكلى للاسئلة يجيب ان يساوى درجة الاختبار"
 
 
 }

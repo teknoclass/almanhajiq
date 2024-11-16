@@ -1124,15 +1124,17 @@ class CoursesEloquent extends HelperEloquent
         $data['user'] = $this->getUser($is_web);
 
         $data['course'] = $this->getCourse($id, $data['user']->id)['course'];
+        $itemType = Courses::find($id) ? 'course_id' : 'item_id';
 
         $data['comments'] = CourseComments::select(
             'id',
             'text',
             'is_published',
             'item_type',
+            'course_id',
             'created_at'
         )->orderBy('id', 'desc')
-         ->where('course_id', $id)
+         ->where($itemType, $id)
          ->with([
                 'user' => function ($query) {
                     $query->select('id', 'name', 'image');

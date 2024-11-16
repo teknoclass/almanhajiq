@@ -78,8 +78,8 @@
                                         <div class="icon-chevron me-1 d-flex"><i class="fa-solid fa-circle-chevron-left"></i></div>
                                     </div>
                                     <div class="col">
-                                        <a class="d-flex align-items-center col-auto" @if(@$lesson->item) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'lesson', 'id'=> @$lesson->item->id]) }}" @endif>
-                                            <p class="ms-2">{{ @$lesson->item->title }}</p>
+                                        <a class="d-flex align-items-center col-auto" @if(@$lesson->itemable) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'lesson', 'id'=> @$lesson->itemable->id]) }}" @endif>
+                                            <p class="ms-2">{{ @$lesson->itemable->title }}</p>
                                         </a>
                                     </div>
                                     <div class="col-auto">
@@ -105,15 +105,15 @@
                                         <div class="icon-chevron me-1 d-flex"><i class="fa-solid fa-circle-chevron-left"></i></div>
                                     </div>
                                     <div class="col">
-                                        <a class="d-flex align-items-center col-auto" @if(@$quiz->item) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'quiz', 'id' => @$quiz->item->id]) }}" @endif>
-                                            <p class="ms-2">{{ @$quiz->item->title }}</p>
+                                        <a class="d-flex align-items-center col-auto" @if(@$quiz->itemable) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'quiz', 'id' => @$quiz->itemable->id]) }}" @endif>
+                                            <p class="ms-2">{{ @$quiz->itemable->title }}</p>
                                         </a>
                                     </div>
-                                    @if (@$quiz->item->studentQuizResults[0]->created_at)
+                                    @if (@$quiz->itemable->studentQuizResults[0]->created_at)
                                     <div class="col-auto">
                                         <div class="d-flex align-items-center">
                                             <div class="icon-clock me-2 d-flex"><i class="fa-regular fa-clock"></i></div>
-                                            <p class="pt-1 text--muted col-auto">{{ changeDateFormate(@$quiz->item->studentQuizResults[0]->created_at) }}</p>
+                                            <p class="pt-1 text--muted col-auto">{{ changeDateFormate(@$quiz->itemable->studentQuizResults[0]->created_at) }}</p>
                                         </div>
                                     </div>
                                     @endif
@@ -134,15 +134,15 @@
                                         <div class="icon-chevron me-1 d-flex"><i class="fa-solid fa-circle-chevron-left"></i></div>
                                     </div>
                                     <div class="col">
-                                        <a class="d-flex align-items-center col-auto" @if(@$assignment->item) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'assignment', 'id'=>@$assignment->item->id]) }}" @endif>
-                                            <p class="ms-2">{{ @$assignment->item->title }}</p>
+                                        <a class="d-flex align-items-center col-auto" @if(@$assignment->itemable) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'assignment', 'id'=>@$assignment->itemable->id]) }}" @endif>
+                                            <p class="ms-2">{{ @$assignment->itemable->title }}</p>
                                         </a>
                                     </div>
-                                    @if (@$assignment->item->studentAssignmentResults[0]->created_at)
+                                    @if (@$assignment->itemable->studentAssignmentResults[0]->created_at)
                                     <div class="col-auto">
                                         <div class="d-flex align-items-center">
                                             <div class="icon-clock me-2 d-flex"><i class="fa-regular fa-clock"></i></div>
-                                            <p class="pt-1 text--muted col-auto">{{ changeDateFormate($assignment->item->studentAssignmentResults[0]->created_at) }}</p>
+                                            <p class="pt-1 text--muted col-auto">{{ changeDateFormate($assignment->itemable->studentAssignmentResults[0]->created_at) }}</p>
                                         </div>
                                     </div>
                                     @endif
@@ -170,8 +170,8 @@
                                         <div class="icon-chevron me-1 d-flex"><i class="fa-solid fa-circle-chevron-left"></i></div>
                                     </div>
                                     <div class="col">
-                                        <a class="d-flex align-items-center col-auto" @if(@$lesson->item) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'lesson', 'id'=> @$lesson->item->id]) }}" @endif>
-                                            <p class="ms-2">{{ @$lesson->item->title }}</p>
+                                        <a class="d-flex align-items-center col-auto" @if(@$lesson->itemable) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'lesson', 'id'=> @$lesson->itemable->id]) }}" @endif>
+                                            <p class="ms-2">{{ @$lesson->itemable->title }}</p>
                                         </a>
                                     </div>
                                 </div>
@@ -191,8 +191,8 @@
                                         <div class="icon-chevron me-1 d-flex"><i class="fa-solid fa-circle-chevron-left"></i></div>
                                     </div>
                                     <div class="col">
-                                        <a class="d-flex align-items-center col-auto" @if(@$quiz->item) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'quiz', 'id'=>@$quiz->item->id]) }}" @endif>
-                                            <p class="ms-2">{{ @$quiz->item->title }}</p>
+                                        <a class="d-flex align-items-center col-auto" @if(@$quiz->itemable) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'quiz', 'id'=>@$quiz->itemable->id]) }}" @endif>
+                                            <p class="ms-2">{{ @$quiz->itemable->title }}</p>
                                         </a>
                                     </div>
                                 </div>
@@ -212,8 +212,8 @@
                                         <div class="icon-chevron me-1 d-flex"><i class="fa-solid fa-circle-chevron-left"></i></div>
                                     </div>
                                     <div class="col">
-                                        <a class="d-flex align-items-center col-auto" @if($assignment->item) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'assignment', 'id'=>$assignment->item->id]) }}" @endif>
-                                            <p class="ms-2">{{ @$assignment->item->title }}</p>
+                                        <a class="d-flex align-items-center col-auto" @if($assignment->itemable) href="{{ route('user.courses.curriculum.openByItem', ['course_id'=>$course->id, 'type' => 'assignment', 'id'=>$assignment->itemable->id]) }}" @endif>
+                                            <p class="ms-2">{{ @$assignment->itemable->title }}</p>
                                         </a>
                                     </div>
 

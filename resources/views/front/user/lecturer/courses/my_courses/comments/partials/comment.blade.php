@@ -39,6 +39,6 @@
         </div>
     </div>
   </td>
-  <td><span class="d-flex align-items-center"><span class="symbol symbol-40"><img class="rounded-circle" src="{{imageUrl(@$user->image)}}" alt="" loading="lazy"></span><span class="ms-2">{{@$course->title}}</span></span></td>
+  <td><span class="d-flex align-items-center"><span class="symbol symbol-40"><img class="rounded-circle" src="{{imageUrl(@$comment->course->image)}}" alt="" loading="lazy"></span><span class="ms-2">{{@$comment->course->title}}</span></span></td>
 
 </tr>

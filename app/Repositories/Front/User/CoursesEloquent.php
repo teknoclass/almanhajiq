@@ -569,11 +569,11 @@ class CoursesEloquent extends HelperEloquent
 
 
         function getCurriculumQuery($courseId) {
-            return CourseCurriculum::active()->where('course_id', $courseId)->select(['itemable_type', 'itemable_id', 'order'])->orderBy('id','asc');
+            return CourseCurriculum::active()->where('course_id', $courseId)->select(['itemable_type', 'itemable_id', 'order'])->with('itemable')->orderBy('id','asc');
         }
 
         function getSectionItemsQuery($courseId) {
-            return CourseSectionItems::active()->where('course_id', $courseId)->select(['itemable_type', 'itemable_id', 'order'])->orderBy('id','asc');
+            return CourseSectionItems::active()->where('course_id', $courseId)->select(['itemable_type', 'itemable_id', 'order'])->with('itemable')->orderBy('id','asc');
         }
 
         $data['completed_lessons'] = getCurriculumQuery($data['course']->id)->completedItems(['lesson'])
