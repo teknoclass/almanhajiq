@@ -32,9 +32,18 @@ class CourseSession extends Model
 
     public function canAccess($userId)
     {
-        return DB::table('course_session_subscriptions')
+        $first = DB::table('course_session_subscriptions')
                  ->where(['course_session_id'=> $this->id,'student_id'=> $userId])
                  ->exists();
+
+        $second = DB::table('student_session_installments')
+                ->where('course_id',$this->course_id)
+                ->where('student_id',$userId)
+                ->where('access_until_session_id' , '>=' , $this->id)
+                ->exists();
+
+        if($first || $second)return true;
+        else return false;
     }
     public function studentRequests()
     {
@@ -167,7 +176,7 @@ class CourseSession extends Model
         $link = "";
 
         $meetingId = $this->meeting_id;
-        
+
         $getRecordingsParams = new GetRecordingsParameters();
         $getRecordingsParams->meetingId = $meetingId;
         $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
@@ -184,7 +193,7 @@ class CourseSession extends Model
                 $link = $recording['playback']['format'][0]['url'];
             }
         }
-    
+
         return $link;
     }
 

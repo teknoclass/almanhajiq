@@ -47,17 +47,29 @@ class CourseSessionInstallment extends Model
 
     function isCur(){
 
-        $last = StudentSessionInstallment::where('course_id',$this->course_id)->where('student_id',auth('api')->id())->orderBy('access_until_session_id', 'desc')->first();
-        if($last)$id = $last->access_until_session_id;
-        else $id = 0;
-        $installment = CourseSessionInstallment::where('course_id',$this->course_id)->where('course_session_id','>',$id)->first();
-
+        $installment = $this->getCur();
         if($installment->id == $this->id)return true;
         else return false;
 
 
 
     }
+
+    function getCur(){
+        $last = StudentSessionInstallment::where('course_id',$this->course_id)->where('student_id',auth('api')->id())->orderBy('access_until_session_id', 'desc')->first();
+        if($last)$id = $last->access_until_session_id;
+        else $id = 0;
+        $installment = CourseSessionInstallment::where('course_id',$this->course_id)->where('course_session_id','>',$id)->first();
+
+        return $installment;
+    }
+
+    function isRemaining(){
+        $installment = $this->getCur();
+        if($this->id >= $installment->id)return true;
+        else return false;
+    }
+
 
 
 }

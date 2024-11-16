@@ -482,7 +482,7 @@ class PaymentController extends Controller
 
     function installmentDetails(Request $request){
 
-        $installment = $this->getCurInstallmentPrice($request->course_id);
+        $installment = $this->getCurInstallment($request->course_id);
         if(!$installment){
             $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
@@ -490,12 +490,13 @@ class PaymentController extends Controller
 
         $course = Courses::find($request->course_id);
         $installmetns = $course->installments;
+        $remaining = $this->getRemainingInstallment($request->course_id);
 
         $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
             'course_details' => [
                 'course' => new ApiCourseResource($course),
                 'installments' => ApiPaymentInstallmentsResource::collection($installmetns),
-                'times' => ApiPaymentInstallmentsTimesResource::collection($installmetns)
+                'times' => ApiPaymentInstallmentsTimesResource::collection($remaining)
             ],
             'price' => $installment->price,
             'payment_methods' => [
@@ -528,7 +529,7 @@ class PaymentController extends Controller
 
         $orderId = genereatePaymentOrderID();
 
-        $installment = $this->getCurInstallmentPrice($request->course_id);
+        $installment = $this->getCurInstallment($request->course_id);
 
         if(!$installment){
             $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
@@ -571,7 +572,7 @@ class PaymentController extends Controller
     function installmentZain($request){
         $orderId = genereatePaymentOrderID();
 
-        $installment = $this->getCurInstallmentPrice($request->course_id);
+        $installment = $this->getCurInstallment($request->course_id);
 
         if(!$installment){
             $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
@@ -612,7 +613,7 @@ class PaymentController extends Controller
         }
     }
 
-    function getCurInstallmentPrice($courseId){
+    function getCurInstallment($courseId){
 
         $last = StudentSessionInstallment::where('course_id',$courseId)->where('student_id',auth('api')->id())->orderBy('access_until_session_id', 'desc')->first();
         if($last)$id = $last->access_until_session_id;
@@ -623,11 +624,17 @@ class PaymentController extends Controller
 
     }
 
+    function getRemainingInstallment($courseId){
+        $cur = $this->getCurInstallment($courseId);
+        if(!$cur)return CourseSessionInstallment::where('course_id',$courseId)->get();
+        return  CourseSessionInstallment::where('course_id',$courseId)->where('id','>=',$cur->id)->get();
+    }
+
     function confirmPayment(Request $request){
         DB::beginTransaction();
         try
         {
-            
+
             $cartId = $request->get('requestId');
             $token = $request->get('token');
             if($cartId == null){
@@ -640,11 +647,20 @@ class PaymentController extends Controller
             $paymentDetails->save();
 
             //check qi payment status
-            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+            if($paymentDetails["brand"] == "card"){
 
-            if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
-            {
-                return redirect('/payment-failure');
+                $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+
+                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
+                {
+                    return redirect('/payment-failure');
+                }
+            }else{
+                $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
+                if($statusCheck["status"] == "failed")
+                {
+                    return redirect('/payment-failure');
+                }
             }
 
             $courseSession = CourseSessionInstallment::find($paymentDetails['transactionable_id']);
