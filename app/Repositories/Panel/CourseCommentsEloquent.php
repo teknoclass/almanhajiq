@@ -28,7 +28,7 @@ class CourseCommentsEloquent
         }
 
         // Apply sorting
-        if ($order = request()->get('order')[0]) {
+        if ($order = isset(request()->get('order')[0]) ?? "" ) {
             $orderColumnIndex = $order['column'];
             $orderDirection = $order['dir'];
 

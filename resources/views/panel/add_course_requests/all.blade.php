@@ -23,9 +23,7 @@
     color:white;
     border-radius: 20%;
 }
-.dataTables_filter{
-   display: none;
-}
+
 </style>
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 

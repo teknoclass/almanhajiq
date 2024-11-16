@@ -1,3 +1,4 @@
+@if(@$user_course->course)
 <tr>
     <td data-title="{{__('course_name')}}">{{ @$user_course->course->title }}</td>
     {{-- <td data-title="المستوى">مبتدأ</td> --}}
@@ -23,3 +24,4 @@
         @endif
     </td>
 </tr>
+@endif
