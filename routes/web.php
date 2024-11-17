@@ -274,7 +274,10 @@ Route::get('/migrate',function(){
         "2024_11_07_002222_add_meeting_status_to_course_sessions_table.php",
 
         //quiz api
-        "2024_08_17_174646_create_course_quizzes_results_answers_table.php"
+        "2024_08_17_174646_create_course_quizzes_results_answers_table.php",
+
+        //assignment api
+        "2024_08_19_103701_create_course_assignments_results_answers_table.php"
 
     ];
 
