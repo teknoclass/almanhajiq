@@ -15,13 +15,13 @@
                 'is_active' => str_contains(url()->current(), 'welcome-text-for-registration'),
                 'href' => route('user.lecturer.my_courses.edit.welcomeTextForRegistration.index', ['id' => @$item->id]),
             ],
-            [
+           /* [
                 'title' => __('price'),
                 'icon' => 'fas fa-tag',
                 'is_show' => true,
                 'is_active' => str_contains(url()->current(), 'price-details'),
                 'href' => route('user.lecturer.my_courses.edit.priceDetails.index', ['id' => @$item->id]),
-            ],
+            ],*/
             // [
             //     'title' => __('suggested_dates'),
             //     'icon' => 'fa fa-calendar me-3 me-3',

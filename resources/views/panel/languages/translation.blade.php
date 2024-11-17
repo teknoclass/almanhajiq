@@ -49,7 +49,8 @@ $item = isset($item) ? $item: null;
                             </div>
                             <!--begin::Form-->
                             <div class="card-body">
-                                @foreach($text_data as $key => $item)
+                                @if(!empty($text_data))
+                                @foreach(@$text_data as $key => $item)
                                     <div class="form-group m-form__group row mb-5">
                                         <label class="col-3 col-form-label" readonly="readonly">
                                             @php
@@ -66,6 +67,7 @@ $item = isset($item) ? $item: null;
                                         </div>
                                     </div>
                                 @endforeach
+                                @endif
                             </div>
                             <!--end::Form-->
                         </div>

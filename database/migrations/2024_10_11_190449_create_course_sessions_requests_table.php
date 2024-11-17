@@ -24,7 +24,12 @@ return new class extends Migration
             $table->text('admin_response')->nullable(); // Admin notes for rejection or other comments
             $table->timestamps();
 
-            $table->foreign('course_session_id')->references('id')->on('course_sessions');
+            $table->foreign('course_session_id')
+            ->references('id')
+            ->on('course_sessions')
+            ->onDelete('cascade')
+            ->onUpdate('cascade');
+        
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

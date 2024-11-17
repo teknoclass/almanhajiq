@@ -112,6 +112,10 @@ function imageUrl_past($img, $size = '')
 
 function imageUrl($img, $size = '')
 {
+    if($img == "avatar.png")
+    {
+        return url('/image/' . (new Setting)->valueOf('logo'));
+    }
     $image =  (!empty($size)) ? url('/image/' . $size . '/' . $img) : url('/image/' . $img);
     $path = storage_path('app/uploads/images/'.$img);
 
