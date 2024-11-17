@@ -654,7 +654,7 @@ class CoursesEloquent extends HelperEloquent
         return $response;
     }
 
-    public function updateRequestReview($id, $is_web = true)
+    public function updateRequestReview($id,$request , $is_web = true)
     {
         DB::beginTransaction();
         try {
@@ -706,6 +706,7 @@ class CoursesEloquent extends HelperEloquent
         $response = [
             'message' => $message,
             'status' => $status,
+            'redirect_url' => $request->redirect_url 
         ];
 
         return $response;

@@ -13,7 +13,7 @@
 
                 <form method="POST" action="{{ route('user.lecturer.my_courses.edit.requestReview.update', ['id' => @$item->id]) }}" to="{{ url()->current() }}" class="w-100 p-3">
                     @csrf
-
+                        <input type="hidden" value="{{ url()->current() }}" name="redirect_url">
                     <div class="col-12 d-flex flex-column align-items-center text-center">
                         <img class="pt-2" src="{{ asset('assets/front/images/success.png') }}" alt="" loading="lazy">
                         <h3 class="pt-3"> سيقوم فريقنا الإداري بتقييم محتواها بعناية، وبمجرد الموافقة، سيتم إتاحتها للطلاب في أقرب وقت ممكن.</h3>
