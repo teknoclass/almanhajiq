@@ -698,7 +698,6 @@ class CoursesEloquent extends HelperEloquent
             $status = true;
             DB::commit();
         } catch (\Exception $e) {
-            dd($e);
             $message = __('message_error');
             $status = false;
             DB::rollback();

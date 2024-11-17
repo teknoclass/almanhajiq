@@ -27,9 +27,19 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
 use App\Models\UserCourse;
 use App\Repositories\Front\CouponsEloquent;
+use App\Repositories\Common\CertificateIssuanceEloquent;
 
 class CoursesEloquent extends HelperEloquent
 {
+    private $certificate_issuance;
+
+    public function __construct(CertificateIssuanceEloquent $certificate_issuance_eloquent)
+    {
+
+        $this->certificate_issuance = $certificate_issuance_eloquent;
+    }
+
+
     public function completedCourses($request, $is_web = true)
     {
         $data['user'] = $this->getUser($is_web);
@@ -68,88 +78,23 @@ class CoursesEloquent extends HelperEloquent
             } else {
                 $certificate_templates = CertificateTemplates::where('course_category_id', $item->course->category_id)->first();
             }
-            $template_texts = $certificate_templates->texts;
-            $user_id=$data['user']->id;
-
-            $Arabic = new \I18N_Arabic('Glyphs');
-
-            $extension = \File::extension($certificate_templates->background);
-
-            //header('Content-type: image/jpeg');
-
-            if($extension=='png') {
-                $our_image = imagecreatefrompng(storage_path("app/uploads/images/".$certificate_templates->background));
-            } else {
-                $our_image = imagecreatefromjpeg(storage_path("app/uploads/images/".$certificate_templates->background));
-            }
-            $font_path = public_path("assets/front/certificate_settings/din-next-regular.ttf");
-            $imagewidth = imagesx($our_image);
-            //$size = 31;
-            $angle = 0;
-
-            foreach($template_texts as $template_text) {
-                $size = floatval(str_replace('px', '', $template_text->font_size_css));
-                $color_text=hexToRgb($template_text->font_color_css);
-                $coordinates=json_decode($template_text->coordinates);
-                if($template_text->type==CertificateTemplateTexts::STUDENT_NAME_LOCATION) {
-                    $text= $data['user']->name;
-                    $left = $coordinates->left;
-                    $top = (str_replace('px', '', $coordinates->top)+70);
-                }elseif($template_text->type==CertificateTemplateTexts::COURSE_NAME_LOCATION){
-                    $text= $item->course->title;
-                    $left = $coordinates->left;
-                    $top = (str_replace('px', '', $coordinates->top)+90);
-                }elseif($template_text->type==CertificateTemplateTexts::LECTURER_NAME_LOCATION){
-                    $text= $lecturer->name;
-                    $left = $coordinates->left;
-                    $top = (str_replace('px', '', $coordinates->top)+60);
-                } elseif($template_text->type==CertificateTemplateTexts::CERTIFICATE_DATE){
-                    $text= date('Y-m-d');
-                    $left = $coordinates->left;
-                    $top = (str_replace('px', '', $coordinates->top)+130);
-                } else {
-                    $text=strip_tags($template_text->text);
-                    $left = $coordinates->left;
-                    $top = (str_replace('px', '', $coordinates->top)+45);
-                }
-                $color = imagecolorallocate($our_image, $color_text['r'], $color_text['g'], $color_text['b']);
-                $text = $Arabic->utf8Glyphs($text);
-                $box = @imageTTFBbox($size, $angle, $font_path, $text);
-                $textwidth = abs($box[4] - $box[0]);
-                if($template_text->type==CertificateTemplateTexts::STUDENT_NAME_LOCATION) {
-                    if($left>($imagewidth/2)) {
-                        $left = ($left + $textwidth);
-                    } else {
-                        $left = $imagewidth - ($left + $textwidth);
-                    }
-                }elseif($template_text->type==CertificateTemplateTexts::COURSE_NAME_LOCATION){
-                    if($left>($imagewidth/2)) {
-                        $left = ($left + $textwidth - 100);
-                    } else {
-                        $left = $imagewidth - ($left + $textwidth + 100);
-                    }
-                }elseif($template_text->type==CertificateTemplateTexts::CERTIFICATE_DATE){
-                    if($left>($imagewidth/2)) {
-                        $left = ($left + $textwidth);
-                    } else {
-                        $left = ($left + $textwidth-200);
-                    }
-                } else {
-                    $left = ($left + $textwidth);
-                }
-                imagettftext($our_image, $size, $angle, $left, $top, $color, $font_path, $text);
-            }
-
+          
             $name = time() . ".jpeg";
 
-            $path = storage_path("app/certificates/" . $item->user_id);
+            $user_data['name']= auth()->user()->name;
+            $user_data['courseTitle']= $course->title;
+            $user_data['date']=date('Y-m-d');
+            $user_data['lecturerName']=$course->lecturer->name??'';
+
+            $path = storage_path("app/certificates/test/" . $certificate_templates->id);
             if (!file_exists($path)) {
                 mkdir($path, 0777, true);
             }
-            imagejpeg($our_image, $path . '/' . $name);
-
+            $this->certificate_issuance->generate( $certificate_templates->id,$user_data,$path . '/' . $name);
             return response()->download($path . '/' . $name);
+
         } catch (\Exception $e) {
+            // dd($e->getMessage());
             return back();
         }
     }
