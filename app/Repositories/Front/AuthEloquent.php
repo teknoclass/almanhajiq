@@ -88,7 +88,17 @@ class AuthEloquent extends HelperEloquent
 
                 $redirect_url       = url('welcome/lecturer');
 
-            }else{
+            }
+            elseif($request->role == User::MARKETER)
+            {
+                $data['bio'] = "-";
+                $data['city'] = "-";
+                $join_request = RequestJoinMarketer::updateOrCreate(['id' => 0], $data);
+
+                $text = "لديك طلب تسجيل جديد كمسوق بإسم: " . $request->name;
+                sendNotifications('طلب تسجيل مسوق جديد', $text, 'request_join_marketers', $join_request->id, 'show_marketers_joining_requests', 'admin');
+            }
+            else{
                 $user = User::updateOrCreate(['id' => 0], $data);
 
                 $user->last_login_at = Carbon::now();
@@ -168,6 +178,7 @@ class AuthEloquent extends HelperEloquent
 
             DB::commit();
         } catch (\Exception $e) {
+            // dd($e->getMessage());
             DB::rollback();
             $message = __('message.unexpected_error');
             $status = false;

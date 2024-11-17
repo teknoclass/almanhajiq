@@ -13,7 +13,7 @@ $breadcrumb_links=[
 ],
 [
 'title'=>'تفاصيل طلب الانضمام ',
-'link'=>route('panel.sliders.all.index'),
+'link'=>route('panel.marketersJoiningRequests.all.index'),
 ],
 ]
 @endphp
