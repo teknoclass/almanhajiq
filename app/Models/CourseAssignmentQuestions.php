@@ -29,4 +29,9 @@ class CourseAssignmentQuestions extends Model
         return $this->belongsTo(CourseAssignments::class, 'course_assignment_id', 'id');
     }
 
+    function userAnswers()
+    {
+        return $this->hasOne(CourseAssignmentsResultsAnswer::class,'question_id','id');
+    }
+
 }

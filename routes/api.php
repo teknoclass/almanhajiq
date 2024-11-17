@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\Api\AssignmentController;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -124,6 +126,17 @@ Route::prefix('quiz')->middleware(['language', 'auth:sanctum'])->group(function(
     Route::get('/{id}/show-results' , [QuizController::class,'showResults']);
     Route::post('/store-result',[QuizController::class , 'storeResult']);
     Route::post('/submitAnswer',[QuizController::class,'submitAnswer']);
+});
+//assignment
+Route::prefix('assignment')->middleware('auth:api')->group(function(){
+
+    Route::get('/{id}/start' , [AssignmentController::class,'start']);
+    Route::post('/{id}/store-result',[AssignmentController::class , 'storeResult']);
+    Route::post('/upload-file', [AssignmentController::class, 'uploadFile']);
+    Route::post('/submitAnswer',[AssignmentController::class,'submitAnswer']);
+    Route::post('/storeResultApi',[AssignmentController::class,'endAssignmentApi']);
+    Route::get('/{id}/show-results',[AssignmentController::class,'showResults']);
+
 });
 
 
