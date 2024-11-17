@@ -152,7 +152,8 @@ class LiveSessionEloquent  extends HelperEloquent
         CourseSession::where('course_id', $course_id)->delete();
         $sessionIds = [];
         $sessions = [];
-        for ($i = 0; $i < $request->total_sessions; $i++) {
+        $i = 0;
+        while ($request->has("session_day_$i")) {
             $sessions[] = [
                 'day' => $request->input("session_day_$i"),
                 'date' => $request->input("session_date_$i"),
@@ -160,8 +161,9 @@ class LiveSessionEloquent  extends HelperEloquent
                 'title' => $request->input("session_title_$i"),
                 'course_id' => $course_id
             ];
+            $i++;
         }
-
+      
         foreach ($sessions as $session) {
             $session = CourseSession::create($session);  
 
