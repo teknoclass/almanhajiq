@@ -29,7 +29,7 @@ class AddCourseRequestsEloquent
                 {
                     return $row->course->translations->first()->title ?? ''; 
                 }else{
-                    return "":
+                    return "";
                 }
             })
             ->editColumn('lecturer_name', function ($row) {
