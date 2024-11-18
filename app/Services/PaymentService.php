@@ -45,7 +45,7 @@ class PaymentService
                 'currency' => $paymentDetails['currency'],
                 'locale' => app()->getLocale(),
                 'timestamp' => now()->toIso8601String(),
-                'finishPaymentUrl' => $paymentDetails['successUrl'],
+                'finishPaymentUrl' => $paymentDetails['finishPaymentUrl'],
                 'notificationUrl' => $paymentDetails['notificationUrl'],
                 'customerInfo' => [
                     "firstName" => auth('web')->user()->name,

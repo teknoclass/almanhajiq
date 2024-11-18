@@ -104,7 +104,7 @@ class AddCourseRequestsEloquent
                 $course->update();
 
                 $title = "طلبات مراجعة الدورات ";
-                $text  = " لم يتم الموافقة على الدورة   ($course->title)";
+                $text  = " لم يتم الموافقة على الدورة   ($course->title)"." السبب (". $request->reason_unacceptable .")";
 
             }
             $user_ids[]  = $course->user_id;
