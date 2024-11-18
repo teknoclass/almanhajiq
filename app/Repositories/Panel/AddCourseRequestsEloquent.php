@@ -25,7 +25,12 @@ class AddCourseRequestsEloquent
         return Datatables::of($data)
             ->addIndexColumn()
             ->editColumn('course_title', function ($row) {
-                return $row->course->translations->first()->title ?? ''; 
+                if($row->course)
+                {
+                    return $row->course->translations->first()->title ?? ''; 
+                }else{
+                    return "":
+                }
             })
             ->editColumn('lecturer_name', function ($row) {
                 return $row->course->lecturer->name ?? '';
