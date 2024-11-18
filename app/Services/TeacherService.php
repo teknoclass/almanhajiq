@@ -54,4 +54,8 @@ class TeacherService extends MainService
             $teacherCourses
         );
     }
+
+    function getTeachersByName($title){
+        return $this->teacherRepository->getTeacherByTitle($title);
+    }
 }

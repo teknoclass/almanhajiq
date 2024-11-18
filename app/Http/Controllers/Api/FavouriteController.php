@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\API\FavourtieEloquent;
+use App\Repositories\Api\FavourtieEloquent;
 use Illuminate\Http\Request;
 
 class FavouriteController extends Controller

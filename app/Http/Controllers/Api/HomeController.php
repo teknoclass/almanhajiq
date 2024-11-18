@@ -4,20 +4,29 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiCourseCollection;
+use App\Http\Resources\ApiCourseFilterCollection;
 use App\Http\Resources\GradeLevelCollection;
 use App\Http\Resources\TeacherCollection;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
+use App\Services\CourseService;
 use App\Services\HomeService;
+use App\Services\TeacherService;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
+
 
 class HomeController  extends Controller
 {
     public HomeService $homeService;
+    public CourseService $courseService;
+    public TeacherService $teacherService;
 
-    public function __construct(HomeService $homeService)
+    public function __construct(HomeService $homeService , CourseService $courseService , TeacherService $teacherService)
     {
         $this->homeService = $homeService;
+        $this->courseService = $courseService;
+        $this->teacherService = $teacherService;
     }
 
     public function home()
@@ -51,4 +60,25 @@ class HomeController  extends Controller
 
         return response()->success($response);
     }
+
+
+    function homeSearch(Request $request){
+
+
+        //return $this->courseService->courseFilter($request)['data'];
+        $courses = new ApiCourseFilterCollection($this->courseService->courseFilter($request)['data']);
+
+        $teacher = new TeacherCollection($this->teacherService->getTeachersByName($request->get('title')));
+
+
+        $response = new SuccessResponse(__('message.success'),[
+            'courses' => collect($courses),
+            'teachers' => collect($teacher)
+        ],Response::HTTP_OK);
+
+        return response()->success($response);
+
+
+    }
+
 }
