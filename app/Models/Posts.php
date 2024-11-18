@@ -51,4 +51,15 @@ class Posts extends Model
     {
         return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
+
+    function isFavorite($type = 'web'){
+        $user = auth($type)->id();
+        if($user == null)return false;
+
+        $fav = Favourite::where('user_id',$user)->where('source_type','blog')->where('source_id',$this->id)->where('status',1)->exists();
+
+        if($fav)return true;
+        else return false;
+
+    }
 }

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\AssignmentController;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -15,6 +14,8 @@ use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\TeacherController;
 use App\Http\Controllers\Api\LecturerController;
 use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\FavouriteController;
+use App\Http\Controllers\Api\AssignmentController;
 use App\Http\Controllers\Api\LiveSessionController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\CourseSessionsController;
@@ -66,7 +67,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacher'], function () {
     Route::post('/register', [AuthController::class, 'registerTeacher']);
 });
 
-Route::group(['middleware' => 'language', 'prefix' => 'blog'], function () {
+Route::group(['middleware' => ['language','check.sanctum.token'], 'prefix' => 'blog'], function () {
     Route::get('/', [BlogController::class, 'home'])->name('blog_home');
     Route::get('/posts', [BlogController::class, 'posts'])->name('posts');
     Route::get('/{id}', [BlogController::class, 'single'])->name('single_post');
@@ -85,9 +86,9 @@ Route::get('/FAQ', [SettingsController::class, 'faqs'])->name('faqs')->middlewar
 Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('language');
 
 Route::group([ 'prefix' => 'courses'], function () {
-    Route::post('/filter', [CourseController::class, 'courseFilter'])->name('filter');
-    Route::get('/{id}', [CourseController::class, 'getCourse'])->name('singleCourse')->middleware(['check.sanctum.token']);
-    Route::get('/purchase-options/{id}', [CourseSessionsController::class, 'purchaseOptions'])->name('session_groups')->middleware(['check.sanctum.token']);
+    Route::post('/filter', [CourseController::class, 'courseFilter'])->name('filter')->middleware('check.sanctum.token');
+    Route::get('/{id}', [CourseController::class, 'getCourse'])->name('singleCourse')->middleware('check.sanctum.token');
+    Route::get('/purchase-options/{id}', [CourseSessionsController::class, 'purchaseOptions'])->name('session_groups');
 
 });
 
@@ -129,14 +130,16 @@ Route::prefix('quiz')->middleware(['language', 'auth:sanctum'])->group(function(
 });
 //assignment
 Route::prefix('assignment')->middleware('auth:api')->group(function(){
-
     Route::get('/{id}/start' , [AssignmentController::class,'start']);
-    Route::post('/{id}/store-result',[AssignmentController::class , 'storeResult']);
-    Route::post('/upload-file', [AssignmentController::class, 'uploadFile']);
     Route::post('/submitAnswer',[AssignmentController::class,'submitAnswer']);
     Route::post('/storeResultApi',[AssignmentController::class,'endAssignmentApi']);
     Route::get('/{id}/show-results',[AssignmentController::class,'showResults']);
+});
 
+
+Route::prefix('/favourite')->group(function(){
+    Route::post('/set',[FavouriteController::class,'set'])->middleware('auth:api');
+    Route::get('/get',[FavouriteController::class,'get'])->middleware('auth:api');
 });
 
 

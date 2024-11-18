@@ -309,6 +309,17 @@ class User extends Authenticatable implements MustVerifyEmail
             return $this->reviews()->count();
         }
 
+        function isFavorite($type = 'web'){
+            $user = auth($type)->id();
+            if($user == null)return false;
+
+            $fav = Favourite::where('user_id',$user)->where('source_type','lecturer')->where('source_id',$this->id)->where('status',1)->exists();
+
+            if($fav)return true;
+            else return false;
+
+        }
+
         /**
          * Get the join_request that owns the User
          *
