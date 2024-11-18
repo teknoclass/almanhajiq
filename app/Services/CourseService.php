@@ -19,7 +19,7 @@ class CourseService extends MainService
         $this->courseRepository= $courseRepository;
     }
 
-    public function courseFilter(FilterRequest $filterRequest): array
+    public function courseFilter($filterRequest): array
     {
         $courses = Courses::active()
                           ->select(
@@ -102,6 +102,10 @@ class CourseService extends MainService
                     $courses = $courses->paid();
                 }
             }
+        }
+
+        if($filterRequest->has('title')){
+            $courses = $courses->filterByTitle($filterRequest->title);
         }
 
         return $this->createResponse(

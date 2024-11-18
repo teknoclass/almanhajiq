@@ -19,6 +19,28 @@ class TeacherRepository extends MainRepository
                    ->where('role', User::LECTURER)
                    ->first();
     }
+
+    function getTeacherByTitle($title){
+        return User::where('role' , User::LECTURER)
+                    ->filterByTitle($title)
+                    ->with([
+                        'lecturerSetting' => function($query) {
+                            $query->select(
+                                'id',
+                                'user_id',
+                                'video_thumbnail',
+                                'video_type',
+                                'video',
+                                'exp_years',
+                                'twitter',
+                                'facebook',
+                                'instagram',
+                                'youtube'
+                            )->with('translations:lecturer_setting_id,abstract,description,position,locale');
+                        }
+                    ])->get();
+
+    }
     public function getTeachersByFilter($teacher_id)
     {
         return Courses::active()

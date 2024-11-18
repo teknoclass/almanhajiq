@@ -84,6 +84,7 @@ Route::get('/settings', [SettingsController::class, 'all'])->name('settings')->m
 Route::get('/FAQ', [SettingsController::class, 'faqs'])->name('faqs')->middleware('language');
 
 Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('language');
+Route::get('/homeSearch',[HomeController::class,'homeSearch'])->middleware('language');
 
 Route::group([ 'prefix' => 'courses'], function () {
     Route::post('/filter', [CourseController::class, 'courseFilter'])->name('filter')->middleware('check.sanctum.token');

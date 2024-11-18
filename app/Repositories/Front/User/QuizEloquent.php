@@ -8,6 +8,7 @@ use App\Http\Resources\Quiz\StartQuizResource;
 use App\Models\CourseQuizzes;
 use App\Models\CourseQuizzesQuestion;
 use App\Models\CourseQuizzesQuestionsAnswer;
+use App\Models\CourseQuizzesQuestionsAnswerTranslation;
 use App\Models\CourseQuizzesResults;
 use App\Models\Notifications;
 use Illuminate\Support\Facades\Hash;
@@ -474,7 +475,16 @@ class QuizEloquent extends HelperEloquent
             foreach($quest->quizzesQuestionsAnswers as $ans){
                 if($ans->correct == 1){
                     if($quest->type == 'multiple'){
-                        if($ans->id == $quest->user_answer)$correctCount+=1;
+
+                        if($quest->userAnswer && $ans->id == $quest->userAnswer->answer_id)$correctCount+=1;
+                    }else{
+                        $anss = CourseQuizzesQuestionsAnswerTranslation::where('course_quizzes_questions_answer_id',$ans->id)->get();
+                        foreach($anss as $ansL){
+                            if($ansL->title == $quest->userAnswer->text_answer){
+                                $correctCount+=1;
+                                break;
+                            }
+                        }
                     }
                 }
             }

@@ -623,7 +623,7 @@ function getUser($guard = 'web')
 function checkUser($role,$guard='web')
 {
     if (auth($guard)->check()) {
-        if (getUser()->role==$role) {
+        if (getUser($guard)->role==$role) {
             return true;
         }
     }
