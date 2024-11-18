@@ -4,19 +4,50 @@
 <script>
 
     window.data_url = '{{route('panel.addCourseRequests.all.data')}}';
-    window.additionalData = {
-        status: $('#status-filter').val(),
-    };
-    window.columns =  [
-        { data: 'DT_RowIndex', name: 'DT_RowIndex', title: '{{ __('Index') }}',orderable: false,searchable:false},
-        { data: 'course', title: '{{ __('course') }}' , name: 'course', orderable: false,searchable:true },
-        { data: 'trainer', title: '{{ __('lecturer') }}' , name: 'trainer', orderable: false ,searchable:true},
-        { data: 'statusColumn', title: '{{ __('status') }}', name: 'status', orderable: false ,searchable:true },
+    window.columns =  [{
+        data: 'DT_RowIndex', name: 'DT_RowIndex',searchable: false
+    },
+        {
+            title: '{{__('course')}}',
+            name: 'course.translations.title',
+             data: 'course_title',
+            searchable: true
+        },
+        {
+            title: '{{__('the_trainer')}}',
+            data: 'lecturer_name',
+            name: 'course.lecturer.name',
+            searchable: true
+        },
         {
             data: 'date',
             title: "{{__('request_data')}}",
-            orderable: false 
-            ,searchable:true
+            type: 'date',
+            format: 'MM/DD/YYYY',
+            searchable: false
+        },
+        {
+          //  data: 'status',
+            title: '{{__('status')}}',
+            // callback function support for column rendering
+            searchable: false,
+            data: function (row) {
+                var status = {
+                    'pending': {
+                        'title': '{{__('underreview')}}',
+                        'class': 'badge bg-warning badge-custom',
+                    },
+                    'acceptable': {
+                        'title': '{{__('acceptable')}}',
+                        'class': 'badge bg-info badge-custom',
+                    },
+                    'unacceptable': {
+                        'title': '{{__('unacceptable')}}',
+                        'class': 'badge bg-danger badge-custom',
+                    },
+                };
+                return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
+            }
         },
         {
             data: 'action',
@@ -29,33 +60,4 @@
     window.excel = "{{__('excel')}}";
     window.pageLength="{{__('pageLength')}}";
 
-    // $('#course-filter').change(function () {
-    //     var selectedValue1 = $(this).val();
-
-    //     if (selectedValue1) {
-    //         datatable.column(1).search(selectedValue1).draw();
-    //     } else {
-    //         datatable.column(1).search('').draw();
-    //     }
-    // });
-
-    // $('#lecturer-filter').change(function () {
-    //     var selectedValue2 = $(this).val();
-
-    //     if (selectedValue2) {
-    //         datatable.column(2).search(selectedValue2).draw();
-    //     } else {
-    //         datatable.column(2).search('').draw();
-    //     }
-    // });
-
-    $('#status-filter').change(function () {
-        var selectedValue3 = $(this).val();
-
-        if (selectedValue3) {
-            datatable.column(3).search(selectedValue3).draw();
-        } else {
-            datatable.column(3).search('').draw();
-        }
-    });
 </script>
