@@ -20,8 +20,7 @@
         @if(@$user_course->course->certificate_template_id!=null || in_array($user_course->course->category_id, $certTempsCats))
         <a href="{{route('user.courses.certificateIssuance',['id'=>$user_course->id])}}" class="btn btn-primary px-3 py-2"><i class="fa-regular fa-download me-2"></i>إصدار الشهادة</a>
         @else
-        <a href="{{route('user.courses.certificateIssuance',['id'=>$user_course->id])}}" class="btn btn-primary px-3 py-2"><i class="fa-regular fa-download me-2"></i>إصدار الشهادة</a>
-        
+      -
         @endif
     </td>
 </tr>
