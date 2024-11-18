@@ -27,7 +27,7 @@ class PostsResource extends JsonResource
             'id'=>$this->id,
             'title'=>$translation?->title??'',
             'text'=>$translation?->text??'',
-            'is_favourite'=>$this->is_favourite,
+            'is_favourite'=>$this->isFavorite('api'),
             'image'=> imageUrl($this->image,'100x100'),
             'created_at'=> $this->created_at,
             'category'=> [

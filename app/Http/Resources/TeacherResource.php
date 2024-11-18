@@ -29,6 +29,7 @@ class TeacherResource extends JsonResource
             'experience'=>$this->lecturerSetting?->exp_years,
             'mother_lang'=>$this->motherLang?->name,
             'rating'=>$this->getRating(),
+            'is_favourtie' => $this->isFavorite('api')
         ];
     }
 }

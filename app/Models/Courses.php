@@ -176,6 +176,21 @@ class Courses extends Model
     {
         return $q->where('deleted_at', '==', null);
     }
+    public function scopeFree($q)
+    {
+        return $q->WhereDoesntHave('priceDetails')
+        ->orwhereHas('priceDetails', function ($q) {
+            return $q->whereNull('price');
+        });
+    }
+    public function scopePaid($q)
+    {
+        return $q = $q->whereHas('priceDetails', function ($q) {
+            return $q->whereNotNull('price');;
+        });
+    }
+
+
 
     public function language()
     {
@@ -577,6 +592,26 @@ class Courses extends Model
             }
         }
         return true;
+
+    }
+
+    function isStartInstallment(){
+
+        $exist = StudentSessionInstallment::where('course_id',$this->id)->where('student_id',auth('api')->id())->exists();
+
+        return $exist;
+
+
+    }
+
+    function isFavorite($type = 'web'){
+        $user = auth($type)->id();
+        if($user == null)return false;
+
+        $fav = Favourite::where('user_id',$user)->where('source_type','course')->where('source_id',$this->id)->where('status',1)->exists();
+
+        if($fav)return true;
+        else return false;
 
     }
 

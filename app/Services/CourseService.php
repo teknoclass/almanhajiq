@@ -88,6 +88,22 @@ class CourseService extends MainService
             ]);
         }
 
+        if($filterRequest->has('type')){
+            $courses = $courses->filterByType($filterRequest->type);
+        }
+
+        if($filterRequest->has('priceType')){
+            if($filterRequest->priceType == "free"){
+                $courses = $courses->free();
+            }else{
+                if($filterRequest->has('from') && $filterRequest->has('to')){
+                    $courses = $courses->filterByPriceRange($filterRequest->from ,$filterRequest->to );
+                }else{
+                    $courses = $courses->paid();
+                }
+            }
+        }
+
         return $this->createResponse(
             __('message.success'),
             true,
