@@ -75,8 +75,8 @@ class ApiSingleCourseResource extends JsonResource
             'curriculum_items' => $curriculumItems,
             'items' => $items,
             'is_bought' => $fullCourseSub,
-            'is_start_installment' => $this->isStartInstallment()
-
+            'is_start_installment' => $this->isStartInstallment(),
+            'is_favourite' => $this->isFavorite('api')
         ];
         return $data;
     }

@@ -19,7 +19,7 @@ class CourseService extends MainService
         $this->courseRepository= $courseRepository;
     }
 
-    public function courseFilter($filterRequest): array
+    public function courseFilter($filterRequest , $is_paginate = false): array
     {
         $courses = Courses::active()
                           ->select(
@@ -107,11 +107,15 @@ class CourseService extends MainService
         if($filterRequest->has('title')){
             $courses = $courses->filterByTitle($filterRequest->title);
         }
-
+        if($is_paginate){
+            $data = $courses->paginate(10);
+        }else{
+            $data = $courses->get();
+        }
         return $this->createResponse(
             __('message.success'),
             true,
-            $courses->get()
+            $data
         );
     }
 

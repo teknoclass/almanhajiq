@@ -31,7 +31,8 @@ class ApiCourseResource extends JsonResource
             'price'=>$this->priceDetails?->price ?? null,
             'rate'=>$this->rate,
             'discount_price'=>$this->priceDetails?->discount_price,
-            'is_sub'=>0
+            'is_sub'=>0,
+            'is_favourite' => $this->isFavorite('api')
         ];
         if ($this->is_sub){
             $data['is_sub']=1;

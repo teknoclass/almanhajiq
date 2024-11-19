@@ -64,16 +64,18 @@ class HomeController  extends Controller
 
     function homeSearch(Request $request){
 
+        if($request->get('type') == 'courses'){
 
-        //return $this->courseService->courseFilter($request)['data'];
-        $courses = new ApiCourseFilterCollection($this->courseService->courseFilter($request)['data']);
+            $data = new ApiCourseFilterCollection($this->courseService->courseFilter($request,true)['data']);
+        }else{
 
-        $teacher = new TeacherCollection($this->teacherService->getTeachersByName($request->get('title')));
+            $data = new TeacherCollection($this->teacherService->getTeachersByName($request->get('title')));
+        }
+
 
 
         $response = new SuccessResponse(__('message.success'),[
-            'courses' => collect($courses),
-            'teachers' => collect($teacher)
+            'data' => collect($data)
         ],Response::HTTP_OK);
 
         return response()->success($response);

@@ -443,8 +443,28 @@ class Courses extends Model
             if ($item) {
                 return true;
             }
+            if($this->boughtAllInstallments($guard))return true;
+
         }
         return false;
+    }
+
+    function boughtAllInstallments($guard){
+
+        $last = $this->getLastInstallment();
+        if(!$last)return false;
+
+        return StudentSessionInstallment::where('student_id',auth($guard)->user()->id)
+                ->where('course_id',$this->id)
+                ->where('access_until_session_id' , $last->course_session_id)
+                ->exists();
+
+    }
+
+    function getLastInstallment(){
+
+        return CourseSessionInstallment::where('course_id' , $this->id)->orderBy('course_session_id','DESC')->first();
+
     }
 
     public function getDurationInMonths()

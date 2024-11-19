@@ -876,7 +876,7 @@ function studentSessionGroupSubscriptions()
 
 function studentSubscriptionCoursessIds($type = 'web')
 {
-    if(! auth('web')->check())
+    if(! auth($type)->check())
     {
         return [];
     }
@@ -919,12 +919,12 @@ function studentCourseSessionInstallmentsIDs($course_id)
 
 function studentInstallmentsCoursessIds($type = 'web')
 {
-    if(! auth('web')->check())
+    if(! auth($type)->check())
     {
         return [];
     }
 
-    return StudentSessionInstallment::where('student_id',auth('api')->user()->id)->pluck('course_id')->toArray();
+    return StudentSessionInstallment::where('student_id',auth($type)->user()->id)->pluck('course_id')->toArray();
 }
 
 function checkIfInstallmentHasStudents($installment_id)

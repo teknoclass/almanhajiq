@@ -38,7 +38,7 @@ class TeacherRepository extends MainRepository
                                 'youtube'
                             )->with('translations:lecturer_setting_id,abstract,description,position,locale');
                         }
-                    ])->get();
+                    ])->paginate(10);
 
     }
     public function getTeachersByFilter($teacher_id)
