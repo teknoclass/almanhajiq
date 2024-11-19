@@ -521,42 +521,72 @@ class CoursesEloquent extends HelperEloquent
             return CourseSectionItems::active()->where('course_id', $courseId)->select(['itemable_type', 'itemable_id', 'order'])->with('itemable')->orderBy('id','asc');
         }
 
-        $data['completed_lessons'] = getCurriculumQuery($data['course']->id)->completedItems(['lesson'])
-            ->union( getSectionItemsQuery($data['course']->id)->completedItems(['lesson']) )
+    //     $data['completed_lessons'] = getCurriculumQuery($data['course']->id)->completedItems(['lesson'])
+    //         ->union( getSectionItemsQuery($data['course']->id)->completedItems(['lesson']) )
+    //         ->get();
+
+    //     $data['completed_quizzes'] = getCurriculumQuery($data['course']->id)->completedItems(['quiz'])
+    //         ->union( getSectionItemsQuery($data['course']->id)->completedItems(['quiz']) )
+    //         ->get();
+
+    //     $data['completed_assignments'] = getCurriculumQuery($data['course']->id)->completedItems(['assignment'])
+    //         ->union( getSectionItemsQuery($data['course']->id)->completedItems(['assignment']) )
+    //         ->get();
+
+    //    $data['uncompleted_lessons'] = getCurriculumQuery($data['course']->id)->uncompletedItems(['lesson'])
+    //         ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['lesson']) )
+    //         ->get();
+
+      
+
+    //     $data['uncompleted_quizzes'] = getCurriculumQuery($data['course']->id)->uncompletedItems(['quiz'])
+    //         ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['quiz']) )
+    //         ->get();
+
+      
+    //     $data['uncompleted_assignments'] = getCurriculumQuery($data['course']->id)->uncompletedItems(['assignment'])
+    //         ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['assignment']) )
+    //         ->get();
+
+    // Fetch all items
+            $data['all_lessons'] = getCurriculumQuery($data['course']->id)
+            ->union(getSectionItemsQuery($data['course']->id))
+            ->where('itemable_type', 'lesson') 
             ->get();
 
-        $data['completed_quizzes'] = getCurriculumQuery($data['course']->id)->completedItems(['quiz'])
-            ->union( getSectionItemsQuery($data['course']->id)->completedItems(['quiz']) )
+            $data['all_quizzes'] = getCurriculumQuery($data['course']->id)
+            ->union(getSectionItemsQuery($data['course']->id))
+            ->where('itemable_type', 'quiz')
             ->get();
 
-        $data['completed_assignments'] = getCurriculumQuery($data['course']->id)->completedItems(['assignment'])
-            ->union( getSectionItemsQuery($data['course']->id)->completedItems(['assignment']) )
+            $data['all_assignments'] = getCurriculumQuery($data['course']->id)
+            ->union(getSectionItemsQuery($data['course']->id))
+            ->where('itemable_type', 'assignment')
             ->get();
 
-       // $data['uncompleted_lessons'] = getCurriculumQuery($data['course']->id)->uncompletedItems(['lesson'])
-        //     ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['lesson']) )
-        //     ->get();
+            // Fetch completed items
+            $data['completed_lessons'] = getCurriculumQuery($data['course']->id)
+            ->completedItems(['lesson'])
+            ->union(getSectionItemsQuery($data['course']->id)->completedItems(['lesson']))
+            ->get();
 
-        $data['uncompleted_lessons'] = getCurriculumQuery($data['course']->id)
-        ->union( getSectionItemsQuery($data['course']->id) )
-        ->get();
+            $data['completed_quizzes'] = getCurriculumQuery($data['course']->id)
+            ->completedItems(['quiz'])
+            ->union(getSectionItemsQuery($data['course']->id)->completedItems(['quiz']))
+            ->get();
 
-        // $data['uncompleted_quizzes'] = getCurriculumQuery($data['course']->id)->uncompletedItems(['quiz'])
-        //     ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['quiz']) )
-        //     ->get();
+            $data['completed_assignments'] = getCurriculumQuery($data['course']->id)
+            ->completedItems(['assignment'])
+            ->union(getSectionItemsQuery($data['course']->id)->completedItems(['assignment']))
+            ->get();
 
-        $data['uncompleted_quizzes'] = getCurriculumQuery($data['course']->id)
-        ->union( getSectionItemsQuery($data['course']->id))
-        ->get();
+            // Calculate uncompleted items
+            // $data['completed_lessons'] = $data['all_lessons'];
+            $data['uncompleted_lessons'] = $data['all_lessons']->diff($data['completed_lessons']);
+            $data['uncompleted_quizzes'] = $data['all_quizzes']->diff($data['completed_quizzes']);
+            $data['uncompleted_assignments'] = $data['all_assignments']->diff($data['completed_assignments']);
 
-        // $data['uncompleted_assignments'] = getCurriculumQuery($data['course']->id)->uncompletedItems(['assignment'])
-        //     ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['assignment']) )
-        //     ->get();
-
-        $data['uncompleted_assignments'] = getCurriculumQuery($data['course']->id)
-        ->union( getSectionItemsQuery($data['course']->id))
-        ->get();
-
+ 
         $data['completed_lessons_count']        = count($data['completed_lessons']);
         $data['completed_quizzes_count']        = count($data['completed_quizzes']);
         $data['completed_assignments_count']    = count($data['completed_assignments']);

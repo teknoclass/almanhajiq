@@ -59,7 +59,7 @@ class UpdateProfileRequest extends FormRequest
             'country_id' => 'required|numeric',
             'city' => 'string|max:255',
             'mother_lang_id' => 'nullable|numeric',
-            'dob' => 'nullable|date|before:-3 years',
+            // 'dob' => 'nullable|date|before:-3 years',
         ];
 
         if ($this->checkUser('student')) {

@@ -14,56 +14,42 @@ class AddCourseRequestsEloquent
 {
     public function getDataTable()
     {
-        $query = AddCourseRequests::select('add_course_requests.*',
-            DB::raw('DATE_FORMAT(add_course_requests.created_at, "%Y-%m-%d") as date'),
-            'courses_translations.title as course_title',
-            'users.name as lecturer_name'
-        )
-                                  ->leftJoin('courses', 'add_course_requests.courses_id', '=', 'courses.id')
-                                  ->leftJoin('courses_translations', function($join) {
-                                      $join->on('courses.id', '=', 'courses_translations.courses_id')
-                                           ->where('courses_translations.locale', app()->getLocale());
-                                  })
-                                  ->leftJoin('users', 'courses.user_id', '=', 'users.id');
-                        return Datatables::of($query)
-                         ->addIndexColumn()
-                         ->filter(function($query) {
-                            $keyword = request()->get('search')['value'];
-
-                            if ($keyword) {
-
-                                $query->where(function($query) use ($keyword) {
-                                    $query->where('add_course_requests.status', 'LIKE', "%{$keyword}%")
-                                //    ->orWhereRelation('courses_id',$keyword)
-                                //    ->orWhereRelation('courses_id',$keyword)
-                                    ->orWhere(DB::raw('DATE_FORMAT(add_course_requests.created_at, "%Y-%m-%d ")'), 'LIKE', "%{$keyword}%");
-                                });
-                            }
-                        })
-                         ->addColumn('course', function($row) {
-                             return $row->course_title;
-                         })
-                         ->addColumn('trainer', function($row) {
-                             return $row->lecturer_name;
-                         })
-                         ->addColumn('date', function($row) {
-                             return $row->date;
-                         })
-                         ->addColumn('statusColumn', function($row) {
-                             $status = [
-                                 'pending' => ['title' => __('Under Review'), 'class' => 'badge bg-info badge-custom'],
-                                 'acceptable' => ['title' => __('Acceptable'), 'class' => 'badge bg-success badge-custom'],
-                                 'unacceptable' => ['title' => __('Unacceptable'), 'class' => 'badge bg-danger badge-custom'],
-                             ];
-
-                             return '<span class="label font-weight-bold label-lg ' . $status[$row->status]['class'] . ' label-inline">' . $status[$row->status]['title'] . '</span>';
-                         })
-                         ->addColumn('action', 'panel.add_course_requests.partials.actions')
-                         ->rawColumns(['action', 'status','statusColumn','course','trainer'])
-                         ->make(true);
-
+        $locale = app()->getLocale(); 
+    
+        $data = AddCourseRequests::select('*', DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d ") as date'))
+            ->with(['course.translations' => function ($query) use ($locale) {
+                $query->where('locale', $locale); 
+            }, 'course.lecturer'])
+            ->orderByDesc('created_at');
+    
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->editColumn('course_title', function ($row) {
+                if($row->course)
+                {
+                    return $row->course->translations->first()->title ?? ''; 
+                }else{
+                    return "";
+                }
+            })
+            ->editColumn('lecturer_name', function ($row) {
+                return $row->course->lecturer->name ?? '';
+            })
+            ->filter(function ($query) {
+                $search = request()->input('search.value');
+                if ($search) {
+                    $query->whereHas('course.lecturer', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    })->orWhereHas('course.translations', function ($q) use ($search) {
+                        $q->where('title', 'like', "%{$search}%");
+                    });
+                }
+            })
+            ->addColumn('action', 'panel.add_course_requests.partials.actions')
+            ->rawColumns(['action'])
+            ->make(true);
     }
-
+    
 
     public function edit($id)
     {

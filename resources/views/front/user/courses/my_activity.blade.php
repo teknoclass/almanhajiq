@@ -19,9 +19,12 @@
             ],
         ];
 
+        
+
         $total_lessons_count = @$uncompleted_lessons_count + @$completed_lessons_count;
         $total_quizzes_count = @$uncompleted_quizzes_count + @$completed_quizzes_count;
         $total_assignments_count = @$uncompleted_assignments_count + @$completed_assignments_count;
+
 
         $total_lessons_perc     = ($total_lessons_count) ? (@$completed_lessons_count / $total_lessons_count) * 100 : 0;
         $total_quizzes_perc     = ($total_quizzes_count) ? (@$completed_quizzes_count / $total_quizzes_count) * 100 : 0;
@@ -158,7 +161,7 @@
                 @endif
                 @if (@$uncompleted_lessons->isNotEmpty() || @$uncompleted_quizzes->isNotEmpty() || @$uncompleted_assignments->isNotEmpty())
 				<div class="col-lg-5">
-                    @if (@$uncompleted_lessons->isNotEmpty())
+                    @if (@$uncompleted_lessons->isNotEmpty() && $uncompleted_lessons->first() && $uncompleted_lessons->first()->itemable_type == "App\Models\CourseLessons")
 					<div class="row mb-2 border-bottom pb-2">
 						<div class="col-12">
 							<h4 class="my-2 font-medium text-danger"><span class="square me-2"></span> محتويات لم يتم الانتهاء منها</h4>
@@ -179,7 +182,7 @@
 						</div>
 					</div>
                     @endif
-                    @if (@$uncompleted_quizzes->isNotEmpty())
+                    @if (@$uncompleted_quizzes->isNotEmpty() && $uncompleted_quizzes->first() && ($uncompleted_quizzes->first()->itemable_type == "App\Models\CourseQuizzes" || $uncompleted_quizzes->first()->itemable_type == "quiz") )
 					<div class="row mb-2 border-bottom pb-2">
 						<div class="col-12">
 							<h4 class="my-2 font-medium text-danger"><span class="square me-2"></span> إختبارات لم يتم انهائهـا</h4>
@@ -200,7 +203,7 @@
 						</div>
 					</div>
                     @endif
-                    @if (@$uncompleted_assignments->isNotEmpty())
+                    @if (@$uncompleted_assignments->isNotEmpty() && $uncompleted_assignments->first() && ($uncompleted_assignments->first()->itemable_type == "App\Models\CourseAssignments" || $uncompleted_assignments->first()->itemable_type == "assignment"))
 					<div class="row mb-2 border-bottom pb-2">
 						<div class="col-12">
 							<h4 class="my-2 font-medium text-danger"><span class="square me-2"></span> واجبات لم يتم تسليمها</h4>
