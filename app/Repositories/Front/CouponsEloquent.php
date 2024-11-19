@@ -23,15 +23,15 @@ class CouponsEloquent
             return $response;
         }
 
-        $checkNumUses = Transactios::where('coupon', $code)->count();
+        $checkNumUses = Transactios::where('coupon', $code)->where('status' , 'completed')->count();
         if ($coupon->num_uses != '') {
             if ($checkNumUses > $coupon->num_uses) {
-                return response()->json(['status' => false,
-                'data' =>__('message.the_coupon_is_not_valid') ,]);
+                return ['status' => false,
+                'data' =>__('message.the_coupon_is_not_valid') ,];
             }
         }
 
-        if (@$coupon->amount_type == 'amount') {
+        if (@$coupon->amount_type == 'fixed') {
             $amount_after_discount = round($amount - $coupon->amount);
         }else{
             $amount_after_discount = ($amount - ($amount * ($coupon->amount / 100)));

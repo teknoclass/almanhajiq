@@ -122,7 +122,10 @@ class FavourtieEloquent extends HelperEloquent{
                             ->orderBy('id', 'desc');
                         }
                     ])->paginate(10);
-                $favourite = new TeacherCollection($favourite->lecturer);
+                    $favourite = [
+                        'data' => LecturerResource::collection($favourite),
+                        'pagination' => new PaginationResource($favourite)
+                    ];
 
                 break;
             case 'blog' :
@@ -139,7 +142,10 @@ class FavourtieEloquent extends HelperEloquent{
                         ]);
                         }
                     ])->paginate(10);
-                $favourite = new PostsCollection($favourite->blog);
+                    $favourite = [
+                        'data' => BlogResource::collection($favourite),
+                        'pagination' => new PaginationResource($favourite)
+                    ];
 
                 break;
         }

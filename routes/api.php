@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\LecturerController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\FavouriteController;
 use App\Http\Controllers\Api\AssignmentController;
+use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\LiveSessionController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\CourseSessionsController;
@@ -118,6 +119,17 @@ Route::group(['prefix' => 'payment'], function () {
     Route::get('/pay-to-course-session-installment-confirm',[PaymentController::class,'confirmPayment']);
 
 });
+
+//coupon
+
+Route::group(['middleware' => 'language', 'prefix' => 'coupon'], function () {
+
+    Route::post('/check' , [CouponController::class,'check']);
+
+});
+
+
+
 
 
 //course curriculum

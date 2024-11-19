@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\User;
+use Firebase\JWT\Key;
+use \Firebase\JWT\JWT;
+use App\Models\Coupons;
 use App\Models\Courses;
 use App\Models\UserCourse;
 use App\Models\Transactios;
@@ -21,10 +24,8 @@ use App\Http\Resources\ApiCourseResource;
 use App\Models\CourseSessionSubscription;
 use App\Models\StudentSessionInstallment;
 use function PHPUnit\Framework\returnSelf;
-use Symfony\Component\HttpFoundation\Response;
-use \Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\ApiPaymentInstallmentsResource;
 use App\Http\Resources\ApiPaymentInstallmentsTimesResource;
 
@@ -92,6 +93,13 @@ class PaymentController extends Controller
                 $price = $course->priceDetails->price;
             }
         }
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
         $response = $this->paymentService->processPaymentApi([
             "amount" => $price??0,
             "currency" => "IQD",
@@ -111,6 +119,7 @@ class PaymentController extends Controller
                 "brand" => "card",
                 'course_id' => $course->id,
                 "purchase_type" => $request->payment_type,
+                'coupon' => $request->get('code')
             ];
 
             $this->paymentService->createTransactionRecordApi($paymentDetails);
@@ -133,8 +142,15 @@ class PaymentController extends Controller
     function fullSubscribeZain($request){
         $orderId = genereatePaymentOrderID();
         $course = Courses::find($request->id);
+        $price = $course->getPriceForPayment();
 
-        $response = $this->zainCashService->processPaymentApi($course->getPriceForPayment(),
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
+        $response = $this->zainCashService->processPaymentApi($price,
         url('/api/payment/full-subscribe-course-confirm'),"اشتراك كلى فى دورة",$orderId);
 
         if(isset($response['id']))
@@ -149,7 +165,8 @@ class PaymentController extends Controller
                 "brand" => "zaincash",
                 "transaction_id" => $response['referenceNumber'],
                 'course_id' => $course->id,
-                "purchase_type" => $request->payment_type
+                "purchase_type" => $request->payment_type,
+                'coupon' => $request->get('code')
             ];
 
             $this->paymentService->createTransactionRecordApi($paymentDetails);
@@ -183,6 +200,23 @@ class PaymentController extends Controller
                 $cartId = $data->orderid;
             }
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
+
+            if($paymentDetails["brand"] == "card"){
+
+                $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+
+                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
+                {
+                    return redirect('/payment-failure');
+                }
+            }else{
+                $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
+                if($statusCheck["status"] == "failed")
+                {
+                    return redirect('/payment-failure');
+                }
+            }
+
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
             $paymentDetails->save();
@@ -267,8 +301,16 @@ class PaymentController extends Controller
         }
         $orderId = genereatePaymentOrderID();
 
+        $price = $model->price;
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
         $response = $this->paymentService->processPaymentApi([
-            "amount" => $model->price,
+            "amount" => $price,
             "currency" => "IQD",
             "successUrl" => $redirect,
             "orderId" => $orderId,
@@ -287,6 +329,7 @@ class PaymentController extends Controller
                 "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
                 "brand" => "card",
+                'coupon' => $request->get('code')
             ];
 
             $this->paymentService->createTransactionRecordApi($paymentDetails);
@@ -321,7 +364,15 @@ class PaymentController extends Controller
         }
         $orderId = genereatePaymentOrderID();
 
-        $response = $this->zainCashService->processPaymentApi($model->price,
+        $price = $model->price;
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
+        $response = $this->zainCashService->processPaymentApi($price,
         $redirect, $description,$orderId);
 
         if(isset($response['id']))
@@ -336,7 +387,8 @@ class PaymentController extends Controller
                 "brand" => "zaincash",
                 "transaction_id" => $response['referenceNumber'],
                 'course_id' => $request->course_id,
-                "purchase_type" => $request->type
+                "purchase_type" => $request->type,
+                'coupon' => $request->get('code')
             ];
 
             $this->paymentService->createTransactionRecordApi($paymentDetails);
@@ -367,6 +419,23 @@ class PaymentController extends Controller
                 $cartId = $data->orderid;
             }
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
+
+            if($paymentDetails["brand"] == "card"){
+
+                $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+
+                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
+                {
+                    return redirect('/payment-failure');
+                }
+            }else{
+                $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
+                if($statusCheck["status"] == "failed")
+                {
+                    return redirect('/payment-failure');
+                }
+            }
+
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
             $paymentDetails->save();
@@ -422,6 +491,23 @@ class PaymentController extends Controller
                 $cartId = $data->orderid;
             }
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
+
+            if($paymentDetails["brand"] == "card"){
+
+                $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+
+                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
+                {
+                    return redirect('/payment-failure');
+                }
+            }else{
+                $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
+                if($statusCheck["status"] == "failed")
+                {
+                    return redirect('/payment-failure');
+                }
+            }
+
             $paymentDetails->status = 'completed';
             $paymentDetails->is_paid = 1;
             $paymentDetails->save();
@@ -536,8 +622,16 @@ class PaymentController extends Controller
             return response()->error($response);
         }
 
+        $price = $installment->price;
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
         $response = $this->paymentService->processPaymentApi([
-            "amount" => $installment->price,
+            "amount" => $price,
             "currency" => "IQD",
             "successUrl" => url('/api/payment/pay-to-course-session-installment-confirm'),
             "notificationUrl" => url('/api/payment/pay-to-course-session-installment-confirm'),
@@ -553,7 +647,8 @@ class PaymentController extends Controller
                 "transactionable_type" => "App\\Models\\CourseSession",
                 "transactionable_id" => $installment->id,
                 "brand" => "card",
-                'course_id' => $request->course_id
+                'course_id' => $request->course_id,
+                'coupon' => $request->get('code')
             ];
             $this->paymentService->createTransactionRecordApi($paymentDetails);
 
@@ -579,7 +674,16 @@ class PaymentController extends Controller
             return response()->error($response);
         }
 
-        $response = $this->zainCashService->processPaymentApi($installment->price,
+        $price = $installment->price;
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
+
+        $response = $this->zainCashService->processPaymentApi($price,
         url('/api/payment/pay-to-course-session-installment-confirm'),"دفع قسط جلسات دورة",$orderId);
 
         if(isset($response['id']))
@@ -593,7 +697,8 @@ class PaymentController extends Controller
                 "transactionable_id" => $installment->id,
                 "brand" => "zaincash",
                 "transaction_id" => $response['referenceNumber'],
-                'course_id' => $request->course_id
+                'course_id' => $request->course_id,
+                'coupon' => $request->get('code')
             ];
             $this->paymentService->createTransactionRecordApi($paymentDetails);
 
@@ -642,9 +747,6 @@ class PaymentController extends Controller
                 $cartId = $data->orderid;
             }
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
-            $paymentDetails->status = 'completed';
-            $paymentDetails->is_paid = 1;
-            $paymentDetails->save();
 
             //check qi payment status
             if($paymentDetails["brand"] == "card"){
@@ -662,6 +764,9 @@ class PaymentController extends Controller
                     return redirect('/payment-failure');
                 }
             }
+            $paymentDetails->status = 'completed';
+            $paymentDetails->is_paid = 1;
+            $paymentDetails->save();
 
             $courseSession = CourseSessionInstallment::find($paymentDetails['transactionable_id']);
             $item = StudentSessionInstallment::updateOrCreate([
@@ -688,6 +793,40 @@ class PaymentController extends Controller
         }
 
     }
+
+
+    function getPriceWithCoupon($amount,$code){
+        $coupon = Coupons::where('code', $code)->first();
+
+        if ($coupon == '') {
+            $response=[
+                'status'=>false,
+            ];
+
+            return $response;
+        }
+
+        $checkNumUses = Transactios::where('coupon', $code)->where('status' , 'completed')->count();
+        if ($coupon->num_uses != '') {
+            if ($checkNumUses > $coupon->num_uses) {
+                return ['status' => false];
+            }
+        }
+
+        if (@$coupon->amount_type == 'fixed') {
+            $amount_after_discount = round($amount - $coupon->amount);
+        }else{
+            $amount_after_discount = ($amount - ($amount * ($coupon->amount / 100)));
+        }
+
+
+        $response=[
+            'status'=> true,
+            'price' => $amount_after_discount
+        ];
+        return $response;
+    }
+
 
 
 
