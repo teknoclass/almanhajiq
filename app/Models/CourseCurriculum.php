@@ -59,10 +59,10 @@ class CourseCurriculum extends Model
         return $query->where(function ($query) use ($itemTypes) {
             $query->when(in_array('lesson', $itemTypes), function ($query) {
                 $query->orWhere(function ($query) {
-                    $query->where('itemable_type', CourseLessons::class)
-                          ->whereHas('lessonStatus', function ($query) {
-                              $query->where('user_id', auth()->id());
-                          });
+                    $query->where('itemable_type', CourseLessons::class);
+                        //   ->whereHas('lessonStatus', function ($query) {
+                        //       $query->where('user_id', auth()->id());
+                        //   });
                 });
             });
 
