@@ -581,6 +581,7 @@ class CoursesEloquent extends HelperEloquent
             ->get();
 
             // Calculate uncompleted items
+            // $data['completed_lessons'] = $data['all_lessons'];
             $data['uncompleted_lessons'] = $data['all_lessons']->diff($data['completed_lessons']);
             $data['uncompleted_quizzes'] = $data['all_quizzes']->diff($data['completed_quizzes']);
             $data['uncompleted_assignments'] = $data['all_assignments']->diff($data['completed_assignments']);

@@ -88,7 +88,7 @@
                                     <div class="col-auto">
                                         <div class="d-flex align-items-center">
                                             <div class="icon-clock me-2 d-flex"><i class="fa-regular fa-clock"></i></div>
-                                            <p class="pt-1 text--muted col-auto">{{ changeDateFormate($lesson->itemable->created_at) }}</p>
+                                            <p class="pt-1 text--muted col-auto">{{ changeDateFormate($lesson->lessonStatus->created_at) }}</p>
                                         </div>
                                     </div>
                                 </div>
