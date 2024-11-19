@@ -480,7 +480,7 @@ class QuizEloquent extends HelperEloquent
                     }else{
                         $anss = CourseQuizzesQuestionsAnswerTranslation::where('course_quizzes_questions_answer_id',$ans->id)->get();
                         foreach($anss as $ansL){
-                            if($ansL->title == $quest->userAnswer->text_answer){
+                            if($quest->userAnswer && $ansL->title == $quest->userAnswer->text_answer){
                                 $correctCount+=1;
                                 break;
                             }
