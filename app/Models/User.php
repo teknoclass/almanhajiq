@@ -16,12 +16,13 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 
 {
     use HasApiTokens, HasFactory, Notifiable,SoftDeletes;
-
+    use HasRoles;
     /**
      * The attributes that are mass assignable.
      *
