@@ -91,7 +91,7 @@ $breadcrumb_links=[
                         <input type="text" name="name" class="form-control" value="{{isset($item)?@$item->name:''}}" required />
                      </div>
                      <div class="form-group ">
-                        <label>{{__('deparemnt')}}
+                        <label>{{__('material')}}
                         <span class="text-danger"></span></label>
                         <select id="course_category_id" name="course_category_id" class="form-control" >
                            <option value="" selected disabled>{{__('category_select')}}</option>

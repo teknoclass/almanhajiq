@@ -603,8 +603,9 @@ class CoursesEloquent
         if ($data['item'] == '') {
             abort(404);
         }
+      
         $data['certificate_templates']                     = CertificateTemplates::
-        where('course_category_id', @$data['item']->category?->value ?? null)
+        where('course_category_id', @$data['item']->material?->value ?? null)
                                                                                  ->orWhereNull('course_category_id')
                                                                                  ->get();
         $data['introductory_text_for_course_registration'] = $data['item'];

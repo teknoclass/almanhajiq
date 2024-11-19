@@ -43,9 +43,8 @@ class CertificateTemplatesEloquent
 
        $data['course_categories'] = Category::query()->select('id', 'value', 'parent')
        ->with('translations:category_id,name,locale')
-       ->where('parent', 'course_categories')
-       ->orderByDesc('created_at')
-       ->get();
+       ->where('parent', 'joining_course')
+       ->orderByDesc('created_at')->get();
 
        $data['courses'] = Courses::orderByDesc('created_at')
         ->select('id', 'is_active')
