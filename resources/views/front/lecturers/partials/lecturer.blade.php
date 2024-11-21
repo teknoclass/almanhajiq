@@ -115,8 +115,8 @@
                 href="{{ @$lecturer_url }}">{{ __('view_profile') }}
             </a>
             @if (@$lecturer->id != auth()->id() && in_array(@$lecturer->id, $lecturers_has_lessons2))
-                <a class="btn btn-success py-2 px-2 mt-4" href="{{ @$lecturer_url . '?tab=reserve' }}"
-                    style="width:100%"><i class="fa-solid fa-calendar-days me-1"></i>{{ __('Test_Reservation') }} </a>
+               {{-- <a class="btn btn-success py-2 px-2 mt-4" href="{{ @$lecturer_url . '?tab=reserve' }}"
+                    style="width:100%"><i class="fa-solid fa-calendar-days me-1"></i>{{ __('Test_Reservation') }} </a> --}}
             @endif
 
         </div>
