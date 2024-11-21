@@ -70,6 +70,12 @@ class Notifications extends Model
                         route('user.chat.open.chat',$action_id);
                     }
                     break;
+                case 'curriculum.item':
+                    if ($action_id) {
+                        $url =
+                        route('user.courses.curriculum.item',$action_id);
+                    }
+                    break;
 
                 case 'solve_quiz':
                 if ($action_id) {
