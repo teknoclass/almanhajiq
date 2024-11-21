@@ -38,7 +38,11 @@
     </div>
 </div>
 <script>
-    fetch('{{ courseVideoUrl(@$course->id, @$course_item->file) }}')
+   fetch('{{ courseVideoUrl(@$course->id, @$course_item->file) }}', {
+            headers: {
+                Range: 'bytes=0-1048576'
+            } 
+        })
         .then(response => response.blob())
         .then(blob => {
             const url = URL.createObjectURL(blob);
