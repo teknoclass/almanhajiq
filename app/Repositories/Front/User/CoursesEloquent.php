@@ -509,6 +509,72 @@ class CoursesEloquent extends HelperEloquent
 
         $data['course'] = $this->getCourse($id);
 
+        if ($data['course'] == '')
+            abort(404);
+        if (!$data['course']->isSubscriber())
+            abort(403);
+
+
+        $course_id=$data['course']->id;
+
+        $data['completed_lessons'] =CourseLessons::where('course_id',$course_id)
+
+        ->whereHas('learningStatus', function (Builder $query) use ($user_id) {
+            $query->where('user_id',$user_id);
+        })->get();
+
+        $data['uncompleted_lessons'] =CourseLessons::where('course_id',$course_id)
+
+        ->WhereDoesntHave('learningStatus', function (Builder $query) use ($user_id) {
+            $query->where('user_id',$user_id);
+        })->get();
+
+        // quizzes
+        $data['completed_quizzes'] =CourseQuizzes::where('course_id',$course_id)
+        ->whereHas('quizResults', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id)
+                ->where('status', '!=', CourseQuizzesResults::$waiting);
+        })->get();
+
+        $data['uncompleted_quizzes'] =CourseQuizzes::where('course_id',$course_id)
+        ->whereDoesntHave('quizResults', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        })->get();
+
+        //assignments
+
+        $data['completed_assignments'] = CourseAssignments::where('course_id',$course_id)
+        ->whereHas('assignmentResults', function ($query) use ($user_id) {
+            $query->where('student_id', $user_id)
+                ->where('status', '!=', CourseAssignmentResults::$notSubmitted);
+        })->get();
+
+
+
+        $data['uncompleted_assignments'] = CourseAssignments::where('course_id',$course_id)
+        ->whereDoesntHave('assignmentResults', function ($query) use ($user_id) {
+            $query->where('student_id', $user_id);
+        })->get();
+
+        $data['completed_lessons_count'] = count($data['completed_lessons']);
+        $data['completed_quizzes_count'] = count($data['completed_quizzes']);
+        $data['completed_assignments_count'] = count($data['completed_assignments']);
+        $data['uncompleted_lessons_count'] = count($data['uncompleted_lessons']);
+        $data['uncompleted_quizzes_count'] = count($data['uncompleted_quizzes']);
+        $data['uncompleted_assignments_count'] = count($data['uncompleted_assignments']);
+
+     
+        // dd($data);
+        return $data;
+    }
+
+
+    public function olmyActivity($id, $is_web = true)
+    {
+        $user_id = auth()->id();
+
+        $data['course'] = $this->getCourse($id);
+
         if ($data['course'] =='') abort(404);
         if (!$data['course']->isSubscriber()) abort(403);
 
