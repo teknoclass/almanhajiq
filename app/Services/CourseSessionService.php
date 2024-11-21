@@ -150,7 +150,7 @@ class CourseSessionService
                     $course_id = @CourseSession::find($course_session_id)->course_id;
                     $userIds = @UserCourse::where('course_id',$course_id)->pluck('user_id')->toArray();
 
-                    sendNotifications('قبول طلب التاجيل',' تم الموافقة على طلب تاجيل المحاضر للجلسة  '.'( '. @CourseSession::find($course_session_id)->title .' )','course_session_request',
+                    sendNotifications('قبول طلب التاجيل', @CourseSession::find($course_session_id)->date.' تم الموافقة على طلب تاجيل المحاضر للجلسة الي يوم  '.'( '. @CourseSession::find($course_session_id)->title .' )','course_session_request',
                     $lessonRequest->id,null,"user",$userIds);
                     
                 } else {
