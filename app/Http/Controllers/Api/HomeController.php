@@ -64,7 +64,7 @@ class HomeController  extends Controller
 
     function homeSearch(Request $request){
 
-        if($request->get('type') == 'courses'){
+        if($request->get('filterType') == 'courses'){
 
             $data = new ApiCourseFilterCollection($this->courseService->courseFilter($request,true)['data']);
         }else{
