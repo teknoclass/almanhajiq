@@ -96,7 +96,7 @@ class CourseService extends MainService
             if($filterRequest->priceType == "free"){
                 $courses = $courses->free();
             }else{
-                if($filterRequest->has('from') && $filterRequest->has('to')){
+                if($filterRequest->has('from') || $filterRequest->has('to')){
                     $courses = $courses->filterByPriceRange($filterRequest->from ,$filterRequest->to );
                 }else{
                     $courses = $courses->paid();

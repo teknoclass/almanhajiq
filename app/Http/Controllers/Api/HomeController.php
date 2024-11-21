@@ -74,9 +74,7 @@ class HomeController  extends Controller
 
 
 
-        $response = new SuccessResponse(__('message.success'),[
-            'data' => collect($data)
-        ],Response::HTTP_OK);
+        $response = new SuccessResponse(__('message.success'),$data,Response::HTTP_OK);
 
         return response()->success($response);
 

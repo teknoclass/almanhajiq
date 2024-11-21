@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Front\User\Lecturer;
 
+use App\Http\Resources\InCourseStudentCollection;
 use App\Models\AddCourseRequests;
 use App\Models\Admin;
 use App\Models\CourseSession;
@@ -705,7 +706,7 @@ class CoursesEloquent extends HelperEloquent
         $response = [
             'message' => $message,
             'status' => $status,
-            'redirect_url' => $request->redirect_url 
+            'redirect_url' => $request->redirect_url
         ];
 
         return $response;
@@ -1265,6 +1266,27 @@ class CoursesEloquent extends HelperEloquent
     public function createLiveSession($id)
     {
       return $this->liveSessionEloquent->createLiveSession($id);
+    }
+
+    function courseStudent($request,$is_web = true){
+
+        $user = $this->getUser($is_web);
+        
+        $data = UserCourse::whereHas('course' , function($query) use($user){
+            $query->where('user_id',$user->id);
+        })->with('user');
+
+        $course_id = $request->get('course_id');
+
+        if($course_id != null){
+            $data = $data->where('course_id',$course_id);
+        }
+
+        $data = $data->paginate(10);
+
+        $data = new InCourseStudentCollection($data);
+
+        return $data;
     }
 
 

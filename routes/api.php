@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\LiveSessionController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\CourseSessionsController;
+use App\Http\Controllers\Api\LecturerCourseController;
 use Twilio\Rest\Api\V2010\Account\Call\PaymentContext;
 
 /*
@@ -182,5 +183,16 @@ Route::group(['middleware' => 'language', 'prefix' => 'user'], function () {
 
 });
 
+
+//lecturer apis
+
+Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function () {
+
+    Route::get('/courseStudent',[LecturerCourseController::class,'courseStudent']);
+
+
+
+
+});
 
 
