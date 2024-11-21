@@ -99,7 +99,7 @@
                         <span>{{ __('courses') }}</span>
                     </p>
                 </div>
-                <div class="data-rating mt-1">
+               {{-- <div class="data-rating mt-1">
                     <span data-rating="{{ @$lecturer->getRating() }}">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -109,14 +109,14 @@
                         </svg>
                     </span>
                     <span class="text-color-muted-02">{{ @$lecturer->getRating() }}</span>
-                </div>
+                </div> --}}
             </div>
             <a class="primary-btn d-block text-center w-100 p-1 mt-3"
                 href="{{ @$lecturer_url }}">{{ __('view_profile') }}
             </a>
             @if (@$lecturer->id != auth()->id() && in_array(@$lecturer->id, $lecturers_has_lessons2))
-                <a class="btn btn-success py-2 px-2 mt-4" href="{{ @$lecturer_url . '?tab=reserve' }}"
-                    style="width:100%"><i class="fa-solid fa-calendar-days me-1"></i>{{ __('Test_Reservation') }} </a>
+               {{-- <a class="btn btn-success py-2 px-2 mt-4" href="{{ @$lecturer_url . '?tab=reserve' }}"
+                    style="width:100%"><i class="fa-solid fa-calendar-days me-1"></i>{{ __('Test_Reservation') }} </a> --}}
             @endif
 
         </div>
