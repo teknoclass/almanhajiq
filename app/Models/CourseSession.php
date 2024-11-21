@@ -180,7 +180,8 @@ class CourseSession extends Model
         $getRecordingsParams = new GetRecordingsParameters();
         $getRecordingsParams->meetingId = $meetingId;
         $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
-
+        $recording = null;
+        
         if (!empty($recordings))
         {
             if ($meetingId)
