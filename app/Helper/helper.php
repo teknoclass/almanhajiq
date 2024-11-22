@@ -274,7 +274,7 @@ function sendNotification($title, $text, $user_id, $user_type, $action_type = nu
 
 function sendEmail($title, $msg, $to)
 {
-    if(env('APP_ENV') == 'no') {
+    if(env('APP_ENV') == 'local') {
         $send = Mail::to($to)->send(new ReplayMail($title, $msg, $to));
         if (!$send) {
             $message = 'حدث خطأ غير متوقع';
