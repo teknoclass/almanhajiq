@@ -121,7 +121,7 @@ class JoinAsTeacherRequestsEloquent
 
                 $title = 'نتيجة تقييم طلب الانضمام كمدرب';
 
-                //Mail::to($user->email)->send(new  TeacherEvaluation($title, $user, $user->email , $password));
+                Mail::to($user->email)->send(new  TeacherEvaluation($title, $user, $user->email , $password));
             }
 
             if ($request->status == JoinAsTeacherRequests::UNACCEPTABLE) {
@@ -129,7 +129,7 @@ class JoinAsTeacherRequestsEloquent
                 $title = 'نتيجة تقييم طلب الانضمام كمدرب';
                 $content = 'للأسف تم رفض الطلب الخاص بكم للسبب التالي: ' . $request->reason_unacceptable;
 
-                //Mail::to($user->email)->send(new ReplayMail($title, $content, $user->email));
+                Mail::to($user->email)->send(new ReplayMail($title, $content, $user->email));
             }
 
            $message = __('message_done');
