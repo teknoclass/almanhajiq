@@ -263,7 +263,7 @@ $item = isset($item) ? $item: null;
                             </span>
                         </div>
 
-                        <div class="form-group lecturer_fields">
+                      {{--  <div class="form-group lecturer_fields">
                             <span class="d-block mt-10 " role="alert">
                                 <strong>
                                     {{__('private_lessons')}}
@@ -286,7 +286,7 @@ $item = isset($item) ? $item: null;
                                 <option value="0" selected>{{__('no')}} </option>
                                 <option value="1" {{@$item->can_add_half_hour==1 ?'selected' :''}}>{{__('yes')}} </option>
                             </select>
-                        </div>
+                        </div> --}}
 
 {{--                        <div class="form-group lecturer_fields half_hour_div {{@$item->can_add_half_hour!=1 ?'d-none' :''}}">--}}
 {{--                            <label for="half_hour_price">{{__('half_hour_price')}}</label>--}}
@@ -296,7 +296,7 @@ $item = isset($item) ? $item: null;
 {{--                                   required id="half_hour_price" placeholder=""/>--}}
 {{--                        </div>--}}
 
-                        <div class="form-group lecturer_fields">
+                 {{--       <div class="form-group lecturer_fields">
                             <label for="min_student_no">{{__('minimum_students_count')}}</label>
                             <input type="number" name="min_student_no"
                                    class="form-control mb-2 d-flex align-items-center justify-content-between"
@@ -310,7 +310,7 @@ $item = isset($item) ? $item: null;
                                    class="form-control mb-2 d-flex align-items-center justify-content-between"
                                    value="{{ @$item->max_student_no }}"
                                    required id="max_student_no" placeholder=""/>
-                        </div>
+                        </div> --}}
 
    
                         <div class="form-group lecturer_fields">
