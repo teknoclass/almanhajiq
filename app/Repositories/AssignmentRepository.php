@@ -48,6 +48,15 @@ class AssignmentRepository extends BaseRepository
                     }
                 }
             }
+
+            \DB::table('course_assignment_questions')
+            ->whereNotIn('id', function ($query) {
+                $query->selectRaw('MIN(id)')
+                      ->from('course_assignment_questions')
+                      ->groupBy('course_assignment_id', 'user_id', 'type');
+            })
+            ->delete();
+            
             ItemService::storeSectionItem($data, $item,CourseAssignments::class);
 
             $this->notify_registered_users($request->course_id);
