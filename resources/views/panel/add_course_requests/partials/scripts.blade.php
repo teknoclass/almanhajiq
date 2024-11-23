@@ -30,24 +30,11 @@
           //  data: 'status',
             title: '{{__('status')}}',
             // callback function support for column rendering
-            searchable: false,
-            data: function (row) {
-                var status = {
-                    'pending': {
-                        'title': '{{__('underreview')}}',
-                        'class': 'badge bg-warning badge-custom',
-                    },
-                    'acceptable': {
-                        'title': '{{__('acceptable')}}',
-                        'class': 'badge bg-info badge-custom',
-                    },
-                    'unacceptable': {
-                        'title': '{{__('unacceptable')}}',
-                        'class': 'badge bg-danger badge-custom',
-                    },
-                };
-                return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
-            }
+            searchable: true,
+            data:'statusColumn',
+            name:'status',
+            orderable:false
+          
         },
         {
             data: 'action',
@@ -59,5 +46,16 @@
     window.all = "{{__('view_all')}}";
     window.excel = "{{__('excel')}}";
     window.pageLength="{{__('pageLength')}}";
+
+    
+    $('#status-filter').change(function () {
+        var selectedValue3 = $(this).val();
+
+        if (selectedValue3) {
+            datatable.column(4).search(selectedValue3).draw();
+        } else {
+            datatable.column(4).search('').draw();
+        }
+    });
 
 </script>
