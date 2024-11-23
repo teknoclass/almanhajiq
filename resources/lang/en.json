@@ -1156,7 +1156,12 @@
     "contents_have_been_completed":"Contents Finished",
     "out_of": "Out Of ",
     "finish":"Finished",
-    "lessons_o":"Lessons"
+    "lessons_o":"Lessons",
+    "quizzes":"quizzes",
+    "tests_completed":" tests completed",
+    "tests_not_completed":" tests not completed ",
+    "assignments_delivered":" assignments delivered",
+    "assignments_not_delivered":" assignments not delivered "
 
 
 
