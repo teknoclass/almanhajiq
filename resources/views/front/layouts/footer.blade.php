@@ -1,5 +1,5 @@
 <!-- start:: footer -->
-<footer class="main-footer">
+<footer class="main-footer" style="background-color:var(--primary-color) !important;color: white;">
     <div class="footer-top">
         <div class="container">
             <div class="row pt-8 mb-2 mb-lg-5">
