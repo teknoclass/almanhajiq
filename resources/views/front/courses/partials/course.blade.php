@@ -5,7 +5,7 @@
 @endphp
 <div class="col-md-6 col-lg-4 col-sm-12 ">
     <div class="courses-content">
-        <div class="mb-2 mx-1 single-courses" style="min-height: 260px">
+        <div class="mb-2  single-courses" style="min-height: 260px">
             <div class="item-courses {{ @$course->is_delete == 1 ? 'deletedCourse' : '' }}">
         
                 @if(@$course->material)
