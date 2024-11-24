@@ -3,6 +3,7 @@
         <h5 class="font-medium mb-3">
             <span class="square"></span> {{ $question->title }}
         </h5>
+        
         <div class="myDropzone-{{ $question->id }} dropzone dropzone-course bg-transparent border-0">
             <input type="hidden" name="question[{{ $question->id }}][answer]">
         </div>
