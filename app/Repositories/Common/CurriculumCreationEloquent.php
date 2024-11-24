@@ -109,7 +109,7 @@ class CurriculumCreationEloquent extends HelperEloquent
             $data['student_solutions'] = json_decode($data['course_item']->$resultsRelation[0]->results, true);
         }
 
-        $viewPath = $viewPaths[$itemType];
+        $viewPath = $viewPaths['correct'];
 
         return $this->renderModal($viewPath, $data);
     }
