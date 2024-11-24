@@ -276,8 +276,8 @@ function deleteSession(data) {
         generateSessionInputs(false);
         $('#generate_btn_div').show();
         $('#publish-button').hide();
-        $('#btn_submit').hide();
-        $('#add_lesson').hide();
+        // $('#btn_submit').hide();
+        // $('#add_lesson').hide();
     }
 
 }
