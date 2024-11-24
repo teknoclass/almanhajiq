@@ -304,7 +304,7 @@ class AuthEloquent extends HelperEloquent
                         'status' => true,
                     ];
             } else {
-                $this->resendCode($is_web);
+                // $this->resendCode($is_web);
             }
         }
 
