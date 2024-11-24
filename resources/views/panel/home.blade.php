@@ -346,7 +346,7 @@
                         </div>
                         <!--end::Tables Widget 5-->
                     </div>
-                    <div class="col-md-6">
+                    {{--  <div class="col-md-6">
                         <!--begin::Tables Widget 5-->
                         <div class="card card-xxl-stretch mb-5 mb-xxl-8 h-100">
                             <!--begin::Header-->
@@ -357,7 +357,7 @@
                             </div>
                             <!--end::Header-->
                             <!--begin::Body-->
-                            <div class="card-body pt-0 pb-1">
+                          <div class="card-body pt-0 pb-1">
                                 <!--begin::Table container-->
                                 <div class="table-responsive">
                                     <!--begin::Table-->
@@ -396,11 +396,11 @@
                                 </div>
                                 <!--end::Table-->
                                 <a href="{{ route('panel.privateLessons.all.index')}}" class="text-decoration-underline text-primary"> {{__('view_all')}} </a>
-                            </div>
+                            </div> 
                             <!--end::Body-->
                         </div>
                         <!--end::Tables Widget 5-->
-                    </div>
+                    </div> --}}
                     <!--end::Col-->
                     <div class="col-md-6">
                         <!--begin::Tables Widget 5-->
