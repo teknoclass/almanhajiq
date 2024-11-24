@@ -1,7 +1,4 @@
-<div class="modal show" id="modalAddTasks" style="display: block;">
-    <script>
-        console.log("feras")
-    </script>
+<div class="modal show" id="modalAddTasks" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-course">
         <div class="modal-content">
             <div class="py-3">
@@ -82,29 +79,10 @@
                                             <div class="form-group col-md-4 mt-3">
                                                 <label>{{ __('pass_mark') }}
                                                     <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="number" step="0.1" name="pass_grade"
+                                                <input class="form-control" type="number" name="pass_grade"
                                                     placeholder="{{ __('pass_grade') }}" style="direction: rtl !important;"/>
                                             </div>
                                         </div>
-                                            <div class="row">
-
-                                                @if(@$course_type == 'live')
-                                                    <div class="form-group col-md-4 mt-3">
-                                                        <label>{{ __('start_date') }}
-                                                            <span class="text-danger">*</span></label>
-                                                        <input class="form-control" type="datetime-local" name="start_date" required
-                                                               placeholder="{{ __('start_date') }}" value="{{ @$item->start_date }}"
-                                                               style="direction: rtl !important;" />
-                                                    </div>
-                                                    <div class="form-group col-md-4 mt-3">
-                                                        <label>{{ __('end_date') }}
-                                                            <span class="text-danger">*</span></label>
-                                                        <input class="form-control" type="datetime-local" name="end_date"
-                                                               placeholder="{{ __('end_date') }}" value="{{ @$item->start_date }}"
-                                                               style="direction: rtl !important;" />
-                                                    </div>
-                                                @endif
-                                            </div>
                                             <div class="d-flex align-items-center  col-9">
                                                 <div class="form-group col-12 mt-3">
                                                     <div class="d-lg-flex align-items-center justify-content-start">
@@ -150,7 +128,7 @@
                                                                     <label> {{ __('answer') }} :</label>
                                                                     <div class="d-flex align-items-center">
                                                                         <label class="m-radio m-radio-2 mb-0">
-                                                                            <input type="radio" name="answer_type[0]" checked
+                                                                            <input type="radio" name="answer_type[0]"
                                                                                 value="text" /><span
                                                                                 class="checkmark"></span> {{ __('text1') }}
                                                                         </label>
