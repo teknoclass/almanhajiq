@@ -37,6 +37,8 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 99%;
+            margin: auto;
         }
 
         .btn-custom {
@@ -98,8 +100,7 @@
       <div class="row">
          @include('panel.courses.partials.toolbar')
 
-         <div class="container mt-5">
-        <div class="table-wrapper">
+        <div class="table-wrapper mt-5">
             <h2 class="text-center mb-4">{{__('installments')}}</h2>
             <form id="installments-form">
                 <table id="installments-table" class="table table-borderless">
@@ -163,7 +164,7 @@
    </div>
 
 </div>
-    </div>
+    
     
 
     @push('panel_js')

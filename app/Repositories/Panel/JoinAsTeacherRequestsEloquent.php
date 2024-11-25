@@ -120,7 +120,7 @@ class JoinAsTeacherRequestsEloquent
                 ]);
 
                 $title = 'نتيجة تقييم طلب الانضمام كمدرب';
-                $msg = "تم الموافقة على طلب انمضامك فى منصتنا";
+                $msg = "تم الموافقة على طلب انمضامك فى منصتنا وهذه كلمة السر الخاصة بك  ".$password;
 
                 // Mail::to($user->email)->send(new  TeacherEvaluation($title, $user, $user->email , $password));
                 sendEmail($title,$msg,$user->email);
