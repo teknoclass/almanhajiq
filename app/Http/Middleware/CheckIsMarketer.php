@@ -23,8 +23,10 @@ class CheckIsMarketer
 
         if ($user!='') {
 
-            if (!($user->checkRole(User::MARKETER) &&
-               $user->hasCoupon())
+            if (!($user->role == "marketer" 
+            // &&
+            //    $user->hasCoupon()
+               )
             ) {
                 abort(403);
             }
