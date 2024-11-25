@@ -347,18 +347,13 @@ class CourseCurriculumEloquent extends HelperEloquent
         $current_cur_item = CourseCurriculum::activeStatusBasedOnUser()->whereId($curclm_item_id)->first();
 
         if (!$current_cur_item)
-            $current_cur_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $course_id)
-        // ->order('asc')
-        ->orderBy('id','asc')
-        ->first();
+            $current_cur_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $course_id)->order('asc')->first();
 
         if ($type == 'next')
         {
             $next_cur_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $data['course_id'])
-                        ->where('id', '>', $current_cur_item->id)
-                        // ->order('asc')
-                        ->orderBy('id','asc')
-                        ->first();
+                        ->where('order', '>', $current_cur_item->order)
+                        ->order('asc')->first();
 
             if ($current_cur_item->item_type != 'section') {
 
@@ -371,16 +366,12 @@ class CourseCurriculumEloquent extends HelperEloquent
                 $current_section_item = CourseSectionItems::activeStatusBasedOnUser()->whereId($section_item_id)->first();
 
                 if(!$current_section_item){
-                    $current_section_item = CourseSectionItems::activeStatusBasedOnUser()->whereId($current_cur_item->item_id)
-                    // ->order('asc')
-                    ->orderBy('id','asc')
-                    ->first();
+                    $current_section_item = CourseSectionItems::activeStatusBasedOnUser()->whereId($current_cur_item->item_id)->order('asc')->first();
                 }
 
                 $next_section_item = CourseSectionItems::activeStatusBasedOnUser()->where('course_sections_id', $current_section_item->course_sections_id)
-                        // ->order('asc')
-                        ->orderBy('id','asc')
-                        ->where('id', '>', $current_section_item->id)->first();
+                        ->order('asc')
+                        ->where('order', '>', $current_section_item->order)->first();
 
                 if ($next_section_item) {
                     $data['target_curclm_item_id'] = $current_cur_item->id;
@@ -404,10 +395,8 @@ class CourseCurriculumEloquent extends HelperEloquent
         else if ($type == 'back')
         {
             $previous_cur_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $data['course_id'])
-                        ->where('id', '<', $current_cur_item->id)
-                        // ->order('desc')
-                        ->orderBy('id','desc')
-                        ->first();
+                        ->where('order', '<', $current_cur_item->order)
+                        ->order('desc')->first();
 
             if ($current_cur_item->item_type != 'section') {
 
@@ -425,9 +414,8 @@ class CourseCurriculumEloquent extends HelperEloquent
                 }
 
                 $previous_section_item = CourseSectionItems::activeStatusBasedOnUser()->where('course_sections_id', $current_section_item->course_sections_id)
-                        // ->order('desc')
-                        ->orderBy('id','desc')
-                        ->where('id', '<', $current_section_item->id)->first();
+                        ->order('desc')
+                        ->where('order', '<', $current_section_item->order)->first();
 
                 if ($previous_section_item) {
                     $data['target_curclm_item_id'] = $current_cur_item->id;
@@ -444,9 +432,7 @@ class CourseCurriculumEloquent extends HelperEloquent
                         if ($previous_cur_item->item_type == 'section') {
                             $last_item = CourseSectionItems::activeStatusBasedOnUser()
                                 ->where('course_sections_id', $previous_cur_item->item_id)
-                                // ->order('desc')
-                                ->orderBy('id','desc')
-                                ->first();
+                                ->order('desc')->first();
 
                             $data['target_curclm_item_id'] = $previous_cur_item->id;
                             $data['target_section_item_id'] = $last_item->id;
