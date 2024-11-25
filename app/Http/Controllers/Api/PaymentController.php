@@ -775,6 +775,16 @@ class PaymentController extends Controller
                 'access_until_session_id' => $courseSession->course_session_id
             ]);
 
+            UserCourse::create([
+                "course_id" => $courseSession->course_id,
+                "user_id" => $paymentDetails['user_id'],
+                "lecturer_id" => Courses::find($courseSession->course_id)->user_id,
+                "subscription_token"  => $paymentDetails['payment_id'],
+                "is_paid" => 1,
+                "is_complete_payment" => 1,
+                'is_installment' => 1
+            ]);
+
 
             $this->paymentService->storeBalanceApi($paymentDetails,'installment');
 

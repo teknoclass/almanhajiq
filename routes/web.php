@@ -281,7 +281,10 @@ Route::get('/migrate',function(){
 
 
         //favourtie
-        "2024_08_22_113909_create_favourites_table.php"
+        "2024_08_22_113909_create_favourites_table.php",
+
+        //add is installment to user course
+        "2024_11_24_030055_add_is_installment_to_user_courses_table.php",
 
     ];
 

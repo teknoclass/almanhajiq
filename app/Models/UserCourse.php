@@ -40,7 +40,8 @@ class UserCourse extends Model
         'num_free_lessons_allowed',
         'register_sourse',
         'register_by',
-        'is_lecturer_add_appointments'
+        'is_lecturer_add_appointments',
+        'is_installment'
     ];
 
     public function user()

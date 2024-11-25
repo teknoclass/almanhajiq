@@ -188,7 +188,28 @@ Route::group(['middleware' => 'language', 'prefix' => 'user'], function () {
 
 Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function () {
 
+
+    //courses
     Route::get('/courseStudent',[LecturerCourseController::class,'courseStudent']);
+    Route::get('/myCourses',[LecturerCourseController::class,'myCourses']);
+    ////assignment
+    Route::get('/courseUserAssignments',[LecturerCourseController::class,'courseUserAssignments']);
+    Route::get('/courseAssignment/{course_id}',[LecturerCourseController::class,'courseAssignment']);
+    Route::get('/getStudentAnswerAssignment/{result_id}',[LecturerCourseController::class,'getStudentAnswer']);
+    Route::post('submitMarkAssignment',[LecturerCourseController::class,'submitMark']);
+    Route::post('submitResultAssignment',[LecturerCourseController::class,'submitResult']);
+
+    ////quiz
+    Route::get('/courseUserQuizzes',[LecturerCourseController::class,'courseUserQuizzes']);
+    Route::get('/courseQuiz/{course_id}',[LecturerCourseController::class,'courseQuiz']);
+    Route::get('/previewUserQuiz/{id}' , [LecturerCourseController::class,'previewUserQuiz']);
+
+    ////session
+    Route::get('createSession/{session_id}',     [LecturerCourseController::class , 'createLiveSession'])->name('createLiveSession');
+    Route::post('/postpone', [LecturerCourseController::class, 'storePostponeRequest'])->name('postpone');
+
+
+
 
 
 

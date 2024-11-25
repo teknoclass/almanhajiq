@@ -201,5 +201,20 @@ class CourseCurriculum extends Model
         return $this->hasMany(CourseAssignmentResults::class, 'assignment_id', 'itemable_id')->latest();
     }
 
+    function isSubInInstallment($type = 'web'){
+        $date = $this->itemable->start_date;
+
+        $last = StudentSessionInstallment::where('course_id',$this->course_id)
+                ->where('student_id',auth($type)->id())
+                ->orderBy('access_until_session_id','DESC')
+                ->first();
+
+        if(!$last)return false;
+
+        if($date <= $last->session->date)return true;
+        else return false;
+
+    }
+
 
 }

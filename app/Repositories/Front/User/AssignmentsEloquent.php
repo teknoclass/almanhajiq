@@ -274,7 +274,6 @@ class AssignmentsEloquent extends HelperEloquent
 
         $result = CourseAssignmentResults::where('student_id',$user->id)->where('assignment_id',$request['assignment_id'])->first();
 
-
         $answer = CourseAssignmentsResultsAnswer::updateOrCreate([
             'result_id' => $result->id,
             'question_id' => $request['question_id']],[

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
+use Illuminate\Database\Eloquent\Model;
 use BigBlueButton\Parameters\GetRecordingsParameters;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 
 class CourseSession extends Model
 {
@@ -106,7 +107,7 @@ class CourseSession extends Model
 
         return $randomPassword;
     }
-    public function createLiveSession (){
+    public function createLiveSession ($type = 'web'){
         $attendeePW = $this->generateSimplePassword(8);
         $moderatorPW = $this->generateSimplePassword(8);
         $meeting_id = "course_session_with_id_".$this->id.time();
@@ -122,7 +123,7 @@ class CourseSession extends Model
             'attendeePW'     => $attendeePW,
             'moderatorPW'    => $moderatorPW,
             'endCallbackUrl' => route('user.meeting.finished' , $this->id),
-            'logoutUrl'      => route('user.meeting.finished' , [$this->id , auth()->id()]),
+            'logoutUrl'      => route('user.meeting.finished' , [$this->id , auth($type)->id()]),
         ]);
         $this->public_password = $attendeePW;
         $this->save();
@@ -181,7 +182,7 @@ class CourseSession extends Model
         $getRecordingsParams->meetingId = $meetingId;
         $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
         $recording = null;
-        
+
         if (!empty($recordings))
         {
             if ($meetingId)
@@ -196,6 +197,12 @@ class CourseSession extends Model
         }
 
         return $link;
+    }
+
+    function isNow(){
+        $sessionDateTime = Carbon::parse($this->date . ' ' . $this->time);
+        $now = now();
+        return ($sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15);
     }
 
 }

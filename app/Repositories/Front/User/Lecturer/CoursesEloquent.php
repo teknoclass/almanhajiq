@@ -2,37 +2,45 @@
 
 namespace App\Repositories\Front\User\Lecturer;
 
-use App\Http\Resources\InCourseStudentCollection;
-use App\Models\AddCourseRequests;
-use App\Models\Admin;
-use App\Models\CourseSession;
-use App\Models\CourseSessionsGroup;
-use App\Models\CourseSuggestedDates;
-use App\Models\UserCourse;
-use App\Repositories\Common\LiveSessionEloquent;
-use App\Repositories\Front\User\HelperEloquent;
-
 use Carbon\Carbon;
-use GPBMetadata\Google\Api\Log;
-use Illuminate\Support\Facades\DB;
+use App\Models\Faqs;
+use App\Models\Admin;
 use App\Models\Courses;
 use App\Models\Ratings;
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\Category;
-use App\Models\CoursePriceDetails;
-use App\Models\CourseContentDetails;
-use Illuminate\Http\Request;
 use App\Models\CourseFaqs;
-use App\Models\Faqs;
-use App\Models\CourseRequirements;
-use App\Models\CourseSections;
-use App\Models\CourseAssignments;
-use App\Models\CourseAssignmentResults;
-use App\Models\CourseComments;
-use App\Models\CourseLiveLesson;
+use App\Models\UserCourse;
+use Illuminate\Http\Request;
 use App\Models\CourseQuizzes;
-use App\Models\CourseQuizzesResults;
+use App\Models\CourseSession;
 use App\Models\Notifications;
+use App\Models\CourseComments;
+
+use App\Models\CourseSections;
+use GPBMetadata\Google\Api\Log;
+use App\Models\CourseLiveLesson;
+use App\Models\AddCourseRequests;
+use App\Models\CourseAssignments;
+use App\Models\CoursePriceDetails;
+use App\Models\CourseRequirements;
+use Illuminate\Support\Facades\DB;
+use App\Models\CourseSessionsGroup;
+use App\Models\CourseContentDetails;
+use App\Models\CourseQuizzesResults;
+use App\Models\CourseSuggestedDates;
+use App\Models\CourseAssignmentResults;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\CourseAssignmentsResultsAnswer;
+use App\Repositories\Front\User\HelperEloquent;
+use App\Repositories\Common\LiveSessionEloquent;
+use App\Http\Resources\InCourseStudentCollection;
+use App\Http\Resources\LecturerCourseQuizResource;
+use App\Http\Resources\Quiz\ShowResultQuestionResource;
+use App\Models\CourseQuizzesQuestionsAnswerTranslation;
+use App\Http\Resources\LecturerCourseAssignmentsResource;
+use App\Http\Resources\LecturerCourseUserQuizzesCollection;
+use App\Http\Resources\LecturerCourseUserAssignmentsCollection;
+use App\Http\Resources\LecturerCourseUserAssignmentAnswerResource;
 
 class CoursesEloquent extends HelperEloquent
 {
@@ -1271,7 +1279,7 @@ class CoursesEloquent extends HelperEloquent
     function courseStudent($request,$is_web = true){
 
         $user = $this->getUser($is_web);
-        
+
         $data = UserCourse::whereHas('course' , function($query) use($user){
             $query->where('user_id',$user->id);
         })->with('user');
@@ -1289,5 +1297,155 @@ class CoursesEloquent extends HelperEloquent
         return $data;
     }
 
+    function courseUserAssignments($request , $is_web = true){
 
+        $status = $request->get('status');
+        $assignmentId = $request->get('assignment_id');
+        $data = CourseAssignmentResults::where('course_id',$request->get('course_id'))
+                ->when($status != null , function($query) use ($status){
+                    $query->where('status' , $status);
+                })
+                ->when($assignmentId != null , function($query) use ($assignmentId){
+                    $query->where('assignment_id',$assignmentId);
+                })
+                ->paginate(10);
+
+
+        $data = new LecturerCourseUserAssignmentsCollection($data);
+
+        return $data;
+
+
+
+    }
+
+    function courseAssignment($course_id){
+        $data = CourseAssignments::active()->where('course_id',$course_id)->get();
+
+        $data = LecturerCourseAssignmentsResource::collection($data);
+        return $data;
+    }
+
+    function courseUserQuizzes($request , $is_web = true){
+
+        $status = $request->get('status');
+        $assignmentId = $request->get('quiz_id');
+        $data = CourseQuizzesResults::where('course_id',$request->get('course_id'))
+                ->when($status != null , function($query) use ($status){
+                    $query->where('status' , $status);
+                })
+                ->when($assignmentId != null , function($query) use ($assignmentId){
+                    $query->where('assignment_id',$assignmentId);
+                })
+                ->paginate(10);
+
+
+        $data = new LecturerCourseUserQuizzesCollection($data);
+
+        return $data;
+
+
+
+    }
+
+    function courseQuiz($course_id){
+        $data = CourseQuizzes::active()->where('course_id',$course_id)->get();
+
+        $data = LecturerCourseQuizResource::collection($data);
+        return $data;
+    }
+
+    function previewUserQuiz($id){
+
+        $quizResult = CourseQuizzesResults::find($id);
+        $quiz = CourseQuizzes::where('id', $quizResult->quiz_id)
+        ->with([
+            'quizQuestions' => function ($query) use ($quizResult) {
+                $query->with('quizzesQuestionsAnswers')
+                ->with(['userAnswer' => function ($query) use ($quizResult){
+                    $query->where('result_id',$quizResult->id);
+                }]);
+            },
+            ])
+            ->with('course')
+            ->first();
+
+        $questionCount = 0;
+        $correctCount = 0;
+        foreach($quiz->quizQuestions as $quest){
+            $questionCount+=1;
+            foreach($quest->quizzesQuestionsAnswers as $ans){
+                if($ans->correct == 1){
+                    if($quest->type == 'multiple'){
+
+                        if($quest->userAnswer && $ans->id == $quest->userAnswer->answer_id)$correctCount+=1;
+                    }else{
+                        $anss = CourseQuizzesQuestionsAnswerTranslation::where('course_quizzes_questions_answer_id',$ans->id)->get();
+                        foreach($anss as $ansL){
+                            if($quest->userAnswer && $ansL->title == $quest->userAnswer->text_answer){
+                                $correctCount+=1;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $data['user_grade'] = $quizResult->user_grade;
+        $data['grade'] = $quiz->grade;
+        $data['status'] = $quizResult->status;
+        $quiz = ShowResultQuestionResource::collection($quiz->quizQuestions);
+        $data['question'] = $quiz;
+        $data['questionCount'] = $questionCount;
+        $data['correctCount'] = $correctCount;
+        return $data;
+    }
+
+    function getStudentAnswer($result_id,$is_web = true){
+
+
+        $result = CourseAssignmentResults::find($result_id);
+        $assignment = $result->assignment()->with(['assignmentQuestions.userAnswers' => function($query) use ($result_id){
+            $query->where('result_id',$result_id);
+        }])->first();
+        $question = $assignment->assignmentQuestions;
+
+        $data = LecturerCourseUserAssignmentAnswerResource::collection($question);
+
+
+        return $data;
+
+    }
+
+    function submitMark($request , $is_web = true){
+
+        $mark = $request->get('mark');
+        $result_id = $request->get('result_id');
+        $question_id = $request->get('question_id');
+        CourseAssignmentsResultsAnswer::updateOrCreate(['result_id' => $result_id , 'question_id' => $question_id] , ['mark' => $mark]);
+
+
+    }
+
+    function submitResult($request,$is_web = true){
+
+        $result_id = $request->get('result_id');
+        $result = CourseAssignmentResults::find($result_id);
+
+        $mark = CourseAssignmentsResultsAnswer::where('result_id',$result_id)->whereNotNull('mark')->sum('mark');
+
+        if($mark >= $result->assignment->pass_grade){
+            $status = 'passed';
+        }else{
+            $status = 'not_passed';
+        }
+
+        $result->grade = $mark;
+        $result->status = $status;
+        $result->save();
+
+
+
+    }
+    
 }

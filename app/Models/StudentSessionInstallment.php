@@ -27,6 +27,6 @@ class StudentSessionInstallment extends Model
 
     public function session()
     {
-        return $this->belongsTo(CourseSession::class,'id','access_until_session_id');
+        return $this->belongsTo(CourseSession::class,'access_until_session_id','id');
     }
 }

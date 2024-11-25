@@ -15,17 +15,19 @@ use Yajra\DataTables\DataTables;
 class CourseSessionService
 {
     #[ArrayShape(['message' => "mixed", 'status' => "bool"])]
-    public function storePostponeRequest($data): array
+    public function storePostponeRequest($data,$is_web = true): array
     {
         try {
+            if($is_web)$type = 'web';
+            else $type = 'api';
             $courseSessionRequest= CourseSessionsRequest::firstOrCreate([
                 'course_session_id'=>$data->course_session_id,
                 'user_type'=>$data->user_type,
-                'user_id' => auth()->id(),
+                'user_id' => auth($type)->id(),
             ]);
             $courseSessionRequest->update([
                 'course_session_id' => $data->course_session_id,
-                'user_id' => auth()->id(),
+                'user_id' => auth($type)->id(),
                 'user_type' => $data->user_type,
                 'type' => 'postpone',
                 'suggested_dates' => $data->suggested_dates,
@@ -152,7 +154,7 @@ class CourseSessionService
 
                     sendNotifications('قبول طلب التاجيل', @CourseSession::find($course_session_id)->date.' تم الموافقة على طلب تاجيل المحاضر للجلسة الي يوم  '.'( '. @CourseSession::find($course_session_id)->title .' )','course_session_request',
                     $lessonRequest->id,null,"user",$userIds);
-                    
+
                 } else {
                     $this->cancelLesson($lessonRequest);
 
@@ -170,7 +172,7 @@ class CourseSessionService
                 }
             }else{
                 if ($lessonRequest->type == 'postpone') {
-                  
+
                     sendNotification('رفض طلب التاجيل الجلسة',' تم رفض طلب تاجيلك للجلسة  '.'( '. @CourseSession::find($course_session_id)->title .' )',
                     $lessonRequest->user_id,'user', 'course_session_request',
                     $lessonRequest->id);

@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Front\User;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\Common\CourseCurriculumEloquent;
+use App\Models\Courses;
+use App\Models\UserCourse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
-use App\Repositories\Front\User\CoursesEloquent;
-use App\Models\{StudentSessionInstallment,CourseSession};
 use App\Services\PaymentService;
 use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\View;
+use App\Repositories\Front\User\CoursesEloquent;
+use App\Repositories\Common\CourseCurriculumEloquent;
+use App\Models\{StudentSessionInstallment,CourseSession};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CourseSessionInstallmentsController extends Controller
@@ -51,8 +53,8 @@ class CourseSessionInstallmentsController extends Controller
             "currency" => "IQD",
             "finishPaymentUrl" => url('/user/pay-to-course-session-installment-confirm'),
             "notificationUrl" => url('/user/pay-to-course-session-installment-confirm'),
-        ]);  
-        
+        ]);
+
         if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [
@@ -65,7 +67,7 @@ class CourseSessionInstallmentsController extends Controller
                 "brand" => "card",
                 'course_id' => $request->course_id
             ];
-    
+
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
 
             return  $response = [
@@ -77,14 +79,14 @@ class CourseSessionInstallmentsController extends Controller
                 'status_msg' => 'error',
                 'message' => __('message.unexpected_error'),
             ];
-        }  
+        }
     }
 
     public function zainCash(Request $request)
     {
         $response = $this->zainCashService->processPayment($request->price,
-        url('/user/pay-to-course-session-installment-confirm'),"دفع قسط جلسات دورة");  
-        
+        url('/user/pay-to-course-session-installment-confirm'),"دفع قسط جلسات دورة");
+
         if(isset($response['id']))
         {
             $paymentDetails = [
@@ -98,7 +100,7 @@ class CourseSessionInstallmentsController extends Controller
                 "transaction_id" => $response['referenceNumber'],
                 'course_id' => $request->course_id
             ];
-    
+
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
 
             $transaction_id = $response['id'];
@@ -113,7 +115,7 @@ class CourseSessionInstallmentsController extends Controller
                 'status_msg' => 'error',
                 'message' => __('message.unexpected_error'),
             ];
-        }  
+        }
     }
 
     public function confirmPayment(Request $request)
@@ -128,21 +130,31 @@ class CourseSessionInstallmentsController extends Controller
 
             if($paymentDetails["brand"] == "zaincash" && $statusCheck["status"] != "completed")
             {
-                return redirect('/payment-failure'); 
+                return redirect('/payment-failure');
             }
 
             //check qi payment status
             $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
-    
+
             if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
             {
-                return redirect('/payment-failure'); 
+                return redirect('/payment-failure');
             }
 
             $item = StudentSessionInstallment::updateOrCreate([
                 'student_id' => auth('web')->user()->id,
                 'course_id' => $paymentDetails['course_id'],
                 'access_until_session_id' => $paymentDetails['transactionable_id'],
+            ]);
+
+            UserCourse::create([
+                "course_id" => $paymentDetails['course_id'],
+                "user_id" => auth('web')->user()->id,
+                "lecturer_id" => Courses::find($paymentDetails['course_id'])->user_id,
+                "subscription_token"  => $paymentDetails['payment_id'],
+                "is_paid" => 1,
+                "is_complete_payment" => 1,
+                'is_installment' => 1
             ]);
 
             $this->paymentService->createTransactionRecord($paymentDetails);
@@ -153,17 +165,17 @@ class CourseSessionInstallmentsController extends Controller
 
             $course_id = $paymentDetails['course_id'];
 
-            DB::commit(); 
+            DB::commit();
 
             return redirect("/user/courses/curriculum/item/".$course_id);
         }
         catch (\Exception $e)
         {
-            DB::rollback(); 
+            DB::rollback();
             Log::error($e->getMessage());
             Log::error($e->getFile());
             Log::error($e->getLine());
-            return redirect('/payment-failure'); 
+            return redirect('/payment-failure');
         }
     }
 

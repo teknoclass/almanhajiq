@@ -439,6 +439,7 @@ class Courses extends Model
                     ['course_id', $this->id]
                 ])
                 ->where('is_paid' , 1)
+                ->where('is_installment' , 0)
                 ->first();
             if ($item) {
                 return true;

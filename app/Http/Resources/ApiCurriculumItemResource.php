@@ -20,6 +20,8 @@ class ApiCurriculumItemResource extends JsonResource
         $fullCourseSub = $this->course->isSubscriber('api');
         if ($fullCourseSub) {
             $isSub = (int)$fullCourseSub;
+        }else {
+            $isSub = $this->isSubInInstallment('api');
         }
 
         $translation = collect($this->itemable->translations)
@@ -34,7 +36,7 @@ class ApiCurriculumItemResource extends JsonResource
             'item_type' => config("constants.item_model_types.$this->itemable_type"),
             'order' => $this->order,
             'start_date' => $this->itemable->start_date,
-            'end_date' => $this->itemable->start_date,
+            'end_date' => $this->itemable->end_date,
             'is_completed' => $this->is_completed(),
             config("constants.item_model_types.$this->itemable_type") => [
                 'order' => $this->order,

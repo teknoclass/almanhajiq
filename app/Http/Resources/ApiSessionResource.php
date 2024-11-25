@@ -22,7 +22,7 @@ class ApiSessionResource extends JsonResource
             $isSub = (int)$fullCourseSub;
         }
         else {
-            $isSub = $request->get('user') ? (int) $this->canAccess($request->get('user')->id) : 0;
+            $isSub = auth('api')->user() ? (int) $this->canAccess(auth('api')->id()) : 0;
         }
         $join_url  = '';
         $meetType = '';
@@ -46,6 +46,7 @@ class ApiSessionResource extends JsonResource
             'is_sub' => $isSub,
             'join_url' => $join_url,
             'meeting_type' => $meetType,
+            'is_now' => $this->isNow(),
             'session' => [
                 'group_id' => $this->group_id,
                 'price' => $this->price,
