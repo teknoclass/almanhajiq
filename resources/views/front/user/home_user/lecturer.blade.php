@@ -32,13 +32,13 @@
             'value' => auth()->user()->lecturerCoursesCount(),
             'type' => '',
         ],
-        [
+       /* [
             'title' => __('private_lessons_count'),
             'currency' => "",
             'icon' => "play",
             'value' => auth()->user()->teacherPrivateLessons()->count(),
             'type' => '',
-        ],
+        ], */
     ];
 @endphp
 <section class="section wow fadeInUp" data-wow-delay="0.1s">
