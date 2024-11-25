@@ -230,7 +230,8 @@ class CourseCurriculumEloquent extends HelperEloquent
 
                     if (!$section_item)  abort(404);
 
-                    if ($course->lessons_follow_up && (!$curr_item->canAccess() || !$section_item->canAccess()) && @$need_check_follow_up) {
+                    // if ($course->lessons_follow_up && (!$curr_item->canAccess() || !$section_item->canAccess()) && @$need_check_follow_up) {
+                        if ( (!$curr_item->canAccess() || !$section_item->canAccess()) && @$need_check_follow_up) {
                         $data['c_item'] = $this->getLastCompletedItem($course_id);
                         $data['error_message'] = __('cannot_access_curriculum_item');
 
