@@ -149,7 +149,124 @@ class CourseCurriculumEloquent extends HelperEloquent
         return $target_item;
     }
 
-    public function getCurSectionItem($course_id, $curclm_item_id, $section_item_id)
+    public function getCurSectionItem($course_id, $curclm_item_id, $section_item_id, $is_web=true)
+    {
+        $course = Courses::withTrashed()->whereId($course_id)->with('items');
+
+        if (Auth::guard('web')->check()) {
+            if (checkUser('student'))
+                $course = $course->active();
+        }
+
+        $course = $course->first();
+
+
+        if (!$course){
+            if ($is_web) abort(404);
+            else abort404Api();
+        }
+
+        // if there is no course or no curriculum items in the course send him to 404
+        if (!$course->items->isNotEmpty()) {
+            if ($is_web) abort(404);
+            else abort404Api();
+        }
+        else {
+
+            // Target item not defined so the user will be sent to the last element he finished in the course
+            if (!$curclm_item_id) {
+
+                $last_completed_item = $this->getLastCompletedItem($course_id, $is_web);
+                $data['c_item'] = $last_completed_item['target_item'];
+                $data['curclm_item_id'] = @$last_completed_item['curclm_item_id'];
+            }
+
+            // Get defined item
+            else {
+                $curr_item = CourseCurriculum::activeStatusBasedOnUser($is_web)->whereId($curclm_item_id)->first();
+
+                if (!$curr_item) {
+                    if ($is_web) abort(404);
+                    else abort404Api();
+                }
+
+                // Check if user require check the follow up functionality
+                $need_check_follow_up = true;
+
+                if (Str::contains(request()->url(), 'admin')) {
+                    $user_type = "admin";
+                } else if (Str::contains(request()->url(), 'lecturer')) {
+                    $user_type = "lecturer";
+                }
+
+                if (@$user_type) {
+                    switch ($user_type) {
+                        case 'lecturer':
+                            if (checkUser('lecturer')) {
+                                $need_check_follow_up = false;
+                            }
+                            break;
+
+                        case 'admin':
+                            if (auth('admin')->user()) {
+                                $need_check_follow_up = false;
+                            }
+                            break;
+
+                        default:
+                            $need_check_follow_up = true;
+                            break;
+                    }
+                }
+
+                if ($curr_item->item_type != 'section') {
+
+                    if ($course->lessons_follow_up && !$curr_item->canAccess() && @$need_check_follow_up) {
+                        $last_completed_item = $this->getLastCompletedItem($course_id, $is_web);
+                        $data['c_item'] = $last_completed_item['target_item'];
+                        $data['curclm_item_id'] = @$last_completed_item['curclm_item_id'];
+                        $data['error_message'] = __('cannot_access_curriculum_item');
+                    } else
+                        $data['c_item'] = $curr_item;
+
+                } else {
+                    $data['curclm_item_id'] = $curr_item->id;
+
+                    if ($section_item_id)
+                        $section_item = CourseSectionItems::activeStatusBasedOnUser($is_web)->where('course_sections_id', $curr_item->item_id)
+                            ->where('id', $section_item_id)->first();
+                    else
+                        $section_item = CourseSectionItems::activeStatusBasedOnUser($is_web)->where('course_sections_id', $curr_item->item_id)->first();
+
+                    if (!$section_item) {
+                        if ($is_web) abort(404);
+                        else abort404Api();
+                    }
+
+                    if ($course->lessons_follow_up && (!$curr_item->canAccess() || !$section_item->canAccess()) && @$need_check_follow_up) {
+                        $last_completed_item = $this->getLastCompletedItem($course_id, $is_web);
+                        $data['c_item'] = $last_completed_item['target_item'];
+                        $data['curclm_item_id'] = @$last_completed_item['curclm_item_id'];
+                        $data['error_message'] = __('cannot_access_curriculum_item');
+
+                        return $data;
+                    }
+
+                    $data['c_item'] = $section_item;
+                }
+            }
+
+            // There is no content
+            if (!@$data['c_item']) {
+                if ($is_web) abort(404);
+                else abort404Api();
+            }
+        }
+
+        return $data;
+    }
+
+    public function oldgetCurSectionItem($course_id, $curclm_item_id, $section_item_id)
     {
         $course = Courses::withTrashed()->whereId($course_id)->with('items');
 
@@ -334,117 +451,6 @@ class CourseCurriculumEloquent extends HelperEloquent
     }
 
     public function navigation($type, $course_id, $curclm_item_id, $section_item_id, $is_web = true)
-    {
-        $data['user'] = $this->getUser($is_web);
-        $course = $this->getCourse($course_id);
-
-        if ($course == '') {
-            if ($is_web) abort(404);
-            else abort404Api();
-        }
-
-        // if (!$course->isSubscriber())   abort(403);
-
-        $data['course_id'] = $course->id;
-
-        $current_cur_item = CourseCurriculum::activeStatusBasedOnUser($is_web)->whereId($curclm_item_id)->first();
-
-        if (!$current_cur_item)
-            $current_cur_item = CourseCurriculum::activeStatusBasedOnUser($is_web)->where('course_id', $course_id)->order('asc')->first();
-
-        if ($type == 'next') {
-            $next_cur_item = CourseCurriculum::activeStatusBasedOnUser($is_web)->where('course_id', $data['course_id'])
-                ->where('order', '>', $current_cur_item->order)
-                ->order('asc')->first();
-
-            if ($current_cur_item->item_type != 'section') {
-
-                if ($next_cur_item)
-                    $data['target_curclm_item_id'] = $next_cur_item->id;
-                else
-                    $data['target_curclm_item_id'] = $current_cur_item->id;
-
-            } else {
-                $current_section_item = CourseSectionItems::activeStatusBasedOnUser($is_web)->whereId($section_item_id)->first();
-
-                if (!$current_section_item) {
-                    $current_section_item = CourseSectionItems::activeStatusBasedOnUser($is_web)->whereId($current_cur_item->item_id)->order('asc')->first();
-                }
-
-                $next_section_item = CourseSectionItems::activeStatusBasedOnUser($is_web)->where('course_sections_id', $current_section_item->course_sections_id)
-                    ->order('asc')
-                    ->where('order', '>', $current_section_item->order)->first();
-
-                if ($next_section_item) {
-                    $data['target_curclm_item_id'] = $current_cur_item->id;
-                    $data['target_section_item_id'] = $next_section_item->id;
-                }
-                // Here it reaches the the last item of the curriculum so it should stay at it
-                else if ($section_item_id && !$next_section_item && !$next_cur_item) {
-                    $data['target_curclm_item_id'] = $current_cur_item->id;
-                    $data['target_section_item_id'] = $current_section_item->id;
-                } else {
-                    if ($next_cur_item)
-                        $data['target_curclm_item_id'] = $next_cur_item->id;
-                    else
-                        $data['target_curclm_item_id'] = $current_cur_item->id;
-
-                }
-            }
-        } else if ($type == 'back') {
-            $previous_cur_item = CourseCurriculum::activeStatusBasedOnUser($is_web)->where('course_id', $data['course_id'])
-                ->where('order', '<', $current_cur_item->order)
-                ->order('desc')->first();
-
-            if ($current_cur_item->item_type != 'section') {
-
-                if ($previous_cur_item)
-                    $data['target_curclm_item_id'] = $previous_cur_item->id;
-                else
-                    $data['target_curclm_item_id'] = $current_cur_item->id;
-
-            } else {
-
-                $current_section_item = CourseSectionItems::activeStatusBasedOnUser($is_web)->whereId($section_item_id)->first();
-
-                if (!$current_section_item) {
-                    $current_section_item = CourseSectionItems::activeStatusBasedOnUser($is_web)->whereId($current_cur_item->item_id)->first();
-                }
-
-                $previous_section_item = CourseSectionItems::activeStatusBasedOnUser($is_web)->where('course_sections_id', $current_section_item->course_sections_id)
-                    ->order('desc')
-                    ->where('order', '<', $current_section_item->order)->first();
-
-                if ($previous_section_item) {
-                    $data['target_curclm_item_id'] = $current_cur_item->id;
-                    $data['target_section_item_id'] = $previous_section_item->id;
-                }
-                // Here it reaches the the last item of the curriculum so it should stay at it
-                else if ($section_item_id && !$previous_section_item && !$previous_cur_item) {
-                    $data['target_curclm_item_id'] = $current_cur_item->id;
-                    $data['target_section_item_id'] = $current_section_item->id;
-                } else {
-                    if ($previous_cur_item) {
-                        if ($previous_cur_item->item_type == 'section') {
-                            $last_item = CourseSectionItems::activeStatusBasedOnUser($is_web)
-                                ->where('course_sections_id', $previous_cur_item->item_id)
-                                ->order('desc')->first();
-
-                            $data['target_curclm_item_id'] = $previous_cur_item->id;
-                            $data['target_section_item_id'] = $last_item->id;
-                        } else
-                            $data['target_curclm_item_id'] = $previous_cur_item->id;
-
-                    } else
-                        $data['target_curclm_item_id'] = $current_cur_item->id;
-
-                }
-            }
-        }
-
-        return $data;
-    }
-    public function oldnavigation($type, $course_id, $curclm_item_id, $section_item_id, $is_web = true)
     {
         $data['user'] = $this->getUser($is_web);
         $course=$this->getCourse($course_id);
