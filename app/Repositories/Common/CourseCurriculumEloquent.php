@@ -230,8 +230,7 @@ class CourseCurriculumEloquent extends HelperEloquent
 
                     if (!$section_item)  abort(404);
 
-                    // if ($course->lessons_follow_up && (!$curr_item->canAccess() || !$section_item->canAccess()) && @$need_check_follow_up) {
-                        if ( (!$curr_item->canAccess() || !$section_item->canAccess()) && @$need_check_follow_up) {
+                    if ($course->lessons_follow_up && (!$curr_item->canAccess() || !$section_item->canAccess()) && @$need_check_follow_up) {
                         $data['c_item'] = $this->getLastCompletedItem($course_id);
                         $data['error_message'] = __('cannot_access_curriculum_item');
 
@@ -348,13 +347,18 @@ class CourseCurriculumEloquent extends HelperEloquent
         $current_cur_item = CourseCurriculum::activeStatusBasedOnUser()->whereId($curclm_item_id)->first();
 
         if (!$current_cur_item)
-            $current_cur_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $course_id)->order('asc')->first();
+            $current_cur_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $course_id)
+        // ->order('asc')
+        ->orderBy('id','asc')
+        ->first();
 
         if ($type == 'next')
         {
             $next_cur_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $data['course_id'])
-                        ->where('order', '>', $current_cur_item->order)
-                        ->order('asc')->first();
+                        ->where('id', '>', $current_cur_item->id)
+                        // ->order('asc')
+                        ->orderBy('id','asc')
+                        ->first();
 
             if ($current_cur_item->item_type != 'section') {
 
@@ -367,12 +371,16 @@ class CourseCurriculumEloquent extends HelperEloquent
                 $current_section_item = CourseSectionItems::activeStatusBasedOnUser()->whereId($section_item_id)->first();
 
                 if(!$current_section_item){
-                    $current_section_item = CourseSectionItems::activeStatusBasedOnUser()->whereId($current_cur_item->item_id)->order('asc')->first();
+                    $current_section_item = CourseSectionItems::activeStatusBasedOnUser()->whereId($current_cur_item->item_id)
+                    // ->order('asc')
+                    ->orderBy('id','asc')
+                    ->first();
                 }
 
                 $next_section_item = CourseSectionItems::activeStatusBasedOnUser()->where('course_sections_id', $current_section_item->course_sections_id)
-                        ->order('asc')
-                        ->where('order', '>', $current_section_item->order)->first();
+                        // ->order('asc')
+                        ->orderBy('id','asc')
+                        ->where('id', '>', $current_section_item->id)->first();
 
                 if ($next_section_item) {
                     $data['target_curclm_item_id'] = $current_cur_item->id;
@@ -396,8 +404,10 @@ class CourseCurriculumEloquent extends HelperEloquent
         else if ($type == 'back')
         {
             $previous_cur_item = CourseCurriculum::activeStatusBasedOnUser()->where('course_id', $data['course_id'])
-                        ->where('order', '<', $current_cur_item->order)
-                        ->order('desc')->first();
+                        ->where('id', '<', $current_cur_item->id)
+                        // ->order('desc')
+                        ->orderBy('id','desc')
+                        ->first();
 
             if ($current_cur_item->item_type != 'section') {
 
@@ -415,8 +425,9 @@ class CourseCurriculumEloquent extends HelperEloquent
                 }
 
                 $previous_section_item = CourseSectionItems::activeStatusBasedOnUser()->where('course_sections_id', $current_section_item->course_sections_id)
-                        ->order('desc')
-                        ->where('order', '<', $current_section_item->order)->first();
+                        // ->order('desc')
+                        ->orderBy('id','desc')
+                        ->where('id', '<', $current_section_item->id)->first();
 
                 if ($previous_section_item) {
                     $data['target_curclm_item_id'] = $current_cur_item->id;
@@ -433,7 +444,9 @@ class CourseCurriculumEloquent extends HelperEloquent
                         if ($previous_cur_item->item_type == 'section') {
                             $last_item = CourseSectionItems::activeStatusBasedOnUser()
                                 ->where('course_sections_id', $previous_cur_item->item_id)
-                                ->order('desc')->first();
+                                // ->order('desc')
+                                ->orderBy('id','desc')
+                                ->first();
 
                             $data['target_curclm_item_id'] = $previous_cur_item->id;
                             $data['target_section_item_id'] = $last_item->id;
