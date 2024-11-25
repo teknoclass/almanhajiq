@@ -16,7 +16,7 @@
                 data-url="{{ url('user/full-subscribe-course') }}"
                 data-id="{{ @$course_id }}"
                 data-to="{{ route('user.courses.curriculum.item', ['course_id' => @$course_id]) }}"
-                data-marketer_coupon="{{ request('marketer_coupon') }}"
+                data-marketer_coupon="{{  @$marketer_coupon }}"
                 data-payment_type="gateway"
                 data-is_relpad_page="true">
                 {{ __('select_method') }} 
@@ -36,7 +36,7 @@
         data-url="{{ url('user/full-subscribe-course') }}"
         data-id="{{ @$course_id }}"
         data-to="{{ route('user.courses.curriculum.item', ['course_id' => @$course_id]) }}"
-        data-marketer_coupon="{{ request('marketer_coupon') }}"
+        data-marketer_coupon="{{  @$marketer_coupon }}"
         data-payment_type="zaincash"
         data-is_relpad_page="true">
         @if($price > 1000)

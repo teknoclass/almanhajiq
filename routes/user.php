@@ -197,7 +197,7 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         Route::post('/pay-to-course-session-installment',[CourseSessionInstallmentsController::class,'pay']);
         Route::get('/pay-to-course-session-installment-confirm',[CourseSessionInstallmentsController::class,'confirmPayment']);
         //full subscription
-        Route::get('/full-select-payment-method/{course_id}',[CourseFullSubscriptionsController::class,'selectPaymentMethod']);
+        Route::get('/full-select-payment-method/{course_id}/{marketer_coupon?}',[CourseFullSubscriptionsController::class,'selectPaymentMethod']);
         Route::post('/full-subscribe-course',[CourseFullSubscriptionsController::class,'fullSubscribe']);
         Route::get('/full-subscribe-course-confirm',[CourseFullSubscriptionsController::class,'fullConfirmSubscribe']);
         

@@ -31,7 +31,7 @@
                                             @if ( @$course->priceDetails && (@$course->priceDetails->price != '' && @$course->priceDetails->price != 0) )
                                             <div class="col-12">
                                                 <div class="form-group text-center my-1">
-                                                <a href="{{ url('/user/full-select-payment-method', ['course_id' => $course->id ?? '']) }}"
+                                                <a href="{{ url('/user/full-select-payment-method', ['course_id' => $course->id ?? '','marketer_coupon' => request('marketer_coupon')]) }}"
                                                 id="stop-submit_free_reg_btn" type="button"
                                                         class="secondary-btn p-1 stop-confirm-free-registeration"
                                                         data-url="{{ url('user/full-subscribe-course') }}"
