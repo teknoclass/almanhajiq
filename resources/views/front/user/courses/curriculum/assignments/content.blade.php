@@ -92,6 +92,8 @@
 @push('front_js')
 <script src="{{ asset('assets/front/js/dropzone.min.js') }}"></script>
 <script>
+            Dropzone.autoDiscover = false;
+
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content')
 
     $(document).ready(function() {
