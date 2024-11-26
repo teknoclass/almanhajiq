@@ -7,7 +7,7 @@ use App\Models\CourseLessons;
 use App\Models\CourseQuizzes;
 use App\Models\CourseSectionItems;
 use App\Models\Notifications;
-use App\Models\{CourseAssignmentQuestions,User,CourseAssignmentQuestionsTranslation,CourseCurriculum};
+use App\Models\{CourseAssignmentQuestions,User,CourseAssignmentQuestionsTranslation,CourseCurriculum,Courses};
 use App\Models\UserCourse;
 use App\Repositories\AssignmentRepository;
 use App\Repositories\Front\User\HelperEloquent;
