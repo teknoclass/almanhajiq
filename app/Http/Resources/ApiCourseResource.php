@@ -26,13 +26,16 @@ class ApiCourseResource extends JsonResource
             'title'=>collect($this->translations)->firstWhere('locale', $locale??'en')->title ,
             'description'=>collect($this->translations)->firstWhere('locale', $locale??'en')->description ,
             'grade_sub_level'=>$gradeSubLevel ? collect($gradeSubLevel->translations)->firstWhere('locale', $locale??'en')->name : "",
-            'category' => $this->category ? collect($this->category->translations)->firstWhere('locale', $locale ?? 'en')->name??$this->categoy?->title : "",
+            'category' => $this->material ? collect($this->material->translations)->firstWhere('locale', $locale ?? 'en')->name??$this->material?->title : "",
+            'category_id' => $this->material_id,
             'lecturer'=>$this->lecturer->name ?? null,
             'price'=>$this->priceDetails?->price ?? null,
             'rate'=>$this->rate,
             'discount_price'=>$this->priceDetails?->discount_price,
             'is_sub'=>0,
-            'is_favourite' => $this->isFavorite('api')
+            'is_favourite' => $this->isFavorite('api'),
+            'type' => $this->type,
+            'status' => $this->status
         ];
         if ($this->is_sub){
             $data['is_sub']=1;

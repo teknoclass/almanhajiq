@@ -82,6 +82,9 @@ class Category extends Model
     public function prices() {
         return $this->hasMany(CategoryPrice::class,'category_id' , 'value');
     }
+    function courses(){
+        return $this->hasMany(Courses::class,'material_id','id');
+    }
 
 
 

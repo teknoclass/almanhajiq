@@ -21,6 +21,8 @@ use App\Http\Controllers\Api\LiveSessionController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\LecturerCourseController;
+use App\Http\Controllers\Api\TeacherBalanceController;
+use App\Http\Controllers\Api\TeacherHomeController;
 use Twilio\Rest\Api\V2010\Account\Call\PaymentContext;
 
 /*
@@ -192,6 +194,8 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
     //courses
     Route::get('/courseStudent',[LecturerCourseController::class,'courseStudent']);
     Route::get('/myCourses',[LecturerCourseController::class,'myCourses']);
+    Route::get('/getMyCategories',[LecturerCourseController::class,'getMyCategories']);
+
     ////assignment
     Route::get('/courseUserAssignments',[LecturerCourseController::class,'courseUserAssignments']);
     Route::get('/courseAssignment/{course_id}',[LecturerCourseController::class,'courseAssignment']);
@@ -210,6 +214,20 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
 
 
 
+    //home
+    Route::get('getHomeChart' , [TeacherHomeController::class,'getChart']);
+    Route::get('getHomeData',[TeacherHomeController::class,'getData']);
+    Route::get('incomingSessions',[TeacherHomeController::class,'incomingSessions']);
+
+
+    //balances
+    Route::prefix('balance')->group(function(){
+
+        Route::get('/index',[TeacherBalanceController::class,'index']);
+        Route::post('/sendRequest',[TeacherBalanceController::class,'send']);
+        Route::post('/cancelRequest',[TeacherBalanceController::class,'cancel']);
+
+    });
 
 
 

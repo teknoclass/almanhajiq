@@ -21,7 +21,7 @@ class ApiCurriculumItemResource extends JsonResource
         if ($fullCourseSub) {
             $isSub = (int)$fullCourseSub;
         }else {
-            $isSub = $this->isSubInInstallment('api');
+            $isSub = (int)$this->isSubInInstallment('api');
         }
 
         $translation = collect($this->itemable->translations)

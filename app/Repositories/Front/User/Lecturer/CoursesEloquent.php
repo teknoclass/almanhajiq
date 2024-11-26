@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Front\User\Lecturer;
 
+use App\Http\Resources\GetTeacherMyCategoriesResource;
 use Carbon\Carbon;
 use App\Models\Faqs;
 use App\Models\Admin;
@@ -93,7 +94,9 @@ class CoursesEloquent extends HelperEloquent
                 'status',
                 'total_sales',
                 'created_at',
-                'material_id'
+                'material_id',
+                'grade_sub_level',
+                'user_id'
             )
             ->with('translations:courses_id,title,locale,description')
             ->with('evaluation')
@@ -1447,5 +1450,17 @@ class CoursesEloquent extends HelperEloquent
 
 
     }
-    
+
+    function getMyCategories($request , $is_web = true){
+        $user = $this->getUser($is_web);
+        $data = Category::where('parent','joining_course')
+            ->whereHas('courses', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->paginate(10);
+
+        return GetTeacherMyCategoriesResource::collection($data);
+
+    }
+
 }

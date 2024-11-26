@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Front\User\Lecturer;
 
+use App\Http\Resources\TeacherTransactionsCollection;
 use App\Repositories\Front\User\HelperEloquent;
 use Illuminate\Support\Facades\DB;
 use App\Models\Balances;
@@ -44,7 +45,10 @@ class FinancialRecordEloquent extends HelperEloquent
         ->whereIn('status', [WithdrawalRequests::PENDING,WithdrawalRequests::UNDERWAY])
         ->orderBy('id', 'desc')->first();
 
-
+        if(!$is_web){
+            unset($data['user']);
+            $data['balance_transactions'] = new TeacherTransactionsCollection($data['balance_transactions']);
+        }
 
         return $data;
     }

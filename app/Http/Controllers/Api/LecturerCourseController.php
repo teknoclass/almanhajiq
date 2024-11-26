@@ -125,6 +125,14 @@ class LecturerCourseController extends Controller
         return response()->json($response);
     }
 
+    public function getMyCategories(Request $request){
+        $data = $this->courses->getMyCategories($request,false);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+
+    }
+
 
 
 }
