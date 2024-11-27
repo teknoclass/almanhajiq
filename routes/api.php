@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\LecturerCourseController;
 use App\Http\Controllers\Api\TeacherBalanceController;
 use App\Http\Controllers\Api\TeacherHomeController;
+use App\Http\Controllers\TeacherStudentProfileController;
 use Twilio\Rest\Api\V2010\Account\Call\PaymentContext;
 
 /*
@@ -202,11 +203,15 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
     Route::get('/getStudentAnswerAssignment/{result_id}',[LecturerCourseController::class,'getStudentAnswer']);
     Route::post('submitMarkAssignment',[LecturerCourseController::class,'submitMark']);
     Route::post('submitResultAssignment',[LecturerCourseController::class,'submitResult']);
+    Route::get('/getStudentHomeworks/{course_id}/{student_id}',[LecturerCourseController::class,'getStudentHomeworks']);
+    Route::get('/previewAssignment/{assignment_id}',[LecturerCourseController::class,'showAssignment']);
+
 
     ////quiz
     Route::get('/courseUserQuizzes',[LecturerCourseController::class,'courseUserQuizzes']);
     Route::get('/courseQuiz/{course_id}',[LecturerCourseController::class,'courseQuiz']);
     Route::get('/previewUserQuiz/{id}' , [LecturerCourseController::class,'previewUserQuiz']);
+    Route::get('/previewQuiz/{quiz_id}',[LecturerCourseController::class,'showQuiz']);
 
     ////session
     Route::get('createSession/{session_id}',     [LecturerCourseController::class , 'createLiveSession'])->name('createLiveSession');
@@ -226,6 +231,15 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
         Route::get('/index',[TeacherBalanceController::class,'index']);
         Route::post('/sendRequest',[TeacherBalanceController::class,'send']);
         Route::post('/cancelRequest',[TeacherBalanceController::class,'cancel']);
+
+    });
+
+    //student profile
+    Route::prefix('studentProfile')->group(function(){
+
+        Route::get('/index/{id}',[TeacherStudentProfileController::class,'index']);
+        Route::get('/courses/{id}',[TeacherStudentProfileController::class,'courses']);
+        Route::get('/comments/{id}',[TeacherStudentProfileController::class,'comments']);
 
     });
 

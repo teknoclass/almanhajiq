@@ -42,6 +42,10 @@ use App\Http\Resources\LecturerCourseAssignmentsResource;
 use App\Http\Resources\LecturerCourseUserQuizzesCollection;
 use App\Http\Resources\LecturerCourseUserAssignmentsCollection;
 use App\Http\Resources\LecturerCourseUserAssignmentAnswerResource;
+use App\Http\Resources\ShowAssignmentResource;
+use App\Http\Resources\ShowQuizResource;
+use App\Http\Resources\TeacherStudentHomeworksCollection;
+use App\Models\CourseAssignmentQuestions;
 
 class CoursesEloquent extends HelperEloquent
 {
@@ -139,6 +143,14 @@ class CoursesEloquent extends HelperEloquent
             }
 
             try {
+                $material_id = $request->get('material_id');
+                if ($material_id) {
+                    $data['courses'] = $data['courses']->filterByCategories2($material_id);
+                }
+            } catch (\Exception $e) {
+            }
+
+            try {
                 $language_ids = $request->get('language_ids');
                 if ($language_ids) {
                     $data['courses'] = $data['courses']->filterByLanguages(json_decode($language_ids));
@@ -166,6 +178,13 @@ class CoursesEloquent extends HelperEloquent
                 $statuses = $request->get('statuses');
                 if ($statuses) {
                     $data['courses'] = $data['courses']->filterByStatus(json_decode($statuses));
+                }
+            } catch (\Exception $e) {
+            }
+            try {
+                $status = $request->get('status');
+                if ($status) {
+                    $data['courses'] = $data['courses']->filterByStatus2($status);
                 }
             } catch (\Exception $e) {
             }
@@ -1437,6 +1456,13 @@ class CoursesEloquent extends HelperEloquent
 
         $mark = CourseAssignmentsResultsAnswer::where('result_id',$result_id)->whereNotNull('mark')->sum('mark');
 
+        if($mark > $result->assignment->grad){
+            return [
+                'status' => false,
+                'message' => __('the_mark_is_greater_than_the_full_mark')
+            ];
+        }
+
         if($mark >= $result->assignment->pass_grade){
             $status = 'passed';
         }else{
@@ -1448,6 +1474,10 @@ class CoursesEloquent extends HelperEloquent
         $result->save();
 
 
+        return [
+            'status' => true,
+            'message' => __('message.operation_accomplished_successfully')
+        ];
 
     }
 
@@ -1461,6 +1491,38 @@ class CoursesEloquent extends HelperEloquent
 
         return GetTeacherMyCategoriesResource::collection($data);
 
+    }
+
+    function getStudentHomeworks($course_id,$student_id,$is_web = true){
+        $data = CourseAssignmentResults::where('course_id',$course_id)->where('student_id',$student_id)
+        ->with('assignment')->paginate(10);
+
+        $data = new TeacherStudentHomeworksCollection($data);
+        return $data;
+    }
+
+    function showQuiz($quizId){
+        $quiz = CourseQuizzes::where('id', $quizId)
+            ->with([
+                'quizQuestions' => function ($query) {
+                    $query->with('quizzesQuestionsAnswers');
+                },
+            ])
+            ->first();
+
+        $data =   ShowQuizResource::collection($quiz->quizQuestions);
+        return $data;
+    }
+
+    function showAssignment($assignmentId){
+        $assignment = CourseAssignments::where('id', $assignmentId)
+            ->with('assignmentQuestions', 'course')
+            ->first();
+
+
+        $data = ShowAssignmentResource::collection($assignment->assignmentQuestions);
+
+        return $data;
     }
 
 }

@@ -35,7 +35,8 @@ class ApiCourseResource extends JsonResource
             'is_sub'=>0,
             'is_favourite' => $this->isFavorite('api'),
             'type' => $this->type,
-            'status' => $this->status
+            'status' => $this->status,
+            'student_count' => $this->studentsCount()
         ];
         if ($this->is_sub){
             $data['is_sub']=1;

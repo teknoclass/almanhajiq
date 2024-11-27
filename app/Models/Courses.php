@@ -117,11 +117,20 @@ class Courses extends Model
     {
         return $q->whereIn('status', $search);
     }
+    public function scopeFilterByStatus2($q, $search)
+    {
+        return $q->where('status', $search);
+    }
 
 
     public function scopeFilterByCategories($q, $search)
     {
         return $q->whereIn('material_id', $search);
+    //   return $q->where('category_id', $search);
+    }
+    public function scopeFilterByCategories2($q, $search)
+    {
+        return $q->where('material_id', $search);
     //   return $q->where('category_id', $search);
     }
 
@@ -425,6 +434,10 @@ class Courses extends Model
         return $this->hasMany('App\Models\UserCourse', 'course_id', 'id');
     }
 
+    public function studentsCount()
+    {
+        return $this->hasMany('App\Models\UserCourse', 'course_id', 'id')->count();
+    }
 
     public function graduates()
     {

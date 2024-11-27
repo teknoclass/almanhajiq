@@ -1156,7 +1156,8 @@
     "contents_have_been_completed":"Contents Finished",
     "out_of": "Out Of ",
     "finish":"Finished",
-    "lessons_o":"Lessons"
+    "lessons_o":"Lessons",
+    "the_mark_is_greater_than_the_full_mark" : "the mark is greater than the full mark"
 
 
 

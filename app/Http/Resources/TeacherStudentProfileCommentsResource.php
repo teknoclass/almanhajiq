@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class InCourseStudentResource extends JsonResource
+class TeacherStudentProfileCommentsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +14,12 @@ class InCourseStudentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $data['id'] = $this->user->id;
-        $data['name'] = $this->user->name;
-        $data['image'] = imageUrl($this->user->image);
-        $data['progress'] = $this->progress;
+        $data['id'] = $this->id;
+        $data['user'] = new UsersResources($this->user);
+        $data['course_name'] = $this->course->title;
+        $data['course_id'] = $this->course->id;
+        $data['comment'] = $this->text;
+
         return $data;
     }
 }

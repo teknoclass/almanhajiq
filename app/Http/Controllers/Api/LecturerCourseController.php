@@ -98,9 +98,8 @@ class LecturerCourseController extends Controller
 
     function submitResult(Request $request){
         $data = $this->courses->submitResult($request,false);
-        $message = __('message.operation_accomplished_successfully');
 
-        return $this->response_api(true,$message,$data);
+        return $this->response_api($data['status'],$data['message']);
     }
 
     public function createLiveSession($id){
@@ -127,6 +126,31 @@ class LecturerCourseController extends Controller
 
     public function getMyCategories(Request $request){
         $data = $this->courses->getMyCategories($request,false);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+
+    }
+
+    function getStudentHomeworks($course_id,$student_id){
+        $data = $this->courses->getStudentHomeworks($course_id,$student_id,false);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+    }
+
+    function showQuiz($quiz_id){
+
+        $data = $this->courses->showQuiz($quiz_id);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+
+    }
+
+    function showAssignment($assignment_id){
+
+        $data = $this->courses->showAssignment($assignment_id);
         $message = __('message.operation_accomplished_successfully');
 
         return $this->response_api(true,$message,$data);

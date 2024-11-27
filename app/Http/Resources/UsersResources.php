@@ -17,10 +17,12 @@ class UsersResources extends JsonResource
         $data =  [
             'id'=>$this->id,
             'name'=>$this->name ,
-            'image'=>$this->image ,
+            'image'=> imageUrl($this->image) ,
             'role'=>$this->role ,
             'email'=>$this->email,
-            'is_validation' => $this->is_validation
+            'is_validation' => $this->is_validation,
+            'mobile' => $this->mobile,
+            'code_country' => $this->code_country
 
         ];
         if ($this->token){
