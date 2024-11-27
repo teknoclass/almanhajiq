@@ -213,6 +213,8 @@ function generatePlan(start_date) {
         titleInput.className = 'form-control';
         dateInput.required = true;
         titleInput.required = true;
+        titleInput.minlength = 3;
+        titleInput.maxlength = 255;
         titleCell.appendChild(titleInput);
 
         var deleteButton = document.createElement('button');
@@ -364,6 +366,8 @@ function addNewRow() {
     titleInput.type = 'text';
     titleInput.name = 'session_title_' + rowCount;
     titleInput.required = true;
+    titleInput.minlength = 3;
+    titleInput.maxlength = 255;
     titleInput.className = 'form-control';
     titleCell.appendChild(titleInput);
     actionCell.appendChild(deleteButton);

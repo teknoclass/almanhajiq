@@ -72,7 +72,7 @@
                            <input type="time" class="form-control" name="session_time_{{ $index }}" value="{{ $session->time }}">
                        </td>
                        <td>
-                           <input type="text" class="form-control" name="session_title_{{ $index }}" value="{{ $session->title }}">
+                           <input minlength="3" maxlength="255"  type="text" class="form-control" name="session_title_{{ $index }}" value="{{ $session->title }}">
                        </td>
                        @if (!$item->published)
                        <td>
