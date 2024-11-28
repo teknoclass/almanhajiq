@@ -116,6 +116,14 @@
                                             @endphp
 
                                             <td>
+                                                    @php
+
+                                                    $lessonStartTime = $session->time instanceof \Carbon\Carbon
+                                                        ? $session->time
+                                                        : \Carbon\Carbon::parse($session->time);
+                                                    $canPostponeHoursBefore = $settings->valueOf('can_postpone_hours_before');
+                                                    $cutoffTime = $lessonStartTime->subHours($canPostponeHoursBefore);
+                                                    @endphp
                                                 @if(!$isSessionInPast && ( !@$session->teacherRequests->first() || (@$session->teacherRequests->first() && @$session->teacherRequests->first()?->status == "rejected") ) )
 
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
@@ -123,13 +131,15 @@
                                                            
                                                             <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
                                                     </button>
-
+                                              
+                                                    @if(\Carbon\Carbon::now() <= $cutoffTime)
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
                                                              id="postPoneButton" class="btn btn-primary btn-sm "
                                                              data-date="{{$session->date}}"
                                                              style="width:100px;margin-top:5px">
                                                             <i class="fa fa-calendar"></i>  {{ __('postpone')}}
                                                     </button>
+                                                    @endif
 
                                                 @endif
                                             </td>

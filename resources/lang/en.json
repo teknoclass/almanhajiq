@@ -16,7 +16,7 @@
     "pageLength": "Per Page",
     "": "",
     "x": "",
-    "Scheduled_Notifications_Times": "Scheduled Notification Times",
+    "Scheduled_Notifications_Times": "Live Lessons",
     "private_Lesson_Pre_Reminder_1st_time": "First Pre-Lesson Reminder",
     "private_Lesson_Pre_Reminder_2nd_time": "Second Pre-Lesson Reminder",
     "pick a date": "Lessons Schedule",
@@ -1161,7 +1161,9 @@
     "tests_completed":" tests completed",
     "tests_not_completed":" tests not completed ",
     "assignments_delivered":" assignments delivered",
-    "assignments_not_delivered":" assignments not delivered "
+    "assignments_not_delivered":" assignments not delivered ",
+    "can_postpone_hours_before":"Can Postpone before session start"
+
 
 
 
