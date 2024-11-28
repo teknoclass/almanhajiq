@@ -330,6 +330,16 @@ class User extends Authenticatable implements MustVerifyEmail
         {
             return $this->belongsTo(JoinAsTeacherRequests::class, 'email', 'email')->where('status' , 'acceptable');
         }
+        function courseCountForSpecificTeacher($type = 'web'){
+            $userId = auth($type)->id();
+            $count = UserCourse::where('user_id',$this->id)->whereHas('course' , function($query) use($userId){
+                $query->where('user_id',$userId);
+            })->count();
+
+            return $count;
+
+        }
+
     // End Functions for LECTURERS
 
     // Functions for MARKETER

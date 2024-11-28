@@ -1357,7 +1357,7 @@ class CoursesEloquent extends HelperEloquent
                     $query->where('status' , $status);
                 })
                 ->when($assignmentId != null , function($query) use ($assignmentId){
-                    $query->where('assignment_id',$assignmentId);
+                    $query->where('quiz_id',$assignmentId);
                 })
                 ->paginate(10);
 

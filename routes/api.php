@@ -223,6 +223,12 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
     Route::get('getHomeChart' , [TeacherHomeController::class,'getChart']);
     Route::get('getHomeData',[TeacherHomeController::class,'getData']);
     Route::get('incomingSessions',[TeacherHomeController::class,'incomingSessions']);
+    Route::get('/getStudents',[TeacherHomeController::class,'getStudents']);
+    Route::get('/courseFilter',[TeacherHomeController::class,'courseFilter']);
+    Route::get('/myProfile',[TeacherHomeController::class,'profile']);
+
+
+
 
 
     //balances

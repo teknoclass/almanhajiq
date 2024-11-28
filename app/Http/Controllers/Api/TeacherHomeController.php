@@ -39,6 +39,28 @@ class TeacherHomeController extends Controller
 
     }
 
+    function getStudents(Request $request){
+        $data = $this->home->getStudents($request,false);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+    }
+
+    function courseFilter(Request $request){
+        $data = $this->home->courseFilter(false);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+    }
+
+    function profile(Request $request){
+        $data = $this->home->profile($request,false);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+    }
+
+
 
 
 }
