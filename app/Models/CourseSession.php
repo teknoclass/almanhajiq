@@ -129,7 +129,7 @@ class CourseSession extends Model
         $this->save();
         $url =  Bigbluebutton::join([
             'meetingID' => $this->meeting_id,
-            'userName'  => auth()->user()->name,
+            'userName'  => auth($type)->user()->name,
             'role'      => 'MODERATOR',
             'password'  => $moderatorPW
         ]);
