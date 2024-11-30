@@ -37,9 +37,9 @@ class AssignmentsController extends Controller
     }
 
 
-    public function uploadFile(Request $request, $course_id)
+    public function uploadFile(Request $request, $course_id,$assignment_id,$question_id)
     {
-        $response = $this->assignment->uploadFile($request, $course_id);
+        $response = $this->assignment->uploadFile($request, $course_id,true,$assignment_id,$question_id);
 
         return $response;
     }

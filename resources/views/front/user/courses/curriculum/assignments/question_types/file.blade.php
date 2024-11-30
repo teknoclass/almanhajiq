@@ -15,7 +15,7 @@
         $(document).ready(function () {
             if ($(".myDropzone-{{ $question->id }}").length > 0) {
                 var myDropzoneNo{{ $question->id }} = new Dropzone(".myDropzone-{{ $question->id }}", {
-                    url: "{{ route('user.courses.curriculum.assignment.file.upload', @$assignment->course_id) }}",
+                    url: "{{ route('user.courses.curriculum.assignment.file.upload', ['course_id' => @$assignment->course_id,'assignment_id' => @$assignment->id,'question_id' =>  @$question->id ]) }}",
                     dictDefaultMessage: `
                         <span class='icon me-2'><i class="fa-solid fa-arrow-down-to-line"></i></span>
                         <span class='text'>إرفـاق ملفـات</span>`,

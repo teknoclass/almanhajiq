@@ -163,7 +163,7 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
                 Route::group(['prefix' => 'assignment', 'as' => 'assignment.'], function () {
                     Route::get('/{course_id}/{id}/start',               [AssignmentsController::class, 'start'])->name('start');
                     Route::post('/{course_id}/{id}/store-result',       [AssignmentsController::class, 'storeResult'])->name('store.result');
-                    Route::post('/upload-file/{course_id}', [AssignmentsController::class, 'uploadFile'])->name('file.upload');
+                    Route::post('/upload-file/{course_id}/{assignment_id}/{question_id}', [AssignmentsController::class, 'uploadFile'])->name('file.upload');
                     Route::delete('/delete-file/{course_id}', [AssignmentsController::class, 'deleteFile'])->name('file.delete');
                 });
             });
