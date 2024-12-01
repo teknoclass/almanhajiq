@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Front\User;
 
+use App\Http\Resources\ApiItemCommentCollection;
 use App\Models\Balances;
 use App\Models\CourseSession;
 use Illuminate\Support\Facades\DB;
@@ -78,7 +79,7 @@ class CoursesEloquent extends HelperEloquent
             } else {
                 $certificate_templates = CertificateTemplates::where('course_category_id', $item->course->category_id)->first();
             }
-          
+
             $name = time() . ".jpeg";
 
             $user_data['name']= auth()->user()->name;
@@ -563,7 +564,7 @@ class CoursesEloquent extends HelperEloquent
         $data['uncompleted_quizzes_count'] = count($data['uncompleted_quizzes']);
         $data['uncompleted_assignments_count'] = count($data['uncompleted_assignments']);
 
-     
+
         // dd($data);
         return $data;
     }
@@ -603,13 +604,13 @@ class CoursesEloquent extends HelperEloquent
     //         ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['lesson']) )
     //         ->get();
 
-      
+
 
     //     $data['uncompleted_quizzes'] = getCurriculumQuery($data['course']->id)->uncompletedItems(['quiz'])
     //         ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['quiz']) )
     //         ->get();
 
-      
+
     //     $data['uncompleted_assignments'] = getCurriculumQuery($data['course']->id)->uncompletedItems(['assignment'])
     //         ->union( getSectionItemsQuery($data['course']->id)->uncompletedItems(['assignment']) )
     //         ->get();
@@ -617,7 +618,7 @@ class CoursesEloquent extends HelperEloquent
     // Fetch all items
             $data['all_lessons'] = getCurriculumQuery($data['course']->id)
             ->union(getSectionItemsQuery($data['course']->id))
-            ->where('itemable_type', 'lesson') 
+            ->where('itemable_type', 'lesson')
             ->get();
 
             $data['all_quizzes'] = getCurriculumQuery($data['course']->id)
@@ -652,7 +653,7 @@ class CoursesEloquent extends HelperEloquent
             $data['uncompleted_quizzes'] = $data['all_quizzes']->diff($data['completed_quizzes']);
             $data['uncompleted_assignments'] = $data['all_assignments']->diff($data['completed_assignments']);
 
- 
+
         $data['completed_lessons_count']        = count($data['completed_lessons']);
         $data['completed_quizzes_count']        = count($data['completed_quizzes']);
         $data['completed_assignments_count']    = count($data['completed_assignments']);
@@ -670,5 +671,33 @@ class CoursesEloquent extends HelperEloquent
 
         return $session->joinLiveSession($request);
     }
+
+    function endLessons($request,$is_web = true)
+    {
+        $user = $this->getUser($is_web);
+
+        CourseLessonsLearning::create([
+            'user_id' => $user->id,
+            'lesson_id' => $request->get('lesson_id'),
+            'lesson_type' => 'normal'
+        ]);
+
+    }
+
+    function getComments($itemId ,$itemType, $is_web = true)
+    {
+        $comments = CourseComments::where('item_id',$itemId)
+        ->where('item_type',$itemType)
+        ->whereNull('parent_id')->with('user')->paginate(10);
+
+        return new ApiItemCommentCollection($comments);
+
+    }
+
+    function getReplys($commentId , $is_web = true){
+        $reply = CourseComments::where('parent_id',$commentId)->paginate(10);
+        return new ApiItemCommentCollection($reply);
+    }
+
 
 }

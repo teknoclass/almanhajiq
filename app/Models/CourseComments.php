@@ -73,4 +73,14 @@ class CourseComments extends Model
     public function children(){
         return $this->hasMany(self::class, 'parent_id')->where('parent_id', '!=', null);
     }
+
+    function hasReply(){
+
+        if(CourseComments::where('parent_id',$this->id)->exists()){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
 }

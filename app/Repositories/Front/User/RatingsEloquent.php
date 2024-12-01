@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Front\User;
 
+use App\Http\Resources\ApiRatingCollection;
 use App\Models\PrivateLessons;
 use App\Models\Ratings;
 use App\Models\SessionsGroupCourse;
@@ -29,6 +30,7 @@ class RatingsEloquent extends HelperEloquent
         try {
 
             $user=$this->getUser($is_web);
+
             $sourse_type=$request->get('sourse_type');
             $sourse_id=$request->get('sourse_id');
 
@@ -39,7 +41,7 @@ class RatingsEloquent extends HelperEloquent
             }
             else if ($sourse_type==Ratings::COURSE) {
 
-                $item=UserCourse::where('course_id', $sourse_id)->where('user_id', auth()->id())->first();
+                $item=UserCourse::where('course_id', $sourse_id)->where('user_id', $user->id)->first();
 
             }
 
@@ -108,6 +110,15 @@ class RatingsEloquent extends HelperEloquent
         return $response;
 
     }
+
+    function get($request){
+        $ratings = Ratings::active()
+        ->where('sourse_id' ,$request['source_id'])->where('sourse_type',$request['source_type'])->paginate(10);
+
+        return new ApiRatingCollection($ratings);
+
+    }
+
 
 
 }

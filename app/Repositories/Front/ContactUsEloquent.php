@@ -19,7 +19,7 @@ class ContactUsEloquent
             if (substr($mobile, 0, 1) === "0") {
                 $request['mobile']  = substr($mobile, 1);
             }
-            
+
             $item=VisitorMessage::updateOrCreate(['id' => 0], $request->all());
 
             //sendNotification

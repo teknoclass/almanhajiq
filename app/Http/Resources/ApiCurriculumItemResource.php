@@ -29,6 +29,18 @@ class ApiCurriculumItemResource extends JsonResource
             ?? collect($this->translations)
                 ->firstWhere('locale', 'en');
 
+        if(config("constants.item_model_types.$this->itemable_type") == "section"){
+            if($this->itemable->is_active){
+                $status = "active";
+            }else{
+                $status = "inactive";
+            }
+            $item = collect(new ApiCurriculumItemCollection($this->itemable->items));
+        }else{
+            $item = null;
+            $status = $this->itemable->status;
+        }
+
         return [
             'id' => $this->itemable_id,
             'course_id' => $this->course_id,
@@ -43,9 +55,10 @@ class ApiCurriculumItemResource extends JsonResource
                 'teacher' => $this->itemable->creator?->name,
                 'time' => $this->itemable->time,
                 'grade' => $this->itemable->grade,
-                'status' => $this->itemable->status,
+                'status' => $status,
                 'title' => $translation?->title,
                 'description' => $translation?->description,
+                'items' => $item
             ]
         ];
     }

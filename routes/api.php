@@ -87,6 +87,7 @@ Route::post('/reset_password', [AuthController::class, 'resetPassword'])->name('
 // Additional routes
 Route::get('/settings', [SettingsController::class, 'all'])->name('settings')->middleware('language');
 Route::get('/FAQ', [SettingsController::class, 'faqs'])->name('faqs')->middleware('language');
+Route::post('/contactUs',[SettingsController::class,'contactUs']);
 
 Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('language');
 Route::get('/homeSearch',[HomeController::class,'homeSearch'])->middleware('language');
@@ -95,6 +96,7 @@ Route::group([ 'prefix' => 'courses'], function () {
     Route::post('/filter', [CourseController::class, 'courseFilter'])->name('filter')->middleware('check.sanctum.token');
     Route::get('/{id}', [CourseController::class, 'getCourse'])->name('singleCourse')->middleware('check.sanctum.token');
     Route::get('/purchase-options/{id}', [CourseSessionsController::class, 'purchaseOptions'])->name('session_groups');
+
 
 });
 
@@ -138,6 +140,15 @@ Route::group(['middleware' => 'language', 'prefix' => 'coupon'], function () {
 
 //course curriculum
 Route::get('/itemApi/{id}',[CoursesController::class , 'getItemApi']);
+Route::get('/itemComments',[CoursesController::class,'getComments']);
+Route::get('/getReply/{comment_id}',[CoursesController::class,'getReplys']);
+Route::post('/addRate',[CoursesController::class,'addRate'])->middleware('auth:api');
+Route::get('/getRate',[CoursesController::class,'getRate']);
+
+
+//lesson
+Route::post('/endLesson',[CoursesController::class,'endLesson']);
+
 //quiz
 Route::prefix('quiz')->middleware(['language', 'auth:sanctum'])->group(function(){
     Route::get('/{id}/start' , [QuizController::class,'start']);

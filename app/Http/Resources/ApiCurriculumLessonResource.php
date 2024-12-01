@@ -33,8 +33,6 @@ class ApiCurriculumLessonResource extends JsonResource
         $data['title'] = isset($this->translate(app()->getLocale())->title) ? $this->translate(app()->getLocale())->title : '';
         $data['description'] = isset($this->translate(app()->getLocale())->description) ? $this->translate(app()->getLocale())->description : '';
         $data['attachment'] = ApiLessonAttachmentResource::collection($this->attachments);
-        $data['next'] = $this->getNext('api');
-        $data['prev'] = $this->getprev('api');
         $data['course_id'] = $this->course_id;
         $data['is_completed'] = $this->is_completed();
         return $data;

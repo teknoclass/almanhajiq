@@ -20,6 +20,10 @@ class CourseSectionItems extends Model
     {
         return $this->belongsTo(CourseSections::class,'course_sections_id');
     }
+    public function course()
+    {
+        return $this->belongsTo(Courses::class, 'course_id', 'id');
+    }
 
     public function itemable(): MorphTo
     {
@@ -138,6 +142,14 @@ class CourseSectionItems extends Model
                     ->where('id', $this->id)
                     ->active()
                     ->get();
+    }
+
+
+
+    //NOTE:this function is made to not get error in recorded courses that is dont have installment system
+    function isSubInInstallment()
+    {
+        return 0;
     }
 
 }

@@ -15,4 +15,10 @@ class HelperEloquent
         }
         return $user;
     }
+
+    function getType($is_web)
+    {
+        if($is_web)return 'web';
+        else return 'api';
+    }
 }

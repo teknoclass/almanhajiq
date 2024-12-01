@@ -118,6 +118,7 @@ class CourseCurriculum extends Model
     public function is_completed()
     {
         $type = config('constants.item_types.'.$this->itemable_type);
+        if($type == 'section')return false;
         $strategy = ItemStrategyFactory::create($this->itemable_id, $type);
         return $strategy->isCompleted();
     }

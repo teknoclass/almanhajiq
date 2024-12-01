@@ -3,6 +3,8 @@
 use App\Models\CourseAssignments;
 use App\Models\CourseLessons;
 use App\Models\CourseQuizzes;
+use App\Models\CourseSections;
+use App\Models\CourseSession;
 
 return [
     'gender' => [
@@ -33,12 +35,14 @@ return [
     'item_types'=> [
         CourseLessons::class  => 'lesson',
         CourseAssignments::class => 'assignment',
-        CourseQuizzes::class  => 'quiz'
+        CourseQuizzes::class  => 'quiz',
+        CourseSections::class => 'section'
 
     ],    'item_model_types'=> [
         'App\Models\CourseLessons'  => 'lesson',
         'App\Models\CourseAssignments' => 'assignment',
-        'App\Models\CourseQuizzes'  => 'quiz'
+        'App\Models\CourseQuizzes'  => 'quiz',
+        'App\Models\CourseSections' => 'section'
 
     ],
     'users_type' => [
