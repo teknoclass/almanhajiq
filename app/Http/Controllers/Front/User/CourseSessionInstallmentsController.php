@@ -30,8 +30,12 @@ class CourseSessionInstallmentsController extends Controller
     {
         $data['course_id'] = $request->course_id;
         $data['id'] = $request->id;
-
-        $data['price'] = CourseSessionInstallment::where('course_session_id',$request->id)->first()->price ?? 0;
+        $installment = CourseSessionInstallment::where('course_session_id',$request->id)->where('course_id',$request->course_id)->first();
+        if(! $installment)
+        {
+            return back();
+        }
+        $data['price'] = $installment->price ?? 0;
 
         return view('front.payment-options.installment-subscription', $data);
     }
