@@ -124,7 +124,7 @@
                         <td>{{ $session->date }}</td>
                         <td>{{ $session->group?->title??__('no_group') }}</td>
                         <td>{{ $session->time }}</td>
-                        <td><input type="number" step="any" min="1" class="sessionPrice {{$session->id}} form-control" alt="{{$session->id}}" value="{{$session->price}}"></td>
+                        <td><input type="number" step="any" min="0" class="sessionPrice {{$session->id}} form-control" alt="{{$session->id}}" value="{{$session->price}}"></td>
                         <td>
                             @php
                                 $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
@@ -242,7 +242,7 @@
                         </div>
                         <div class="form-group">
                             <label for="price">{{ __('price') }}</label>
-                            <input type="number" step="any" min="1" required class="form-control" id="price">
+                            <input type="number" step="any" min="0" required class="form-control" id="price">
                             <input type="text" class="form-control" id="price" hidden>
 
                             <div class="invalid-feedback" id="priceError" style="display: none;">

@@ -48,6 +48,52 @@ class CourseSessionSubscriptionsController extends Controller
             $data['price'] = $item->price ?? 0;   
         }
 
+        //if free
+        if($data['price'] == 0 || $data['price'] == "")
+        {
+            $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+
+            if($request->type == "group")
+            {
+            $sessions = CourseSession::where('group_id', $request->id)->get();
+
+            foreach($sessions as $session)
+            {
+                    if(! in_array( $session->id,$studentSubscribedSessionsIds))
+                    {
+                        CourseSessionSubscription::create([
+                            'student_id' => auth('web')->user()->id,
+                            'course_session_id' => $session->id,
+                            'status' => 1,
+                            'subscription_date' => now(),
+                            'course_session_group_id' => $session->group_id,
+                            'related_to_group_subscription' => 1,
+                            'course_id' => $session->course_id
+                        ]);
+                    }
+            }
+            }
+            elseif($request->type == "session")
+            {
+            $session = CourseSession::find($request->id);
+
+            if(! in_array($session->id, $studentSubscribedSessionsIds))
+            {
+                    CourseSessionSubscription::create([
+                        'student_id' => auth('web')->user()->id,
+                        'course_session_id' => $session->id,
+                        'status' => 1,
+                        'subscription_date' => now(),
+                        'course_session_group_id' => $session->group_id,
+                        'related_to_group_subscription' => 0,
+                        'course_id' => $session->course_id
+                    ]);
+                }
+            }
+
+            return redirect("/user/courses/curriculum/item/".$request->course_id);
+        }
+
         return view('front.payment-options.offer-subscription', $data);
     }
 

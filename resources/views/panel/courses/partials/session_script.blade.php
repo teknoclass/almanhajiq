@@ -3,8 +3,12 @@ $(document).ready(function(){
     $(document).on('change','.sessionPrice',function(){
         var price = $(this).val();
         var id = $(this).attr("alt");
-        if(price != "" && price != 0)
+        if(price == "")
         {
+            price = 0;
+        }   
+        // if(price != "" && price != 0)
+        // {
             $.ajax({
                 url: "{{url('/admin/update-session-price')}}",
                 data:{id:id,price:price},
@@ -16,12 +20,12 @@ $(document).ready(function(){
                     );
                 }
             });
-        }else{
-                customSweetAlert(
-                        "error",
-                        "{{__('price-not-zero')}}"
-                    );
-            }
+        // }else{
+                // customSweetAlert(
+                //         "error",
+                //         "{{__('price-not-zero')}}"
+                //     );
+            // }
     });
 });
 

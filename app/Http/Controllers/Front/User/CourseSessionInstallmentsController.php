@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Models\CourseSessionInstallment;
+use App\Models\Courses;
 
 class CourseSessionInstallmentsController extends Controller
 {
@@ -36,6 +37,18 @@ class CourseSessionInstallmentsController extends Controller
             return back();
         }
         $data['price'] = $installment->price ?? 0;
+
+        //if free
+        if($installment->price == 0 ||  $installment->price == "")
+        {
+            $item = StudentSessionInstallment::updateOrCreate([
+                'student_id' => auth('web')->user()->id,
+                'course_id' => $request->course_id,
+                'access_until_session_id' => $request->id,
+            ]);
+
+            return redirect("/user/courses/curriculum/item/".$request->course_id);
+        }
 
         return view('front.payment-options.installment-subscription', $data);
     }
