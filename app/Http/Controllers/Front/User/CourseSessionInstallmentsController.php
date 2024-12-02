@@ -52,8 +52,15 @@ class CourseSessionInstallmentsController extends Controller
 
     public function paymentGateway(Request $request)
     {
+        $installment = CourseSessionInstallment::where('course_session_id',$request->id)->where('course_id',$request->course_id)->first();
+        if(! $installment)
+        {
+            return back();
+        }
+        $price = $installment->price ?? 0;
+
        $response = $this->paymentService->processPayment([
-            "amount" => $request->price,
+            "amount" => $price,
             "currency" => "IQD",
             "finishPaymentUrl" => url('/user/pay-to-course-session-installment-confirm'),
             "notificationUrl" => url('/user/pay-to-course-session-installment-confirm'),
@@ -65,7 +72,7 @@ class CourseSessionInstallmentsController extends Controller
                 "description" => "دفع قسط جلسات دورة",
                 "orderId" => $response['requestId'],
                 "payment_id" => $response['paymentId'],
-                "amount" => $request->price,
+                "amount" => $price,
                 "transactionable_type" => "App\\Models\\CourseSession",
                 "transactionable_id" => $request->id,
                 "brand" => "card",
@@ -88,7 +95,14 @@ class CourseSessionInstallmentsController extends Controller
 
     public function zainCash(Request $request)
     {
-        $response = $this->zainCashService->processPayment($request->price,
+        $installment = CourseSessionInstallment::where('course_session_id',$request->id)->where('course_id',$request->course_id)->first();
+        if(! $installment)
+        {
+            return back();
+        }
+        $price = $installment->price ?? 0;
+        
+        $response = $this->zainCashService->processPayment($price,
         url('/user/pay-to-course-session-installment-confirm'),"دفع قسط جلسات دورة");  
         
         if(isset($response['id']))
@@ -97,7 +111,7 @@ class CourseSessionInstallmentsController extends Controller
                 "description" => "دفع قسط جلسات دورة",
                 "orderId" => $response['orderId'],
                 "payment_id" => $response['id'],
-                "amount" => $request->price,
+                "amount" => $price,
                 "transactionable_type" => "App\\Models\\CourseSession",
                 "transactionable_id" => $request->id,
                 "brand" => "zaincash",
