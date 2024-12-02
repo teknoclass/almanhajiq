@@ -31,7 +31,12 @@ class CourseSessionSubscriptionsController extends Controller
         $data['id'] = $request->id;
         $data['course_id'] = $request->course_id;
         $data['type'] = $request->type;
-        $data['price'] = $request->price;
+        if($request->type == "session")
+        {
+            $data['price'] = CourseSession::find( $request->id)->price ?? 0;
+        }else{
+            $data['price'] = CourseSessionsGroup::find($request->id)->price ?? 0;   
+        }
 
         return view('front.payment-options.offer-subscription', $data);
     }

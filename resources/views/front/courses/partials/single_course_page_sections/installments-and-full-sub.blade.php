@@ -122,8 +122,8 @@
                                                       <br>
                                                       <br>
                                                         @if(! in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id || @$currentInstallment == $untilLesson) )
-                                                        <a href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $untilLesson ?? '','price' => $installment->price]) }}" style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
-                                                         class="stop-payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}" data-price="{{$installment->price}}">{{__('payment')}} 
+                                                        <a href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $untilLesson ?? '']) }}" style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
+                                                         class="stop-payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}" >{{__('payment')}} 
                                                         </a>
                                                         @elseif(in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id) )
                                                         <a style="position:absolute;bottom:5px;text-align:center;cursor:not-allowed;background-color:gray"

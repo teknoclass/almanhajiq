@@ -80,7 +80,7 @@
                 <div class="card-header" style="background-color:slategrey;width:auto;padding:10px;color:white;text-align:center">
                     {{__('next_inst_date')}}: {{$nextInstallmentDate}}
                     <a style="cursor: pointer;"
-                     href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $nextInstallment->course_session_id ?? '','price' => $nextInstallment->price]) }}"
+                     href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $nextInstallment->course_session_id ?? '']) }}"
                         class=" {{$nextInstallment->course_session_id}} btn btn-sm primary-btn " alt="{{$nextInstallment->course_session_id}}">{{__('payment')}}
                     </a>
                 </div>

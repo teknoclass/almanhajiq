@@ -13,6 +13,7 @@ use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Models\CourseSessionInstallment;
 
 class CourseSessionInstallmentsController extends Controller
 {
@@ -29,7 +30,8 @@ class CourseSessionInstallmentsController extends Controller
     {
         $data['course_id'] = $request->course_id;
         $data['id'] = $request->id;
-        $data['price'] = $request->price;
+
+        $data['price'] = CourseSessionInstallment::where('course_session_id',$request->id)->first()->price ?? 0;
 
         return view('front.payment-options.installment-subscription', $data);
     }
