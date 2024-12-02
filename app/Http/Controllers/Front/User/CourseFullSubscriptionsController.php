@@ -31,7 +31,24 @@ class CourseFullSubscriptionsController extends Controller
     {
         $course = Courses::find($request->course_id);
         $data['course_id'] = $request->course_id;
-        $data['price'] =  $course->getPriceForPayment();
+        //calc course price after coupon
+        $coursePrice = $course->getPriceForPayment();
+        $price = $coursePrice;
+        $coupon = $request['marketer_coupon'];
+        if ($coupon) {
+            $coupon = Coupons::where('code', $coupon)->first();
+            if (@$coupon->isValid()) {
+        if($coupon->amount_type == "rate")
+        {
+            $rateVal = ($coupon->amount / 100) * $coursePrice;
+            $coursePriceAfterCoupon = $coursePrice - $rateVal;
+        }else{
+            $coursePriceAfterCoupon = $coursePrice - $coupon->amount;
+        }
+        $price = $coursePriceAfterCoupon;
+            }
+        }
+        $data['price'] =  $price;
         $data['marketer_coupon'] = $request->marketer_coupon;
 
         return view('front.payment-options.full-subscription', $data);
@@ -53,13 +70,31 @@ class CourseFullSubscriptionsController extends Controller
     {
         $course = Courses::find($request->id);
 
+        //calc course price after coupon
+        $coursePrice = $course->getPriceForPayment();
+        $price = $coursePrice;
+        $coupon = $request['marketer_coupon'];
+        if ($coupon) {
+            $coupon = Coupons::where('code', $coupon)->first();
+            if (@$coupon->isValid()) {
+        if($coupon->amount_type == "rate")
+        {
+            $rateVal = ($coupon->amount / 100) * $coursePrice;
+            $coursePriceAfterCoupon = $coursePrice - $rateVal;
+        }else{
+            $coursePriceAfterCoupon = $coursePrice - $coupon->amount;
+        }
+        $price = $coursePriceAfterCoupon;
+            }
+        }
+
         $response = $this->paymentService->processPayment([
-            "amount" => $course->getPriceForPayment(),
+            "amount" => $price,
             "currency" => "IQD",
             "finishPaymentUrl" => url('/user/full-subscribe-course-confirm'),
             "notificationUrl" => url('/user/full-subscribe-course-confirm')
         ]);  
-  
+ 
         if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [
@@ -95,6 +130,24 @@ class CourseFullSubscriptionsController extends Controller
     {
         $course = Courses::find($request->id);
 
+        //calc course price after coupon
+        $coursePrice = $course->getPriceForPayment();
+        $price = $coursePrice;
+        $coupon = $request['marketer_coupon'];
+        if ($coupon) {
+            $coupon = Coupons::where('code', $coupon)->first();
+            if (@$coupon->isValid()) {
+        if($coupon->amount_type == "rate")
+        {
+            $rateVal = ($coupon->amount / 100) * $coursePrice;
+            $coursePriceAfterCoupon = $coursePrice - $rateVal;
+        }else{
+            $coursePriceAfterCoupon = $coursePrice - $coupon->amount;
+        }
+        $price = $coursePriceAfterCoupon;
+            }
+        }
+           
         $response = $this->zainCashService->processPayment($course->getPriceForPayment(),
         url('/user/full-subscribe-course-confirm'),"اشتراك كلى فى دورة"); 
         
@@ -104,7 +157,7 @@ class CourseFullSubscriptionsController extends Controller
                 "description" => 'اشتراك كلى فى الدورة',
                 "orderId" => $response['orderId'],
                 "payment_id" => $response['id'],
-                "amount" => $course->getPriceForPayment(),
+                "amount" => $price,
                 "transactionable_type" => "App\\Models\\Courses",
                 "transactionable_id" => $course->id,
                 "brand" => "zaincash",
@@ -166,11 +219,16 @@ class CourseFullSubscriptionsController extends Controller
                 "is_complete_payment" => 1,
             ]);
 
+            $coursePriceAfterCoupon = $this->executeCoupon($paymentDetails);
+
+            if($coursePriceAfterCoupon)
+            {
+                $paymentDetails['amount'] = $coursePriceAfterCoupon;
+            }
+            
             $this->paymentService->createTransactionRecord($paymentDetails);
 
             $this->paymentService->storeBalance($paymentDetails);
-    
-            $this->executeCoupon($paymentDetails);
 
             session()->forget('payment-'.auth('web')->user()->id);
     
@@ -188,7 +246,7 @@ class CourseFullSubscriptionsController extends Controller
             return redirect('/payment-failure'); 
         }
     }
- 
+
     public function executeCoupon($request)
     {
         $coupon = $request['marketer_coupon'];
@@ -197,12 +255,21 @@ class CourseFullSubscriptionsController extends Controller
             if (@$coupon->isValid()) {
                 $marketer = $coupon->marketer;
 
-                // save coupon
-                // $user->coupon_id = $coupon->id;
-                // $user->market_id = $marketer->user_id;
-                // $user->update();
-
                 $marketer_amount = $coupon->marketer_amount;
+                $marketer_amount_type = $coupon->marketer_amount_type;
+                $coursePrice = @Courses::find($request['course_id'])->getPriceForPayment();
+                //calc course price after coupon
+                if($coupon->amount_type == "rate")
+                {
+                    $rateVal = ($coupon->amount / 100) * $coursePrice;
+                    $coursePriceAfterCoupon = $coursePrice - $rateVal;
+                }else{
+                    $coursePriceAfterCoupon = $coursePrice - $coupon->amount;
+                }
+                if($marketer_amount_type == "rate" && $coursePriceAfterCoupon)
+                {
+                    $marketer_amount = ($marketer_amount/100) * $coursePriceAfterCoupon;
+                }
 
                 $user_name = auth()->user('web')->name;
                 $marketer_name = $marketer->user->name;
@@ -239,6 +306,8 @@ class CourseFullSubscriptionsController extends Controller
                 ];
 
                 $this->addBalance($params_balance);
+
+                return $coursePriceAfterCoupon;
             }
         }
     }
