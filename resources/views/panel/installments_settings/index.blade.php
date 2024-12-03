@@ -37,6 +37,8 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 99%;
+            margin: auto;
         }
 
         .btn-custom {
@@ -98,8 +100,7 @@
       <div class="row">
          @include('panel.courses.partials.toolbar')
 
-         <div class="container mt-5">
-        <div class="table-wrapper">
+        <div class="table-wrapper mt-5">
             <h2 class="text-center mb-4">{{__('installments')}}</h2>
             <form id="installments-form">
                 <table id="installments-table" class="table table-borderless">
@@ -116,7 +117,7 @@
                       @if(!checkIfInstallmentHasStudents($installment->id))
                       <tr>
                         <td><input type="text"  name="installment_name[]" required class="form-control" value="{{$installment->name}}"></td>
-                        <td><input type="number" name="price[]" step="any" min="1" required class="form-control" value="{{$installment->price}}">
+                        <td><input type="number" name="price[]" step="any" min="0" required class="form-control" value="{{$installment->price}}">
                         </td>
                         <td>
                             <select required name="lesson_id[]" class="form-control lessonsSelect">
@@ -130,7 +131,7 @@
                     @else 
                     <tr>
                         <td><input type="text" readonly name="installment_name[]"  class="form-control" value="{{$installment->name}}"></td>
-                        <td><input type="number"  readonly name="price[]" step="any" min="1"  class="form-control" value="{{$installment->price}}">
+                        <td><input type="number"  readonly name="price[]" step="any" min="0"  class="form-control" value="{{$installment->price}}">
                         </td>
                         <td>
                             <select class="form-control " name="lesson_id[]">
@@ -163,7 +164,7 @@
    </div>
 
 </div>
-    </div>
+    
     
 
     @push('panel_js')

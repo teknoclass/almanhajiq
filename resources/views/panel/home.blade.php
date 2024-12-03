@@ -175,27 +175,7 @@
                     </div>
                     <!--end::Col-->
                     <!--begin::Col-->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <!--begin::List Widget 5-->
-                        <div class="card">
-                            <!--begin::Body-->
-                            <div class="card-body pt-5">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="icon-statistics bg-statistics-7">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22.033" height="25.733" viewBox="0 0 22.033 25.733">
-                                            <path id="Path_9760" data-name="Path 9760" d="M42.953,27.846c0-.577.44-.791.978-.474L64.582,39.517a.612.612,0,0,1,0,1.151L43.931,52.813c-.538.316-.978.1-.978-.474Z" transform="translate(-42.953 -27.226)" fill="#fff"/>
-                                        </svg>
-                                    </div>
-                                    <div class="">
-                                        <h3 class="font-medium text-dark">{{$lessons_count}}</h3>
-                                        <h5 class="text-gray-500">{{__('private_lessons')}}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end: Card Body-->
-                        </div>
-                        <!--end: List Widget 5-->
-                    </div>
+                  
                     <!--end::Col-->
                     <!--begin::Col-->
                     <div class="col-xl-3 col-lg-4 col-md-6">
@@ -366,7 +346,7 @@
                         </div>
                         <!--end::Tables Widget 5-->
                     </div>
-                    <div class="col-md-6">
+                    {{--  <div class="col-md-6">
                         <!--begin::Tables Widget 5-->
                         <div class="card card-xxl-stretch mb-5 mb-xxl-8 h-100">
                             <!--begin::Header-->
@@ -377,7 +357,7 @@
                             </div>
                             <!--end::Header-->
                             <!--begin::Body-->
-                            <div class="card-body pt-0 pb-1">
+                          <div class="card-body pt-0 pb-1">
                                 <!--begin::Table container-->
                                 <div class="table-responsive">
                                     <!--begin::Table-->
@@ -416,11 +396,11 @@
                                 </div>
                                 <!--end::Table-->
                                 <a href="{{ route('panel.privateLessons.all.index')}}" class="text-decoration-underline text-primary"> {{__('view_all')}} </a>
-                            </div>
+                            </div> 
                             <!--end::Body-->
                         </div>
                         <!--end::Tables Widget 5-->
-                    </div>
+                    </div> --}}
                     <!--end::Col-->
                     <div class="col-md-6">
                         <!--begin::Tables Widget 5-->

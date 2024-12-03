@@ -113,11 +113,11 @@
                                             }
                                         @endphp
 
-                                        <select class="form-control mb-5 text-right directionRTL" name="teacher_id"
+                                        <select class="form-control mb-5 text-right directionRTL" name="marketer_id"
                                             id="search_marketers">
                                             @if (isset($item))
-                                                <option selected value="{{ @$item->teacher->id }}">
-                                                    {{ @$item->teacher->name }}
+                                                <option selected value="{{ @$item->marketer->user->id }}">
+                                                    {{ @$item->marketer->user->name }}
                                                 </option>
                                             @endif
                                         </select>

@@ -53,7 +53,7 @@
                                                 <select class="form-control sessionGroupId">
                                                     <option disabled readonly selected value="">{{__('choose_pls')}}</option>
                                                 @foreach($sessionGroups as $sessionGroup)
-                                                    <option data-price="{{$sessionGroup->price}}"  value="{{$sessionGroup->id}}">{{$sessionGroup->title}}  ({{__('price')}} : {{$sessionGroup->price}})</option>
+                                                    <option value="{{$sessionGroup->id}}">{{$sessionGroup->title}}  ({{__('price')}} : {{$sessionGroup->price}})</option>
                                                 @endforeach
                                                 </select>
                                                 <div class="form-group mt-4 text-center col-3 subscribeToSessionGroup" style="margin: auto;">
@@ -73,7 +73,7 @@
                                                 <select class="form-control sessionId">
                                                     <option disabled readonly selected value="">{{__('choose_pls')}}</option>
                                                 @foreach($sessions as $session)
-                                                    <option data-price="{{$session->price}}"  value="{{$session->id}}">{{$session->title}} ({{__('price')}} : {{$session->price}})</option>
+                                                    <option  value="{{$session->id}}">{{$session->title}} ({{__('price')}} : {{$session->price}})</option>
                                                 @endforeach
                                                 </select>
                                                 <div class="form-group mt-4 text-center col-3 subscribeToSession"  style="margin: auto;">
@@ -108,12 +108,10 @@
             {  
                 var type = "group";
                 var course_id = "{{@$course->id}}";
-                var price = $('.sessionGroupId option:selected').data('price');
 
                 var url = "{{ url('/user/session-select-payment-method') }}" + 
                 "/" + course_id + 
                 "/" + target_id + 
-                "/" + price +
                 "/group";
 
                 window.location.href = url;
@@ -131,12 +129,10 @@
             {    
                 var type = "session";
                 var course_id = "{{@$course->id}}";
-                var price = $('.sessionId option:selected').data('price');
 
                 var url = "{{ url('/user/session-select-payment-method') }}" + 
                 "/" + course_id + 
                 "/" + target_id + 
-                "/" + price +
                 "/session";
 
                 window.location.href = url;

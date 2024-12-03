@@ -51,23 +51,24 @@ class CouponsEloquent
 
         $coupon=Coupons::updateOrCreate(['id' => 0], $data);
 
-        //check market id
-        if($request->marketer_ids) {
-            $marketer_id=$request->marketer_ids[0];
-            $check_coupon=CouponMarketers::where('user_id', $marketer_id)->first();
-            if($check_coupon) {
-                $response = [
-                    'message' => 'المسوق له كوبون اخر',
-                    'status' =>false,
-                ];
+        $marketer_id = $request->marketer_id;
+        $check_coupon=CouponMarketers::where('user_id', $marketer_id)
+        ->where('coupon_id', '!=', $coupon->id)
+        ->first();
+        if($check_coupon) {
+            $response = [
+                'message' => 'المسوق له كوبون اخر',
+                'status' =>false,
+            ];
 
-                return $response;
-            }
-
+            return $response;
         }
-        //
-        $this->saveMarketers($coupon->id, $request->marketer_ids);
-
+    
+        CouponMarketers::create([
+            'user_id'=>$marketer_id,
+            'coupon_id'=>$coupon->id,
+            'add_by'=>CouponMarketers::MANUALLY
+        ]);
 
 
         $message = 'تمت العملية بنجاح';
@@ -102,22 +103,24 @@ class CouponsEloquent
 
         $coupon=Coupons::updateOrCreate(['id' => $id], $data);
 
-        if($request->marketer_ids) {
-            $marketer_id=$request->marketer_ids[0];
-            $check_coupon=CouponMarketers::where('user_id', $marketer_id)
-            ->where('coupon_id', '!=', $coupon->id)
-            ->first();
-            if($check_coupon) {
-                $response = [
-                    'message' => 'المسوق له كوبون اخر',
-                    'status' =>false,
-                ];
+        $marketer_id = $request->marketer_id;
+        $check_coupon=CouponMarketers::where('user_id', $marketer_id)
+        ->where('coupon_id', '!=', $coupon->id)
+        ->first();
+        if($check_coupon) {
+            $response = [
+                'message' => 'المسوق له كوبون اخر',
+                'status' =>false,
+            ];
 
-                return $response;
-            }
+            return $response;
         }
-
-        $this->saveMarketers($coupon->id, $request->marketer_ids);
+      
+        CouponMarketers::updateOrCreate([ 'user_id'=>$marketer_id,
+        'coupon_id'=>$coupon->id],[
+           
+            'add_by'=>CouponMarketers::MANUALLY
+        ]);
 
         $message = 'تمت العملية بنجاح';
         $status = true;

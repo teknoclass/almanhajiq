@@ -12,7 +12,7 @@
         <button data-payment_type="gateway"
          style="color:white;font-weight:normal"
         class="payInstallment {{$id}} btn-primary subscribeBtn  p-1 w-50" alt="{{$id}}"
-         data-price="{{$price}}">{{__('select_method')}} 
+         >{{__('select_method')}} 
         </button>
     
     </div>
@@ -25,7 +25,7 @@
         <button data-payment_type="zaincash"
          style="color:white;font-weight:normal"
         class="payInstallment {{$id}} btn-primary @if($price > 1000) subscribeBtn @else disabledBtn @endif p-1 w-50" alt="{{$id}}"
-         data-price="{{$price}}">
+         >
          @if($price > 1000)
         {{ __('select_method') }} 
         @else 
@@ -46,7 +46,6 @@
             var target_id = "{{$id}}";
             var type = "{{$type}}";
             var course_id = "{{@$course_id}}";
-            var price = "{{$price}}";
             var payment_type = $(this).data('payment_type');
 
             if(target_id != "")
@@ -56,7 +55,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/subscribe-to-course-sessions')}}",
-                data:{target_id:target_id,type:type,price:price,course_id:course_id,payment_type:payment_type},
+                data:{target_id:target_id,type:type,course_id:course_id,payment_type:payment_type},
                 method: 'post',
                 success: function (response) {
                     $('.sessionGroupId option[value="' + target_id + '"]').remove();

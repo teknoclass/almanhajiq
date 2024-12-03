@@ -31,7 +31,68 @@ class CourseSessionSubscriptionsController extends Controller
         $data['id'] = $request->id;
         $data['course_id'] = $request->course_id;
         $data['type'] = $request->type;
-        $data['price'] = $request->price;
+        if($request->type == "session")
+        {
+            $item = CourseSession::find($request->id);
+            if(! $item)
+            {
+                return back();
+            }
+            $data['price'] = $item->price ?? 0;
+        }else{
+            $item = CourseSessionsGroup::find($request->id);
+            if(! $item)
+            {
+                return back();
+            }
+            $data['price'] = $item->price ?? 0;   
+        }
+
+        //if free
+        if($data['price'] == 0 || $data['price'] == "")
+        {
+            $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+
+            if($request->type == "group")
+            {
+            $sessions = CourseSession::where('group_id', $request->id)->get();
+
+            foreach($sessions as $session)
+            {
+                    if(! in_array( $session->id,$studentSubscribedSessionsIds))
+                    {
+                        CourseSessionSubscription::create([
+                            'student_id' => auth('web')->user()->id,
+                            'course_session_id' => $session->id,
+                            'status' => 1,
+                            'subscription_date' => now(),
+                            'course_session_group_id' => $session->group_id,
+                            'related_to_group_subscription' => 1,
+                            'course_id' => $session->course_id
+                        ]);
+                    }
+            }
+            }
+            elseif($request->type == "session")
+            {
+            $session = CourseSession::find($request->id);
+
+            if(! in_array($session->id, $studentSubscribedSessionsIds))
+            {
+                    CourseSessionSubscription::create([
+                        'student_id' => auth('web')->user()->id,
+                        'course_session_id' => $session->id,
+                        'status' => 1,
+                        'subscription_date' => now(),
+                        'course_session_group_id' => $session->group_id,
+                        'related_to_group_subscription' => 0,
+                        'course_id' => $session->course_id
+                    ]);
+                }
+            }
+
+            return redirect("/user/courses/curriculum/item/".$request->course_id);
+        }
 
         return view('front.payment-options.offer-subscription', $data);
     }
@@ -48,8 +109,24 @@ class CourseSessionSubscriptionsController extends Controller
 
     public function paymentGateway(Request $request)
     {
+        if($request->type != "group")
+        {
+            $item = CourseSession::find($request->target_id);
+            if(! $item)
+            {
+                return back();
+            }
+            $price = $item->price ?? 0;
+        }else{
+            $item = CourseSessionsGroup::find($request->target_id);
+            if(! $item)
+            {
+                return back();
+            }
+            $price = $item->price ?? 0;   
+        }
         $response = $this->paymentService->processPayment([
-            "amount" => $request->price,
+            "amount" => $price,
             "currency" => "IQD",
             "finishPaymentUrl" => url('/user/subscribe-to-course-sessions-confirm'),
             "notificationUrl" => url('/user/subscribe-to-course-sessions-confirm'),
@@ -70,7 +147,7 @@ class CourseSessionSubscriptionsController extends Controller
                 "description" => $description,
                 "orderId" => $response['requestId'],
                 "payment_id" => $response['paymentId'],
-                "amount" => $request->price,
+                "amount" => $price,
                 "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
                 "brand" => "card",
@@ -94,6 +171,22 @@ class CourseSessionSubscriptionsController extends Controller
 
     public function zainCash(Request $request)
     {
+        if($request->type != "group")
+        {
+            $item = CourseSession::find($request->target_id);
+            if(! $item)
+            {
+                return back();
+            }
+            $price = $item->price ?? 0;
+        }else{
+            $item = CourseSessionsGroup::find($request->target_id);
+            if(! $item)
+            {
+                return back();
+            }
+            $price = $item->price ?? 0;   
+        }
         if($request->type == "group")
         {
             $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
@@ -103,7 +196,7 @@ class CourseSessionSubscriptionsController extends Controller
             $transactionable_type = "App\\Models\\CourseSession";
         }
 
-        $response = $this->zainCashService->processPayment($request->price,
+        $response = $this->zainCashService->processPayment($price,
         url('/user/subscribe-to-course-sessions-confirm'), $description);  
       
        
@@ -113,7 +206,7 @@ class CourseSessionSubscriptionsController extends Controller
                 "description" => $description,
                 "orderId" => $response['orderId'],
                 "payment_id" => $response['id'],
-                "amount" => $request->price,
+                "amount" => $price,
                 "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
                 "brand" => "zaincash",

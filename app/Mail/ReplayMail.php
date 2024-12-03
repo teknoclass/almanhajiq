@@ -30,6 +30,6 @@ class ReplayMail extends Mailable
         $data['header_text'] = $this->title;
         $item= new Setting();
 
-        return $this->from($item->valueOf('email'), $item->valueOf('title_ar'))->subject($this->title)->view('mail.replay',$data);
+        return $this->from($item->valueOf('noreply@almanhajiq.com'), $item->valueOf('title_ar'))->subject($this->title)->view('mail.replay',$data);
     }
 }

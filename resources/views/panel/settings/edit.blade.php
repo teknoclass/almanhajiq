@@ -598,22 +598,15 @@
                                         <div class="tab-pane fade" id="tab_notification_times" role="tabpanel">
 
                                             <div class="form-group">
-                                                <label for="pvreminder_1">{{__('private_Lesson_Pre_Reminder_1st_time')}} ( {{ __('Mintes') }} )</label>
-                                                <input type="number" min="0" name="private_lesson_reminder_1"
+                                                <label for="can_postpone_hours_before">{{__('can_postpone_hours_before')}}</label>
+                                                <input type="number" min="0" name="can_postpone_hours_before"
                                                     class="form-control mb-10 d-flex align-items-center justify-content-between"
-                                                    value="{{@$settings->valueOf('private_lesson_reminder_1')}}"
-                                                    id="pvreminder_1" placeholder=""
+                                                    value="{{@$settings->valueOf('can_postpone_hours_before')}}"
+                                                    id="can_postpone_hours_before" placeholder="" min="1"
                                                 />
                                             </div>
 
-                                            <div class="form-group">
-                                                <label for="pvreminder_2">{{__('private_Lesson_Pre_Reminder_1st_time')}} ( {{ __('Mintes') }} )</label>
-                                                <input type="number" min="0" name="private_lesson_reminder_2"
-                                                    class="form-control mb-10 d-flex align-items-center justify-content-between"
-                                                    value="{{@$settings->valueOf('private_lesson_reminder_2')}}"
-                                                    id="pvreminder_2" placeholder=""
-                                                />
-                                            </div>
+                                          
                                         </div>
 
                                     </div>

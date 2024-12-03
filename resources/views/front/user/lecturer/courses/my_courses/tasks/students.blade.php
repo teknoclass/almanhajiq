@@ -33,7 +33,7 @@
 					<div class="row">
 						<div class="col-12">
 
-                            @if($assignments)
+                            @if(@$assignments)
 							<table class="table table-cart mb-3">
 								<thead>
 									<tr>

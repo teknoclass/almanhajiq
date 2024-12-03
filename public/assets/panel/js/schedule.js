@@ -213,6 +213,8 @@ function generatePlan(start_date) {
         titleInput.className = 'form-control';
         dateInput.required = true;
         titleInput.required = true;
+        titleInput.minlength = 3;
+        titleInput.maxlength = 255;
         titleCell.appendChild(titleInput);
 
         var deleteButton = document.createElement('button');
@@ -276,8 +278,8 @@ function deleteSession(data) {
         generateSessionInputs(false);
         $('#generate_btn_div').show();
         $('#publish-button').hide();
-        $('#btn_submit').hide();
-        $('#add_lesson').hide();
+        // $('#btn_submit').hide();
+        // $('#add_lesson').hide();
     }
 
 }
@@ -364,6 +366,8 @@ function addNewRow() {
     titleInput.type = 'text';
     titleInput.name = 'session_title_' + rowCount;
     titleInput.required = true;
+    titleInput.minlength = 3;
+    titleInput.maxlength = 255;
     titleInput.className = 'form-control';
     titleCell.appendChild(titleInput);
     actionCell.appendChild(deleteButton);

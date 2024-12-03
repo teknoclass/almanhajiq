@@ -7,7 +7,7 @@ use App\Models\CourseLessons;
 use App\Models\CourseQuizzes;
 use App\Models\CourseSectionItems;
 use App\Models\Notifications;
-use App\Models\User;
+use App\Models\{CourseAssignmentQuestions,User,CourseAssignmentQuestionsTranslation,CourseCurriculum,Courses};
 use App\Models\UserCourse;
 use App\Repositories\AssignmentRepository;
 use App\Repositories\Front\User\HelperEloquent;
@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\ArrayShape;
+use DB;
 
 class CurriculumCreationEloquent extends HelperEloquent
 {
@@ -108,7 +109,7 @@ class CurriculumCreationEloquent extends HelperEloquent
             $data['student_solutions'] = json_decode($data['course_item']->$resultsRelation[0]->results, true);
         }
 
-        $viewPath = $viewPaths[$itemType];
+        $viewPath = isset($viewPaths['correct']) ? $viewPaths['correct']: $viewPaths['solutions'];
 
         return $this->renderModal($viewPath, $data);
     }
@@ -191,16 +192,188 @@ class CurriculumCreationEloquent extends HelperEloquent
         return $this->quizRepository->deleteOuterQuiz($request);
     }
 
-    public function addTask($request, $is_web = true): array
-    {
-        return $this->assignmentRepository->addAssignment($request, $is_web);
+    // public function addTask($request, $is_web = true): array
+    // {
+    //     return $this->assignmentRepository->addAssignment($request, $is_web);
+    // }
+
+    // public function updateTask($request, $is_web = true): array
+    // {
+    //     return $this->assignmentRepository->updateAssignment($request, $is_web);
+    // }
+
+    public function addTask($request, $is_web = true) {
+
+        try {
+            DB::beginTransaction();
+            $data            = $request->all();
+            $user            = $this->getUser($is_web);
+            $default_lang = app()->getLocale();
+            if (!$user) {
+                $course = Courses::whereId($data['course_id'])->select('id', 'user_id')->first();
+                $data['user_id'] = $course->user_id;
+            } else {
+                $data['user_id'] = $user->id;
+            }
+
+            $answers_array   = array_values($request->answer_type);
+            $data['answer_type'] = $answers_array;
+            (isset($data['status'])) ? $data['status'] = 'active' : $data['status'] = 'inactive';
+            $item            = CourseAssignments::updateOrCreate(['id' => $data['id']], $data)->createTranslation($request);
+
+            for($i = 0 ; $i < count($request->{'questions_' . $default_lang}) ; $i++) {
+                if(!empty($request->{'questions_' . $default_lang}[$i])) {
+                    $question  = CourseAssignmentQuestions::create([
+                        'course_assignment_id'  => $item->id,
+                        'user_id'               => $data['user_id'],
+                        'type'                  => $data['answer_type'][$i] ?? 'text',
+                    ]);
+                    foreach (locales() as $locale => $value) {
+                        $question_translation    = new CourseAssignmentQuestionsTranslation() ;
+                        $question_translation->course_assignment_questions_id = $question->id;
+                        $question_translation->locale  = $locale;
+                        $question_translation->title   = $request->{'questions_' . $locale}[$i];;
+                        $question_translation->save();
+                    }
+                }
+            }
+
+            if(isset($data['course_sections_id'])) {
+                $section_item2     = CourseSectionItems::orderBy('id', 'DESC')->select('order')->first();
+                if($section_item2) {
+                    $order = $section_item2->order;
+                } else {
+                    $order = 0;
+                }
+                $section_item  = CourseSectionItems::create([
+                    'course_id'             => $data['course_id'],
+                    'course_sections_id'    => $data['course_sections_id'],
+                    'itemable_id'               => $item->id,
+                    'itemable_type'             => CourseAssignments::class,
+                    'order'                 =>  $order + 1,
+                ]);
+            }else {
+                $curriculum_item     = CourseCurriculum::orderBy('id', 'DESC')->select('order')->first();
+                if($curriculum_item) {
+                    $order = $curriculum_item->order;
+                } else {
+                    $order = 0;
+                }
+                $curriculum_itemm  = CourseCurriculum::create([
+                    'course_id'     => $request->course_id,
+                    'itemable_id'       => $item->id,
+                    'itemable_type'     => CourseAssignments::class,
+                    'order'         =>  $order + 1,
+                ]);
+            }
+            DB::commit();
+
+            $this->notify_registered_users($request->course_id);
+
+            $message = __('message.operation_accomplished_successfully');
+            $status = true;
+            $response = [
+                'message'  => $message,
+                'status'   => $status,
+            ];
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
+            $message = __('message.unexpected_error');
+            $status = false;
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
+        }
+
+        return $response;
+
     }
 
-    public function updateTask($request, $is_web = true): array
+    public function updateTask($request, $is_web = true)
     {
-        return $this->assignmentRepository->updateAssignment($request, $is_web);
-    }
 
+        try {
+            DB::beginTransaction();
+            $data            = $request->all();
+            $answers_array   = array_values($request->answer_type);
+            $data['answer_type'] = $answers_array;
+            $default_lang = app()->getLocale();
+
+            $user            = $this->getUser($is_web);
+            if (!$user) {
+                $course = Courses::whereId($data['course_id'])->select('id', 'user_id')->first();
+                $data['user_id'] = $course->user_id;
+            } else {
+                $data['user_id'] = $user->id;
+            }
+
+            (isset($data['status'])) ? $data['status'] = 'active' : $data['status'] = 'inactive';
+            $item            = CourseAssignments::updateOrCreate(['id' => $data['id']], $data)->createTranslation($request);
+
+            $existingQuestions = CourseAssignmentQuestions::where('course_assignment_id', $item->id)->get();
+            $existingQuestionIds = $existingQuestions->pluck('id')->toArray();
+
+            $sentQuestionIds = array_filter($request->input('question_ids', []));
+            //questions to delete
+            $questionsToDelete = array_diff($existingQuestionIds, $sentQuestionIds);
+            CourseAssignmentQuestions::whereIn('id', $questionsToDelete)->delete();
+
+            for ($z = 0; $z < count($request->{'questions_' . $default_lang}); $z++) {
+                if (!empty($request->{'questions_' . $default_lang}[$z])) {
+                    $questionId = $request->input('question_ids')[$z] ?? null;
+                    //update question
+                    if ($questionId && in_array($questionId, $existingQuestionIds)) {
+                        $question = CourseAssignmentQuestions::find($questionId);
+                        $question->type = $data['answer_type'][$z] ?? 'text';
+                        $question->save();
+                    } else {//add new question
+                        $question = CourseAssignmentQuestions::create([
+                            'course_assignment_id' => $item->id,
+                            'user_id'              => $data['user_id'],
+                            'type'                 => $data['answer_type'][$z] ?? 'text',
+                        ]);
+                    }
+
+                    //translations
+                    foreach (locales() as $locale => $value) {
+                        $questionTranslation = CourseAssignmentQuestionsTranslation::updateOrCreate(
+                            [
+                                'course_assignment_questions_id' => $question->id,
+                                'locale'                         => $locale,
+                            ],
+                            [
+                                'title' => $request->{'questions_' . $locale}[$z],
+                            ]
+                        );
+                    }
+                }
+            }
+
+            DB::commit();
+            $message = __('message.operation_accomplished_successfully');
+            $status = true;
+            $response = [
+                'message'  => $message,
+                'status'   => $status,
+            ];
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
+            $message = __('message.unexpected_error');
+            $status = false;
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
+        }
+
+        return $response;
+
+    }
 
     public function deleteTask($request): array
     {

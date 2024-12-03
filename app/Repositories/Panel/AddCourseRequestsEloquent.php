@@ -35,6 +35,15 @@ class AddCourseRequestsEloquent
             ->editColumn('lecturer_name', function ($row) {
                 return $row->course->lecturer->name ?? '';
             })
+            ->addColumn('statusColumn', function($row) {
+                $status = [
+                    'pending' => ['title' => __('Under Review'), 'class' => 'badge bg-info badge-custom'],
+                    'acceptable' => ['title' => __('Acceptable'), 'class' => 'badge bg-success badge-custom'],
+                    'unacceptable' => ['title' => __('Unacceptable'), 'class' => 'badge bg-danger badge-custom'],
+                ];
+
+                return '<span class="label font-weight-bold label-lg ' . $status[$row->status]['class'] . ' label-inline">' . $status[$row->status]['title'] . '</span>';
+            })
             ->filter(function ($query) {
                 $search = request()->input('search.value');
                 if ($search) {
@@ -43,10 +52,14 @@ class AddCourseRequestsEloquent
                     })->orWhereHas('course.translations', function ($q) use ($search) {
                         $q->where('title', 'like', "%{$search}%");
                     });
+                    if (in_array(strtolower($search), ['acceptable', 'unacceptable'])) {
+                        $query->orWhere('status', strtolower($search));
+                    }
                 }
+               
             })
             ->addColumn('action', 'panel.add_course_requests.partials.actions')
-            ->rawColumns(['action'])
+            ->rawColumns(['action','statusColumn'])
             ->make(true);
     }
     

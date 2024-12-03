@@ -95,7 +95,7 @@
             Dropzone.autoDiscover = false;
 
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content')
-
+    Dropzone.autoDiscover = false;
     $(document).ready(function() {
         timePage();
     });

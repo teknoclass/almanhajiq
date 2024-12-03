@@ -3,6 +3,7 @@
         <h5 class="font-medium mb-3">
             <span class="square"></span> {{ $question->title }}
         </h5>
+        
         <div class="myDropzone-{{ $question->id }} dropzone dropzone-course bg-transparent border-0">
             <input type="hidden" name="question[{{ $question->id }}][answer]">
         </div>
@@ -14,7 +15,7 @@
         $(document).ready(function () {
             if ($(".myDropzone-{{ $question->id }}").length > 0) {
                 var myDropzoneNo{{ $question->id }} = new Dropzone(".myDropzone-{{ $question->id }}", {
-                    url: "{{ route('user.courses.curriculum.assignment.file.upload', @$assignment->course_id) }}",
+                    url: "{{ route('user.courses.curriculum.assignment.file.upload', ['course_id' => @$assignment->course_id,'assignment_id' => @$assignment->id,'question_id' =>  @$question->id ]) }}",
                     dictDefaultMessage: `
                         <span class='icon me-2'><i class="fa-solid fa-arrow-down-to-line"></i></span>
                         <span class='text'>إرفـاق ملفـات</span>`,

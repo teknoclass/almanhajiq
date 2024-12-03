@@ -286,8 +286,9 @@ Route::get('/migrate',function(){
         //add is installment to user course
         "2024_11_24_030055_add_is_installment_to_user_courses_table.php",
 
-        //char
+        //chat
         "2024_10_10_095450_add_read_at_to_chat_messages_table.php",
+        "2024_11_23_133757_change_course_lessons_storage_column_to_be_string.php"
 
     ];
 

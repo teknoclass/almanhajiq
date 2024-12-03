@@ -67,7 +67,7 @@
                            <input type="time" class="form-control" name="session_time_{{ $index }}" value="{{ $session->time }}">
                        </td>
                        <td>
-                           <input  style="min-width:100px ;" type="text" class="form-control" name="session_title_{{ $index }}" value="{{ $session->title }}">
+                           <input minlength="3" maxlength="255"   style="min-width:100px ;" type="text" class="form-control" name="session_title_{{ $index }}" value="{{ $session->title }}">
                        </td>
                        @if (!$item->published)
                        <td>
@@ -124,7 +124,7 @@
                         <td>{{ $session->date }}</td>
                         <td>{{ $session->group?->title??__('no_group') }}</td>
                         <td>{{ $session->time }}</td>
-                        <td><input type="number" step="any" min="1" class="sessionPrice {{$session->id}} form-control" alt="{{$session->id}}" value="{{$session->price}}"></td>
+                        <td><input type="number" step="any" min="0" class="sessionPrice {{$session->id}} form-control" alt="{{$session->id}}" value="{{$session->price}}"></td>
                         <td>
                             @php
                                 $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
@@ -242,7 +242,7 @@
                         </div>
                         <div class="form-group">
                             <label for="price">{{ __('price') }}</label>
-                            <input type="number" step="any" min="1" required class="form-control" id="price">
+                            <input type="number" step="any" min="0" required class="form-control" id="price">
                             <input type="text" class="form-control" id="price" hidden>
 
                             <div class="invalid-feedback" id="priceError" style="display: none;">

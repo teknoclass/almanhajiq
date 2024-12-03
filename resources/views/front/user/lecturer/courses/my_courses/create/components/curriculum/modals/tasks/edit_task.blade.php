@@ -1,4 +1,4 @@
-<div class="modal show" id="modalAddTasks" style="display: block;">
+<div class="modal show" id="modalAddTasks" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-course">
         <div class="modal-content">
             <div class="py-3">
@@ -82,31 +82,12 @@
                                             <div class="form-group col-md-4 mt-3">
                                                 <label>{{ __('pass_mark') }}
                                                     <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="number" step="0.1" name="pass_grade"
+                                                <input class="form-control" type="number" name="pass_grade"
                                                     value="{{ @$item->pass_grade }}"
                                                     placeholder="{{ __('pass_grade') }}"
                                                     style="direction: rtl !important;" />
                                             </div>
                                         </div>
-                                            <div class="row">
-
-                                                @if(@$course_type == 'live')
-                                                    <div class="form-group col-md-4 mt-3">
-                                                        <label>{{ __('start_date') }}
-                                                            <span class="text-danger">*</span></label>
-                                                        <input class="form-control" type="date" name="start_date" required
-                                                               placeholder="{{ __('start_date') }}" value="{{ @$item->start_date }}"
-                                                               style="direction: rtl !important;" />
-                                                    </div>
-                                                    <div class="form-group col-md-4 mt-3">
-                                                        <label>{{ __('end_date') }}
-                                                            <span class="text-danger">*</span></label>
-                                                        <input class="form-control" type="date" name="end_date"
-                                                               placeholder="{{ __('end_date') }}" value="{{ @$item->start_date }}"
-                                                               style="direction: rtl !important;" />
-                                                    </div>
-                                                @endif
-                                            </div>
                                             <div class="d-flex align-items-center  col-9">
                                                 <div class="form-group col-12 mt-3">
                                                     <div class="d-lg-flex align-items-center justify-content-start">
@@ -125,67 +106,64 @@
                                                 </div>
                                             </div>
                                             <hr>
+
                                             <div class="accordionn" id="accordionQestionn">
                                                 <div class="list-qestion-task">
-
-                                                        @foreach (@$item->assignmentQuestions as $i => $question)
-                                                            <?php $i++; ?>
-                                                            <div class="tab-content bg-white rounded-3 widget_item-qestion mb-3">
-                                                                <div class="d-flex align-items-center widget_item-head p-3 pointer"
-                                                                    data-bs-toggle="collapse"
-                                                                    data-bs-target="#collapse-qestionn-{{ $i }}">
-                                                                    <h6 class="mx-2">{{ $i }}. السؤال
-                                                                    </h6>
-                                                                    <div
-                                                                        class="widget_item-action d-flex align-items-center">
-                                                                        <div class="widget_item-icon btn-remove-widget_question"><i
-                                                                                class="fa-solid fa-trash"></i></div>
-                                                                    </div>
-                                                                    <div class="widget_item-chevron ms-auto"><i
-                                                                            class="fa-regular fa-chevron-down"></i>
-                                                                    </div>
+                                                    @foreach (@$item->assignmentQuestions as $i => $question)
+                                                        <?php $i++; ?>
+                                                        <div class="tab-content bg-white rounded-3 widget_item-qestion mb-3">
+                                                            <div class="d-flex align-items-center widget_item-head p-3 pointer"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#collapse-qestionn-{{ $i }}">
+                                                                <h6 class="mx-2">{{ $i }}. {{ __('question') }}</h6>
+                                                                <div class="widget_item-action d-flex align-items-center">
+                                                                    <div class="widget_item-icon btn-remove-widget_question"><i
+                                                                            class="fa-solid fa-trash"></i></div>
                                                                 </div>
-                                                                <div class="widget_item-body accordion-collapse collapse show"
-                                                                    id="collapse-qestionn-{{ $i }}"
-                                                                    data-bs-parent="#accordionQestion">
-                                                                    <div class="p-3">
-
-                                                                        @foreach (locales() as $locale => $value)
-                                                                            <div class="form-group">
-                                                                                <input class="form-control" type="text"
-                                                                                    name="questions_{{ $locale }}[]"
-                                                                                    value="{{ @$question->translate($locale)->title }}"
-                                                                                    placeholder="{{ __('question') }} ({{ __($value) }})" />
-                                                                            </div>
-                                                                        @endforeach
-
+                                                                <div class="widget_item-chevron ms-auto"><i
+                                                                        class="fa-regular fa-chevron-down"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="widget_item-body accordion-collapse collapse show"
+                                                                id="collapse-qestionn-{{ $i }}"
+                                                                data-bs-parent="#accordionQestion">
+                                                                <div class="p-3">
+                                                                    <input type="hidden" name="question_ids[]" value="{{ $question->id }}" />
+                                                                    @foreach (locales() as $locale => $value)
                                                                         <div class="form-group">
-                                                                            <label> {{ __('answer') }} :</label>
-                                                                            <div class="d-flex align-items-center">
-                                                                                <label class="m-radio m-radio-2 mb-0">
-                                                                                    <input type="radio"
-                                                                                        name="answer_type[{{ $i-1 }}]"
-                                                                                        value="text"
-                                                                                        {{ @$question->type == 'text' ? 'checked' : '' }} /><span
-                                                                                        class="checkmark"></span>{{ __('text1') }}
-                                                                                </label>
-                                                                                <label
-                                                                                    class="m-radio m-radio-2 mb-0 ms-5">
-                                                                                    <input type="radio"
-                                                                                        name="answer_type[{{ $i-1 }}]"
-                                                                                        value="file"
-                                                                                        {{ @$question->type == 'file' ? 'checked' : '' }} /><span
-                                                                                        class="checkmark"></span> {{ __("attach_files") }}
-                                                                                </label>
-                                                                            </div>
+                                                                            <input class="form-control" type="text"
+                                                                                name="questions_{{ $locale }}[]"
+                                                                                value="{{ @$question->translate($locale)->title }}"
+                                                                                placeholder="{{ __('question') }} ({{ __($value) }})" />
+                                                                        </div>
+                                                                    @endforeach
+
+                                                                    <div class="form-group">
+                                                                        <label>{{ __('answer') }}:</label>
+                                                                        <div class="d-flex align-items-center">
+                                                                            <label class="m-radio m-radio-2 mb-0">
+                                                                                <input type="radio"
+                                                                                    name="answer_type[{{ $i-1 }}]"
+                                                                                    value="text"
+                                                                                    {{ @$question->type == 'text' ? 'checked' : '' }} />
+                                                                                <span class="checkmark"></span>{{ __('text1') }}
+                                                                            </label>
+                                                                            <label class="m-radio m-radio-2 mb-0 ms-5">
+                                                                                <input type="radio"
+                                                                                    name="answer_type[{{ $i-1 }}]"
+                                                                                    value="file"
+                                                                                    {{ @$question->type == 'file' ? 'checked' : '' }} />
+                                                                                <span class="checkmark"></span>{{ __("attach_files") }}
+                                                                            </label>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                     @endforeach
-
                                                 </div>
                                             </div>
+
                                             <div class="form-group text-center mt-3">
                                                 <div class="d-flex align-items-center justify-content-between">
                                                     <div class="col-md-6">
@@ -234,4 +212,3 @@
         $("#modalAddTasks").hide();
     }
 </script>
-

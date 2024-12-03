@@ -7,7 +7,7 @@
     "rows": "سطر",
     "excel": "اكسل",
     "pageLength": "في الصفحة",
-    "Scheduled_Notifications_Times": "أوقات التذكير المجدولة",
+    "Scheduled_Notifications_Times": "الدروس المباشرة",
     "private_Lesson_Pre_Reminder_1st_time": "التذكير #1 المسبق بموعد الدرس الخصوصي",
     "private_Lesson_Pre_Reminder_2nd_time": "التذكير #2 المسبق بموعد الدرس الخصوصي",
     "home": "الرئيسية",
@@ -1209,6 +1209,12 @@
     "out_of": "من أصل",
     "finish":"انتهى",
     "lessons_o":"من الدروس",
-    "the_mark_is_greater_than_the_full_mark" : "العلامة اكبر من العلامة الكاملة للوظيفة"
+    "the_mark_is_greater_than_the_full_mark" : "العلامة اكبر من العلامة الكاملة للوظيفة",
+    "quizzes":"اختبارات",
+    "tests_completed":"اختبارات انتهت",
+    "tests_not_completed":"اختبارات لم تنتهى",
+    "assignments_delivered":"واجبات انتهت",
+    "assignments_not_delivered":"واجبات لم تنتهى",
+    "can_postpone_hours_before":"يمكن التاجيل قبل بدا الجلسة بعدد ساعات"
 
 }

@@ -12,7 +12,7 @@
         <button data-payment_type="gateway"
          style="color:white;font-weight:normal"
         class="payInstallment {{$id}} btn-primary  p-1 w-50" alt="{{$id}}"
-         data-price="{{$price}}">{{__('select_method')}} 
+         >{{__('select_method')}} 
         </button>
     
     </div>
@@ -25,7 +25,7 @@
         <button data-payment_type="zaincash"
          style="color:white;font-weight:normal"
         class=" @if($price > 1000) payInstallment @else disabledBtn @endif {{$id}} btn-primary  p-1 w-50" alt="{{$id}}"
-         data-price="{{$price}}">
+         >
          @if($price > 1000)
         {{ __('select_method') }} 
         @else 
@@ -47,7 +47,7 @@
         $(document).on('click','.payInstallment',function(){
             var id = "{{$id}}";
             var course_id = "{{@$course_id}}";
-            var price = "{{$price}}";
+            
             var payment_type = $(this).data('payment_type');
            
             $.ajax({
@@ -55,7 +55,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/pay-to-course-session-installment')}}",
-                data:{id:id,course_id:course_id,price:price,payment_type:payment_type},
+                data:{id:id,course_id:course_id,payment_type:payment_type},
                 method: 'post',
                 success: function (response) {
                     $(".payInstallment"+"."+id).attr('disabled',true);
