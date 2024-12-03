@@ -81,8 +81,8 @@
 
                     <label for="category"> {{__('choose_role')}}</label>
                     <select class="form-control" id="category">
-                        @foreach($roles as  $role)
-                            <option value="">{{ __('show_all') }}</option>
+                       <option value="">{{ __('show_all') }}</option>
+                        @foreach($roles->unique('id') as  $role)
                             <option  value="student">{{__('student')}}</option>
                             <option  value="lecturer">{{__('lecturer')}}</option>
                             <option  value="marketer">{{__('marketer')}}</option>
