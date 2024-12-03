@@ -7,7 +7,7 @@
                 <div class="col-4 col-md-2 mb-4 mx-auto">
                     <div class="text-center mx-auto">
 
-                        <img class="footer-logo" src="{{ asset('assets/front/images/newimages/only-icon-logo.svg') }}"
+                        <img class="footer-logo" src="{{ asset('assets/logo.png') }}"
                             loading="lazy" />
 
                     </div>
@@ -20,7 +20,7 @@
                                     {{-- <img class="footer-logo" src="{{ imageUrl(@$settings->valueOf('white_logo')) }}"
                                         alt="{{ @$settings->valueOf('title_' . app()->getLocale()) }}" loading="lazy" /> --}}
                                     <img class="footer-logo"
-                                        src="{{ asset('assets/front/images/newimages/text-logo.svg') }}"
+                                        src="{{ asset('assets/logo.png') }}"
                                         alt="{{ @$settings->valueOf('title_' . app()->getLocale()) }}" loading="lazy" />
                                 </div>
                             </div>
