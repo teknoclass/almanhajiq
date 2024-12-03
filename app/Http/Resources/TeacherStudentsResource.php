@@ -18,7 +18,7 @@ class TeacherStudentsResource extends JsonResource
         $data['name'] = $this->user->name;
         $data['image'] = imageUrl($this->user->image);
         $data['course_count'] = $this->user->courseCountForSpecificTeacher('api');
-        //$data['certificate_count'] = $this->user->certificateCountForSpecificTeacher('api');
+        $data['certificate_count'] = $this->user->certificateCountForSpecificTeacher('api');
 
         return $data;
     }

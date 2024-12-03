@@ -340,6 +340,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
         }
 
+        function certificateCountForSpecificTeacher($type = 'web'){
+
+            $count = UserCourse::where('user_id',$this->id)->where('lecturer_id',auth($type)->id())->where('is_get_certificate',1)->count();
+
+            return $count;
+
+        }
+
     // End Functions for LECTURERS
 
     // Functions for MARKETER
