@@ -205,4 +205,20 @@ class CourseSession extends Model
         return ($sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15);
     }
 
+    function canPostpone(){
+        $num = getSeting('can_postpone_hours_before');
+        $datetime = Carbon::createFromFormat('Y-m-d H:i:s', $this->date . ' ' . $this->time);
+        $datetimeWithNumHours = $datetime->subHour($num);
+        $currentTime = Carbon::now();
+        if ($currentTime->lessThan($datetimeWithNumHours)) {
+            $exist = CourseSessionsRequest::where('course_session_id',$this->id)->first();
+            if(!$exist)return true;
+            else return false;
+        } else {
+            return false;
+        }
+
+
+    }
+
 }

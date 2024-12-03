@@ -29,6 +29,14 @@ class ApiSingleCourseResource extends JsonResource
         $curriculumItems = $curriculumItems->merge(collect(new ApiGroupCollection($this->groups)));
         $curriculumItems = $curriculumItems->merge(collect(new ApiSessionCollection($this->sessions->whereNull('group_id'))));
         $items = collect(new ApiCurriculumItemCollection($this->items));
+        if($this->type == 'live'){
+            $itemsLive = $items;
+            $itemsRec = null;
+        }else{
+            $itemsLive = null;
+            $itemsRec = $items;
+        }
+
         $sessionDays = $this->sessions()->select('day', 'time')->get();
         foreach($sessionDays as $sessionDay){
             $sessionDay->day = __($sessionDay->day);
@@ -73,7 +81,8 @@ class ApiSingleCourseResource extends JsonResource
             'discount_price' => $this->priceDetails?->discount_price??0,
             'rate' => $this->rate,
             'curriculum_items' => $curriculumItems,
-            'items' => $items,
+            'items' => $itemsLive,
+            'items_recorded' => $itemsRec,
             'is_bought' => $fullCourseSub,
             'is_start_installment' => $this->isStartInstallment(),
             'is_favourite' => $this->isFavorite('api')

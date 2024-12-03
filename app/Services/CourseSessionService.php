@@ -20,15 +20,16 @@ class CourseSessionService
         try {
             if($is_web)$type = 'web';
             else $type = 'api';
+
             $courseSessionRequest= CourseSessionsRequest::firstOrCreate([
                 'course_session_id'=>$data->course_session_id,
-                'user_type'=>$data->user_type,
+                'user_type'=>'teacher',
                 'user_id' => auth($type)->id(),
             ]);
             $courseSessionRequest->update([
                 'course_session_id' => $data->course_session_id,
                 'user_id' => auth($type)->id(),
-                'user_type' => $data->user_type,
+                'user_type' => 'teacher',
                 'type' => 'postpone',
                 'suggested_dates' => $data->suggested_dates,
                 'optional_files' => $this->uploadFiles($data->file('postpone_files'))??null,
@@ -54,7 +55,7 @@ class CourseSessionService
             $message = __("can't postpone lesson date");
             $status = false;
             $response = [
-                'message' => $message,
+                'message' => $exception->getMessage(),
                 'status' => $status,
             ];
             Log::error($exception->getMessage());
