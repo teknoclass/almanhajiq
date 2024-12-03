@@ -103,7 +103,7 @@ class LecturerCourseController extends Controller
     }
 
     public function createLiveSession($id){
-        $url = $this->courses->createLiveSession($id);
+        $url = $this->courses->createLiveSession($id,false);
         $message = __('message.operation_accomplished_successfully');
 
         return $this->response_api(true,$message,$url);

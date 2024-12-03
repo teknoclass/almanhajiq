@@ -1293,9 +1293,9 @@ class CoursesEloquent extends HelperEloquent
      return $this->liveSessionEloquent->publish($id);
     }
 
-    public function createLiveSession($id)
+    public function createLiveSession($id,$is_web = true)
     {
-      return $this->liveSessionEloquent->createLiveSession($id);
+      return $this->liveSessionEloquent->createLiveSession($id,$is_web);
     }
 
     function courseStudent($request,$is_web = true){

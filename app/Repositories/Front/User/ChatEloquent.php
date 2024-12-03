@@ -2,6 +2,9 @@
 
 namespace App\Repositories\Front\User;
 
+use App\Http\Resources\ApiChatCollection;
+use App\Http\Resources\ApiGetChatResource;
+use App\Http\Resources\ApiMessageCollection;
 use App\Models\Chat;
 use Kreait\Firebase\Contract\Messaging;
 use App\Models\User;
@@ -25,6 +28,11 @@ class ChatEloquent extends HelperEloquent
 
         $data['chats'] = $data['user']->chatsOrderedByLatestMessage()->paginate(10);
 
+        if(!$is_web){
+            unset($data['user']);
+            $data['chats'] = new ApiChatCollection($data['chats']);
+        }
+
         return $data;
     }
 
@@ -37,6 +45,8 @@ class ChatEloquent extends HelperEloquent
 
         if (Chat::exists($initiator, $receiver)) {
             $data['chat'] = Chat::exists($initiator, $receiver);
+            ChatMessages::where('chat_id',$data['chat']->id)->whereNull('read_at')->where('sender_id','!=',$initiator->id)->update(['read_at' => now()]);
+
         } else{
 
             if ($initiator->id == $receiver_id) {
@@ -49,12 +59,22 @@ class ChatEloquent extends HelperEloquent
             ]);
         }
 
+        if(!$is_web){
+            $messages = $data['chat']->messages()->orderBy('created_at', 'DESC')->paginate(20);
+            $data['messages'] = new ApiMessageCollection($messages);
+
+            $data['chat'] = new ApiGetChatResource($data['chat']);
+
+        }
+
         return $data;
     }
 
     public function sendMessage($request, $is_web = true)
     {
         $data['user'] = $this->getUser($is_web);
+        if($is_web)$guardType = 'web';
+        else $guardType = 'api';
 
         $chat_id = $request->chat_id;
 
@@ -76,7 +96,7 @@ class ChatEloquent extends HelperEloquent
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $receiver = $chat->otherUser();
+        $receiver = $chat->otherUser($guardType);
 
         if (!$receiver) {
             $response = [
@@ -87,7 +107,7 @@ class ChatEloquent extends HelperEloquent
         }
 
         $message            = new ChatMessages();
-        $message->body      = $request->body;
+        $message->body      = $request->message;
         $message->sender_id = $data['user']->id;
         $message->chat_id   = $chat_id;
         $message->save();
@@ -107,16 +127,26 @@ class ChatEloquent extends HelperEloquent
 
         // Broadcasting the message
         $messageData = [
-            'message' => $message->body,
-            'sender_image' => imageUrl($message->sender->image)
+            'id' => (string)$message->id,
+            'body' => $message->body,
+            'sender_id' => (string)$message->sender_id,
+            'user_name' => $message->sender->name,
+            'user_image' => imageUrl($message->sender->image),
+            'created_at' => $message->created_at,
+            'chat_id' => (string)$message->chat_id,
+            'type' => 'message'
         ];
 
         // broadcasting the message //
+        if($is_web){
 
-        if(!empty($receiver->device_token)) {
-            $message = CloudMessage::withTarget('token', $receiver->device_token)
-            ->withData($messageData);
-            $this->messaging->send($message);
+            if(!empty($receiver->device_token)) {
+                $message = CloudMessage::withTarget('token', $receiver->device_token)
+                ->withData($messageData);
+                $this->messaging->send($message);
+            }
+        }else{
+            $res = sendWebNotificationV2($receiver->id,'user',' رسالة جديدة من'.$message->body,$message->body,$messageData);
         }
 
         $response = [
@@ -146,5 +176,10 @@ class ChatEloquent extends HelperEloquent
         ];
 
         return $response;
+    }
+
+    function readMessage($id){
+        ChatMessages::find($id)->readMessage();
+        return;
     }
 }

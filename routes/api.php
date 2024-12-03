@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\LecturerController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\FavouriteController;
 use App\Http\Controllers\Api\AssignmentController;
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\LiveSessionController;
 use App\Http\Controllers\Api\UserProfileController;
@@ -197,6 +198,18 @@ Route::group(['middleware' => 'language', 'prefix' => 'user'], function () {
 
 });
 
+
+//char
+
+Route::prefix('chat')->group(function(){
+
+    Route::get('/index',[ChatController::class,'index']);
+    Route::get('/create/{receiver_id}',[ChatController::class,'create']);
+    Route::post('/sendMessage',[ChatController::class,'sendMessage']);
+    Route::post('/saveToken',[ChatController::class,'saveToken']);
+    Route::post('/readMessage/{id}',[ChatController::class,'readMessage']);
+
+});
 
 //lecturer apis
 

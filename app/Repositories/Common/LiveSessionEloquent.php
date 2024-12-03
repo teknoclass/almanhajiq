@@ -163,13 +163,13 @@ class LiveSessionEloquent  extends HelperEloquent
             ];
             $i++;
         }
-      
+
         foreach ($sessions as $session) {
-            $session = CourseSession::create($session);  
+            $session = CourseSession::create($session);
 
             $sessionIds[] = $session->id;
         }
-    
+
         return $sessionIds;
     }
 
@@ -219,11 +219,12 @@ class LiveSessionEloquent  extends HelperEloquent
         return $response;
     }
 
-    public function createLiveSession($id)
+    public function createLiveSession($id,$is_web = true)
     {
         /** @var CourseSession $session***/
         $session = CourseSession::find($id);
-        return $session->createLiveSession();
+        $type = $this->getType($is_web);
+        return $session->createLiveSession($type);
     }
 
     public function getGroupWithSessions($request)

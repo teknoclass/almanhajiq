@@ -22,4 +22,11 @@ class ChatMessages extends Model
     {
         return $this->belongsTo(User::class, 'sender_id');
     }
+
+    function readMessage()
+    {
+        $this->read_at = now();
+        $this->save();
+        return true;
+    }
 }

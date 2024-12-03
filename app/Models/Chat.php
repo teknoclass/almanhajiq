@@ -33,9 +33,9 @@ class Chat extends Model
         })->first();
     }
 
-    public function otherUser()
+    public function otherUser($type = 'web')
     {
-        $user_id = ($this->initiator_id === Auth::id()) ? $this->partner_id : $this->initiator_id;
+        $user_id = ($this->initiator_id === auth($type)->id()) ? $this->partner_id : $this->initiator_id;
 
         return User::find($user_id);
     }
@@ -48,6 +48,13 @@ class Chat extends Model
     {
         return $this->messages()->latest()->first();
     }
+
+    function unReadMessages($type = 'web')
+    {
+        return $this->messages()->where('sender_id','!=',auth($type)->id())->whereNull('read_at')->count();
+    }
+
+
 
 }
 

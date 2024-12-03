@@ -30,7 +30,7 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    
+
     'google' => [
         'client_id'     => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
@@ -39,5 +39,9 @@ return [
     'payment' => [
         'api_url' => env('PAYMENT_API_URL'),
         'api_key' => env('PAYMENT_API_KEY'),
+    ],
+    'fcm' => [
+        'credentialsPath' => storage_path('app/almanhajiq-firebase-adminsdk-zr1a3-2e3a923a92.json'),
+        'project_id' => env('FCM_PROJECT_ID')
     ],
 ];
