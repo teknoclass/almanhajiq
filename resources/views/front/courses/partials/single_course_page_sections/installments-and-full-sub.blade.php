@@ -106,7 +106,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="card-body">
-                                                        <p >{{__('price')}} :  ({{$installment->price}}) دينار عراقى</p>
+                                                        <p >{{__('price')}} : @if($installment->price != "" && $installment->price !=0)  ({{$installment->price}}) دينار عراقى @else {{__('free_installment')}} @endif</p>
                                                         <hr>
                                                         <ul>
                                                         @foreach($lessons as $lesson)

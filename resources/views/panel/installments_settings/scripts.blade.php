@@ -23,7 +23,7 @@
             const row = `
                 <tr>
                     <td><input type="text" name="installment_name[]" required class="form-control"></td>
-                    <td><input type="number" name="price[]" step="any" min="1" required class="form-control">
+                    <td><input type="number" name="price[]" step="any" min="0" required class="form-control">
                     </td>
                     <td>
                         <select required name="lesson_id[]" class="form-control">
