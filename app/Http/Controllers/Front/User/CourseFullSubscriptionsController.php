@@ -92,7 +92,7 @@ class CourseFullSubscriptionsController extends Controller
             "amount" => $price,
             "currency" => "IQD",
             "finishPaymentUrl" => url('/user/full-subscribe-course-confirm'),
-            "notificationUrl" => url('/user/full-subscribe-course-confirm')
+            "notificationUrl" => url('/full-subscribe-course-webhook')
         ]);  
  
         if($response && $response['status'] == "CREATED")
@@ -107,7 +107,8 @@ class CourseFullSubscriptionsController extends Controller
                 "brand" => "card",
                 'course_id' => $course->id,
                 "purchase_type" => $request->type,
-                "marketer_coupon" => $request->marketer_coupon
+                "marketer_coupon" => $request->marketer_coupon,
+                "user_id" => auth('web')->user()->id
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -348,6 +349,54 @@ class CourseFullSubscriptionsController extends Controller
         ]);
 
         return '';
+    }
+
+
+    public function handleWebhook(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+         
+            $paymentDetails = session('payment-'.auth('web')->user()->id);
+            
+            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+    
+            if((!isset($statusCheck["status"])) || (isset($statusCheck["status"]) && $statusCheck["status"] != "SUCCESS"))
+            {
+                return response()->json(['error' => 'Payment Failed'], 403);
+            }
+
+            // Check if the payment has already been processed
+            $existingTransaction = UserCourse::where('subscription_token', $paymentId)->first();
+            if ($existingTransaction) {
+                return response()->json(['message' => 'Payment already processed'], 200);
+            }
+
+            // Create the UserCourse entry
+            UserCourse::create([
+                "course_id" => $courseId,
+                "user_id" => $userId,
+                "lecturer_id" => Courses::find($courseId)->user_id ?? "",
+                "subscription_token" => $paymentId,
+                "is_paid" => 1,
+                "is_complete_payment" => 1,
+            ]);
+
+            $this->paymentService->createTransactionRecord($paymentDetails);
+            $this->paymentService->storeBalance($paymentDetails);
+
+            session()->forget('payment-'.auth('web')->user()->id);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Webhook handled successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e->getMessage());
+            Log::error($e->getFile());
+            Log::error($e->getLine());
+            return response()->json(['error' => 'Webhook handling failed'], 500);
+        }
     }
 
 

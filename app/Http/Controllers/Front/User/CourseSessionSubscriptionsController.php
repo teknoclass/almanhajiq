@@ -129,7 +129,7 @@ class CourseSessionSubscriptionsController extends Controller
             "amount" => $price,
             "currency" => "IQD",
             "finishPaymentUrl" => url('/user/subscribe-to-course-sessions-confirm'),
-            "notificationUrl" => url('/user/subscribe-to-course-sessions-confirm'),
+            "notificationUrl" => url('/subscribe-to-course-sessions-webhook'),
         ]);  
       
         if($request->type == "group")
@@ -152,7 +152,8 @@ class CourseSessionSubscriptionsController extends Controller
                 "transactionable_id" => $request->target_id,
                 "brand" => "card",
                 'course_id' => $request->course_id,
-                "purchase_type" => $request->type
+                "purchase_type" => $request->type,
+                "user_id" => auth('web')->user()->id
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -317,6 +318,77 @@ class CourseSessionSubscriptionsController extends Controller
         }
     }
 
+    public function handleWebhook(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $paymentDetails = session('payment-'.auth('web')->user()->id);
+
+            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+    
+            if((!isset($statusCheck["status"])) || (isset($statusCheck["status"]) && $statusCheck["status"] != "SUCCESS"))
+            {
+                return response()->json(['error' => 'Payment Failed'], 403);
+            }
+
+            $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+
+            if($paymentDetails['purchase_type'] == "group")
+            {
+            $sessions = CourseSession::where('group_id', $paymentDetails['transactionable_id'])->get();
+
+            foreach($sessions as $session)
+            {
+                    if(! in_array( $session->id,$studentSubscribedSessionsIds))
+                    {
+                        CourseSessionSubscription::create([
+                            'student_id' => auth('web')->user()->id,
+                            'course_session_id' => $session->id,
+                            'status' => 1,
+                            'subscription_date' => now(),
+                            'course_session_group_id' => $session->group_id,
+                            'related_to_group_subscription' => 1,
+                            'course_id' => $session->course_id
+                        ]);
+                    }
+            }
+            }
+            elseif($paymentDetails['purchase_type'] == "session")
+            {
+            $session = CourseSession::find($paymentDetails['transactionable_id']);
+
+            if(! in_array($session->id, $studentSubscribedSessionsIds))
+            {
+                    CourseSessionSubscription::create([
+                        'student_id' => auth('web')->user()->id,
+                        'course_session_id' => $session->id,
+                        'status' => 1,
+                        'subscription_date' => now(),
+                        'course_session_group_id' => $session->group_id,
+                        'related_to_group_subscription' => 0,
+                        'course_id' => $session->course_id
+                    ]);
+                }
+            }
+
+            $this->paymentService->createTransactionRecord($paymentDetails);
+
+            $this->paymentService->storeBalance($paymentDetails);
+
+            session()->forget('payment-'.auth('web')->user()->id);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Webhook handled successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e->getMessage());
+            Log::error($e->getFile());
+            Log::error($e->getLine());
+            return response()->json(['error' => 'Webhook handling failed'], 500);
+        }
+    }
    
 
 }

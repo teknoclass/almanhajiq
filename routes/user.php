@@ -202,6 +202,7 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         Route::get('/full-select-payment-method/{course_id}/{marketer_coupon?}',[CourseFullSubscriptionsController::class,'selectPaymentMethod']);
         Route::post('/full-subscribe-course',[CourseFullSubscriptionsController::class,'fullSubscribe']);
         Route::get('/full-subscribe-course-confirm',[CourseFullSubscriptionsController::class,'fullConfirmSubscribe']);
+  
         });
         
     });

@@ -12,6 +12,8 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        "/full-subscribe-course-webhook",
+        "/subscribe-to-course-sessions-webhook",
+        "/pay-to-course-session-installment-webhook"
     ];
 }

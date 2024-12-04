@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\User\PaymentController;
 use App\Http\Controllers\Front\User\PaymentCallBackController;
 use App\Http\Controllers\LevelsControllers;
+use App\Http\Controllers\Front\User\CourseSessionSubscriptionsController;
+use App\Http\Controllers\Front\User\CourseSessionInstallmentsController;
+use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -209,7 +212,12 @@ Route::post('/files/upload-file', [FileController::class, 'uploadFile'])->name('
 Route::group(['prefix' => '/get-course-file', 'middleware' => ['CheckCanAccessCourseFiles'], 'as' => 'get.course.file.'], function () {
     Route::get('{course_id}/{lesson_type}/{file}', [FileController::class, 'getCourseLessonItemLink'])->name('type');
 });
-
+////////////////////
+//payment webhook
+Route::post('/full-subscribe-course-webhook',[CourseFullSubscriptionsController::class,'handleWebhook']);
+Route::post('/subscribe-to-course-sessions-webhook',[CourseSessionSubscriptionsController::class,'handleWebhook']);
+Route::post('/pay-to-course-session-installment-webhook',[CourseSessionInstallmentsController::class,'handleWebhook']);
+////////////////////////
 
 Route::get('checkout', [PaymentController::class, 'checkout']);
 Route::post('after-checkout', [PaymentController::class, 'callback'])->name('payment_callback');

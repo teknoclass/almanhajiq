@@ -76,7 +76,7 @@ class CourseSessionInstallmentsController extends Controller
             "amount" => $price,
             "currency" => "IQD",
             "finishPaymentUrl" => url('/user/pay-to-course-session-installment-confirm'),
-            "notificationUrl" => url('/user/pay-to-course-session-installment-confirm'),
+            "notificationUrl" => url('/pay-to-course-session-installment-webhook'),
         ]);  
         
         if($response && $response['status'] == "CREATED")
@@ -89,7 +89,8 @@ class CourseSessionInstallmentsController extends Controller
                 "transactionable_type" => "App\\Models\\CourseSession",
                 "transactionable_id" => $request->id,
                 "brand" => "card",
-                'course_id' => $request->course_id
+                'course_id' => $request->course_id,
+                "user_id" => auth('web')->user()->id
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -197,6 +198,44 @@ class CourseSessionInstallmentsController extends Controller
             Log::error($e->getFile());
             Log::error($e->getLine());
             return redirect('/payment-failure'); 
+        }
+    }
+
+    public function handleWebhook(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $paymentDetails = session('payment-'.auth('web')->user()->id);
+
+            $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+    
+            if((!isset($statusCheck["status"])) || (isset($statusCheck["status"]) && $statusCheck["status"] != "SUCCESS"))
+            {
+                return response()->json(['error' => 'Payment Failed'], 403);
+            }
+
+            $item = StudentSessionInstallment::updateOrCreate([
+                'student_id' => auth('web')->user()->id,
+                'course_id' => $paymentDetails['course_id'],
+                'access_until_session_id' => $paymentDetails['transactionable_id'],
+            ]);
+
+            $this->paymentService->createTransactionRecord($paymentDetails);
+
+            $this->paymentService->storeBalance($paymentDetails);
+
+            session()->forget('payment-'.auth('web')->user()->id);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Webhook handled successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e->getMessage());
+            Log::error($e->getFile());
+            Log::error($e->getLine());
+            return response()->json(['error' => 'Webhook handling failed'], 500);
         }
     }
 

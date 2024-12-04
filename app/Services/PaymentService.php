@@ -145,7 +145,7 @@ class PaymentService
     {
         Transactios::create([
             'description' => $paymentDetails['description'],
-            'user_id' => auth('web')->id(),
+            'user_id' => isset($paymentDetails['user_id']) ? $paymentDetails['user_id'] : auth('web')->id(),
             'user_type' => 'student',
             'payment_id' => $paymentDetails['payment_id'] ?? null,
             'amount' => $paymentDetails['amount'],
