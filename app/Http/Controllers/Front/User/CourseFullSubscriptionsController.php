@@ -397,7 +397,6 @@ class CourseFullSubscriptionsController extends Controller
 
             return response()->json(['message' => 'Webhook handled successfully'], 200);
         } catch (\Exception $e) {
-            dd($e->getLine());
             DB::rollback();
             Log::error($e->getMessage());
             Log::error($e->getFile());
