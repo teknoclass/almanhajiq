@@ -28,6 +28,9 @@ use App\Http\Controllers\LevelsControllers;
 use App\Http\Controllers\Front\User\CourseSessionSubscriptionsController;
 use App\Http\Controllers\Front\User\CourseSessionInstallmentsController;
 use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
+use App\Models\Category;
+use App\Models\CategoryTranslation;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -231,6 +234,49 @@ Route::get('/translations', function () {
     }
 
     return $translations;
+});
+
+///////////subjects////////
+
+Route::get('copy-subjects',function(){
+    $levels = Category::where('parent', 'grade_levels')->where('grade_sub_level_id','!=',154)->pluck('id')->toArray();
+    $subjects = Category::where('grade_sub_level_id',154)->get();
+    foreach($levels as $level)
+    {
+        foreach($subjects as $subject)
+        {
+            $request['parent'] = "joining_course";
+            $request["grade_sub_level_id"] = $level;
+
+            $value = Category::select('id', 'key', 'parent', 'value')->where('parent', "joining_course")->withTrashed()->max('value');
+
+            $request['value'] = $value + 1;
+
+            $request['name_ar'] = $subject->translations()
+            ->where('locale', 'ar')
+            ->first()
+            ->name ?? '';
+
+            $request['name_en'] = $subject->translations()
+            ->where('locale', 'en')
+            ->first()
+            ->name ?? '';
+
+            $category = Category::create( $request);
+            
+            CategoryTranslation::create([
+                'name' =>  $request['name_ar'],
+                "locale" => 'ar',
+                "category_id" => $category->id
+            ]);
+            CategoryTranslation::create([
+                'name' =>  $request['name_en'],
+                "locale" => 'en',
+                "category_id" => $category->id
+            ]);
+        }
+    }
+    return "done";
 });
 ///////////////////////////////////////////////////////
 
