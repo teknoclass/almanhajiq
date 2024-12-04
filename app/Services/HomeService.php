@@ -33,15 +33,31 @@ class HomeService extends MainService
             'grade_sub_level',
             'category',
             'lecturer',
-            'priceDetails'
-        ])->orderBy('students_count', 'desc')->take(5)->get();
+            'priceDetails',
+            'material'
+            ])->orderBy('students_count', 'desc')->take(5)->get();
 
-        return $this->createResponse(
-            __('message.success'),
-            true,
-            $courses
-        );
-    }
+            return $this->createResponse(
+                __('message.success'),
+                true,
+                $courses
+            );
+        }
+        function lastCourses(){
+            $courses = Courses::active()->with([
+                'grade_sub_level',
+                'category',
+                'lecturer',
+                'priceDetails',
+                'material'
+                ])->take(5)->get();
+
+                return $this->createResponse(
+                    __('message.success'),
+                    true,
+                    $courses
+                );
+        }
 
     public function topTeachers()
     {
@@ -72,4 +88,7 @@ class HomeService extends MainService
             $topTeachers
         );
     }
+
+
+
 }

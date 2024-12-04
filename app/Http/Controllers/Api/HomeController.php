@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
+use App\Services\BlogService;
+use App\Services\HomeService;
+use App\Services\CourseService;
+use App\Services\TeacherService;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ApiCourseCollection;
-use App\Http\Resources\ApiCourseFilterCollection;
-use App\Http\Resources\GradeLevelCollection;
-use App\Http\Resources\TeacherCollection;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
-use App\Services\CourseService;
-use App\Services\HomeService;
-use App\Services\TeacherService;
+use App\Http\Resources\PostsCollection;
+use App\Http\Resources\TeacherCollection;
+use App\Http\Resources\ApiCourseCollection;
+use App\Http\Resources\GradeLevelCollection;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Request;
+use App\Http\Resources\ApiCourseFilterCollection;
 
 
 class HomeController  extends Controller
@@ -21,19 +23,23 @@ class HomeController  extends Controller
     public HomeService $homeService;
     public CourseService $courseService;
     public TeacherService $teacherService;
+    public BlogService $blogService;
 
-    public function __construct(HomeService $homeService , CourseService $courseService , TeacherService $teacherService)
+    public function __construct(HomeService $homeService , CourseService $courseService , TeacherService $teacherService , BlogService $blogService)
     {
         $this->homeService = $homeService;
         $this->courseService = $courseService;
         $this->teacherService = $teacherService;
+        $this->blogService = $blogService;
     }
 
     public function home()
     {
       $topTeachers =  $this->homeService->topTeachers();
       $topCourses =  $this->homeService->mostOrderedCourses();
+      $lastCourses = $this->homeService->lastCourses();
       $gradeLevels =  $this->homeService->allGradeLevels();
+      $lastPosts = $this->blogService->latestPosts();
 
         if (!$topCourses['status']) {
             $response = new ErrorResponse($topCourses['message'], Response::HTTP_BAD_REQUEST);
@@ -55,7 +61,9 @@ class HomeController  extends Controller
         $response = new SuccessResponse('message.success',[
             'grade_levels'=>collect(new GradeLevelCollection($gradeLevels['data'])),
             'top_courses'=>collect(new ApiCourseCollection($topCourses['data'])),
-            'top_teachers'=>collect(new TeacherCollection($topTeachers['data']))
+            'last_courses'=>collect(new ApiCourseCollection($lastCourses['data'])),
+            'top_teachers'=>collect(new TeacherCollection($topTeachers['data'])),
+            'last_posts'=>collect(new PostsCollection($lastPosts['data']))
         ], Response::HTTP_OK);
 
         return response()->success($response);

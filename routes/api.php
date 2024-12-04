@@ -199,7 +199,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'user'], function () {
 });
 
 
-//char
+//chat
 
 Route::prefix('chat')->group(function(){
 
@@ -210,6 +210,12 @@ Route::prefix('chat')->group(function(){
     Route::post('/readMessage/{id}',[ChatController::class,'readMessage']);
 
 });
+
+
+//my notification
+Route::get('/myNotification',[UserProfileController::class,'myNotification']);
+
+
 
 //lecturer apis
 

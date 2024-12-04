@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Front\User;
 
+use App\Http\Resources\NotificationCollection;
 use App\Models\Notifications;
 use Carbon\Carbon;
 
@@ -15,6 +16,10 @@ class NotificationsEloquent extends HelperEloquent
         ->where('user_id', $data['user']->id)->where('user_type', 'user')->paginate(10);
 
         $this->readAll($is_web);
+
+        if(!$is_web){
+            $data['notifications'] = new NotificationCollection($data['notifications']);
+        }
 
         return $data;
     }
