@@ -239,7 +239,7 @@ Route::get('/translations', function () {
 ///////////subjects////////
 
 Route::get('copy-subjects',function(){
-    $levels = Category::where('parent', 'grade_levels')->where('grade_sub_level_id','!=',154)->pluck('id')->toArray();
+    $levels = Category::where('parent', 'grade_levels')->where('id','!=',154)->pluck('id')->toArray();
     $subjects = Category::where('grade_sub_level_id',154)->get();
     foreach($levels as $level)
     {
