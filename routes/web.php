@@ -291,7 +291,8 @@ Route::get('/migrate',function(){
         //favourtie
         "2024_08_22_113909_create_favourites_table.php",
 
-        "2024_11_23_133757_change_course_lessons_storage_column_to_be_string.php"
+        "2024_11_23_133757_change_course_lessons_storage_column_to_be_string.php",
+        "2024_12_04_135905_create_payment_details_table.php"
 
     ];
 

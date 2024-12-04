@@ -7,7 +7,7 @@ use App\Repositories\Common\CourseCurriculumEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
-use App\Models\{Courses, UserCourse,Coupons,Balances,Transactios};
+use App\Models\{Courses, UserCourse,Coupons,Balances,Transactios,PaymentDetail};
 use App\Services\PaymentService;
 use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
@@ -112,7 +112,8 @@ class CourseFullSubscriptionsController extends Controller
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
- 
+            storePaymentDetails($paymentDetails);
+            
             return  $response = [
                 'status_msg' => 'success',
                 'status' => 200,
@@ -357,8 +358,13 @@ class CourseFullSubscriptionsController extends Controller
         DB::beginTransaction();
         try {
          
-            $paymentDetails = session('payment-'.auth('web')->user()->id);
-            
+            $paymentId = $request->input('paymentId') ?? $request->input('payment_id');
+            $paymentDetails = getPaymentDetails($paymentId);
+            if(! $paymentDetails)
+            {
+                return response()->json(['error' => 'Payment Failed'], 400);
+            }
+
             $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
     
             if((!isset($statusCheck["status"])) || (isset($statusCheck["status"]) && $statusCheck["status"] != "SUCCESS"))
@@ -374,9 +380,9 @@ class CourseFullSubscriptionsController extends Controller
 
             // Create the UserCourse entry
             UserCourse::create([
-                "course_id" => $courseId,
-                "user_id" => $userId,
-                "lecturer_id" => Courses::find($courseId)->user_id ?? "",
+                "course_id" => $paymentDetails['course_id'],
+                "user_id" => $paymentDetails['user_id'],
+                "lecturer_id" => Courses::find($paymentDetails['course_id'])->user_id ?? "",
                 "subscription_token" => $paymentId,
                 "is_paid" => 1,
                 "is_complete_payment" => 1,
@@ -385,12 +391,13 @@ class CourseFullSubscriptionsController extends Controller
             $this->paymentService->createTransactionRecord($paymentDetails);
             $this->paymentService->storeBalance($paymentDetails);
 
-            session()->forget('payment-'.auth('web')->user()->id);
+            session()->forget('payment-'.$paymentDetails['user_id']);
 
             DB::commit();
 
             return response()->json(['message' => 'Webhook handled successfully'], 200);
         } catch (\Exception $e) {
+            dd($e->getLine());
             DB::rollback();
             Log::error($e->getMessage());
             Log::error($e->getFile());

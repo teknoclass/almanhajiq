@@ -7,7 +7,7 @@ use App\Repositories\Common\CourseCurriculumEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
-use App\Models\{CourseSessionSubscription,CourseSession,CourseSessionsGroup};
+use App\Models\{CourseSessionSubscription,CourseSession,CourseSessionsGroup,PaymentDetail, User};
 use App\Services\PaymentService;
 use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
@@ -157,6 +157,7 @@ class CourseSessionSubscriptionsController extends Controller
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
+            storePaymentDetails($paymentDetails);
 
             return  $response = [
                 'status_msg' => 'success',
@@ -323,8 +324,12 @@ class CourseSessionSubscriptionsController extends Controller
         DB::beginTransaction();
         try {
 
-            $paymentDetails = session('payment-'.auth('web')->user()->id);
-
+            $paymentId = $request->input('paymentId') ?? $request->input('payment_id');
+            $paymentDetails = getPaymentDetails($paymentId);
+            if(! $paymentDetails)
+            {
+                return response()->json(['error' => 'Payment Failed'], 400);
+            }
             $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
     
             if((!isset($statusCheck["status"])) || (isset($statusCheck["status"]) && $statusCheck["status"] != "SUCCESS"))
@@ -332,7 +337,7 @@ class CourseSessionSubscriptionsController extends Controller
                 return response()->json(['error' => 'Payment Failed'], 403);
             }
 
-            $studentSubscribedSessionsIds = auth('web')->user()->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+            $studentSubscribedSessionsIds = User::find($paymentDetails['user_id'])->studentSubscribedSessions()->pluck('course_session_id')->toArray();
 
             if($paymentDetails['purchase_type'] == "group")
             {
@@ -376,7 +381,7 @@ class CourseSessionSubscriptionsController extends Controller
 
             $this->paymentService->storeBalance($paymentDetails);
 
-            session()->forget('payment-'.auth('web')->user()->id);
+            session()->forget('payment-'.$paymentDetails['user_id']);
 
             DB::commit();
 

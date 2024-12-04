@@ -7,7 +7,7 @@ use App\Repositories\Common\CourseCurriculumEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
-use App\Models\{StudentSessionInstallment,CourseSession};
+use App\Models\{StudentSessionInstallment,CourseSession,PaymentDetail};
 use App\Services\PaymentService;
 use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
@@ -94,7 +94,8 @@ class CourseSessionInstallmentsController extends Controller
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
-
+            storePaymentDetails($paymentDetails);
+            
             return  $response = [
                 'status_msg' => 'success',
                 'payment_link' => $response['formUrl']
@@ -206,8 +207,13 @@ class CourseSessionInstallmentsController extends Controller
         DB::beginTransaction();
         try {
 
-            $paymentDetails = session('payment-'.auth('web')->user()->id);
-
+            $paymentId = $request->input('paymentId') ?? $request->input('payment_id');
+            $paymentDetails = getPaymentDetails($paymentId);
+            if(! $paymentDetails)
+            {
+                return response()->json(['error' => 'Payment Failed'], 400);
+            }
+            
             $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
     
             if((!isset($statusCheck["status"])) || (isset($statusCheck["status"]) && $statusCheck["status"] != "SUCCESS"))
@@ -216,7 +222,7 @@ class CourseSessionInstallmentsController extends Controller
             }
 
             $item = StudentSessionInstallment::updateOrCreate([
-                'student_id' => auth('web')->user()->id,
+                'student_id' => $paymentDetails['user_id'],
                 'course_id' => $paymentDetails['course_id'],
                 'access_until_session_id' => $paymentDetails['transactionable_id'],
             ]);
@@ -225,7 +231,7 @@ class CourseSessionInstallmentsController extends Controller
 
             $this->paymentService->storeBalance($paymentDetails);
 
-            session()->forget('payment-'.auth('web')->user()->id);
+            session()->forget('payment-'.$paymentDetails['user_id']);
 
             DB::commit();
 
