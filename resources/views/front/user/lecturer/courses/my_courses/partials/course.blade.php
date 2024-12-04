@@ -53,18 +53,7 @@
                         <p><a href="{{ route('user.lecturer.my_courses.unaccepted_evaluation', $course->id) }}">{{ __("evaluation_result") }}</a></p>
                     @endif
 
-					@if (@$course->students_count == 0)
-
-                    <button type="button"
-                        class="p-1 text-danger bg-transparent confirm-category"
-                        data-url="{{ route('user.lecturer.my_courses.delete_course') }}"
-                        data-id="{{ @$course->id }}"
-                        data-is_relpad_page="true"
-                        data-row="course_row_{{ @$course->id }}">
-                        <p>{{ __('delete_course') }}</p>
-                    </button>
-						{{-- <p><a href="{{ route('user.lecturer.my_courses.delete_course', @$course->id) }}" class="text-danger">حذف الدورة</a></p> --}}
-					@endif
+				
 				</div>
 			</div>
 		</span>
