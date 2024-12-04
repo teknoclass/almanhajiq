@@ -127,7 +127,7 @@
                                                     @php
                                                         $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
                                                         $now = now();
-                                                        $isSessionNow = $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15;
+                                                        $isSessionNow = $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 60;
                                                         $isSessionInPast = $sessionDateTime->isPast();
                                                         $isSessionStartingSoon = $sessionDateTime->isFuture() && $sessionDateTime->diffInMinutes($now) <= 120;
 
@@ -226,7 +226,7 @@
                                                             $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);
                                                             $now = now();
                                                             $isSessionInPast = $sessionDateTime->isPast();
-                                                               $isSessionNow= $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15;
+                                                               $isSessionNow= $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 60;
                                                             $isSessionStartingSoon = $sessionDateTime->isFuture() && $sessionDateTime->diffInMinutes($now) <= 120;
 
                                                         @endphp
