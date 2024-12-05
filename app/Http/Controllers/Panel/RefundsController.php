@@ -69,12 +69,12 @@ class RefundsController extends Controller
             if($transaction->transactionable_type == "App\Models\Courses")
             {
                 UserCourse::where('course_id',$transaction->transactionable_id)->where('user_id',$transaction->user_id)->delete();
-                $course_id = $transaction->transactionable_id;
+                @$course_id = $transaction->transactionable_id;
             }
             elseif($transaction->transactionable_type == "App\Models\StudentSessionInstallment")
             {
                 $item = StudentSessionInstallment::where('access_until_session_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)->first();
-                $course_id = $item->course_id;
+                @$course_id = $item->course_id;
                 $item->delete();
             }
             elseif($transaction->transactionable_type == "App\Models\CourseSessionSubscription")
@@ -83,13 +83,13 @@ class RefundsController extends Controller
                 {
                    $item = CourseSessionSubscription::where('course_session_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)
                     ->first();   
-                    $course_id = $item->course_id;
+                    @$course_id = $item->course_id;
                     $item->delete();
                 }else{
                     $item = CourseSessionSubscription::where('course_session_group_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)
                     ->where('course_id',$transaction->course_id)
                     ->first();   
-                    $course_id = $item->course_id;
+                    @$course_id = $item->course_id;
                     $item->delete();
                 }
               
@@ -105,7 +105,7 @@ class RefundsController extends Controller
                 "transactionable_type" => $transaction->transactionable_type,
                 "transactionable_id" => $transaction->transactionable_id,
                 "brand" => "card",
-                'course_id' => $course_id,
+                'course_id' => @$course_id ?? "",
                 "purchase_type" => $transaction->purchase_type,
                 "user_id" => $transaction->user_id,
                 "type" => "withdrow",
