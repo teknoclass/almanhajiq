@@ -112,7 +112,12 @@
                 var url = "{{ url('/user/session-select-payment-method') }}" + 
                 "/" + course_id + 
                 "/" + target_id + 
-                "/group";
+                "/group"+
+                @if(request('marketer_coupon')) 
+                    "/{{ request('marketer_coupon') }}" 
+                @else 
+                    "" 
+                @endif;
 
                 window.location.href = url;
             }else{
@@ -133,7 +138,12 @@
                 var url = "{{ url('/user/session-select-payment-method') }}" + 
                 "/" + course_id + 
                 "/" + target_id + 
-                "/session";
+                "/session"+
+                @if(request('marketer_coupon')) 
+                    "/{{ request('marketer_coupon') }}" 
+                @else 
+                    "" 
+                @endif;
 
                 window.location.href = url;
             }else{

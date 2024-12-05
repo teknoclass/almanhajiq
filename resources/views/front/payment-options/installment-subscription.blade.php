@@ -47,7 +47,7 @@
         $(document).on('click','.payInstallment',function(){
             var id = "{{$id}}";
             var course_id = "{{@$course_id}}";
-            
+            var marketer_coupon = "{{@$marketer_coupon}}";
             var payment_type = $(this).data('payment_type');
            
             $.ajax({
@@ -55,7 +55,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/pay-to-course-session-installment')}}",
-                data:{id:id,course_id:course_id,payment_type:payment_type},
+                data:{id:id,course_id:course_id,payment_type:payment_type,marketer_coupon:marketer_coupon},
                 method: 'post',
                 success: function (response) {
                     $(".payInstallment"+"."+id).attr('disabled',true);

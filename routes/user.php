@@ -191,11 +191,11 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         Route::group(['middleware' => 'auth'], function () {
 
         //subscriptions offers
-        Route::get('/session-select-payment-method/{course_id}/{id}/{type}',[CourseSessionSubscriptionsController::class,'selectPaymentMethod']);
+        Route::get('/session-select-payment-method/{course_id}/{id}/{type}/{marketer_coupon?}',[CourseSessionSubscriptionsController::class,'selectPaymentMethod']);
         Route::post('/subscribe-to-course-sessions',[CourseSessionSubscriptionsController::class,'subscribe']);
         Route::get('/subscribe-to-course-sessions-confirm',[CourseSessionSubscriptionsController::class,'confirmSubscribe']);
         //installments
-        Route::get('/installment-select-payment-method/{course_id}/{id}',[CourseSessionInstallmentsController::class,'selectPaymentMethod']);
+        Route::get('/installment-select-payment-method/{course_id}/{id}/{marketer_coupon?}',[CourseSessionInstallmentsController::class,'selectPaymentMethod']);
         Route::post('/pay-to-course-session-installment',[CourseSessionInstallmentsController::class,'pay']);
         Route::get('/pay-to-course-session-installment-confirm',[CourseSessionInstallmentsController::class,'confirmPayment']);
         //full subscription

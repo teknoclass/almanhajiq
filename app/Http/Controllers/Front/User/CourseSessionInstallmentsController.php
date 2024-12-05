@@ -7,7 +7,7 @@ use App\Repositories\Common\CourseCurriculumEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Repositories\Front\User\CoursesEloquent;
-use App\Models\{StudentSessionInstallment,CourseSession,PaymentDetail};
+use App\Models\{StudentSessionInstallment,CourseSession,PaymentDetail,Coupons,Balances,Transactios};
 use App\Services\PaymentService;
 use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Models\CourseSessionInstallment;
 use App\Models\Courses;
+use Carbon\Carbon;
 
 class CourseSessionInstallmentsController extends Controller
 {
@@ -50,6 +51,27 @@ class CourseSessionInstallmentsController extends Controller
             return redirect("/user/courses/curriculum/item/".$request->course_id);
         }
 
+        //calc course price after coupon
+        $itemPrice = $data['price'];
+        $price = $itemPrice;
+        $coupon = $request['marketer_coupon'];
+        if ($coupon) {
+            $coupon = Coupons::where('code', $coupon)->first();
+            if (@$coupon->isValid()) {
+        if($coupon->amount_type == "rate")
+        {
+            $rateVal = ($coupon->amount / 100) * $itemPrice;
+            $itemPriceAfterCoupon = $itemPrice - $rateVal;
+        }else{
+            $itemPriceAfterCoupon = $itemPrice - $coupon->amount;
+        }
+        $price = $itemPriceAfterCoupon;
+            }
+        }
+
+        $data['price'] =  $price;
+        $data['marketer_coupon'] = $request->marketer_coupon;
+
         return view('front.payment-options.installment-subscription', $data);
     }
 
@@ -72,6 +94,24 @@ class CourseSessionInstallmentsController extends Controller
         }
         $price = $installment->price ?? 0;
 
+        //calc course price after coupon
+        $itemPrice = $price;
+        $price = $itemPrice;
+        $coupon = $request['marketer_coupon'];
+        if ($coupon) {
+            $coupon = Coupons::where('code', $coupon)->first();
+            if (@$coupon->isValid()) {
+        if($coupon->amount_type == "rate")
+        {
+            $rateVal = ($coupon->amount / 100) * $itemPrice;
+            $itemPriceAfterCoupon = $itemPrice - $rateVal;
+        }else{
+            $itemPriceAfterCoupon = $itemPrice - $coupon->amount;
+        }
+        $price = $itemPriceAfterCoupon;
+            }
+        }
+ 
        $response = $this->paymentService->processPayment([
             "amount" => $price,
             "currency" => "IQD",
@@ -90,7 +130,8 @@ class CourseSessionInstallmentsController extends Controller
                 "transactionable_id" => $request->id,
                 "brand" => "card",
                 'course_id' => $request->course_id,
-                "user_id" => auth('web')->user()->id
+                "user_id" => auth('web')->user()->id,
+                "marketer_coupon" => $request->marketer_coupon,
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -116,7 +157,24 @@ class CourseSessionInstallmentsController extends Controller
             return back();
         }
         $price = $installment->price ?? 0;
-        
+        //calc course price after coupon
+        $itemPrice = $price;
+        $price = $itemPrice;
+        $coupon = $request['marketer_coupon'];
+        if ($coupon) {
+            $coupon = Coupons::where('code', $coupon)->first();
+            if (@$coupon->isValid()) {
+        if($coupon->amount_type == "rate")
+        {
+            $rateVal = ($coupon->amount / 100) * $itemPrice;
+            $itemPriceAfterCoupon = $itemPrice - $rateVal;
+        }else{
+            $itemPriceAfterCoupon = $itemPrice - $coupon->amount;
+        }
+        $price = $itemPriceAfterCoupon;
+            }
+        }
+
         $response = $this->zainCashService->processPayment($price,
         url('/user/pay-to-course-session-installment-confirm'),"دفع قسط جلسات دورة");  
         
@@ -131,7 +189,8 @@ class CourseSessionInstallmentsController extends Controller
                 "transactionable_id" => $request->id,
                 "brand" => "zaincash",
                 "transaction_id" => $response['referenceNumber'],
-                'course_id' => $request->course_id
+                'course_id' => $request->course_id,
+                "marketer_coupon" => $request->marketer_coupon,
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -180,6 +239,13 @@ class CourseSessionInstallmentsController extends Controller
                 'access_until_session_id' => $paymentDetails['transactionable_id'],
             ]);
 
+            $sessionPriceAfterCoupon = $this->executeCoupon($paymentDetails);
+
+            if($sessionPriceAfterCoupon)
+            {
+                $paymentDetails['amount'] = $sessionPriceAfterCoupon;
+            }
+
             $this->paymentService->createTransactionRecord($paymentDetails);
 
             $this->paymentService->storeBalance($paymentDetails);
@@ -200,6 +266,109 @@ class CourseSessionInstallmentsController extends Controller
             Log::error($e->getLine());
             return redirect('/payment-failure'); 
         }
+    }
+
+    public function executeCoupon($request)
+    {
+        $coupon = $request['marketer_coupon'];
+        if ($coupon) {
+            $coupon = Coupons::where('code', $coupon)->first();
+            if (@$coupon->isValid()) {
+                $marketer = $coupon->marketer;
+
+                $marketer_amount = $coupon->marketer_amount;
+                $marketer_amount_type = $coupon->marketer_amount_type;
+                $itemPrice = @CourseSessionInstallment::where('course_session_id',$request['transactionable_id'])->where('course_id',$request['course_id'])->first()->price ?? 0;
+                //calc course price after coupon
+                if($coupon->amount_type == "rate")
+                {
+                    $rateVal = ($coupon->amount / 100) * $itemPrice;
+                    $itemPriceAfterCoupon = $itemPrice - $rateVal;
+                }else{
+                    $itemPriceAfterCoupon = $itemPrice - $coupon->amount;
+                }
+                if($marketer_amount_type == "rate" && $itemPriceAfterCoupon)
+                {
+                    $marketer_amount = ($marketer_amount/100) * $itemPriceAfterCoupon;
+                }
+
+                $user_name = auth()->user('web')->name;
+                $marketer_name = $marketer->user->name;
+
+                // save Transactios
+                $params_transactios = [
+                    'description'            => "اشتراك قسط $user_name عبر رابط المسوق $marketer_name",
+                    'user_id'                => $marketer->user_id,
+                    'user_type'              => Transactios::MARKETER,
+                    'payment_id'             => uniqid(),
+                    'amount'                 => $marketer_amount,
+                    'amount_before_discount' => 0,
+                    'type'                   => Transactios::DEPOSIT,
+                    'transactionable_id'     => $marketer->user_id,
+                    'transactionable_type'   => get_class($marketer->user),
+                    'coupon'                 => $coupon->code,
+                ];
+
+                $this->saveTransactios($params_transactios);
+
+                // add balance to marketer
+
+                $params_balance = [
+                    'description' => " اشتراك قسط للطالب $user_name عبر رابطك",
+                    'user_id' => $marketer->user_id,
+                    'user_type' => Balances::MARKETER,
+                    'transaction_id' => $marketer->user_id,
+                    'transaction_type' => get_class($marketer),
+                    'amount' => $marketer_amount,
+                    'system_commission' => 0,
+                    'amount_before_commission' => $marketer_amount,
+                    'becomes_retractable_at' => Carbon::now(),
+                    'is_retractable' => 1,
+                ];
+
+                $this->addBalance($params_balance);
+
+                return $itemPriceAfterCoupon;
+            }
+        }
+    }
+
+    public function addBalance(array $params)
+    {
+        Balances::create([
+            'description' => $params['description'],
+            'user_id' => $params['user_id'],
+            'user_type' => $params['user_type'],
+            'type' => Balances::DEPOSIT,
+            'transaction_id' => $params['transaction_id'],
+            'transaction_type' => $params['transaction_type'],
+            'amount' => $params['amount'],
+            'system_commission' => $params['system_commission'],
+            'amount_before_commission' => $params['amount_before_commission'],
+            'becomes_retractable_at' => $params['becomes_retractable_at'],
+            'is_retractable' => $params['is_retractable'],
+
+        ]);
+
+        return true;
+    }
+
+    public function saveTransactios(array $params)
+    {
+        Transactios::create([
+            'description' => $params['description'],
+            'user_id' => $params['user_id'],
+            'user_type' => $params['user_type'],
+            'payment_id' => $params['payment_id'],
+            'amount' => $params['amount'],
+            'amount_before_discount' => $params['amount_before_discount'],
+            'type' => $params['type'],
+            'transactionable_id' => $params['transactionable_id'],
+            'transactionable_type' => $params['transactionable_type'],
+            'coupon' => isset($params['coupon']) ? $params['coupon'] : '',
+        ]);
+
+        return '';
     }
 
     public function handleWebhook(Request $request)
