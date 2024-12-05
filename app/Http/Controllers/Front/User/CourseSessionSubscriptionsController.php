@@ -98,6 +98,7 @@ class CourseSessionSubscriptionsController extends Controller
         //if has coupon
         $coupon = $request['marketer_coupon'];
         $sessionPrice =  $data['price'];
+        $price = $sessionPrice;
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
             if (@$coupon->isValid()) {
