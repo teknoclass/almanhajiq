@@ -16,7 +16,9 @@ use App\Http\Resources\ApiCourseCollection;
 use App\Http\Resources\GradeLevelCollection;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\ApiCourseFilterCollection;
-
+use App\Http\Resources\OpinionCollection;
+use App\Http\Resources\OpinionResource;
+use App\Services\OpinionService;
 
 class HomeController  extends Controller
 {
@@ -24,13 +26,16 @@ class HomeController  extends Controller
     public CourseService $courseService;
     public TeacherService $teacherService;
     public BlogService $blogService;
+    public OpinionService $opinionService;
 
-    public function __construct(HomeService $homeService , CourseService $courseService , TeacherService $teacherService , BlogService $blogService)
+    public function __construct(HomeService $homeService , CourseService $courseService , TeacherService $teacherService , BlogService $blogService,
+    OpinionService $opinionService)
     {
         $this->homeService = $homeService;
         $this->courseService = $courseService;
         $this->teacherService = $teacherService;
         $this->blogService = $blogService;
+        $this->opinionService = $opinionService;
     }
 
     public function home()
@@ -40,6 +45,7 @@ class HomeController  extends Controller
       $lastCourses = $this->homeService->lastCourses();
       $gradeLevels =  $this->homeService->allGradeLevels();
       $lastPosts = $this->blogService->latestPosts();
+      $opinioins = $this->opinionService->lastOpinions();
 
         if (!$topCourses['status']) {
             $response = new ErrorResponse($topCourses['message'], Response::HTTP_BAD_REQUEST);
@@ -63,7 +69,8 @@ class HomeController  extends Controller
             'top_courses'=>collect(new ApiCourseCollection($topCourses['data'])),
             'last_courses'=>collect(new ApiCourseCollection($lastCourses['data'])),
             'top_teachers'=>collect(new TeacherCollection($topTeachers['data'])),
-            'last_posts'=>collect(new PostsCollection($lastPosts['data']))
+            'last_posts'=>collect(new PostsCollection($lastPosts['data'])),
+            'opinions '=>collect(new OpinionCollection($opinioins))
         ], Response::HTTP_OK);
 
         return response()->success($response);
@@ -87,6 +94,18 @@ class HomeController  extends Controller
         return response()->success($response);
 
 
+    }
+
+    public function getOpinion()
+    {
+
+      $opinioins = $this->opinionService->allOpinions();
+
+        $response = new SuccessResponse('message.success',
+        new OpinionCollection($opinioins)
+        , Response::HTTP_OK);
+
+        return response()->success($response);
     }
 
 }

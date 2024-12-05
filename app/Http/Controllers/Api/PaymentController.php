@@ -804,6 +804,34 @@ class PaymentController extends Controller
 
     }
 
+    function freeInstallment($request){
+        $installment = $this->getCurInstallment($request->course_id);
+        $price = $installment->price;
+
+        if($price > 0){
+            return false;
+        }
+
+        $courseSession = $installment;
+        $item = StudentSessionInstallment::updateOrCreate([
+                'student_id' => auth('api')->id(),
+                'course_id' => $courseSession->course_id,
+                'access_until_session_id' => $courseSession->course_session_id
+            ]);
+
+            UserCourse::create([
+                "course_id" => $courseSession->course_id,
+                "user_id" => auth('api')->id(),
+                "lecturer_id" => Courses::find($courseSession->course_id)->user_id,
+                "is_paid" => 1,
+                "is_complete_payment" => 1,
+                'is_installment' => 1
+            ]);
+
+        return true;
+
+    }
+
 
     function getPriceWithCoupon($amount,$code){
         $coupon = Coupons::where('code', $code)->first();
