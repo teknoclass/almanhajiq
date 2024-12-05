@@ -59,6 +59,12 @@
                 }else if(data.brand=='bank_transfer'){
                     brand='{{__('apple_pay')}}';
                 }
+                else if(data.brand=='card'){
+                    brand='{{__('card')}}';
+                }
+                else if(data.brand=='zaincash'){
+                    brand='{{__('zaincash')}}';
+                }
 
 
 
@@ -71,7 +77,7 @@
             data: 'amount',
             title: '{{__('amount')}}',
         },
-        {
+       /* {
             title: '{{__('amount_before_discount')}}',
             sortable: false,
             overflow: 'visible',
@@ -91,7 +97,7 @@
 
 
             },
-        },
+        },*/
         {
             title: '{{__('coupon')}}',
             sortable: false,
@@ -138,11 +144,11 @@
                 return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
             }
         },
-        // {
-        //     data: 'action',
-        //     title: '{{__('action')}}',
-        //     orderable: false
-        // }
+        {
+            data: 'action',
+            title: '{{__('action')}}',
+            orderable: false
+        }
     ];
     window.search = "{{__('search')}}";
     window.rows = "{{__('rows')}}";
@@ -151,3 +157,4 @@
     window.pageLength = "{{__('pageLength')}}";
 
 </script>
+

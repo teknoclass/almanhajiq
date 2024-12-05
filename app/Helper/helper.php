@@ -20,6 +20,7 @@ use App\Models\{CourseSession,CourseSessionsGroup,CourseSessionSubscription,User
 use Twilio\Rest\Client;
 use Illuminate\Support\Str;
 use App\Models\PaymentDetail;
+use App\Models\Transactios;
 
 function checkAllPermissionsAdmin($permissions)
 {
@@ -993,4 +994,17 @@ function getPaymentDetails($payment_id)
     {
         return json_decode($details->details,true);
     }
+}
+
+function isRefundableTransaction($id)
+{
+    $transaction = Transactios::find($id);
+
+    if($transaction && $transaction->type == "deposit" && $transaction->status == "completed"
+     && $transaction->is_paid == 1 && $transaction->brand == "card" && $transaction->is_refunded != 1)
+    {
+        return true;
+    }
+
+    return false;
 }

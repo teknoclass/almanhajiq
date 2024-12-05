@@ -49,6 +49,7 @@ use App\Http\Controllers\Panel\MarketersJoiningRequestsController;
 use App\Http\Controllers\Panel\MarketersTemplatesController;
 use App\Http\Controllers\Panel\CourseSessionsController as AdminCourseSessionsController;
 use App\Http\Controllers\Panel\InstallmentsSettingsController;
+use App\Http\Controllers\Panel\RefundsController;
 
 Route::group(
     [
@@ -915,6 +916,7 @@ Route::group(
             Route::get('/', [TransactiosController::class, 'index'])->name('index');
             Route::get('/data', [TransactiosController::class, 'getDataTable'])->name('data');
         });
+        Route::post('/refund/{id}', [RefundsController::class, 'makeRefund'])->name('refund');
         Route::delete('/{id}', [TransactiosController::class, 'delete'])->name('delete');
     });
 

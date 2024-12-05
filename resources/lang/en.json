@@ -1163,7 +1163,11 @@
     "assignments_delivered":" assignments delivered",
     "assignments_not_delivered":" assignments not delivered ",
     "can_postpone_hours_before":"Can Postpone before session start",
-    "free_installment":"Free"
+    "free_installment":"Free",
+    "make_refund":"Make Refund",
+    "zaincash":"zain cash",
+    "card":"Qi Card"
+
 
 
 

@@ -1215,6 +1215,9 @@
     "assignments_delivered":"واجبات انتهت",
     "assignments_not_delivered":"واجبات لم تنتهى",
     "can_postpone_hours_before":"يمكن التاجيل قبل بدا الجلسة بعدد ساعات",
-    "free_installment":"مجانى"
+    "free_installment":"مجانى",
+    "zaincash":"زين كاش",
+    "card":"كى كارد",
+    "make_refund":"استرجاع المبلغ"
 
 }

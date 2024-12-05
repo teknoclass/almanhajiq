@@ -27,7 +27,7 @@ class Transactios extends Model
 
     protected $fillable = [
         'description','user_id','user_type', 'payment_id', 'amount','amount_before_discount', 'type','status',
-        'transactionable_type', 'transactionable_id','brand','coupon','pay_transaction_id','is_paid','order_id'
+        'transactionable_type', 'transactionable_id','brand','coupon','pay_transaction_id','is_paid','order_id','is_refunded','refund_id'
     ];
 
     public function userX()
