@@ -66,18 +66,18 @@ class RefundsController extends Controller
             }
             
             //delete related target
-            if($transaction->transactionable_type == "App\Models\Courses")
+            if($transaction->transactionable_type == "App\\Models\\Courses")
             {
                 UserCourse::where('course_id',$transaction->transactionable_id)->where('user_id',$transaction->user_id)->delete();
                 @$course_id = $transaction->transactionable_id;
             }
-            elseif($transaction->transactionable_type == "App\Models\StudentSessionInstallment")
+            elseif($transaction->transactionable_type == "App\\Models\\StudentSessionInstallment")
             {
                 $item = StudentSessionInstallment::where('access_until_session_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)->first();
                 @$course_id = $item->course_id;
                 $item->delete();
             }
-            elseif($transaction->transactionable_type == "App\Models\CourseSessionSubscription")
+            elseif($transaction->transactionable_type == "App\\Models\\CourseSessionSubscription")
             {
                 if($transaction->purchase_type == "session")
                 {
