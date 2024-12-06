@@ -188,7 +188,7 @@ class PaymentService
     public function storeBalance(array $paymentDetails)
     {
         $course = Courses::find($paymentDetails['course_id']);
-        $lecturer = $course->lecturer;
+        $lecturer = @$course->lecturer;
         if($lecturer)
         {
             $amount_before_commission = $paymentDetails['amount'];
