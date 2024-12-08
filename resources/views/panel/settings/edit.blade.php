@@ -234,14 +234,7 @@
                                                        value="{{@$settings->valueOf('mobile')}}" required id="mobile"
                                                        placeholder=""/>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="whatsapp">{{__('whatsApp')}}
-                                                    <span class="text-danger">*</span></label>
-                                                <input type="text" name="whatsapp"
-                                                       class="form-control mb-10 d-flex align-items-center justify-content-between"
-                                                       value="{{@$settings->valueOf('whatsapp')}}" required id="mobile"
-                                                       placeholder=""/>
-                                            </div>
+                                          
                                             <div class="form-group">
                                                 <label for="mobile">{{__('address')}}
                                                     <span class="text-danger">*</span></label>

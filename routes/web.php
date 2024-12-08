@@ -25,6 +25,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\User\PaymentController;
 use App\Http\Controllers\Front\User\PaymentCallBackController;
 use App\Http\Controllers\LevelsControllers;
+use App\Http\Controllers\Front\User\CourseSessionSubscriptionsController;
+use App\Http\Controllers\Front\User\CourseSessionInstallmentsController;
+use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
+use App\Models\Category;
+use App\Models\CategoryTranslation;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -209,7 +215,12 @@ Route::post('/files/upload-file', [FileController::class, 'uploadFile'])->name('
 Route::group(['prefix' => '/get-course-file', 'middleware' => ['CheckCanAccessCourseFiles'], 'as' => 'get.course.file.'], function () {
     Route::get('{course_id}/{lesson_type}/{file}', [FileController::class, 'getCourseLessonItemLink'])->name('type');
 });
-
+////////////////////
+//payment webhook
+Route::post('/full-subscribe-course-webhook',[CourseFullSubscriptionsController::class,'handleWebhook']);
+Route::post('/subscribe-to-course-sessions-webhook',[CourseSessionSubscriptionsController::class,'handleWebhook']);
+Route::post('/pay-to-course-session-installment-webhook',[CourseSessionInstallmentsController::class,'handleWebhook']);
+////////////////////////
 
 Route::get('checkout', [PaymentController::class, 'checkout']);
 Route::post('after-checkout', [PaymentController::class, 'callback'])->name('payment_callback');
@@ -223,6 +234,54 @@ Route::get('/translations', function () {
     }
 
     return $translations;
+});
+
+///////////subjects////////
+
+
+
+Route::get('copy-subjects',function(){
+    // Category::where('parent', 'joining_course')
+    // ->whereDate('created_at', today())
+    // ->delete();
+    $levels = Category::where('parent', 'grade_levels')->where('id','!=',154)->pluck('id')->toArray();
+    $subjects = Category::where('grade_sub_level_id',154)->get();
+    foreach($levels as $level)
+    {
+        foreach($subjects as $subject)
+        {
+            $request['parent'] = "joining_course";
+            $request["grade_sub_level_id"] = $level;
+
+            $value = Category::select('id', 'key', 'parent', 'value')->where('parent', "joining_course")->withTrashed()->max('value');
+
+            $request['value'] = $value + 1;
+
+            $request['name_ar'] = $subject->translations()
+            ->where('locale', 'ar')
+            ->first()
+            ->name ?? '';
+
+            $request['name_en'] = $subject->translations()
+            ->where('locale', 'en')
+            ->first()
+            ->name ?? '';
+
+            $category = Category::create( $request);
+            
+            CategoryTranslation::create([
+                'name' =>  $request['name_ar'],
+                "locale" => 'ar',
+                "category_id" => $category->id
+            ]);
+            CategoryTranslation::create([
+                'name' =>  $request['name_en'],
+                "locale" => 'en',
+                "category_id" => $category->id
+            ]);
+        }
+    }
+    return "done";
 });
 ///////////////////////////////////////////////////////
 
@@ -288,7 +347,9 @@ Route::get('/migrate',function(){
 
         //chat
         "2024_10_10_095450_add_read_at_to_chat_messages_table.php",
-        "2024_11_23_133757_change_course_lessons_storage_column_to_be_string.php"
+        "2024_11_23_133757_change_course_lessons_storage_column_to_be_string.php",
+        "2024_12_04_135905_create_payment_details_table.php",
+        "2024_12_05_142018_add_is_refunded_column_to_transactios_table.php"
 
     ];
 

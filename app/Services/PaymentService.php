@@ -145,22 +145,25 @@ class PaymentService
     {
         Transactios::create([
             'description' => $paymentDetails['description'],
-            'user_id' => auth('web')->id(),
+            'user_id' => isset($paymentDetails['user_id']) ? $paymentDetails['user_id'] : auth('web')->id(),
             'user_type' => 'student',
             'payment_id' => $paymentDetails['payment_id'] ?? null,
             'amount' => $paymentDetails['amount'],
             'amount_before_discount' => $paymentDetails['amount'],
-            'type' => 'deposit',
+            'type' => isset($paymentDetails['type']) ? $paymentDetails['type'] : 'deposit',
             'status' => 'completed',
             'transactionable_type' => $paymentDetails['transactionable_type'] ?? 'Order',
             'transactionable_id' => $paymentDetails['transactionable_id'] ?? null,
             'brand' => $paymentDetails['brand'] ?? null,
-            'coupon' => $paymentDetails['coupon'] ?? null,
+            'coupon' => $paymentDetails['marketer_coupon'] ?? null,
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
             'is_paid' => true,
-            'order_id' => $paymentDetails['orderId']
+            'order_id' => $paymentDetails['orderId'],
+            'refund_id' => isset($paymentDetails['refund_id']) ? $paymentDetails['refund_id'] : '',
+            'is_refunded' => isset($paymentDetails['is_refunded']) ? $paymentDetails['is_refunded'] : 0,
         ]);
     }
+    
     public function createTransactionRecordApi(array $paymentDetails)
     {
         Transactios::create([
@@ -185,7 +188,7 @@ class PaymentService
     public function storeBalance(array $paymentDetails)
     {
         $course = Courses::find($paymentDetails['course_id']);
-        $lecturer = $course->lecturer;
+        $lecturer = @$course->lecturer;
         if($lecturer)
         {
             $amount_before_commission = $paymentDetails['amount'];
@@ -284,6 +287,34 @@ class PaymentService
         }
 
 
+    }
+
+    public function makeRefund($paymentId)
+    {
+        try{
+
+            $auth = base64_encode("{$this->paymentUserName}:{$this->paymentPassword}");
+            $payload = [
+                'requestId' => genereatePaymentOrderID(),
+                'message' => 'need cancel subscription'
+            ];
+
+            $response = Http::withHeaders([
+                'Authorization' => "Basic {$auth}",
+                'X-Terminal-Id' => $this->paymentTerminalID,
+                'Content-Type' => 'application/json',
+            ])->post("{$this->apiUrl}/payment/{$paymentId}/refund", $payload);
+
+            if ($response->successful()) {
+                $statusResponse = $response->json();
+
+                return $statusResponse;
+            } else {
+                return $response->json();
+            }
+        } catch (\Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
     }
 
 }

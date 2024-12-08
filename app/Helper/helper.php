@@ -21,7 +21,8 @@ use Google\Auth\Credentials\ServiceAccountCredentials;
 use Twilio\Rest\Client;
 use Illuminate\Support\Str;
 use Illuminate\Http\Client\RequestException;
-
+use App\Models\PaymentDetail;
+use App\Models\Transactios;
 
 function checkAllPermissionsAdmin($permissions)
 {
@@ -1047,4 +1048,36 @@ function genereatePaymentOrderID()
 function checkIfstudentFullySubscribeOnCourse($course_id)
 {
     return UserCourse::where('user_id','student_id',auth('web')->user()->id)->where('course_id',$course_id)->first();
+}
+
+function storePaymentDetails($paymentDetails)
+{
+    PaymentDetail::create([
+        'payment_id' => $paymentDetails['payment_id'],
+        'user_id' => $paymentDetails['user_id'],
+        'details' => json_encode($paymentDetails)
+    ]);
+}
+
+function getPaymentDetails($payment_id)
+{
+   $details = PaymentDetail::where('payment_id', $payment_id)->first();
+
+    if($details)
+    {
+        return json_decode($details->details,true);
+    }
+}
+
+function isRefundableTransaction($id)
+{
+    $transaction = Transactios::find($id);
+
+    if($transaction && $transaction->type == "deposit" && $transaction->status == "completed"
+     && $transaction->is_paid == 1 && $transaction->brand == "card" && $transaction->is_refunded != 1)
+    {
+        return true;
+    }
+
+    return false;
 }

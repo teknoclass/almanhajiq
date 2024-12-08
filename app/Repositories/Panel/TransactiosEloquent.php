@@ -24,6 +24,8 @@ class TransactiosEloquent
         'brand',
         'coupon',
         'created_at',
+        'is_refunded',
+        'is_paid',
         \DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d ") as date')
     )                        ->with([
         'user' => function ($query) {
@@ -32,8 +34,8 @@ class TransactiosEloquent
     ])->orderByDesc('created_at')->get();
         return Datatables::of($data)
             ->addIndexColumn()
-            // ->addColumn('action', 'panel.transactios.partials.actions')
-            // ->rawColumns(['action'])
+            ->addColumn('action', 'panel.transactios.partials.actions')
+            ->rawColumns(['action'])
             ->make(true);
 
     }

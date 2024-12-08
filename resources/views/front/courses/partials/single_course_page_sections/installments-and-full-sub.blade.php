@@ -106,7 +106,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="card-body">
-                                                        <p >{{__('price')}} :  ({{$installment->price}}) دينار عراقى</p>
+                                                        <p >{{__('price')}} : @if($installment->price != "" && $installment->price !=0)  ({{$installment->price}}) دينار عراقى @else {{__('free_installment')}} @endif</p>
                                                         <hr>
                                                         <ul>
                                                         @foreach($lessons as $lesson)
@@ -122,7 +122,7 @@
                                                       <br>
                                                       <br>
                                                         @if(! in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id || @$currentInstallment == $untilLesson) )
-                                                        <a href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $untilLesson ?? '']) }}" style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
+                                                        <a href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $untilLesson ?? '','marketer_coupon' => request('marketer_coupon')]) }}" style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
                                                          class="stop-payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}" >@if($lastSession->price !="" && $lastSession->price != 0) {{__('payment')}}  @else {{__('subscribe')}} @endif
                                                         </a>
                                                         @elseif(in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id) )

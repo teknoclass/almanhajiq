@@ -47,7 +47,8 @@
             var type = "{{$type}}";
             var course_id = "{{@$course_id}}";
             var payment_type = $(this).data('payment_type');
-
+            var marketer_coupon = "{{@$marketer_coupon}}";
+            
             if(target_id != "")
             {
             $.ajax({
@@ -55,7 +56,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/subscribe-to-course-sessions')}}",
-                data:{target_id:target_id,type:type,course_id:course_id,payment_type:payment_type},
+                data:{target_id:target_id,type:type,course_id:course_id,payment_type:payment_type,marketer_coupon:marketer_coupon},
                 method: 'post',
                 success: function (response) {
                     $('.sessionGroupId option[value="' + target_id + '"]').remove();

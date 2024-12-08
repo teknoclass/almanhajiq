@@ -369,8 +369,8 @@ class AuthEloquent extends HelperEloquent
     public function singout($request)
     {
         $user = auth()->guard('web')->user();
-        $user->session_token = null;
-        $user->save();
+        // $user->session_token = null;
+        // $user->save();
 
         $this->guard()->logout();
         
