@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth:web', 'checkIsLecturer', 'shareGeneralSetti
             Route::post('/set',     [LecturerPrivateLessonsController::class, 'set'])->name('set'); // MA Delete
 
             Route::group(['prefix' => 'create', 'as' => 'create.'], function () {
-                // Route::get('/',  [LecturerPrivateLessonsController::class, 'create'])->name('index'); // MA Delete
+                Route::get('/',  [LecturerPrivateLessonsController::class, 'create'])->name('index'); // MA Delete
             });
             Route::group(['prefix' => 'edit', 'as' => 'edit.'], function () {
                 Route::get('/{id}',  [LecturerPrivateLessonsController::class, 'edit'])->name('index');

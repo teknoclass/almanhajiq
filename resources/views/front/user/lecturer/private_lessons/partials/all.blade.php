@@ -21,10 +21,10 @@
                     @if (@$type == 'finished')
                     <td>{{ __('rate') }}</td>
                     @endif
-                    <td>{{__('request_status')}}</td>
+                 {{--   <td>{{__('request_status')}}</td>
                     <td>{{__('request_admin_response')}}</td>
-                    <td>{{ __('action') }}</td>
-                    <td>{{ __('cancel') }}/{{ __('postpone') }}</td>
+                    <td>{{ __('action') }}</td> --}}
+                   {{-- <td>{{ __('cancel') }}/{{ __('postpone') }}</td> --}}
                 </tr>
             </thead>
             <tbody>

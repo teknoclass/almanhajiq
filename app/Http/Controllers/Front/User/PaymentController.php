@@ -50,8 +50,8 @@ class PaymentController extends Controller
 
         $currency = $user->country->currency_name ?? __('currency');
         $title = $this->get_title($transaction);
-        $stripe_key = env('stripe_key' , "pk_test_51HTpx3Azqp7r8Lno3MIZKFZs43xLCjYR4u7XVnKxNYQbGzQcUm3qtJNuJFrfT7X1RaV5Gci9mWCVEVuYfP4XiPRt00TrCFrYeB");
-        return view('front.payments.pay',compact('transaction' , 'title' , 'stripe_key' , 'currency'));
+        // $stripe_key = env('stripe_key' , "pk_test_51HTpx3Azqp7r8Lno3MIZKFZs43xLCjYR4u7XVnKxNYQbGzQcUm3qtJNuJFrfT7X1RaV5Gci9mWCVEVuYfP4XiPRt00TrCFrYeB");
+        return view('front.payment-options.private-lesson',compact('transaction' , 'title' , 'currency'));
     }
 
     function get_title($transaction) {

@@ -20,6 +20,7 @@ use App\Http\Controllers\Front\User\Lecturer\CoursesController as LecturerCourse
 use App\Http\Controllers\Front\User\CourseSessionSubscriptionsController;
 use App\Http\Controllers\Front\User\CourseSessionInstallmentsController;
 use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
+use App\Http\Controllers\Front\User\PrivateLessonSubscriptionsController;
 
 Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
     Route::group(['middleware' => 'checkActiveUser'], function () {
@@ -203,6 +204,9 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         Route::post('/full-subscribe-course',[CourseFullSubscriptionsController::class,'fullSubscribe']);
         Route::get('/full-subscribe-course-confirm',[CourseFullSubscriptionsController::class,'fullConfirmSubscribe']);
   
+        //private lessons
+        Route::post('/private-lesson-subscription',[PrivateLessonSubscriptionsController::class,'pay']);
+        Route::get('/private-lesson-confirm',[PrivateLessonSubscriptionsController::class,'confirmPayment']);
         });
         
     });

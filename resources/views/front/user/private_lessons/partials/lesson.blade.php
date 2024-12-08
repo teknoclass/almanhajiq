@@ -50,7 +50,7 @@
 
     @if (@$type == 'upcoming')
 
-        <td><div>
+       {{-- <td><div>
 
                 <button data-toggle="modal" data-target="#cancelModal" data-id="{{ @$privateLesson->id }}" id="cancelButton"><span class="far  fa-cancel"></span><label>{{ __('cancel')}}</label></button>
             </div>
@@ -59,7 +59,7 @@
 
 
 
-            </div></td>
+            </div></td> --}}
     @endif
 
     <td>

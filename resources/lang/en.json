@@ -1167,7 +1167,10 @@
     "free_installment":"Free",
     "make_refund":"Make Refund",
     "zaincash":"zain cash",
-    "card":"Qi Card"
+    "card":"Qi Card",
+    "total_price":"Total Price",
+    "tr":"IQD"
+
 
 
 

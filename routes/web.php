@@ -30,7 +30,7 @@ use App\Http\Controllers\Front\User\CourseSessionInstallmentsController;
 use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
 use App\Models\Category;
 use App\Models\CategoryTranslation;
-
+use App\Http\Controllers\Front\User\PrivateLessonSubscriptionsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -220,6 +220,7 @@ Route::group(['prefix' => '/get-course-file', 'middleware' => ['CheckCanAccessCo
 Route::post('/full-subscribe-course-webhook',[CourseFullSubscriptionsController::class,'handleWebhook']);
 Route::post('/subscribe-to-course-sessions-webhook',[CourseSessionSubscriptionsController::class,'handleWebhook']);
 Route::post('/pay-to-course-session-installment-webhook',[CourseSessionInstallmentsController::class,'handleWebhook']);
+Route::post('/private-lesson-subscribe-webhook',[PrivateLessonSubscriptionsController::class,'handleWebhook']);
 ////////////////////////
 
 Route::get('checkout', [PaymentController::class, 'checkout']);

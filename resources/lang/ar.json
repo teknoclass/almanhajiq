@@ -1219,6 +1219,9 @@
     "free_installment":"مجانى",
     "zaincash":"زين كاش",
     "card":"كى كارد",
-    "make_refund":"استرجاع المبلغ"
+    "make_refund":"استرجاع المبلغ",
+    "total_price":"الاجمالى",
+    "tr":"دينار عراقى"
+
 
 }

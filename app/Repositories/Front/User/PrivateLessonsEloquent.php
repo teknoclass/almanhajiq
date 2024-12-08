@@ -347,8 +347,8 @@ class PrivateLessonsEloquent extends HelperEloquent
                     'pay_transaction_id' => $transaction->id,
                     'is_paid' => $use_old_hours ? 1 : 0,
                 ];
-
-                $this->addBalance($params_balance);
+                session()->put('private-balance-'.auth('web')->user()->id,$params_balance);
+                
 
             }
 
@@ -510,8 +510,10 @@ class PrivateLessonsEloquent extends HelperEloquent
                 }
             }
 
+            $transaction->update(['is_paid' => 1]);
             $transaction->related_transactions()->update(['is_paid' => 1]);
-            $transaction->related_balances()->update(['is_paid' => 1]);
+            $balanceDetails = session('private-balance-'.auth('web')->user()->id);
+            $this->addBalance($balanceDetails);
 
             $lesson         = $transaction->transactionable;
             $lesson->status = 'acceptable';
@@ -521,6 +523,7 @@ class PrivateLessonsEloquent extends HelperEloquent
 
             return true;
         } catch (\Throwable $th) {
+            \Log::error($th->getMessage());
             return false;
         }
     }
