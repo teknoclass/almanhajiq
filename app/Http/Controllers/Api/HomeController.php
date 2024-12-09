@@ -18,7 +18,9 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\ApiCourseFilterCollection;
 use App\Http\Resources\OpinionCollection;
 use App\Http\Resources\OpinionResource;
+use App\Http\Resources\ServiceResource;
 use App\Services\OpinionService;
+use App\Services\OurServices;
 
 class HomeController  extends Controller
 {
@@ -27,25 +29,28 @@ class HomeController  extends Controller
     public TeacherService $teacherService;
     public BlogService $blogService;
     public OpinionService $opinionService;
+    public OurServices $OurServices;
 
     public function __construct(HomeService $homeService , CourseService $courseService , TeacherService $teacherService , BlogService $blogService,
-    OpinionService $opinionService)
+    OpinionService $opinionService , OurServices $OurServices)
     {
         $this->homeService = $homeService;
         $this->courseService = $courseService;
         $this->teacherService = $teacherService;
         $this->blogService = $blogService;
         $this->opinionService = $opinionService;
+        $this->OurServices = $OurServices;
     }
 
     public function home()
     {
-      $topTeachers =  $this->homeService->topTeachers();
-      $topCourses =  $this->homeService->mostOrderedCourses();
+      $topTeachers = $this->homeService->topTeachers();
+      $topCourses  = $this->homeService->mostOrderedCourses();
       $lastCourses = $this->homeService->lastCourses();
-      $gradeLevels =  $this->homeService->allGradeLevels();
-      $lastPosts = $this->blogService->latestPosts();
-      $opinioins = $this->opinionService->lastOpinions();
+      $gradeLevels = $this->homeService->allGradeLevels();
+      $lastPosts   = $this->blogService->latestPosts();
+      $opinioins   = $this->opinionService->lastOpinions();
+      $OurServices = $this->OurServices->lastServices();
 
         if (!$topCourses['status']) {
             $response = new ErrorResponse($topCourses['message'], Response::HTTP_BAD_REQUEST);
@@ -65,12 +70,13 @@ class HomeController  extends Controller
 
 
         $response = new SuccessResponse('message.success',[
-            'grade_levels'=>collect(new GradeLevelCollection($gradeLevels['data'])),
-            'top_courses'=>collect(new ApiCourseCollection($topCourses['data'])),
-            'last_courses'=>collect(new ApiCourseCollection($lastCourses['data'])),
-            'top_teachers'=>collect(new TeacherCollection($topTeachers['data'])),
-            'last_posts'=>collect(new PostsCollection($lastPosts['data'])),
-            'opinions '=>collect(new OpinionCollection($opinioins))
+            'grade_levels' => collect(new GradeLevelCollection($gradeLevels['data'])),
+            'top_courses'  => collect(new ApiCourseCollection($topCourses['data'])),
+            'last_courses' => collect(new ApiCourseCollection($lastCourses['data'])),
+            'top_teachers' => collect(new TeacherCollection($topTeachers['data'])),
+            'last_posts'   => collect(new PostsCollection($lastPosts['data'])),
+            'opinions '    => collect(new OpinionCollection($opinioins)),
+            'OurServices '    => collect(new ServiceResource($OurServices)),
         ], Response::HTTP_OK);
 
         return response()->success($response);
