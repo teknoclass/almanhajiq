@@ -110,7 +110,7 @@ Route::get('/teacher/{id}', [TeacherController::class, 'findTeacherById'])->name
 
 //payment
 
-Route::group(['prefix' => 'payment'], function () {
+Route::group(['prefix' => 'payment' , 'middleware' => 'auth:api'], function () {
 
     Route::post('/fullCourseDetails',[PaymentController::class,'fullSubscribeDetails']);
     Route::post('/fullCourse',[PaymentController::class,'fullSubscribe']);

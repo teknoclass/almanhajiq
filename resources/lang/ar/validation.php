@@ -176,6 +176,8 @@ return [
         "about"=>"نبذة",
         "dob"=> "تاريخ الميلاد"
     ],
+    "installment_not_foud"=> "لا يوجد أقساط متاحة لهذه الدورة.",
+    "installment_not_Free"=> "القسط التالي ليس مجاني",
 
 
 
