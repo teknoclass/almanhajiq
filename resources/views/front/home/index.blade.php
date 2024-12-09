@@ -29,6 +29,7 @@
 
     @include('front.home.sections.about_platform')
     @include('front.home.sections.about')
+    @include('front.home.sections.featured_courses')
 
     @if (@$section_settings)
     @foreach ($section_settings as $section)

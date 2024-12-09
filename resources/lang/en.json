@@ -1166,7 +1166,11 @@
     "free_installment":"Free",
     "make_refund":"Make Refund",
     "zaincash":"zain cash",
-    "card":"Qi Card"
+    "card":"Qi Card",
+    "is_feature":"Featured ?",
+    "featured_courses":"Featured Courses"
+
+
 
 
 

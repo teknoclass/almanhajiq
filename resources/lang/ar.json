@@ -1218,6 +1218,8 @@
     "free_installment":"مجانى",
     "zaincash":"زين كاش",
     "card":"كى كارد",
-    "make_refund":"استرجاع المبلغ"
+    "make_refund":"استرجاع المبلغ",
+    "is_feature":"مميزة؟",
+    "featured_courses":"الدورات المميزة"
 
 }
