@@ -133,6 +133,8 @@ class AuthService extends MainService
                 if($user->is_validation == 0 || $user->is_validation == null){
                     //$user->sendVerificationCode();
                 }
+                $user->device_token  = $request->device_token;
+                $user->save();
                 $token = $user->createToken('auth_token')->plainTextToken;
                 $user->token  = $token;
                 return $this->createResponse(
