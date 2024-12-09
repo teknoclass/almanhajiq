@@ -46,7 +46,7 @@ class LecturerPrivateLessonsEloquent extends HelperEloquent
                 }
            ,'requests'=>function ($query){
                 $query->where('user_type','teacher');
-                } ]);
+                } ])->where('status','acceptable');
 
         $time_now = now()->toTimeString();
         $date_now = now()->toDateString();

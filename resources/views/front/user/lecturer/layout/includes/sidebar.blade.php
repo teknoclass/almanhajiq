@@ -313,14 +313,14 @@
                     <span class="main-menu__link-text">{{ __('lessons_list') }}</span>
                 </a>
             </li>
-            <li class="main-menu__item">
+          {{--  <li class="main-menu__item">
                 <a class="main-menu__link" href="{{ route('user.private_lessons.request') }}">
                     <div class="main-menu__icon">
                         <i class="fa-solid fa-circle"></i>
                     </div>
                     <span class="main-menu__link-text">{{ __('my_live_lessons_requests') }}</span>
                 </a>
-            </li>
+            </li> --}}
             <!-- Uncomment the following block if needed in the future -->
             <!-- 
             <li class="main-menu__item">
