@@ -75,8 +75,8 @@ class HomeController  extends Controller
             'last_courses' => collect(new ApiCourseCollection($lastCourses['data'])),
             'top_teachers' => collect(new TeacherCollection($topTeachers['data'])),
             'last_posts'   => collect(new PostsCollection($lastPosts['data'])),
-            'opinions '    => collect(new OpinionCollection($opinioins)),
-            'OurServices '    => collect(ServiceResource::collection($OurServices)),
+            'opinions'     => collect(new OpinionCollection($opinioins)),
+            'our_services' => collect(ServiceResource::collection($OurServices)),
         ], Response::HTTP_OK);
 
         return response()->success($response);
