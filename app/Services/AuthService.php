@@ -85,27 +85,28 @@ class AuthService extends MainService
         try {
             DB::beginTransaction();
 
-            $data                = $studentRequest->all();
-            $data['validation_code']    = '0000';
-            $data['password_c']  = $studentRequest->get('password');
-            $data['password']    = Hash::make($studentRequest->get('password'));
-            $user =  $this->userRepository->updateOrCreateUser($data);
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $data                    = $studentRequest->all();
+            $data['validation_code'] = '0000';
+            $data['password_c']      = $studentRequest->get('password');
+            $data['password']        = Hash::make($studentRequest->get('password'));
+            $data['device_token']    = Hash::make($studentRequest->get('device_token'));
+            $user                    = $this->userRepository->updateOrCreateUser($data);
+            $token                   = $user->createToken('auth_token')->plainTextToken;
             //$user->sendVerificationCode();
 
             $message = __('message.operation_accomplished_successfully');
-//            try {
-//                $user->sendVerificationCode();
-//            }
-//            catch (\Exception $exception){
-//                DB::rollback();
-//                Log::error($exception->getMessage());
-//                return $this->createResponse(
-//                    __('message.message.unexpected_error'),
-//                    false,
-//                    null
-//                );
-//            }
+            // try {
+            //     $user->sendVerificationCode();
+            // }
+            // catch (\Exception $exception){
+            //     DB::rollback();
+            //     Log::error($exception->getMessage());
+            //     return $this->createResponse(
+            //         __('message.message.unexpected_error'),
+            //         false,
+            //         null
+            //     );
+            // }
             DB::commit();
             $user->token = $token;
             return $this->createResponse(
