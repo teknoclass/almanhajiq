@@ -101,7 +101,7 @@ class CourseSessionSubscriptionsController extends Controller
         $price = $sessionPrice;
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
-            if (@$coupon->isValid()) {
+            if ($coupon && @$coupon->isValid()) {
         if($coupon->amount_type == "rate")
         {
             $rateVal = ($coupon->amount / 100) * $sessionPrice;
@@ -151,7 +151,7 @@ class CourseSessionSubscriptionsController extends Controller
         $sessionPrice =  $price;
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
-            if (@$coupon->isValid()) {
+            if ($coupon && @$coupon->isValid()) {
         if($coupon->amount_type == "rate")
         {
             $rateVal = ($coupon->amount / 100) * $sessionPrice;
@@ -234,7 +234,7 @@ class CourseSessionSubscriptionsController extends Controller
         $sessionPrice =  $price;
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
-            if (@$coupon->isValid()) {
+            if ($coupon && @$coupon->isValid()) {
         if($coupon->amount_type == "rate")
         {
             $rateVal = ($coupon->amount / 100) * $sessionPrice;
@@ -391,7 +391,7 @@ class CourseSessionSubscriptionsController extends Controller
         $coupon = $request['marketer_coupon'];
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
-            if (@$coupon->isValid()) {
+            if ($coupon && @$coupon->isValid()) {
                 $marketer = $coupon->marketer;
 
                 $marketer_amount = $coupon->marketer_amount;

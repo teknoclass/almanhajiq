@@ -37,7 +37,7 @@ class CourseFullSubscriptionsController extends Controller
         $coupon = $request['marketer_coupon'];
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
-            if (@$coupon->isValid()) {
+            if ($coupon && @$coupon->isValid()) {
         if($coupon->amount_type == "rate")
         {
             $rateVal = ($coupon->amount / 100) * $coursePrice;
@@ -76,7 +76,7 @@ class CourseFullSubscriptionsController extends Controller
         $coupon = $request['marketer_coupon'];
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
-            if (@$coupon->isValid()) {
+            if ($coupon && @$coupon->isValid()) {
         if($coupon->amount_type == "rate")
         {
             $rateVal = ($coupon->amount / 100) * $coursePrice;
@@ -101,7 +101,7 @@ class CourseFullSubscriptionsController extends Controller
                 "description" => 'اشتراك كلى فى الدورة',
                 "orderId" => $response['requestId'],
                 "payment_id" => $response['paymentId'],
-                "amount" => $course->getPriceForPayment(),
+                "amount" => $price,
                 "transactionable_type" => "App\\Models\\Courses",
                 "transactionable_id" => $course->id,
                 "brand" => "card",
@@ -138,7 +138,7 @@ class CourseFullSubscriptionsController extends Controller
         $coupon = $request['marketer_coupon'];
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
-            if (@$coupon->isValid()) {
+            if ($coupon && @$coupon->isValid()) {
         if($coupon->amount_type == "rate")
         {
             $rateVal = ($coupon->amount / 100) * $coursePrice;
@@ -150,7 +150,7 @@ class CourseFullSubscriptionsController extends Controller
             }
         }
            
-        $response = $this->zainCashService->processPayment($course->getPriceForPayment(),
+        $response = $this->zainCashService->processPayment($price,
         url('/user/full-subscribe-course-confirm'),"اشتراك كلى فى دورة"); 
         
         if(isset($response['id']))
@@ -254,7 +254,7 @@ class CourseFullSubscriptionsController extends Controller
         $coupon = $request['marketer_coupon'];
         if ($coupon) {
             $coupon = Coupons::where('code', $coupon)->first();
-            if (@$coupon->isValid()) {
+            if ($coupon && @$coupon->isValid()) {
                 $marketer = $coupon->marketer;
 
                 $marketer_amount = $coupon->marketer_amount;

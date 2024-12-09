@@ -35,6 +35,8 @@
     
     </div>
 
+    <input name="marketer_coupon" style="width:96%;margin:auto" class="marketer_coupon form-control" placeholder="{{__('have_coupon')}}" value="{{@$marketer_coupon}}">
+    <br>
 </div>
 
 @push('front_js')
@@ -47,7 +49,7 @@
             var type = "{{$type}}";
             var course_id = "{{@$course_id}}";
             var payment_type = $(this).data('payment_type');
-            var marketer_coupon = "{{@$marketer_coupon}}";
+            var marketer_coupon = $(".marketer_coupon").val();
             
             if(target_id != "")
             {
@@ -78,6 +80,7 @@
             }
         });
 
+       
     });
     
 </script>
