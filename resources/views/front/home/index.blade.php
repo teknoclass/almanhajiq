@@ -37,6 +37,8 @@
         @endif
     @endforeach
     @endif
+    
+    @include('front.home.sections.featured_courses')
 
 	{{-- @include('front.home.sections.about_platform')
 

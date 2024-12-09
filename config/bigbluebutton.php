@@ -15,8 +15,8 @@ return [
      */
     'servers' => [
         'server1' => [
-            'BBB_SECURITY_SALT' => 'BlbEKeyRAtTAOcz154NCRHJ4DgQtXm7uHoWglnarvfi',
-            'BBB_SERVER_BASE_URL'    => 'https://biggerbluebutton.com/bigbluebutton/tadreesacademy',
+            'BBB_SECURITY_SALT' => 'WWfTlJQ0gbIj7QEsvFJ2llkazDGCiTzEuLZ2U5bHt9r',
+            'BBB_SERVER_BASE_URL'    => 'https://biggerbluebutton.com/bigbluebutton/almanhajiq',
         ],
         'server2' => [
             'BBB_SECURITY_SALT'    => '',

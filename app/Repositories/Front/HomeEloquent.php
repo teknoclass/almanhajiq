@@ -62,6 +62,9 @@ class HomeEloquent extends HelperEloquent
 
         $data['latest_courses'] = Courses::select('id','image','type','category_id','duration','grade_sub_level')->active()->accepted()
             ->with('translations:courses_id,title,description,locale',)->take(10)->get();
+
+        $data['featured_courses'] = Courses::select('id','image','type','category_id','duration','grade_sub_level')->active()->accepted()
+        ->where('is_feature',1)->with('translations:courses_id,title,description,locale',)->get();
         // Get the parent category 'grade_levels'
         $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
 
