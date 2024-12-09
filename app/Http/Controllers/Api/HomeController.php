@@ -76,7 +76,7 @@ class HomeController  extends Controller
             'top_teachers' => collect(new TeacherCollection($topTeachers['data'])),
             'last_posts'   => collect(new PostsCollection($lastPosts['data'])),
             'opinions '    => collect(new OpinionCollection($opinioins)),
-            'OurServices '    => collect(new ServiceResource($OurServices)),
+            'OurServices '    => collect(ServiceResource::collection($OurServices)),
         ], Response::HTTP_OK);
 
         return response()->success($response);

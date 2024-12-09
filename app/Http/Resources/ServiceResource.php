@@ -18,14 +18,14 @@ class ServiceResource extends JsonResource
      */
     public function toArray($request)
     {
-        $locale = App::getLocale();
-        $translation = collect($this->translations)
-                ->firstWhere('locale', $locale)
-            ?? collect($this->translations)
-                ->firstWhere('locale', 'en');
+        // $locale = App::getLocale();
+        // $translation = collect($this->translations)
+        //         ->firstWhere('locale', $locale)
+        //     ?? collect($this->translations)
+        //         ->firstWhere('locale', 'en');
         return  [
             'id'          => $this->id,
-            'title'       => $translation?->title ?? '',
+            'title'       => $this?->title ?? '',
             'image'       => imageUrl($this->image ,'100x100'),
         ];
     }
