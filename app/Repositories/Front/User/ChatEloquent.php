@@ -26,7 +26,10 @@ class ChatEloquent extends HelperEloquent
     {
         $data['user'] = $this->getUser($is_web);
 
-        $data['chats'] = $data['user']->chatsOrderedByLatestMessage()->paginate(10);
+        $data['chats'] = collect([]);
+        if($data['user']){
+            $data['chats'] = $data['user']->chatsOrderedByLatestMessage()->paginate(10);
+        }
 
         if(!$is_web){
             unset($data['user']);
