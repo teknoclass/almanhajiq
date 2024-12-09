@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\LessonIdRequest;
 use App\Http\Response\SuccessResponse;
 use Illuminate\Http\Request;
 use App\Repositories\Front\User\CoursesEloquent;
@@ -35,7 +36,7 @@ class CoursesController extends Controller
     }
 
 
-    function endLesson(Request $request)
+    function endLesson(LessonIdRequest $request)
     {
         $data = $this->courses->endLessons($request,false);
         $message = __('message.operation_accomplished_successfully');

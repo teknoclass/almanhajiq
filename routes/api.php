@@ -152,7 +152,7 @@ Route::get('/getRate',[CoursesController::class,'getRate']);
 
 
 //lesson
-Route::post('/endLesson',[CoursesController::class,'endLesson'])->middleware('auth:api');
+Route::post('courseStudy/endLesson',[CoursesController::class,'endLesson'])->middleware('auth:api');
 
 //quiz
 Route::prefix('quiz')->middleware(['language', 'auth:sanctum'])->group(function(){
