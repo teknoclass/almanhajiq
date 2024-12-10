@@ -292,8 +292,20 @@ class PaymentController extends Controller
                     ]);
                 }
             }
+            if($session = $sessions->first()){
+                UserCourse::create([
+                    "course_id"           => $session->course_id,
+                    "group_id"            => $id,
+                    "user_id"             => $user->id,
+                    "lecturer_id"         => Courses::find($session->course_id)->user_id,
+                    "subscription_token"  => null,
+                    "is_paid"             => 1,
+                    "is_complete_payment" => 1,
+                    'is_installment'      => 1
+                ]);
+            }
         }else{
-            CourseSessionSubscription::create([
+            $courseSession = CourseSessionSubscription::create([
                 'student_id'                    => $user->id,
                 'course_session_id'             => $id,
                 'status'                        => 1,
@@ -301,6 +313,15 @@ class PaymentController extends Controller
                 'course_session_group_id'       => $model->group_id,
                 'related_to_group_subscription' => 0,
                 'course_id'                     => $model->course_id
+            ]);
+            UserCourse::create([
+                "course_id"           => $courseSession->course_id,
+                "user_id"             => $user->id,
+                "lecturer_id"         => Courses::find($courseSession->course_id)->user_id,
+                "subscription_token"  => null,
+                "is_paid"             => 1,
+                "is_complete_payment" => 1,
+                'is_installment'      => 1
             ]);
         }
 
