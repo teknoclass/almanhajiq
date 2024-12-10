@@ -19,8 +19,10 @@ use App\Http\Resources\ApiCourseFilterCollection;
 use App\Http\Resources\OpinionCollection;
 use App\Http\Resources\OpinionResource;
 use App\Http\Resources\ServiceResource;
+use App\Http\Resources\StudentWithCountsResource;
 use App\Services\OpinionService;
 use App\Services\OurServices;
+use Illuminate\Support\Facades\App;
 
 class HomeController  extends Controller
 {
@@ -84,8 +86,11 @@ class HomeController  extends Controller
 
     public function home_parent()
     {
+        $locale = App::getLocale();
+        App::setLocale($locale ?? 'ar');
+
         $user        = auth()->user();
-        if(!$user || $user->role != 'parrent'){
+        if(!$user || $user->role != 'parent'){
             $response = new ErrorResponse( __('no_found'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
@@ -96,7 +101,7 @@ class HomeController  extends Controller
 
         $response = new SuccessResponse('message.success',[
             'sons_count'   => $sons_count,
-
+            'childs'   =>  StudentWithCountsResource::collection($user->childs),
         ], Response::HTTP_OK);
 
         return response()->success($response);

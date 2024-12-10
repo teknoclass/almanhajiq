@@ -4,7 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CoursesResources extends JsonResource
+// Courses With User Percentage Resources
+class CoursesWithPercentageResources extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +17,10 @@ class CoursesResources extends JsonResource
     {
 
         return [
-            'id'    => $this->id,
-            'title' => $this->title,
+            'id'         => $this->id,
+            'title'      => $this->title,
+            'percentage' => rand(20,100),
+            'user_id'    => request()->course_user_id,
         ];
     }
 }

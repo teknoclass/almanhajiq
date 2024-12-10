@@ -658,4 +658,17 @@ class User extends Authenticatable implements MustVerifyEmail
         return collect($childs);
     }
 
+    // + reserved_courses
+    public function getReservedCoursesAttribute()
+    {
+        // $courses = [];
+        // foreach ($this->courses as $user_course) {
+        //     if($user_course->course){
+        //         $courses[] = $user_course->course_id;
+        //     }
+        // }
+        return Courses::whereIn('id',$this->courses->pluck('course_id')->toArray())->get();
+        return collect($courses);
+    }
+
 }

@@ -89,20 +89,26 @@ class HomeService extends MainService
         );
     }
 
+    // xx
     function SonsStatistics()
     {
         $user = auth()->user();
-        $sons = $user->parentSons;
-        $sons_ids = $sons->pluck('son_id')->toArray();
+        $childs = $user->childs;
+        // $sons_ids = $sons->pluck('son_id')->toArray();
 
-        $courses = Courses::active()->with([
-            'students'
-        ])
-        ->WhereHas('students' , function($course_student) use($sons_ids){
-            $course_student->whereIn('user_id' , $sons_ids )->where('is_paid' , 1 );
-        })
-        ->get();
-        dd($courses);
+        $data = [];
+        foreach ($childs as $key => $child) {
+            $data[] = [
+                "courses"                  => $child->courses->count(),
+                "courses_acheived"         => $child->courses->count(),
+                "live_lessons"             => $child->liveCourseCount(),
+                "live_lessons_acheived"    => $child->liveCourseCount(),
+                "private_lessons_count"    => $child->privateLessonsCount(),
+                "private_lessons_acheived" => $child->privateLessonsCount(),
+            ];
+        }
+
+        return $data;
     }
 
 
