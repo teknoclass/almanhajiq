@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StudentRequest;
 use App\Http\Requests\Api\UpdateStudentRequest;
+use App\Http\Resources\ParentResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
@@ -33,8 +34,8 @@ class ParentController extends Controller
 
             return response()->error($response);
         }
-        $studentResource = new StudentResource($student['data']);
-        $response        = new SuccessResponse($student['message'],$studentResource, Response::HTTP_OK);
+        $parentResource = new ParentResource($student['data']);
+        $response        = new SuccessResponse($student['message'],$parentResource, Response::HTTP_OK);
 
         return response()->success($response);
     }
@@ -48,7 +49,7 @@ class ParentController extends Controller
 
             return response()->error($response);
         }
-        $userResource = new StudentResource($user['data']);
+        $userResource = new ParentResource($user['data']);
 
         $response     = new SuccessResponse($user['message'],$userResource, Response::HTTP_OK);
 
@@ -64,7 +65,7 @@ class ParentController extends Controller
 
             return response()->error($response);
         }
-        $userResource = new StudentResource($user['data']);
+        $userResource = new ParentResource($user['data']);
 
         $response     = new SuccessResponse($user['message'],$userResource, Response::HTTP_OK);
 

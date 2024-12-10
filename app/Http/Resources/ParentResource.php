@@ -31,6 +31,7 @@ class ParentResource extends JsonResource
             'is_validation' => $this->is_validation ?? 0,
             'country_code'=>$this->code_country,
             'country'=> isset($this->country)?collect($this->country['translations'])->firstWhere('locale', $locale??'en')->name??'':'',
+            'sons_count'=> $this->parentSons->count(),
         ];
         if ($this->token)
         {
