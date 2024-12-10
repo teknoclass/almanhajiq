@@ -1081,3 +1081,13 @@ function isRefundableTransaction($id)
 
     return false;
 }
+
+function someStudentSubscriptionCoursessIds($id)
+{
+    return CourseSessionSubscription::where('student_id',$id)->pluck('course_id')->toArray();
+}
+
+function someStudentInstallmentsCoursessIds($id)
+{
+    return StudentSessionInstallment::where('student_id',$id)->pluck('course_id')->toArray();
+}
