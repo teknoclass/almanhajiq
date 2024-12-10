@@ -17,13 +17,11 @@ class LiveSessionRepository extends MainRepository
     public function getCourseSessionsGroups($id)
     {
         return Courses::where('id', $id)
-                         ->with('groups')
-                         ->get()
-                         ->pluck('groups')
-                         ->first()
-                         ->unique('id');
-
-
+            ->with('groups')
+            ->get()
+            ->pluck('groups')
+            ->first()
+        ->unique('id');
     }
 
 

@@ -28,7 +28,7 @@ class StudentRequest extends FormRequest
         $rules['password']         = "required|min:6|confirmed";
         $rules['country_id']       = 'nullable|numeric';
         $rules['agree_conditions'] = 'required';
-        $rules['code_country'] = 'required';
+        $rules['code_country']     = 'required';
 
 
 
