@@ -273,9 +273,11 @@ class PaymentController extends Controller
         $user = auth('api')->user();
 
         if($type == "group"){
+            // if(request()->dd == 1){ $user->studentSubscribedSessions()->delete();}
             $studentSubscribedSessionsIds = $user->studentSubscribedSessions()->pluck('course_session_id')->toArray();
-
+            
             $sessions = CourseSession::where('group_id', $id)->get();
+            // if(request()->dd == 'sess'){ dd($studentSubscribedSessionsIds , $sessions , $user->studentSubscribedSessions);}
 
             foreach($sessions as $session)
             {
@@ -284,6 +286,7 @@ class PaymentController extends Controller
                     CourseSessionSubscription::create([
                         'student_id'                    => $user->id,
                         'course_session_id'             => $session->id,
+                        'course_session_group_id'       => $id,
                         'status'                        => 1,
                         'subscription_date'             => now(),
                         'course_session_group_id'       => $session->group_id,
