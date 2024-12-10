@@ -1174,6 +1174,11 @@
     "featured_courses": "Featured Courses",
     "have_coupon": "Have Coupon ?",
     "free_installment_reserved_successfully": "Free installment reserved successfully",
+    "parent":"Parent",
+    "sons":"Sons",
+    "add_son":"Add Son",
+    "courses_details":"Courses Details",
+    "no_data":"No Data",
     "not_free": "Is not free"
 
 

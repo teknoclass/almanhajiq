@@ -1226,6 +1226,11 @@
     "featured_courses": "الدورات المميزة",
     "have_coupon": "هل تمتلك كوبون؟",
     "free_installment_reserved_successfully": "تم حجز القسط المجاني بنجاح",
+    "parent":"ولى أمر",
+    "sons":"الأبناء",
+    "add_son":"اضافة ابن",
+    "courses_details":"تفاصيل الدورات",
+    "no_data":"لا توجد بيانات",
     "not_free": "ليست مجانية"
 
 }

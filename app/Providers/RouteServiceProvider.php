@@ -44,6 +44,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapMarketerRoutes();
 
         $this->mapLecturerRoutes();
+
+        $this->mapParentRoutes();
     }
 
     protected function mapPanelRoutes()
@@ -77,4 +79,13 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace . '\Front\User\Lecturer')
             ->group(base_path('routes/lecturer.php'));
     }
+
+    protected function mapParentRoutes()
+    {
+        Route::prefix(LaravelLocalization::setLocale() . '/user/parent')->name('user.parent.')
+            ->middleware('web')
+            ->namespace($this->namespace . '\Front\User\Parent')
+            ->group(base_path('routes/parent.php'));
+    }
+
 }
