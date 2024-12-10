@@ -96,7 +96,7 @@ class ParentController extends Controller
 
     function my_sons() {
         $user         = auth('api')->user();
-        $sons         = $user->parentSons;
+        $sons         = $user->childs;
         $userResource = StudentResource::collection($sons);
         $response     = new SuccessResponse(__('My Sons'),$userResource, Response::HTTP_OK);
         return response()->success($response);

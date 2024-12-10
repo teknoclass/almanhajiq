@@ -648,9 +648,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(ParentSon::class,'son_id' , 'id');
     }
 
-    public function childs()
+    // + childs users
+    public function getChildsAttribute()
     {
-        return $this->hasManyThrough(User::class , ParentSon::class,'parent_id','son_id')->withPivot(['status','otp' , 'otp_expired_at'])->wherePivot('status','confirmed');
+        $childs = [];
+        foreach ($this->parentSons as $parentSon) {
+            $childs[] = $parentSon->son;
+        }
+        return collect($childs);
     }
 
 }
