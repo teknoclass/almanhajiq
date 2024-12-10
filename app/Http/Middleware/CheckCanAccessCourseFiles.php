@@ -19,7 +19,7 @@ class CheckCanAccessCourseFiles
     public function handle(Request $request, Closure $next): Response
     {
         $course_id = $request->route('course_id');
-        $guards = ['admin', 'web'];
+        $guards = ['admin', 'web' , 'api'];
 
         foreach ($guards as $guard) {
 
@@ -30,7 +30,8 @@ class CheckCanAccessCourseFiles
                         break;
 
                     case 'web':
-                        $user = auth('web')->user();
+                    case 'api':
+                        $user = auth($guard)->user();
 
                         if ($user->role == 'student') {
                             $exist = $this->checkStudent($course_id, $user->id);
