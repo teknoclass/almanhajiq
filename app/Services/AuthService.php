@@ -95,6 +95,7 @@ class AuthService extends MainService
             $data['password_c']      = $studentRequest->get('password');
             $data['password']        = Hash::make($studentRequest->get('password'));
             $data['device_token']    = Hash::make($studentRequest->get('device_token'));
+            $data['role']            = 'parent';
             $user                    = $this->parentRepository->updateOrCreateUser($data);
             $token                   = $user->createToken('auth_token')->plainTextToken;
             //$user->sendVerificationCode();

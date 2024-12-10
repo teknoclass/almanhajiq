@@ -26,7 +26,7 @@ class ParentController extends Controller
 
     public function register(StudentRequest $studentRequest)
     {
-        $student = $this->authService->studentRegister($studentRequest);
+        $student = $this->authService->parentRegister($studentRequest);
 
         if (!$student['status']) {
             $response = new ErrorResponse($student['message'], Response::HTTP_BAD_REQUEST);
