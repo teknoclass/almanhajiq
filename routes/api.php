@@ -66,6 +66,11 @@ Route::group(['middleware' => 'language', 'prefix' => 'parent'], function () {
         // Route to get the parent profile, requires authentication
         Route::get('/', [ParentController::class, 'showProfile']);
 
+        Route::get('/home', [HomeController::class, 'home_parent']);
+        Route::get('/my-sons', [ParentController::class, 'my_sons']);
+        Route::POST('/my-sons/store', [ParentController::class, 'store_sons']);
+        Route::POST('/my-sons/store/verify', [ParentController::class, 'store_sons_verify']);
+
         // Route to update the parent's profile, requires authentication
         Route::post('/update', [ParentController::class, 'updateProfile']);
     });

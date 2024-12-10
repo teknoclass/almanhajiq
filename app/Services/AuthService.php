@@ -98,7 +98,7 @@ class AuthService extends MainService
             $data['role']            = 'parent';
             $user                    = $this->parentRepository->updateOrCreateUser($data);
             $token                   = $user->createToken('auth_token')->plainTextToken;
-            //$user->sendVerificationCode();
+            $user->sendVerificationCode();
 
             $message = __('message.operation_accomplished_successfully');
 
@@ -134,7 +134,7 @@ class AuthService extends MainService
             $data['device_token']    = Hash::make($studentRequest->get('device_token'));
             $user                    = $this->userRepository->updateOrCreateUser($data);
             $token                   = $user->createToken('auth_token')->plainTextToken;
-            //$user->sendVerificationCode();
+            $user->sendVerificationCode();
 
             $message = __('message.operation_accomplished_successfully');
             // try {
@@ -168,13 +168,19 @@ class AuthService extends MainService
         }
 
     }
+
     public function singIn(SignInRequest  $request): array
     {
         $user     = $this->userRepository->getUserByEmail($request->email);
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 if($user->is_validation == 0 || $user->is_validation == null){
-                    //$user->sendVerificationCode();
+                    $user->sendVerificationCode();
+                    return $this->createResponse(
+                        __('message.verify_your_mobile'),
+                        false,
+                        null
+                    );
                 }
                 $user->device_token  = $request->device_token;
                 $user->save();
@@ -355,11 +361,7 @@ class AuthService extends MainService
         $code_5 = $request->get('code_5');
         $code_6 = $request->get('code_6');
 
-
-
         $code = $code_1 . $code_2 . $code_3 . $code_4 . $code_5 . $code_6;
-
-
 
         if ($code == '') {
             return
@@ -379,7 +381,8 @@ class AuthService extends MainService
                 ];
         }
 
-        if ($user->validation_code == $code || $code == 619812){
+        if ($user->validation_code == $code || $code == 619812)
+        {
             $user->is_validation = 1;
             $user->validation_at = Carbon::now();
             $user->save();

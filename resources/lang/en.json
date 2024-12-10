@@ -179,6 +179,8 @@
     "message.congratulations_your_payment_has_been_successful": "Congratulations! Your payment has been successful",
     "message.the_selected_date_is_not_available_for_registration": "The selected date is not available for registration",
     "message.sorry_there_are_no_dates_available_for_registration_at_the_moment": "Sorry, there are no dates available for registration at the moment. They will be added later.",
+    "message.weve_sent_verification_code_to_your_child_whatsapp_check_it": "We`ve sent verification code to your child whatsapp check it",
+    "message.your_request_does_not_exist": "Your request does not exist",
     "error": "Error",
     "validator.required": "This field is required",
     "validator.remote": "Please make sure to check this field to proceed",
@@ -1174,17 +1176,17 @@
     "featured_courses": "Featured Courses",
     "have_coupon": "Have Coupon ?",
     "free_installment_reserved_successfully": "Free installment reserved successfully",
-    "parent":"Parent",
-    "sons":"Sons",
-    "add_son":"Add Son",
-    "courses_details":"Courses Details",
-    "no_data":"No Data",
+    "parent": "Parent",
+    "sons": "Sons",
+    "add_son": "Add Son",
+    "courses_details": "Courses Details",
+    "no_data": "No Data",
     "not_free": "Is not free",
-    "enter_otp":"Enter Otp",
-    "verify_otp":"Verify Otp",
-    "otp_not_valid":"This Otp is not valid",
-    "otp_sent":"Otp was sent successfully",
-    "complete_percentage":"Complete Percentage"
+    "enter_otp": "Enter Otp",
+    "verify_otp": "Verify Otp",
+    "otp_not_valid": "This Otp is not valid",
+    "otp_sent": "Otp was sent successfully",
+    "complete_percentage": "Complete Percentage"
 
 
 

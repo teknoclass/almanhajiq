@@ -100,6 +100,17 @@ class User extends Authenticatable implements MustVerifyEmail
         sendOtpToWhatsapp($this->code_country.$this->mobile,$this->validation_code);
     }
 
+    public function sendParentVerificationCode()
+    {
+        $code                           = substr(sprintf("%06d", mt_rand(1, 999999)), 0, 6);
+        $aprent_request                 = $this->parent_request;
+        $aprent_request->otp            = $code;
+        $aprent_request->otp_expired_at = Carbon::now();
+        $aprent_request->save();
+
+        sendOtpToWhatsapp($this->code_country.$this->mobile , $code);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -623,6 +634,23 @@ class User extends Authenticatable implements MustVerifyEmail
     public function parentSons()
     {
         return $this->hasMany(ParentSon::class,'parent_id','id')->where('status','confirmed');
+    }
+
+    // + all from parent
+    public function sons_requests()
+    {
+        return $this->hasMany(ParentSon::class,'parent_id','id');
+    }
+
+    // + to son
+    public function parent_request()
+    {
+        return $this->hasOne(ParentSon::class,'son_id' , 'id');
+    }
+
+    public function childs()
+    {
+        return $this->hasManyThrough(User::class , ParentSon::class,'parent_id','son_id')->withPivot(['status','otp' , 'otp_expired_at'])->wherePivot('status','confirmed');
     }
 
 }

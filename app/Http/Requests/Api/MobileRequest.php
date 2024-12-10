@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StudentRequest extends FormRequest
+class MobileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,17 +22,8 @@ class StudentRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules['name']             = 'required|string';
-        $rules['email']            = 'required|email|unique:users';
-        $rules['mobile']           = 'required|numeric|unique:users';
-        $rules['password']         = "required|min:6|confirmed";
-        $rules['country_id']       = 'nullable|numeric';
-        $rules['agree_conditions'] = 'required';
-        $rules['code_country']     = 'required';
-
-
-
-        return $rules;
+        return [
+            "mobile" => ['required','numeric', Rule::exists('users' , 'mobile')->where('role' , 'student')->where('is_validation' , 1)]
+        ];
     }
-
 }

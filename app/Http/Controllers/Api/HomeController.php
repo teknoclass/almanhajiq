@@ -82,6 +82,26 @@ class HomeController  extends Controller
         return response()->success($response);
     }
 
+    public function home_parent()
+    {
+        $user        = auth()->user();
+        if(!$user || $user->role != 'parrent'){
+            $response = new ErrorResponse( __('no_found'), Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
+        $sons_count  = $user->parentSons->count();
+
+        $courses     =  $this->homeService->SonsStatistics();
+
+        $response = new SuccessResponse('message.success',[
+            'sons_count'   => $sons_count,
+
+        ], Response::HTTP_OK);
+
+        return response()->success($response);
+    }
+
 
     function homeSearch(Request $request){
 

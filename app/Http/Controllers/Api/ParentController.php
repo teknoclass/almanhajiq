@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\MobileRequest;
 use App\Http\Requests\Api\StudentRequest;
 use App\Http\Requests\Api\UpdateStudentRequest;
 use App\Http\Resources\ParentResource;
@@ -28,7 +29,6 @@ class ParentController extends Controller
     public function register(StudentRequest $studentRequest)
     {
         $student = $this->authService->parentRegister($studentRequest);
-
         if (!$student['status']) {
             $response = new ErrorResponse($student['message'], Response::HTTP_BAD_REQUEST);
 
@@ -92,6 +92,38 @@ class ParentController extends Controller
             $response     = new ErrorResponse($response['message'], Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
+    }
+
+    function my_sons() {
+        $user         = auth('api')->user();
+        $sons         = $user->parentSons;
+        $userResource = StudentResource::collection($sons);
+        $response     = new SuccessResponse(__('My Sons'),$userResource, Response::HTTP_OK);
+        return response()->success($response);
+    }
+
+    function store_sons(MobileRequest $request) {
+        $student = $this->parentService->store_sons($request);
+        if (!$student['status']) {
+            $response = new ErrorResponse($student['message'], Response::HTTP_BAD_REQUEST);
+
+            return response()->error($response);
+        }
+        $response        = new SuccessResponse($student['message'], null, Response::HTTP_OK);
+
+        return response()->success($response);
+    }
+
+    function store_sons_verify(MobileRequest $request) {
+        $student = $this->parentService->store_sons_verify($request);
+        if (!$student['status']) {
+            $response = new ErrorResponse($student['message'], Response::HTTP_BAD_REQUEST);
+
+            return response()->error($response);
+        }
+        $response        = new SuccessResponse($student['message'], null, Response::HTTP_OK);
+
+        return response()->success($response);
     }
 
 }
