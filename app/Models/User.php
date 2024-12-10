@@ -37,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
      const STUDENTS='student';
      const LECTURER='lecturer';
      public const MARKETER='marketer';
+     public const PARENT='parent';
 
 
     /**
@@ -617,6 +618,11 @@ class User extends Authenticatable implements MustVerifyEmail
         +
         (int) (.5  * $this->privateLessons->where('status' , 'acceptable')->where('user_package_id' , $user_package_id)->where('time_type' , 'half_hour')->count())
         ;
+    }
+
+    public function parentSons()
+    {
+        return $this->hasMany(ParentSon::class,'parent_id','id')->where('status','confirmed');
     }
 
 }
