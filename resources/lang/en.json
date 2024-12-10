@@ -1173,7 +1173,8 @@
     "is_feature": "Featured ?",
     "featured_courses": "Featured Courses",
     "have_coupon": "Have Coupon ?",
-    "free_installment_reserved_successfully": "Free installment reserved successfully"
+    "free_installment_reserved_successfully": "Free installment reserved successfully",
+    "not_free": "Is not free"
 
 
 

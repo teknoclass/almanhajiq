@@ -248,6 +248,65 @@ class PaymentController extends Controller
     }
 
 
+    function subscribeDetailsFree(Request $request)
+    {
+        $id   = $request->target_id ?? 0;
+        $type = $request->type == "group" ? "group" : 'session';
+        if($type == "group")
+        {
+            // $title = CourseSessionsGroup::find($request->target_id)->title ?? "";
+            $model = CourseSessionsGroup::find($id);
+
+        }else{
+            $model = CourseSession::find($id);
+        }
+        if(!$model)
+        {
+            return $this->response_api('error' , __('validation.free_sesions_not_foud') );
+        }
+
+        if($model->price)
+        {
+            return $this->response_api('error' , $model->title . ' ' . __('not_free') );
+        }
+
+        $user = auth('api')->user();
+
+        if($type == "group"){
+            $studentSubscribedSessionsIds = $user->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+
+            $sessions = CourseSession::where('group_id', $id)->get();
+
+            foreach($sessions as $session)
+            {
+                if(! in_array( $session->id,$studentSubscribedSessionsIds))
+                {
+                    CourseSessionSubscription::create([
+                        'student_id'                    => $user->id,
+                        'course_session_id'             => $session->id,
+                        'status'                        => 1,
+                        'subscription_date'             => now(),
+                        'course_session_group_id'       => $session->group_id,
+                        'related_to_group_subscription' => 1,
+                        'course_id'                     => $session->course_id
+                    ]);
+                }
+            }
+        }else{
+            CourseSessionSubscription::create([
+                'student_id'                    => $user->id,
+                'course_session_id'             => $id,
+                'status'                        => 1,
+                'subscription_date'             => now(),
+                'course_session_group_id'       => $model->group_id,
+                'related_to_group_subscription' => 0,
+                'course_id'                     => $model->course_id
+            ]);
+        }
+
+        return $this->response_api('success' , __('message.operation_accomplished_successfully') );
+    }
+
     function subscribeDetails(Request $request){
 
         if($request->type == "group")
@@ -802,6 +861,10 @@ class PaymentController extends Controller
         }
 
     }
+
+
+    ///
+
 
     function freeInstallment(freeInstallmentRequest $request)
     {

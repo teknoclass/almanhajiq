@@ -118,7 +118,7 @@ Route::group(['prefix' => 'payment' , 'middleware' => 'auth:api'], function () {
 
     Route::post('buyFree',[PaymentController::class,'buyFree']);
 
-    Route::post('/subscribe-to-course-sessions-details',[PaymentController::class,'subscribeDetails']);
+    Route::post('/subscribe-to-course-sessions-details',[PaymentController::class,'subscribeDetails']); //
     Route::post('/subscribe-to-course-sessions',[PaymentController::class,'subscribe']);
     Route::get('/subscribe-to-course-sessions-confirm',[PaymentController::class,'confirmSubscribe']);
     Route::get('/subscribe-to-course-group-confirm',[PaymentController::class,'confirmSubscribeGroup']);
@@ -126,6 +126,8 @@ Route::group(['prefix' => 'payment' , 'middleware' => 'auth:api'], function () {
     Route::post('/pay-to-course-session-installment-details',[PaymentController::class,'installmentDetails']);
     Route::post('/pay-to-course-session-installment',[PaymentController::class,'installment']);
     Route::get('/pay-to-course-session-installment-confirm',[PaymentController::class,'confirmPayment']);
+
+    Route::post('/reserve-course-session-installment-free',[PaymentController::class,'subscribeDetailsFree']);
 
     Route::post('/buyFreeInstallment',[PaymentController::class,'freeInstallment']);
 
