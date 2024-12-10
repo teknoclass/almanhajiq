@@ -11,6 +11,7 @@ use App\Http\Requests\Api\UpdateStudentRequest;
 use App\Http\Requests\Front\SignInRequest;
 use App\Mail\ResetPasswordEmail;
 use App\Models\User;
+use App\Repositories\ParentRepository;
 use App\Repositories\ResetPasswordRepository;
 use App\Repositories\TeacherRepository;
 use App\Repositories\UserRepository;
@@ -26,17 +27,20 @@ class AuthService extends MainService
 {
     public TeacherRepository $teacherRepository;
     public UserRepository $userRepository;
+    public ParentRepository $parentRepository;
     public ResetPasswordRepository $resetPasswordRepository;
 
     public function __construct(
         TeacherRepository $teacherRepository,
         UserRepository $userRepository,
-        ResetPasswordRepository $resetPasswordRepository
+        ResetPasswordRepository $resetPasswordRepository,
+        ParentRepository $parentRepository
     )
     {
-        $this->teacherRepository = $teacherRepository;
-        $this->userRepository = $userRepository;
+        $this->teacherRepository       = $teacherRepository;
+        $this->userRepository          = $userRepository;
         $this->resetPasswordRepository = $resetPasswordRepository;
+        $this->parentRepository        = $parentRepository;
     }
 
     public function joinAsTeacher(TeacherRequest $request): array
@@ -80,6 +84,44 @@ class AuthService extends MainService
             );
         }
     }
+
+    public function parentRegister(StudentRequest $studentRequest): array
+    {
+        try {
+            DB::beginTransaction();
+
+            $data                    = $studentRequest->all();
+            $data['validation_code'] = '0000';
+            $data['password_c']      = $studentRequest->get('password');
+            $data['password']        = Hash::make($studentRequest->get('password'));
+            $data['device_token']    = Hash::make($studentRequest->get('device_token'));
+            $data['role']            = 'parent';
+            $user                    = $this->parentRepository->updateOrCreateUser($data);
+            $token                   = $user->createToken('auth_token')->plainTextToken;
+            //$user->sendVerificationCode();
+
+            $message = __('message.operation_accomplished_successfully');
+
+            DB::commit();
+            $user->token = $token;
+            return $this->createResponse(
+                $message,
+                true,
+                $user
+            );
+        } catch (\Exception $e) {
+            Log::alert($e->getMessage());
+            DB::rollback();
+            $message  = __('message.unexpected_error');
+            return $this->createResponse(
+                $message,
+                true,
+                null
+            );
+        }
+
+    }
+
     public function studentRegister(StudentRequest $studentRequest): array
     {
         try {

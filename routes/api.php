@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\LiveSessionController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\LecturerCourseController;
+use App\Http\Controllers\Api\ParentController;
 use App\Http\Controllers\Api\TeacherBalanceController;
 use App\Http\Controllers\Api\TeacherHomeController;
 use App\Http\Controllers\TeacherStudentProfileController;
@@ -51,6 +52,22 @@ Route::group(['middleware' => 'language', 'prefix' => 'student'], function () {
 
         // Route to update the student's profile, requires authentication
         Route::post('/update', [StudentController::class, 'updateProfile']);
+    });
+});
+
+// Group for routes related to 'parent', applying the 'language' middleware
+Route::group(['middleware' => 'language', 'prefix' => 'parent'], function () {
+
+    // Route for parent registration, no authentication required
+    Route::post('/register', [ParentController::class, 'register']);
+
+    // Group for routes that require both 'language' and 'auth:sanctum' middleware
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        // Route to get the parent profile, requires authentication
+        Route::get('/', [ParentController::class, 'showProfile']);
+
+        // Route to update the parent's profile, requires authentication
+        Route::post('/update', [ParentController::class, 'updateProfile']);
     });
 });
 
