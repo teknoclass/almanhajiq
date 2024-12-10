@@ -1178,10 +1178,8 @@
     "sons":"Sons",
     "add_son":"Add Son",
     "courses_details":"Courses Details",
-    "no_data":"No Data"
-
-
-    
+    "no_data":"No Data",
+    "not_free": "Is not free"
 
 
 
