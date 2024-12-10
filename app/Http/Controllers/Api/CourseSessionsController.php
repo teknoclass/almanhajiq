@@ -49,6 +49,9 @@ class CourseSessionsController  extends Controller
         foreach ($groups['data'] as $key => $group) {
            $groups_data[] = $group;
         }
+        if(auth()->dd){
+            dd($groups['data'] , $groups_data);
+        }
         $groups_data  = collect($groups_data);
         $CourseResource     = new ApiCourseResource($course['data']);
         $groupsCollection   = new CourseSessionGroupCollection($groups_data);
