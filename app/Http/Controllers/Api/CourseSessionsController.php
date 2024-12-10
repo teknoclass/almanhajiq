@@ -49,7 +49,7 @@ class CourseSessionsController  extends Controller
         foreach ($groups['data'] as $key => $group) {
            $groups_data[] = $group;
         }
-        if(auth()->dd){
+        if(request()->dd){
             dd($groups['data'] , $groups_data);
         }
         $groups_data  = collect($groups_data);
