@@ -14,6 +14,7 @@ use App\Models\CourseAssignmentResults;
 use App\Repositories\Front\User\AssignmentsEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use DB;
 
 class ParentSonsController extends Controller
 {
@@ -169,4 +170,114 @@ class ParentSonsController extends Controller
         ->first();
         return $course;
     }
+
+    public function addSon(Request $request)
+    {
+        DB::beginTransaction();
+        try
+        {
+            $mobile = $request->mobile;
+
+            $son = User::where('mobile',$mobile)->where('role','student')->first();
+
+            if(! $son)
+            {
+                $message = "هذا الطالب غير موجود";
+                $status = false;
+
+                return $this->response_api($status, $message);
+            }
+
+            $code_country = $son->code_country;
+
+            $parentSon = ParentSon::where('parent_id',auth()->id())->where('son_id',$son->id)->first();
+            if($parentSon)
+            {
+                $message = 'الطالب مربوط بك بالفعل';
+                $status = false;
+                return $this->response_api($status, $message);
+            }
+            $linkSon = ParentSon::updateOrCreate([
+                'parent_id' => auth()->id(),
+                'son_id' => $son->id,
+            ],['status' => 'pending']);
+
+            if($linkSon)
+            {
+                //send otp
+                $code = substr(sprintf("%06d", mt_rand(1, 999999)), 0, 6);
+                $linkSon->otp = $code;
+                $linkSon->update();
+
+                sendOtpToWhatsapp($code_country.$mobile,$code);
+
+                $message = __('otp_sent');
+                $status = true;
+            }else{
+                $message = _('message.unexpected_error');
+                $status = false;
+            }
+
+            DB::commit(); 
+            return $this->response_api($status, $message);
+          
+        }
+        catch (\Exception $e)
+        {
+            DB::rollback(); 
+            \Log::error($e->getMessage());
+            \Log::error($e->getFile());
+            \Log::error($e->getLine());
+            return $this->response_api(false, 'حدث خطأ'.$e->getMessage());
+        }
+    }
+
+    public function makeActive(Request $request)
+    {
+        DB::beginTransaction();
+        try
+        {
+            $mobile = $request->mobile;
+            $son = User::where('mobile',$mobile)->where('role','student')->first();
+            if(! $son)
+            {
+                $message = "هذا الطالب غير موجود";
+                $status = false;
+
+                return $this->response_api($status, $message);
+            }
+            $parentSon = ParentSon::where('son_id',$son->id)->where('parent_id',auth()->id())->where('status','confirmed')->first();
+            if($parentSon)
+            {
+                $message = 'الطالب مربوط بك بالفعل';
+                $status = false;
+                return $this->response_api($status, $message);
+            }
+            $parentSon = ParentSon::where('son_id',$son->id)->where('parent_id',auth()->id())->where('status','pending')->first();
+            $otp = $request->otp;
+            if($parentSon && $otp == $parentSon->otp)
+            { 
+                $parentSon->update(['status' => 'confirmed']);   
+                
+                $message = __('done_operation');
+                $status = true;
+            }else{
+                $message = __('otp_not_valid');
+                $status = false;
+            }
+
+            DB::commit(); 
+            return $this->response_api($status, $message);
+      
+        }
+        catch (\Exception $e)
+        {
+            DB::rollback(); 
+            \Log::error($e->getMessage());
+            \Log::error($e->getFile());
+            \Log::error($e->getLine());
+            return $this->response_api(false, 'حدث خطأ'.$e->getMessage());
+        }
+    }
+
 }

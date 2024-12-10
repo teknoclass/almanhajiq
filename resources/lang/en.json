@@ -1179,7 +1179,13 @@
     "add_son":"Add Son",
     "courses_details":"Courses Details",
     "no_data":"No Data",
-    "not_free": "Is not free"
+    "not_free": "Is not free",
+    "enter_otp":"Enter Otp",
+    "verify_otp":"Verify Otp",
+    "otp_not_valid":"This Otp is not valid",
+    "otp_sent":"Otp was sent successfully",
+    "complete_percentage":"Complete Percentage"
+
 
 
 

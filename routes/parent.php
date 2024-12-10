@@ -15,7 +15,8 @@ Route::group(['middleware' => ['auth:web', 'shareGeneralSettings','checkIsParent
 
         //sons
         Route::group(['prefix' => 'sons', 'as' => 'sons.'], function () {
-            Route::post('/store', [ParentSonsController::class , 'store'])->name('store');
+            Route::post('/store', [ParentSonsController::class , 'addSon'])->name('store');
+            Route::post('/make-active', [ParentSonsController::class , 'makeActive'])->name('makeActive');
             Route::get('/courses/{son_id}', [ParentSonsController::class , 'courses'])->name('courses');
             Route::get('/courses/details/{course_id}/{son_id}', [ParentSonsController::class , 'courseDetails'])->name('course.details');
         });
