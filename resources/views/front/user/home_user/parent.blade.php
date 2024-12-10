@@ -41,8 +41,9 @@
                   </div>
                 </div>
                 <div class="col-2 mb-2 d-flex justify-content-end">
-                    <a class="btn btn-primary font-medium me-auto" href="{{ route('user.marketer.customers.index') }}">{{ __('add_son') }}</a>
+                    <a class="btn btn-primary font-medium me-auto" data-bs-toggle="modal" data-bs-target="#studentModal">{{ __('add_son') }}</a>
                 </div>
+                @include('front.user.parent.sons.add-son-modal')
             </div>
             <div class="table-container">
                 <table class="table table-cart mb-3">
@@ -108,5 +109,6 @@
                 toastr.success("{{ __('copy_completed_successfully') }}")
             }
         </script>
+        
     @endpush
 @endsection
