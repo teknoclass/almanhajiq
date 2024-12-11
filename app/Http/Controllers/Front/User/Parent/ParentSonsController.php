@@ -190,7 +190,7 @@ class ParentSonsController extends Controller
 
             $code_country = $son->code_country;
 
-            $parentSon = ParentSon::where('parent_id',auth()->id())->where('son_id',$son->id)->first();
+            $parentSon = ParentSon::where('parent_id',auth()->id())->where('son_id',$son->id)->where('status','confirmed')->first();
             if($parentSon)
             {
                 $message = 'الطالب مربوط بك بالفعل';
@@ -228,7 +228,7 @@ class ParentSonsController extends Controller
             \Log::error($e->getMessage());
             \Log::error($e->getFile());
             \Log::error($e->getLine());
-            return $this->response_api(false, 'حدث خطأ'.$e->getMessage());
+            return $this->response_api(false, 'حدث خطأ');
         }
     }
 
