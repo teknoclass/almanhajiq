@@ -41,7 +41,7 @@ class AuthEloquent extends HelperEloquent
         }
 
         if(JoinAsTeacherRequests::where('email' , $request->email)->where('status' , '!=' , 'unacceptable')->count()){
-            $message = __("This_Email_is_used_before!!");
+            $message = __("This_Email_is_used_before");
             $status = false;
             $response = [
                 'message' => $message,

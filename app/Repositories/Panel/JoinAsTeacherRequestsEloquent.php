@@ -86,7 +86,7 @@ class JoinAsTeacherRequestsEloquent
             $user = User::where('email', $item->email)->first();
 
             if ($user) {
-                $message = __('This_Email_is_used_before!!');
+                $message = __('This_Email_is_used_before');
                 $status = false;
                 $response = [
                     'message' => $message,
