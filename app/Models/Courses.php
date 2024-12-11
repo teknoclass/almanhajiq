@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class Courses extends Model
 {
@@ -30,13 +31,14 @@ class Courses extends Model
 
     const  UNACCEPTED='unaccepted';
 
-   protected $fillable = ['id', 'image','user_id', 'cover_image', 'welcome_text_for_registration_image',
-   'certificate_text_image','certificate_template_id','faq_image', 'video',
-   'video_image', 'start_date', 'end_date','published',
-   'number_of_free_lessons','age_range_id', 'lessons_follow_up',
-   'language_id', 'category_id', 'age_range_id','level_id', 'type','duration','grade_level_id','grade_sub_level',
-   'total_rate', 'is_active','status', 'video_type', 'total_sales', 'is_delete',
-    'can_subscribe_to_session','can_subscribe_to_session_group','open_installments','material_id','is_feature','subscription_end_date'];
+    protected $fillable = ['id', 'image','user_id', 'cover_image', 'welcome_text_for_registration_image',
+        'certificate_text_image','certificate_template_id','faq_image', 'video',
+        'video_image', 'start_date', 'end_date','published',
+        'number_of_free_lessons','age_range_id', 'lessons_follow_up',
+        'language_id', 'category_id', 'age_range_id','level_id', 'type','duration','grade_level_id','grade_sub_level',
+        'total_rate', 'is_active','status', 'video_type', 'total_sales', 'is_delete',
+        'can_subscribe_to_session','can_subscribe_to_session_group','open_installments','material_id','is_feature','subscription_end_date'
+    ];
 
     public $translatedAttributes = ['title', 'description', 'welcome_text_for_registration', 'certificate_text'];
 
@@ -652,6 +654,82 @@ class Courses extends Model
     }
 
 
+    public static function studentActivity($user_id , $courses_ids , $key = '*')
+    {
+        // random
+        return [
+            "completed_lessons"         => rand(10,40)   ,
+            "uncompleted_lessons"       => rand(10,40),
+            "lessons_achievement"       => rand(10,40)   ,
+            "completed_quizzes"         => rand(10,40)   ,
+            "uncompleted_quizzes"       => rand(10,40),
+            "quizzes_achievement"       => rand(10,40)   ,
+            "completed_assignments"     => rand(10,40)   ,
+            "uncompleted_assignments"   => rand(10,40),
+            "assignments_achievement"   => rand(10,40)   ,
+            "course_achievement"        => rand(10,40)
+        ];
+        // $course_id      = $this->id;
+        $courses_ids      = is_array($courses_ids) ? $courses_ids : [$courses_ids];
+
+        $data['completed_lessons'] = CourseLessons::whereIn('course_id',$courses_ids)
+            ->whereHas('learningStatus', function (Builder $query) use ($user_id) {
+                $query->where('user_id',$user_id);
+            })
+        ->count();
+
+        $data['uncompleted_lessons'] = CourseLessons::whereIn('course_id',$courses_ids)
+            ->WhereDoesntHave('learningStatus', function (Builder $query) use ($user_id) {
+                $query->where('user_id',$user_id);
+            })
+        ->count();
+
+        $total_lessons               = $data['completed_lessons'] + $data['uncompleted_lessons'];
+        $data['lessons_achievement'] = $total_lessons ? (100 * $data['completed_lessons']) / ($total_lessons) : 0;
+
+        // quizzes
+        $data['completed_quizzes'] =CourseQuizzes::whereIn('course_id',$courses_ids)
+            ->whereHas('quizResults', function ($query) use ($user_id) {
+                $query->where('user_id', $user_id)
+                    ->where('status', '!=', CourseQuizzesResults::$waiting);
+            })
+        ->count();
+
+        $data['uncompleted_quizzes'] =CourseQuizzes::whereIn('course_id',$courses_ids)
+            ->whereDoesntHave('quizResults', function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            })
+        ->count();
+
+        $total_quizzes               = $data['completed_quizzes'] + $data['uncompleted_quizzes'];
+        $data['quizzes_achievement'] = $total_quizzes ? (100 * $data['completed_quizzes']) / ($total_quizzes) : 0;
+
+        //assignments
+
+        $data['completed_assignments'] = CourseAssignments::whereIn('course_id',$courses_ids)
+            ->whereHas('assignmentResults', function ($query) use ($user_id) {
+                $query->where('student_id', $user_id)
+                    ->where('status', '!=', CourseAssignmentResults::$notSubmitted);
+            })
+        ->count();
+
+        $data['uncompleted_assignments'] = CourseAssignments::whereIn('course_id',$courses_ids)
+            ->whereDoesntHave('assignmentResults', function ($query) use ($user_id) {
+                $query->where('student_id', $user_id);
+            })
+        ->count();
+
+        $total_assignments               = $data['completed_assignments'] + $data['uncompleted_assignments'] ;
+        $data['assignments_achievement'] = $total_assignments ? (100 * $data['completed_assignments']) / ( $total_assignments) : 0;
+
+        $total_completed = $data['lessons_achievement']  + $data['quizzes_achievement'] + $data['assignments_achievement'];
+        $data['course_achievement']  = $total_completed / 3;
+
+        if(array_key_exists($key , $data)) {
+            return $data[$key];
+        }
+        return $data;
+    }
 
 
 }

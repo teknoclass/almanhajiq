@@ -29,12 +29,7 @@ class StudentWithCountsResource extends JsonResource
             'is_validation' => $this->is_validation ?? 0,
             'counts'=>[
                 "courses"                  => rand(10,30),//$this->courses->count(),
-                "courses_acheived"         => rand(10,30),//$this->courses->count(),
-                "live_lessons"             => rand(10,30),//$this->liveCourseCount(),
-                "live_lessons_acheived"    => rand(10,30),//$this->liveCourseCount(),
-                "private_lessons_count"    => rand(10,30),//$this->privateLessonsCount(),
-                "private_lessons_acheived" => rand(10,30),//$this->privateLessonsCount(),
-            ],
+            ]+$this->user_activities(),
             "courses"    => CoursesWithPercentageResources::collection($this->reserved_courses),
         ];
 

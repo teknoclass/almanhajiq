@@ -129,7 +129,7 @@ class ParentService extends MainService
             'son_id' => $child->id,
         ]);
 
-        $child->sendParentVerificationCode();
+        // $child->sendParentVerificationCode();
 
         return $this->createResponse(
             __('message.weve_sent_verification_code_to_your_child_whatsapp_check_it'),

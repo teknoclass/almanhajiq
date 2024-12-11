@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Courses;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 // Courses With User Percentage Resources
@@ -19,7 +20,7 @@ class CoursesWithPercentageResources extends JsonResource
         return [
             'id'         => $this->id,
             'title'      => $this->title,
-            'percentage' => rand(20,100),
+            'percentage' => Courses::studentActivity(request()->course_user_id , $this->id , 'course_achievement'),
             'user_id'    => request()->course_user_id,
         ];
     }
