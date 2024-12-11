@@ -65,7 +65,7 @@
                         'blade' => 'what_learn',
                     ]
                     : null,
-                !@$course->isSubscriber() && !checkUser('lecturer') && !checkUser('marketer')
+                !@$course->isSubscriber() && !checkUser('lecturer') && !checkUser('marketer') && (canStudentSubscribeToCourse(@$course->id, "full") || canStudentSubscribeToCourse(@$course->id, "installment"))
                     ? [
                         'title' => __('course_registration'),
                         'tab' => 'course-registration',

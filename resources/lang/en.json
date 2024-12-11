@@ -1186,7 +1186,9 @@
     "verify_otp": "Verify Otp",
     "otp_not_valid": "This Otp is not valid",
     "otp_sent": "Otp was sent successfully",
-    "complete_percentage": "Complete Percentage"
+    "complete_percentage": "Complete Percentage",
+    "subscription_end_date":"End Subscription Date"
+
 
 
 

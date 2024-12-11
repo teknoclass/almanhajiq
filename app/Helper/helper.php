@@ -15,7 +15,7 @@ use App\Mail\ReplayMail;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
-use App\Models\{CourseSession,CourseSessionsGroup,CourseSessionSubscription,UserCourse,
+use App\Models\{Courses, CourseSession,CourseSessionsGroup,CourseSessionSubscription,UserCourse,
     StudentSessionInstallment,CourseSessionInstallment};
 use Google\Auth\Credentials\ServiceAccountCredentials;
 use Twilio\Rest\Client;
@@ -1090,4 +1090,31 @@ function someStudentSubscriptionCoursessIds($id)
 function someStudentInstallmentsCoursessIds($id)
 {
     return StudentSessionInstallment::where('student_id',$id)->pluck('course_id')->toArray();
+}
+
+function canStudentSubscribeToCourse($course_id, $subscription_type)
+{
+    $course = Courses::find($course_id);
+    if($subscription_type == "full")
+    {
+        if($course->type == "live" && $course->subscription_end_date >= date('Y-m-d'))
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }elseif($subscription_type == "installment")
+    {
+        $studentInstallments =  StudentSessionInstallment::where('student_id',auth()->guard('web')->user()->id)
+        ->where('course_id',$course_id)->first();
+
+        if($studentInstallments || $course->subscription_end_date >= date('Y-m-d'))
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    return false;
 }

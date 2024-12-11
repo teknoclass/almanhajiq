@@ -31,6 +31,13 @@ class CourseSessionInstallmentsController extends Controller
 
     public function selectPaymentMethod(Request $request)
     {
+        $course = Courses::find($request->course_id);
+        
+        if(! canStudentSubscribeToCourse(@$course->id, 'installment'))
+        {
+            return back();
+        }
+
         $data['course_id'] = $request->course_id;
         $data['id'] = $request->id;
         $installment = CourseSessionInstallment::where('course_session_id',$request->id)->where('course_id',$request->course_id)->first();

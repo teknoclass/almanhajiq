@@ -30,6 +30,13 @@ class CourseFullSubscriptionsController extends Controller
     public function selectPaymentMethod(Request $request)
     {
         $course = Courses::find($request->course_id);
+
+        if(! canStudentSubscribeToCourse(@$course->id, 'full'))
+        {
+            return back();
+        }
+
+        
         $data['course_id'] = $request->course_id;
         //calc course price after coupon
         $coursePrice = $course->getPriceForPayment();
