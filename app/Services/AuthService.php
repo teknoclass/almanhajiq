@@ -177,11 +177,11 @@ class AuthService extends MainService
             if (Hash::check($request->password, $user->password)) {
                 if($user->is_validation == 0 || $user->is_validation == null){
                     // $user->sendVerificationCode(); // ✔
-                    return $this->createResponse(
-                        __('message.verify_your_mobile'),
-                        false,
-                        null
-                    );
+                    // return $this->createResponse(
+                    //     __('message.verify_your_mobile'),
+                    //     false,
+                    //     null
+                    // );
                 }
                 $user->device_token  = $request->device_token;
                 $user->save();
