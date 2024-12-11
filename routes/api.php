@@ -62,7 +62,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'parent'], function () {
     Route::post('/register', [ParentController::class, 'register']);
 
     // Group for routes that require both 'language' and 'auth:sanctum' middleware
-    Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::group(['middleware' => ['auth:sanctum' , 'language']], function () {
         // Route to get the parent profile, requires authentication
         Route::get('/', [ParentController::class, 'showProfile']);
 

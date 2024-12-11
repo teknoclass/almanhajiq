@@ -19,7 +19,7 @@ class LanguageSwitcher
     {
         if (!$request->header('locale'))
         {
-            App::setLocale(Config::get('app.locale'));
+            App::setLocale(Config::get('app.locale') ?? 'ar');
 
         }
         App::setLocale($request->header('locale'));
