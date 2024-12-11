@@ -228,7 +228,7 @@ class ParentSonsController extends Controller
             \Log::error($e->getMessage());
             \Log::error($e->getFile());
             \Log::error($e->getLine());
-            return $this->response_api(false, 'حدث خطأ');
+            return $this->response_api(false, ' يرجى ادخال رقم موبايل صحيح وغير مسبوق بكود الدولة ');
         }
     }
 
