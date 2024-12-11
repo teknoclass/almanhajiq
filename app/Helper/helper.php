@@ -1095,9 +1095,13 @@ function someStudentInstallmentsCoursessIds($id)
 function canStudentSubscribeToCourse($course_id, $subscription_type)
 {
     $course = Courses::find($course_id);
+    if(! $course->subscription_end_date)
+    {
+        return true;
+    }
     if($subscription_type == "full")
     {
-        if($course->type == "live" && $course->subscription_end_date >= date('Y-m-d'))
+        if($course->type == "live" &&  $course->subscription_end_date >= date('Y-m-d'))
         {
             return true;
         }else{
