@@ -32,7 +32,7 @@
                 @endforeach
             </div>
 
-            @if (count($sons) > 0)
+           
 
             <div class="row text-start mb-3 pt-5 justify-content-between align-items-center">
                 <div class="col-10">
@@ -45,6 +45,7 @@
                 </div>
                 @include('front.user.parent.sons.add-son-modal')
             </div>
+            @if (count($sons) > 0)
             <div class="table-container">
                 <table class="table table-cart mb-3">
                     <thead>
