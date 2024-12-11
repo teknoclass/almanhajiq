@@ -40,9 +40,11 @@
                     <h2 class="font-medium">{{ __('sons') }}</h2>
                   </div>
                 </div>
+                @if (count($sons) > 0)
                 <div class="col-2 mb-2 d-flex justify-content-end">
                     <a class="btn btn-primary font-medium me-auto" data-bs-toggle="modal" data-bs-target="#studentModal">{{ __('add_son') }}</a>
                 </div>
+                @endif
                 @include('front.user.parent.sons.add-son-modal')
             </div>
             @if (count($sons) > 0)
