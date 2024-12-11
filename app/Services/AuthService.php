@@ -98,7 +98,7 @@ class AuthService extends MainService
             $data['role']            = 'parent';
             $user                    = $this->parentRepository->updateOrCreateUser($data);
             $token                   = $user->createToken('auth_token')->plainTextToken;
-            $user->sendVerificationCode();
+            // $user->sendVerificationCode(); // ✔
 
             $message = __('message.operation_accomplished_successfully');
 
@@ -135,7 +135,7 @@ class AuthService extends MainService
             $data['device_token']    = Hash::make($studentRequest->get('device_token'));
             $user                    = $this->userRepository->updateOrCreateUser($data);
             $token                   = $user->createToken('auth_token')->plainTextToken;
-            $user->sendVerificationCode();
+            // $user->sendVerificationCode(); // ✔
 
             $message = __('message.operation_accomplished_successfully');
             // try {
@@ -176,7 +176,7 @@ class AuthService extends MainService
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 if($user->is_validation == 0 || $user->is_validation == null){
-                    $user->sendVerificationCode();
+                    // $user->sendVerificationCode(); // ✔
                     return $this->createResponse(
                         __('message.verify_your_mobile'),
                         false,
@@ -414,7 +414,7 @@ class AuthService extends MainService
                 'status' => false
             ];
         }else{
-            $user->sendVerificationCode();
+            // $user->sendVerificationCode(); // ✔
             return [
                 'message' => __('message.operation_accomplished_successfully'),
                 'status' => true
