@@ -114,8 +114,9 @@ class AuthService extends MainService
             DB::rollback();
             $message  = __('message.unexpected_error');
             return $this->createResponse(
-                $message,
-                true,
+                $e->getMessage(),
+                // $message,
+                false,
                 null
             );
         }
@@ -162,7 +163,7 @@ class AuthService extends MainService
             $message  = __('message.unexpected_error');
             return $this->createResponse(
                 $message,
-                true,
+                false,
                 null
             );
         }
