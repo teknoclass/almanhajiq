@@ -1244,6 +1244,13 @@
     "Your request is sent and waiting for your son confirmation": "تم إرسال طلبك وفي انتظار تأكيد ابنكم",
     "subscription_end_date": "تاريخ انتهاء الاشتراك",
     "This_Email_is_used_before": "هذا الايميل مستخدم من قبل",
+    "application_settings":"اعدادات التطبيق",
+    "android_release":"اصدار الاندرويد",
+    "android_update_status":"حالة تحديث الاندرويد",
+    "ios_release":"اصدار IOS",
+    "ios_update_status":"حالة تحديث IOS",
+    "mandatory":"اجبارى",
+    "optional":"اختيارى",
 
     "": "",
     "x": ""

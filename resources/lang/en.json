@@ -1188,7 +1188,15 @@
     "otp_sent": "Otp was sent successfully",
     "complete_percentage": "Complete Percentage",
     "subscription_end_date":"End Subscription Date",
-    "This_Email_is_used_before":"This email is used before"
+    "This_Email_is_used_before":"This email is used before",
+    "application_settings":"Application Settings",
+    "android_release":"Android Release",
+    "android_update_status":"Android Update Status",
+    "ios_release":"Ios Release",
+    "ios_update_status":"Ios Update Status",
+    "mandatory":"Mandatory",
+    "optional":"Optional"
+
 
 
 
