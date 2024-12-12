@@ -68,6 +68,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'parent'], function () {
 
         Route::get('/home', [HomeController::class, 'home_parent']);
         Route::get('/my-sons', [ParentController::class, 'my_sons']);
+        Route::get('/my-sons/{id}', [ParentController::class, 'show_sons']);
         Route::POST('/my-sons/store', [ParentController::class, 'store_sons']);
         Route::POST('/my-sons/store/verify', [ParentController::class, 'store_sons_verify']);
 

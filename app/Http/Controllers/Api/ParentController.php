@@ -102,6 +102,18 @@ class ParentController extends Controller
         return response()->success($response);
     }
 
+    function show_sons($id) {
+        $user         = auth('api')->user();
+        $son         =  $user->parentSons->where('son_id' , $id)->first()?->son;
+        if(!$son){
+            $response = new ErrorResponse(__('not_found'), Response::HTTP_NOT_FOUND);
+            return response()->error($response);
+        }
+        $userResource = new StudentResource($son);
+        $response     = new SuccessResponse(__('My Son'),$userResource, Response::HTTP_OK);
+        return response()->success($response);
+    }
+
     function store_sons(MobileRequest $request) {
         $student = $this->parentService->store_sons($request);
         if (!$student['status']) {
