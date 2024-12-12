@@ -34,6 +34,24 @@ class ProfileSettingsController extends Controller
         return $this->response_api($response['status'], $response['message']);
     }
 
+    public function indexParent(Request $request)
+    {
+        if(getUser()->role != "student")
+        {
+            return redirect(url('/user/home'));
+        }
+        
+        $data = $this->profile->indexParent();
+
+        return view('front.user.profile.edit_parent', $data);
+    }
+
+    public function updateParent(Request $request)
+    {
+        $response = $this->profile->updateParent($request);
+
+        return $this->response_api($response['status'], $response['message']);
+    }
 
     // public function indexChangePassword(Request $request)
     // {

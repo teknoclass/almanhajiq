@@ -77,7 +77,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'market_id',
         'coupon_id',
         'material_id',
-        'session_token'
+        'session_token',
+        'parent_mobile_number',
+        'parent_code_country',
+        'parent_slug_country'
     ];
 
     public function studentSubscribedSessions()
@@ -670,5 +673,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return Courses::studentActivity($this->id , $this->courses->pluck('course_id')->toArray() );
     }
 
+    public function myParent()
+    {
+        return $this->belongsTo(ParentSon::class,'son_id','id')->where('status','confirmed');   
+    }
+
+    public function myParentRequest()
+    {
+        return $this->hasOne(ParentSonRequest::class,'son_id','id')->orderBy('id','desc'); 
+    }
 
 }

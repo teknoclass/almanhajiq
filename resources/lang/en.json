@@ -1195,7 +1195,19 @@
     "ios_release":"Ios Release",
     "ios_update_status":"Ios Update Status",
     "mandatory":"Mandatory",
-    "optional":"Optional"
+    "optional":"Optional",
+    "enter_parent_mobile_number":"Enter Parent Mobile Number",
+    "parent_settings":"Parent Settings",
+    "this_parent_not_found":"Parent Account Is Not Found",
+    "son_requests":"Son Requests",
+    "parent_related_to_son":"You are already connected with this parent",
+    "update_status":"Update Status",
+    "confirmed":"Confirmed"
+
+
+
+
+
 
 
 
