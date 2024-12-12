@@ -320,7 +320,7 @@ class Courses extends Model
 
     public function items_active()
     {
-        return $this->hasMany(CourseCurriculum::class, 'course_id', 'id')->where('is_active' , 1)->orderBy('order', 'asc');
+        return $this->hasMany(CourseCurriculum::class, 'course_id', 'id')->active()->orderBy('order', 'asc');
     }
 
 
