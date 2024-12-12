@@ -47,6 +47,8 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
             Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
                 Route::get('/', [ProfileSettingsController::class, 'indexProfile'])->name('index');
                 Route::post('/', [ProfileSettingsController::class, 'updateProfile'])->name('update');
+                Route::get('/parent', [ProfileSettingsController::class, 'indexParent'])->name('parent.index');
+                Route::post('/parent', [ProfileSettingsController::class, 'updateParent'])->name('parent.update');  
             });
 
             Route::group(['prefix' => 'change-password', 'as' => 'changePassword.'], function () {

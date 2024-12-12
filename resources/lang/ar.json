@@ -1251,6 +1251,13 @@
     "ios_update_status":"حالة تحديث IOS",
     "mandatory":"اجبارى",
     "optional":"اختيارى",
+    "enter_parent_mobile_number":"ادخل رقم موبايل  ولى الامر",
+    "parent_settings":"اعدادات ولى الأمر",
+    "this_parent_not_found":"حساب ولى الأمر غير موجود",
+    "son_requests":"طلبات الأبناء",
+    "parent_related_to_son":"حسابك مربوط بولى الأمر بالفعل",
+    "update_status":"تحديث الحالة",
+    "confirmed":"تم التأكيد",
 
     "": "",
     "x": ""
