@@ -86,6 +86,7 @@
                             <option  value="student">{{__('student')}}</option>
                             <option  value="lecturer">{{__('lecturer')}}</option>
                             <option  value="marketer">{{__('marketer')}}</option>
+                            <option  value="parent">{{__('parent')}}</option>
                         @endforeach
                     </select>
                 </div>

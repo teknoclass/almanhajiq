@@ -373,7 +373,7 @@ Route::get('/migrate',function(){
 
 Route::get('seed',function(){
     $seeders = [
-        'SocialMediaSeeder',
+        'GradeLevelSeeder',
     ];
     foreach($seeders as $seeder)
     {
