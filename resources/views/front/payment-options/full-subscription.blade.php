@@ -5,7 +5,7 @@
 <div class="payment-options-container">
     <h2>{{__('select_payment_method')}}</h2>
   
-    {{--<div class="payment-option-card" id="credit-card">
+    <div class="payment-option-card" id="credit-card">
         <img src="{{asset('assets/front/images/qi-logo.png')}}" alt="Credit Card">
         <h3>{{__('visa_master')}}</h3>
         
@@ -22,7 +22,7 @@
                 {{ __('select_method') }} 
             </button>
     
-    </div> --}}
+    </div> 
     
   
     <div class="payment-option-card" id="credit-card">
