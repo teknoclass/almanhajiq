@@ -8,6 +8,8 @@ use App\Http\Requests\Api\StudentRequest;
 use App\Http\Requests\Api\UpdateStudentRequest;
 use App\Http\Resources\ParentResource;
 use App\Http\Resources\StudentResource;
+use App\Http\Resources\StudentWithCountsResource;
+use App\Http\Resources\StudentWithCoursesResource;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
 use App\Services\AuthService;
@@ -109,7 +111,7 @@ class ParentController extends Controller
             $response = new ErrorResponse(__('not_found'), Response::HTTP_NOT_FOUND);
             return response()->error($response);
         }
-        $userResource = new StudentResource($son);
+        $userResource = new StudentWithCoursesResource($son);
         $response     = new SuccessResponse(__('My Son'),$userResource, Response::HTTP_OK);
         return response()->success($response);
     }
