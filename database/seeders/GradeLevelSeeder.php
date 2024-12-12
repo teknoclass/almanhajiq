@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\CategoryTranslation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,24 +14,21 @@ class GradeLevelSeeder extends Seeder
      */
     public function run(): void
     {
-        $level = Category::updateOrCreate([
+        $college = Category::updateOrCreate([
             'key' => 'grade_levels',
-            'value' => 1
+            'value' => 4
         ]);
 
-        $level = Category::updateOrCreate([
-            'key' => 'grade_levels',
-            'value' => 2
+        CategoryTranslation::create([
+            'name' => 'جامعى',
+            'category_id' => $college->id,
+            'locale' => 'ar'
         ]);
 
-        $level = Category::updateOrCreate([
-            'key' => 'grade_levels',
-            'value' => 2
-        ]);
-
-        $level = Category::updateOrCreate([
-            'key' => 'grade_levels',
-            'value' => 2
+        CategoryTranslation::create([
+            'name' => 'universal',
+            'category_id' => $college->id,
+            'locale' => 'en'
         ]);
     }
 }
