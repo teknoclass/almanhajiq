@@ -320,7 +320,7 @@ class Courses extends Model
 
     public function items_active()
     {
-        return $this->hasMany(CourseCurriculum::class, 'course_id', 'id')->where('is_active' , 1)->orderBy('order', 'asc');
+        return $this->hasMany(CourseCurriculum::class, 'course_id', 'id')->active()->orderBy('order', 'asc');
     }
 
 
@@ -656,24 +656,6 @@ class Courses extends Model
 
     public static function studentActivity($user_id , $courses_ids , $key = '*')
     {
-        // random
-        $data = [
-            "completed_lessons"         => rand(10,40)   ,
-            "uncompleted_lessons"       => rand(10,40),
-            "lessons_achievement"       => rand(10,40)   ,
-            "completed_quizzes"         => rand(10,40)   ,
-            "uncompleted_quizzes"       => rand(10,40),
-            "quizzes_achievement"       => rand(10,40)   ,
-            "completed_assignments"     => rand(10,40)   ,
-            "uncompleted_assignments"   => rand(10,40),
-            "assignments_achievement"   => rand(10,40)   ,
-            "course_achievement"        => rand(10,40)
-        ];
-        if(array_key_exists($key , $data)) {
-            return $data[$key];
-        }
-        return $data;
-        // ---------------------------------------------------
         // $course_id      = $this->id;
         $courses_ids      = is_array($courses_ids) ? $courses_ids : [$courses_ids];
 
