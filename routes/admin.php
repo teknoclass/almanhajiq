@@ -915,6 +915,10 @@ Route::group(
         Route::group(['prefix' => 'all', 'as' => 'all.'], function () {
             Route::get('/', [TransactiosController::class, 'index'])->name('index');
             Route::get('/data', [TransactiosController::class, 'getDataTable'])->name('data');
+            Route::get('/lecturers_profits', [TransactiosController::class, 'lecturersProfits'])->name('lecturers_profits');
+            Route::get('/lecturers_profits/datatable', [TransactiosController::class, 'lecturersProfitsDatatable'])->name('lecturers_profits_datatable');
+            Route::get('/lecturers_profits/{id}/transactions', [TransactiosController::class, 'getLecturerTransactions']);
+
         });
         Route::post('/refund/{id}', [RefundsController::class, 'makeRefund'])->name('refund');
         Route::delete('/{id}', [TransactiosController::class, 'delete'])->name('delete');

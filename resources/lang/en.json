@@ -1202,7 +1202,14 @@
     "son_requests":"Son Requests",
     "parent_related_to_son":"You are already connected with this parent",
     "update_status":"Update Status",
-    "confirmed":"Confirmed"
+    "confirmed":"Confirmed",
+    "lecturers_profits":"Lecturers Transactions",
+    "balance":"Balance",
+    "deposit_desc":"Deposit",
+    "withdrow_desc":""
+
+
+    
 
 
 

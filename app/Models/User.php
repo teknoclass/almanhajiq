@@ -683,4 +683,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(ParentSonRequest::class,'son_id','id')->orderBy('id','desc'); 
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transactios::class, 'user_id');
+    }
+
+
 }

@@ -717,6 +717,15 @@
             'sub_menu' => [],
         ],
         [
+            'name' => __('lecturers_profits'),
+            'type' => '',
+            'href' => route('panel.transactios.all.lecturers_profits'),
+            'id' => 'lecturers_profits',
+            'permissions' => 'show_transactions',
+            'icon' => '/assets/panel/media/icons/duotone/Shopping/Wallet3.svg',
+            'sub_menu' => [],
+        ],
+        [
             'name' => __('withdrawal_requests'),
             'type' => '',
             'href' => route('panel.withdrawalRequests.all.index'),
