@@ -39,6 +39,10 @@ class SettingService extends MainService
             'specializations' => !$specializations->isEmpty()?collect(new  CategoryCollection($specializations)):null,
             'grade_levels' => !$gradeLevels->isEmpty()?collect(new  GradeLevelCollection($gradeLevels)):null,
             'materials' => !$materials->isEmpty()?collect(new  CategoryCollection($materials)):null,
+            'android_release'       => getSeting("android_release"),
+            'android_update_status' => getSeting("android_update_status"),
+            'ios_release'           => getSeting("ios_release"),
+            'ios_update_status'     => getSeting("ios_update_status"),
         ];
 
         return $this->createResponse(
