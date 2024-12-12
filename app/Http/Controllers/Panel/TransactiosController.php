@@ -54,13 +54,14 @@ class TransactiosController extends Controller
         ')
         ->where('user_type', 'lecturer')
         ->groupBy('user_id')
-        ->with('user') // Load lecturer details
+        ->with('user') 
+        ->whereHas('user')
         ->get();
     
        return Datatables::of($balances)
             ->addIndexColumn()
             ->addColumn('lecturer', function ($row) {
-                return $row->user->name ?? 'N/A';
+                return $row->user->name ?? '-';
             })
             ->addColumn('balance', function ($row) {
                 return number_format($row->balance, 2);
