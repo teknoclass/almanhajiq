@@ -18,7 +18,7 @@ class CourseSessionGroupResource extends JsonResource
             $isSub = (int)$fullCourseSub;
         }
         else {
-            $isSub = $request->get('user') ? (int) $this->canAccess($request->get('user')->id) : 0;
+            $isSub = auth('api')->user() ? (int) $this->canAccess(auth('api')->id()) : 0;
         }
         $data = [
             "id" => $this->id,

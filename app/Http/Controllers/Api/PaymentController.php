@@ -191,7 +191,7 @@ class PaymentController extends Controller
 
     public function fullConfirmSubscribe(Request $request)
     {
-        
+
         DB::beginTransaction();
         try
         {

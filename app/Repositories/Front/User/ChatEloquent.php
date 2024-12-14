@@ -125,7 +125,7 @@ class ChatEloquent extends HelperEloquent
             $notification['user_id']     = $receiver->id;
             $notification['action_id']   = $data['user']->id;
         Notifications::insert($notification);
-        sendWebNotification($receiver->id, 'user', $title, $title);
+        //sendWebNotification($receiver->id, 'user', $title, $title);
 
 
         // Broadcasting the message
