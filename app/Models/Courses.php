@@ -718,5 +718,15 @@ class Courses extends Model
         return $data;
     }
 
+    function canRate($type = 'web'){
+        $userCourse = UserCourse::where('course_id',$this->id)->where('user_id',auth('api')->id())->first();
+
+        if($userCourse){
+            return $userCourse->is_rating;
+        }else{
+            return 0;
+        }
+    }
+
 
 }

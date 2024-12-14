@@ -64,6 +64,7 @@ class ApiSingleCourseResource extends JsonResource
             'can_subscribe_to_session' => $this->can_subscribe_to_session,
             'can_subscribe_to_session_group' => $this->can_subscribe_to_session_group,
             'open_installments' => $this->open_installments,
+            'can_rate' => $this->canRate('api'),
             'type' => $this->type,
             'teacher'=>[
                 'id' => $this->lecturer->id ?? null,
