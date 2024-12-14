@@ -98,7 +98,7 @@ class LecturerHomeEloquent extends HelperEloquent{
 
         $data = UserCourse::whereHas('course' , function($query) use($user){
             $query->where('user_id',$user->id);
-        })->with('user');
+        })->whereHas('user')->with('user');
 
         $course_id = $request->get('course_id');
 
