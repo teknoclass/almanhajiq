@@ -137,18 +137,18 @@ Route::group(['prefix' => 'payment' , 'middleware' => 'auth:api'], function () {
 
     Route::post('/fullCourseDetails',[PaymentController::class,'fullSubscribeDetails']);
     Route::post('/fullCourse',[PaymentController::class,'fullSubscribe']);
-    Route::get('/full-subscribe-course-confirm',[PaymentController::class,'fullConfirmSubscribe']);
+    Route::get('/full-subscribe-course-confirm',[PaymentController::class,'fullConfirmSubscribe'])->withoutMiddleware('auth:api');
 
     Route::post('buyFree',[PaymentController::class,'buyFree']);
 
     Route::post('/subscribe-to-course-sessions-details',[PaymentController::class,'subscribeDetails']); //
     Route::post('/subscribe-to-course-sessions',[PaymentController::class,'subscribe']);
     Route::get('/subscribe-to-course-sessions-confirm',[PaymentController::class,'confirmSubscribe']);
-    Route::get('/subscribe-to-course-group-confirm',[PaymentController::class,'confirmSubscribeGroup']);
+    Route::get('/subscribe-to-course-group-confirm',[PaymentController::class,'confirmSubscribeGroup'])->withoutMiddleware('auth:api');
 
     Route::post('/pay-to-course-session-installment-details',[PaymentController::class,'installmentDetails']);
     Route::post('/pay-to-course-session-installment',[PaymentController::class,'installment']);
-    Route::get('/pay-to-course-session-installment-confirm',[PaymentController::class,'confirmPayment']);
+    Route::get('/pay-to-course-session-installment-confirm',[PaymentController::class,'confirmPayment'])->withoutMiddleware('auth:api');
 
     Route::post('/reserve-course-session-installment-free',[PaymentController::class,'subscribeDetailsFree']);
 

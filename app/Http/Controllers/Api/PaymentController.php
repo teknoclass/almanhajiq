@@ -191,6 +191,7 @@ class PaymentController extends Controller
 
     public function fullConfirmSubscribe(Request $request)
     {
+        
         DB::beginTransaction();
         try
         {
@@ -275,7 +276,7 @@ class PaymentController extends Controller
         if($type == "group"){
             // if(request()->dd == 1){ $user->studentSubscribedSessions()->delete();}
             $studentSubscribedSessionsIds = $user->studentSubscribedSessions()->pluck('course_session_id')->toArray();
-            
+
             $sessions = CourseSession::where('group_id', $id)->get();
             // if(request()->dd == 'sess'){ dd($studentSubscribedSessionsIds , $sessions , $user->studentSubscribedSessions);}
 

@@ -450,12 +450,12 @@ class Courses extends Model
     {
         if (checkUser('student',$guard)) {
             $item = UserCourse::select('id', 'user_id', 'course_id')
-                ->where([['user_id', getUser($guard)->id],
-                    ['course_id', $this->id]
-                ])
-                ->where('is_paid' , 1)
-                ->where('is_installment' , 0)
-                ->first();
+            ->where([['user_id', getUser($guard)->id],
+            ['course_id', $this->id]
+            ])
+            ->where('is_paid' , 1)
+            ->where('is_installment' , 0)
+            ->first();
             if ($item) {
                 return true;
             }else{
