@@ -654,6 +654,7 @@ class PaymentController extends Controller
     function installmentDetails(Request $request){
 
         $installment = $this->getCurInstallment($request->course_id);
+        return $installment;
         if(!$installment){
             $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
@@ -806,6 +807,7 @@ class PaymentController extends Controller
     function getCurInstallment($courseId){
 
         $last = StudentSessionInstallment::where('course_id',$courseId)->where('student_id',auth('api')->id())->orderBy('access_until_session_id', 'desc')->first();
+
         if($last)$id = $last->access_until_session_id;
         else $id = 0;
         $installment = CourseSessionInstallment::where('course_id',$courseId)->where('course_session_id','>',$id)->first();

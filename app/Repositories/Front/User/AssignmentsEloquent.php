@@ -339,6 +339,23 @@ class AssignmentsEloquent extends HelperEloquent
                 'created_at'=> now()
             ]);
 
+            // Send notification if need reviewing
+            $title = 'حل الواجب ' . $assignment->title;
+            $text = "قام " . $user->name . " بالاجابة على اسئلة الواجب: " . $assignment->title;
+            $notification['title'] = $title;
+            $notification['text'] = $text;
+            $notification['user_type'] = 'user';
+            $notification['action_type'] = 'solve_assignment';
+            $notification['action_id'] = $assignment->id;
+            $notification['created_at'] = \Carbon\Carbon::now();
+
+            $teacher_id = $assignment->course->user_id;
+            $notification['user_id'] = $teacher_id;
+
+            Notifications::insert($notification);
+            sendWebNotification($teacher_id, 'user', $title, $text);
+
+
             // update the progress
             $course = $assignment->course;
             //$course->updateProgress($guardType);

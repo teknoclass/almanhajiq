@@ -1453,7 +1453,8 @@ class CoursesEloquent extends HelperEloquent
 
         $result_id = $request->get('result_id');
         $result = CourseAssignmentResults::find($result_id);
-
+        $assignment = $result->assignment;
+        $user = $this->getUser($is_web);
         $mark = CourseAssignmentsResultsAnswer::where('result_id',$result_id)->whereNotNull('mark')->sum('mark');
 
         if($mark > $result->assignment->grad){
@@ -1472,6 +1473,23 @@ class CoursesEloquent extends HelperEloquent
         $result->grade = $mark;
         $result->status = $status;
         $result->save();
+
+
+        // Send notification if need reviewing
+        $title = ' تم تصحيح الواجب ' . $assignment->title;
+        $text = ' تم تصحيح الواجب'  . $assignment->title;
+        $notification['title'] = $title;
+        $notification['text'] = $text;
+        $notification['user_type'] = 'user';
+        $notification['action_type'] = 'solve_assignment';
+        $notification['action_id'] = $assignment->id;
+        $notification['created_at'] = \Carbon\Carbon::now();
+
+        $student_id = $result->student_id;
+        $notification['user_id'] = $student_id;
+
+        Notifications::insert($notification);
+        sendWebNotification($student_id, 'user', $title, $text);
 
 
         return [
