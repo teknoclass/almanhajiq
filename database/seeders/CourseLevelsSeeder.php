@@ -38,6 +38,11 @@ class CourseLevelsSeeder extends Seeder
                 ['name' => ['ar' => 'الثالث الاعدادي', 'en' => 'Third Secondary'], 'value' => '3'],
             ]
         ],
+        [
+            'name' => ['ar' => 'الجامعة', 'en' => 'College'],
+            'value' => '4',
+
+        ],
     ];
 
     foreach ($levels as $level) {
