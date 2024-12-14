@@ -50,6 +50,7 @@ use App\Http\Controllers\Panel\MarketersTemplatesController;
 use App\Http\Controllers\Panel\CourseSessionsController as AdminCourseSessionsController;
 use App\Http\Controllers\Panel\InstallmentsSettingsController;
 use App\Http\Controllers\Panel\RefundsController;
+use App\Http\Controllers\Panel\GradeLevelsController;
 
 Route::group(
     [
@@ -277,6 +278,28 @@ Route::group(
 
         Route::delete('/{id}', [CategoryController::class, 'delete'])->name('delete');
         Route::post('/operation', [CategoryController::class, 'operation'])->name('operation');
+    });
+
+    Route::group(['prefix' => 'grade_levels', 'as' => 'grade_levels.',
+        'middleware' => 'permission:show_posts_comments|show_age_categories|show_course_levels|show_course_languages
+    |show_course_categories|show_joining_certificates|show_countries|show_joining_sections|joining_sections|show_banks'], function () {
+        Route::group(['prefix' => 'create', 'as' => 'create.'], function () {
+            Route::get('/', [GradeLevelsController::class, 'create'])->name('index');
+            Route::post('/', [GradeLevelsController::class, 'store'])->name('store');
+        });
+
+        Route::group(['prefix' => 'edit', 'as' => 'edit.'], function () {
+            Route::get('/{id}', [GradeLevelsController::class, 'edit'])->name('index');
+            Route::post('/{id}', [GradeLevelsController::class, 'update'])->name('update');
+        });
+
+        Route::group(['prefix' => 'all', 'as' => 'all.'], function () {
+            Route::get('/', [GradeLevelsController::class, 'index'])->name('index');
+            Route::get('/data', [GradeLevelsController::class, 'getDataTable'])->name('data');
+        });
+
+        Route::delete('/{id}', [GradeLevelsController::class, 'delete'])->name('delete');
+        Route::post('/operation', [GradeLevelsController::class, 'operation'])->name('operation');
     });
 
     //posts

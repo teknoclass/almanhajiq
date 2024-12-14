@@ -1206,7 +1206,8 @@
     "lecturers_profits":"Lecturers Transactions",
     "balance":"Balance",
     "deposit_desc":"Deposit",
-    "withdrow_desc":""
+    "withdrow_desc":"Withdraw",
+    "order":"Order"
 
 
     

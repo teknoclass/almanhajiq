@@ -123,7 +123,7 @@ class CoursesEloquent
                                   ->where('parent', 'course_levels')
                                   ->orderByDesc('created_at')->get();
 
-        $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
+        $data['grade_levels']      = Category::where('key', 'grade_levels')->orderBy('order','asc')->get();
         $data['grade_children_levels']      = Category::where('parent', 'grade_levels')->get();
 
         $data['materials'] = Category::query()->select('id', 'value', 'parent')

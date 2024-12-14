@@ -25,7 +25,7 @@ class CoursesEloquent
         $data['levels']  = Category::getCategoriesByParent('course_levels')->orderByDesc('created_at')->get();
 
         $data['age_categories']  = Category::getCategoriesByParent('age_categories')->orderByDesc('created_at')->get();
-        $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
+        $data['grade_levels']      = Category::where('key', 'grade_levels')->orderBy('order','asc')->get();
         $data['grade_sub_level']      = Category::where('parent', 'grade_levels')->get();
 
         // materials

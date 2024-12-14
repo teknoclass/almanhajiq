@@ -356,7 +356,8 @@ Route::get('/migrate',function(){
         "2024_12_10_113824_create_parent_sons_table.php",
         "2024_12_11_113925_add_subscription_end_date_column_to_courses_table.php",
         "2024_12_12_130218_add_parent_mobile_number_to_users_table.php",
-        "2024_12_12_132103_create_parent_son_requests_table.php"
+        "2024_12_12_132103_create_parent_son_requests_table.php",
+        "2024_12_14_114803_add_order_column_to_categories_table.php"
 
     ];
 

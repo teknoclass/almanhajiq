@@ -221,6 +221,32 @@
             ],
         ],
         [
+            'name' =>__('grade_levels'),
+            'type' => '',
+            'href' => 'javascript:;',
+            'id' => 'pages',
+            'permissions' => 'show_course_categories',
+            'all_permissions' => ['show_course_categories'],
+            'icon' => '/assets/panel/media/icons/duotone/Devices/Server.svg',
+            'sub_menu' => [
+                [
+                    'name' => __('all'),
+                    'type' => '',
+                    'href' => route('panel.grade_levels.all.index'),
+                    'permissions' => 'show_course_categories',
+                    'all_permissions' => ['show_course_categories'],
+                    'sub_menu' => [],
+                ],
+                [
+                    'name' => __('add'),
+                    'type' => '',
+                    'href' => route('panel.grade_levels.create.index'),
+                    'permissions' => 'show_course_categories',
+                    'sub_menu' => [],
+                ],
+            ],
+        ],
+        [
             'name' =>__('grade_sub_level'),
             'type' => '',
             'href' => 'javascript:;',
