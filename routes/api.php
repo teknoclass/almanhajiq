@@ -164,7 +164,11 @@ Route::group(['middleware' => 'language', 'prefix' => 'coupon'], function () {
 
 });
 
+Route::prefix('/comment')->group(function(){
 
+    Route::post('/add/{course_id}',[CourseController::class,'saveComment'])->middleware('auth:api');
+
+});
 
 
 

@@ -70,7 +70,12 @@ class CourseController extends Controller
         return response()->success($courses);
     }
 
-    
+    public function saveComment(Request $request, $course_id)
+    {
+        $response = $this->courseService->saveComment($request, $course_id,false);
+
+        return $this->response_api($response['status'], $response['message']);
+    }
 
 
 }

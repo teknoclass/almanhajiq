@@ -2,14 +2,20 @@
 
 namespace App\Services;
 
-use App\Http\Requests\Api\FilterRequest;
-use App\Models\Category;
 use App\Models\Courses;
-use App\Models\CourseSessionSubscription;
+use App\Models\Category;
 use App\Models\UserCourse;
-use App\Repositories\CourseRepository;
+use App\Models\CourseLessons;
+use App\Models\CourseQuizzes;
+use App\Models\Notifications;
+use App\Models\CourseComments;
+use App\Models\CourseLiveLesson;
+use App\Models\CourseAssignments;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\CourseRepository;
+use App\Http\Requests\Api\FilterRequest;
+use App\Models\CourseSessionSubscription;
 
 class CourseService extends MainService
 {
@@ -208,5 +214,117 @@ class CourseService extends MainService
         }
 
     }
+
+    public function saveComment($request, $course_id, $is_web = true)
+    {
+        DB::beginTransaction();
+
+        $user = getUser('api');
+
+        try {
+
+            $data = $request->all();
+
+            $course = Courses::active()->accepted()->find($course_id);
+            if (!$course) {
+
+                $message = "الدورة المراد التعليق عليها غير متوفرة!";
+                $status = false;
+                $response = [
+                    'message' => $message,
+                    'status' => $status,
+                ];
+                return $response;
+            }
+
+            if (!$course->isSubscriber()) {
+
+                $message = "أنت غير مسجل في هذه الدورة";
+                $status = false;
+                $response = [
+                    'message' => $message,
+                    'status' => $status,
+                ];
+                return $response;
+            }
+
+            switch ($data['item_type']) {
+                case 'lesson':
+                    $item = CourseLessons::find($data['item_id']);
+                    break;
+
+                case 'quizz':
+                    $item = CourseQuizzes::find($data['item_id']);
+                    break;
+
+                case 'assignment':
+                    $item = CourseAssignments::find($data['item_id']);
+                    break;
+
+                case 'live_lesson':
+                    $item = CourseLiveLesson::find($data['item_id']);
+                    break;
+
+                default:
+                    $message = "المحتوى المراد التعليق عليه غير معرف!";
+                    $status = false;
+                    $response = [
+                        'message' => $message,
+                        'status' => $status,
+                    ];
+                    return $response;
+                    break;
+            }
+            if (!$item) {
+
+                $message = "المادة المراد التعليق عليها غير متوفرة!";
+                $status = false;
+                $response = [
+                    'message' => $message,
+                    'status' => $status,
+                ];
+                return $response;
+            }
+
+
+            $data['user_id'] = $user->id;
+
+            $comment = CourseComments::updateorCreate(['id' => 0], $data);
+
+            //sendNotification
+            $title = 'تعليق على درس';
+            $text = "قام " . $user->name . " بالتعليق على درسك: " . $item->title;
+            $notification['title'] = $title;
+            $notification['text'] = $text;
+            $notification['user_type'] = 'user';
+            $notification['action_type'] = 'comment_on_course_lesson';
+            $notification['action_id'] = $item->id;
+            $notification['created_at'] = \Carbon\Carbon::now();
+
+            $teacher_id = $course->user_id;
+            $notification['user_id'] = $teacher_id;
+
+            Notifications::insert($notification);
+            sendWebNotification($teacher_id, 'user', $title, $text);
+
+            $message = __('message.operation_accomplished_successfully');
+            $status = true;
+
+            DB::commit();
+        } catch (\Exception $e) {
+            dd($e);
+            $message = __('message.unexpected_error');
+            $status = false;
+            DB::rollback();
+        }
+
+        $response = [
+            'message' => $message,
+            'status' => $status,
+        ];
+
+        return $response;
+    }
+
 
 }
