@@ -189,18 +189,18 @@ class PrivateLessonsEloquent extends HelperEloquent
 
                 $hour_price = $request->type == "half_hour" ? $teacher->hour_price / 2 : $teacher->hour_price;
 
-                if ($hour_price == null) {
+                // if ($hour_price == null) {
 
-                    $message = "حدث خطأ في تسعير الدرس. الرجاء المحاولة لاحقاً أو التواصل مع المدرب المختص!";
-                    $status  = false;
+                //     $message = "حدث خطأ في تسعير الدرس. الرجاء المحاولة لاحقاً أو التواصل مع المدرب المختص!";
+                //     $status  = false;
 
-                    $response = [
-                        'message' => $message,
-                        'status' => $status,
-                    ];
+                //     $response = [
+                //         'message' => $message,
+                //         'status' => $status,
+                //     ];
 
-                    return $response;
-                }
+                //     return $response;
+                // }
 
                 $lesson->price = $hour_price;
 
@@ -347,8 +347,8 @@ class PrivateLessonsEloquent extends HelperEloquent
                     'pay_transaction_id' => $transaction->id,
                     'is_paid' => $use_old_hours ? 1 : 0,
                 ];
-
-                $this->addBalance($params_balance);
+                session()->put('private-balance-'.auth('web')->user()->id,$params_balance);
+                
 
             }
 
@@ -397,7 +397,15 @@ class PrivateLessonsEloquent extends HelperEloquent
                 'transaction_id' => $transaction->id,
             ];
             if (!$use_old_hours) {
-                $response['redirect_url'] = route('user.payment.checkout', $transaction->id);
+                  //if total_money_to_pay is free
+                  if($total_money_to_pay == 0)
+                  {
+                    (new PrivateLessonsEloquent())->pay_realated($transaction_id);
+    
+                    $response['redirect_url'] =  url("/user/private-lessons");
+                  }else{
+                      $response['redirect_url'] = route('user.payment.checkout', $transaction->id);
+                  }
             }
 
             return $response;
@@ -510,8 +518,10 @@ class PrivateLessonsEloquent extends HelperEloquent
                 }
             }
 
+            $transaction->update(['is_paid' => 1]);
             $transaction->related_transactions()->update(['is_paid' => 1]);
-            $transaction->related_balances()->update(['is_paid' => 1]);
+            $balanceDetails = session('private-balance-'.auth('web')->user()->id);
+            $this->addBalance($balanceDetails);
 
             $lesson         = $transaction->transactionable;
             $lesson->status = 'acceptable';
@@ -521,6 +531,7 @@ class PrivateLessonsEloquent extends HelperEloquent
 
             return true;
         } catch (\Throwable $th) {
+            \Log::error($th->getMessage());
             return false;
         }
     }

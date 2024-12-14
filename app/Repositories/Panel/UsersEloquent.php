@@ -51,7 +51,8 @@ class UsersEloquent
                              $roles = [
                                  'student' => ['title' => 'طالب', 'class' => 'badge bg-success role-badge badge-custom'],
                                  'lecturer' => ['title' => 'محاضر', 'class' => 'badge bg-primary role-badge badge-custom'],
-                                 'marketer' => ['title' => 'مسوق', 'class' => 'badge bg-warning role-badge badge-custom']
+                                 'marketer' => ['title' => 'مسوق', 'class' => 'badge bg-warning role-badge badge-custom'],
+                                 'parent' => ['title' => 'ولى أمر', 'class' => 'badge bg-warning role-badge badge-custom'],
                              ];
 
                              return '<span class="label font-weight-bold label-lg ' . $roles[$row->role]['class'] . ' label-inline">' . $roles[$row->role]['title'] . '</span>';

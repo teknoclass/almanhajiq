@@ -49,10 +49,10 @@ $breadcrumb_links=[
                             'title'=>__('contact_information'),
                             'key'=>'contacts',
                         ],
-                      /*  [
+                       [
                             'title'=>__('time_table'),
                             'key'=>'timetable',
-                        ], */
+                        ], 
                     ];
                 @endphp
                 <div class="row mb-4">

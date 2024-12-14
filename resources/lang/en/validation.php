@@ -187,5 +187,8 @@ return [
     */
 
     'attributes' => [],
+    'installment_not_foud' => "Installment not foud on this Course!",
+    'free_sesions_not_foud' => "No Free Sessions / Groups foud on this Course!",
+    'installment_not_Free' => "Next installment not free!",
 
 ];

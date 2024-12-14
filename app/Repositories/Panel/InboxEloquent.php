@@ -46,9 +46,10 @@ class InboxEloquent
                          })
                          ->addColumn('action', 'panel.inbox.partials.actions')
                          ->addColumn('text', function($row) {
-                             $truncatedText = strlen($row->text) > 50 ? substr($row->text, 0, 50) . '...' : $row->text;
+                            $truncatedText = isset($row->text) && strlen($row->text) > 50
+                                    ? substr($row->text, 0, 50) . '...'
+                                    : $row->text;
 
-                             return $truncatedText;
                          })
                          ->rawColumns(['name','action', 'text'])
                          ->make(true);

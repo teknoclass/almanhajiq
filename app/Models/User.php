@@ -37,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
      const STUDENTS='student';
      const LECTURER='lecturer';
      public const MARKETER='marketer';
+     public const PARENT='parent';
 
 
     /**
@@ -76,7 +77,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'market_id',
         'coupon_id',
         'material_id',
-        'session_token'
+        'session_token',
+        'parent_mobile_number',
+        'parent_code_country',
+        'parent_slug_country'
     ];
 
     public function studentSubscribedSessions()
@@ -97,6 +101,17 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->update();
 
         sendOtpToWhatsapp($this->code_country.$this->mobile,$this->validation_code);
+    }
+
+    public function sendParentVerificationCode()
+    {
+        $code                           = substr(sprintf("%06d", mt_rand(1, 999999)), 0, 6);
+        $aprent_request                 = $this->parent_request;
+        $aprent_request->otp            = $code;
+        $aprent_request->otp_expired_at = Carbon::now();
+        $aprent_request->save();
+
+        sendOtpToWhatsapp($this->code_country.$this->mobile , $code);
     }
 
     /**
@@ -618,5 +633,60 @@ class User extends Authenticatable implements MustVerifyEmail
         (int) (.5  * $this->privateLessons->where('status' , 'acceptable')->where('user_package_id' , $user_package_id)->where('time_type' , 'half_hour')->count())
         ;
     }
+
+    public function parentSons()
+    {
+        return $this->hasMany(ParentSon::class,'parent_id','id')->where('status','confirmed');
+    }
+
+    // + all from parent
+    public function sons_requests()
+    {
+        return $this->hasMany(ParentSon::class,'parent_id','id');
+    }
+
+    // + to son
+    public function parent_request()
+    {
+        return $this->hasOne(ParentSon::class,'son_id' , 'id');
+    }
+
+    // + childs users
+    public function getChildsAttribute()
+    {
+        $childs = [];
+        foreach ($this->parentSons as $parentSon) {
+            $childs[] = $parentSon->son;
+        }
+        return collect($childs);
+    }
+
+    // + reserved_courses
+    public function getReservedCoursesAttribute()
+    {
+        return Courses::whereIn('id',$this->courses->pluck('course_id')->toArray())->get();
+    }
+
+    // + user_activities
+    public function user_activities()
+    {
+        return Courses::studentActivity($this->id , $this->courses->pluck('course_id')->toArray() );
+    }
+
+    public function myParent()
+    {
+        return $this->belongsTo(ParentSon::class,'son_id','id')->where('status','confirmed');   
+    }
+
+    public function myParentRequest()
+    {
+        return $this->hasOne(ParentSonRequest::class,'son_id','id')->orderBy('id','desc'); 
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transactios::class, 'user_id');
+    }
+
 
 }

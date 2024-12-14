@@ -79,7 +79,7 @@ class CoursesEloquent extends HelperEloquent
         $data['languages']  = Category::getCategoriesByParent('course_languages')->orderByDesc('created_at')->get();
 
         $data['levels']  = Category::getCategoriesByParent('course_levels')->orderByDesc('created_at')->get();
-        $data['grade_levels']  = Category::getCategoriesByParent('grade_levels')->orderByDesc('created_at')->get();
+        $data['grade_levels']  = Category::getCategoriesByParent('grade_levels')->orderBy('order','asc')->get();
 
         $data['age_categories']  = Category::getCategoriesByParent('age_categories')->orderByDesc('created_at')->get();
 
@@ -225,7 +225,7 @@ class CoursesEloquent extends HelperEloquent
             ->where('parent', 'course_levels')
             ->orderByDesc('created_at')->get();
 
-        $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
+        $data['grade_levels']      = Category::where('key', 'grade_levels')->orderBy('order','asc')->get();
         $data['materials'] = Category::query()->select('id', 'value', 'parent')
         ->with('translations:category_id,name,locale')
         ->where('parent', 'joining_course')

@@ -26,6 +26,18 @@
                 </div>
                 @break
 
+                @case('vimeo_link')
+                <div class="video-container">
+                    <iframe src="https://player.vimeo.com/video/{{ @$course_item->file }}" 
+                style="position:absolute;top:0;left:0;width:100%;height:100%;" 
+                frameborder="0" 
+                allow="autoplay; fullscreen" 
+                allowfullscreen>
+                </iframe>
+
+                </div>
+                @break
+
             @case('iframe')
                 <div class="video-container">
                     {!! @$course_item->file !!}

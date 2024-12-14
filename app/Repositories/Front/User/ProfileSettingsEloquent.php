@@ -3,7 +3,7 @@
 namespace App\Repositories\Front\User;
 
 use App\Models\Category;
-use App\Models\User;
+use App\Models\{ParentSon, ParentSonRequest,User};
 use App\Repositories\Front\User\HelperEloquent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -124,5 +124,70 @@ class ProfileSettingsEloquent extends HelperEloquent
      */
     public function __construct()
     {
+    }
+
+    public function indexParent()
+    {
+        $data['user'] = $this->getUser(true);
+
+        return $data;
+    }
+
+    public function updateParent($request, $is_web = true)
+    {
+        try {
+            $user = $this->getUser($is_web);
+
+            $data = $request->all();
+
+            $checkParent = User::where('mobile',$data['parent_mobile_number'])->where('role','parent')->first();
+            if(! $checkParent)
+            {
+                return $response = [
+                    'message' => __('this_parent_not_found'),
+                    'status' => false,
+                ];
+            }
+
+            $checkParentRequest = ParentSon::where('parent_id',$checkParent->id)->where('son_id',getUser()->id)->first();
+            if($checkParentRequest)
+            {
+                return $response = [
+                    'message' => __('parent_related_to_son'),
+                    'status' => false,
+                ];
+            }
+            
+            $item = User::updateOrCreate(['id' => $user->id], $data);
+
+            if(!$user->myParent || $user->myParent->mobile != $data['parent_mobile_number'])
+            {
+                ParentSonRequest::updateOrCreate([
+                    'parent_id' => $checkParent->id,
+                    'son_id' => $user->id,
+                    'status' => 'pending'
+                ]);
+            }
+
+            $message = __('message.operation_accomplished_successfully');
+            $status = true;
+
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            $message = __('message.unexpected_error');
+            $status = false;
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
+        }
+
+
+        return $response;
     }
 }

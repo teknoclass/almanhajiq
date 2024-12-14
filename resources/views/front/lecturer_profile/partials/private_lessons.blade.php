@@ -480,7 +480,7 @@
 
                                         singleCaseHtml += `
                                         <div class="form-group col-12 text-muted">
-                                            <h4>{{ __('to_price') }} <span class="totalPrice">0</span> <span class="currency"></span></h4>
+                                            <h4>{{ __('total_price') }} <span class="totalPrice">0</span> <span class="currency"></span></h4>
                                         </div>
                                         <button type="button" class="submitForm2 btn btn-primary w-100 rounded-pill">{{ __('reserve') }}</button>
                                     </form>

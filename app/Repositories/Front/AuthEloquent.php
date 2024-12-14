@@ -41,7 +41,7 @@ class AuthEloquent extends HelperEloquent
         }
 
         if(JoinAsTeacherRequests::where('email' , $request->email)->where('status' , '!=' , 'unacceptable')->count()){
-            $message = __("This_Email_is_used_before!!");
+            $message = __("This_Email_is_used_before");
             $status = false;
             $response = [
                 'message' => $message,
@@ -369,8 +369,8 @@ class AuthEloquent extends HelperEloquent
     public function singout($request)
     {
         $user = auth()->guard('web')->user();
-        $user->session_token = null;
-        $user->save();
+        // $user->session_token = null;
+        // $user->save();
 
         $this->guard()->logout();
         

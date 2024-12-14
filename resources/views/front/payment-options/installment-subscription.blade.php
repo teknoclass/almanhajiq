@@ -5,7 +5,7 @@
 <div class="payment-options-container">
     <h2>{{__('select_payment_method')}}</h2>
   
-    <div class="payment-option-card" id="credit-card">
+   <div class="payment-option-card" id="credit-card">
         <img src="{{asset('assets/front/images/qi-logo.png')}}" alt="Credit Card">
         <h3>{{__('visa_master')}}</h3>
         
@@ -15,7 +15,7 @@
          >{{__('select_method')}} 
         </button>
     
-    </div>
+    </div> 
     
   
     <div class="payment-option-card" id="credit-card">
@@ -35,6 +35,8 @@
     
     </div>
 
+    <input name="marketer_coupon" style="width:96%;margin:auto" class="marketer_coupon form-control" placeholder="{{__('have_coupon')}}" value="{{@$marketer_coupon}}">
+    <br>
 </div>
 
 @push('front_js')
@@ -47,7 +49,7 @@
         $(document).on('click','.payInstallment',function(){
             var id = "{{$id}}";
             var course_id = "{{@$course_id}}";
-            
+            var marketer_coupon = $(".marketer_coupon").val();
             var payment_type = $(this).data('payment_type');
            
             $.ajax({
@@ -55,7 +57,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('/user/pay-to-course-session-installment')}}",
-                data:{id:id,course_id:course_id,payment_type:payment_type},
+                data:{id:id,course_id:course_id,payment_type:payment_type,marketer_coupon:marketer_coupon},
                 method: 'post',
                 success: function (response) {
                     $(".payInstallment"+"."+id).attr('disabled',true);
@@ -78,6 +80,7 @@
           
         });
 
+     
     });
     
 </script>

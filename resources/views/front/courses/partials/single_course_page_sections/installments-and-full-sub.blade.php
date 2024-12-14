@@ -6,22 +6,23 @@
                     <div class="row">
            
                         <ul class="nav nav-sub-pills2 mb-3 nav-pills-login" id="pills-sub2-tab">
-                                   @if(! checkIfstudentFullySubscribeOnCourse(@$course->id))
+                                   @if(! checkIfstudentFullySubscribeOnCourse(@$course->id) && canStudentSubscribeToCourse(@$course->id, "full"))
                                     <li class="nav-item">
                                         <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-group2-sub"
                                             type="button" role="tab" style="border-bottom: background-color:rgb(111, 43, 144);">{{ __('full_paid') }}</button>
                                     </li>
                                     @endif
                                    
-                                    @if($course->open_installments == 1 && @$course->type == "live" &&  (@$course->priceDetails && (@$course->priceDetails->price != '' && @$course->priceDetails->price != 0) ) )
+                                    @if($course->open_installments == 1 && @$course->type == "live" &&  (@$course->priceDetails && (@$course->priceDetails->price != '' && @$course->priceDetails->price != 0) ) && canStudentSubscribeToCourse(@$course->id, "installment"))
                                     <li class="nav-item">
-                                        <button class="nav-link " data-bs-toggle="pill" data-bs-target="#tab-single2-sub"
+                                        <button class="nav-link @if(! canStudentSubscribeToCourse(@$course->id, 'full') && canStudentSubscribeToCourse(@$course->id, 'installment')) active @endif" data-bs-toggle="pill" data-bs-target="#tab-single2-sub"
                                             type="button" role="tab" style="border-bottom: background-color:rgb(111, 43, 144);">{{ __('installment_paid') }}</button>
                                     </li>  
                                     @endif
                                 </ul>
                                 <div class="tab-content" id="pills-sub-tabContent2">
                                 
+                                @if(canStudentSubscribeToCourse(@$course->id, "full"))
                                     <div class="tab-pane fade show active" id="tab-group2-sub">
                                         <div class="card" style="max-width:700px;margin: auto;">
                                             <div class="card-header">
@@ -61,8 +62,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @if ( @$course->priceDetails && (@$course->priceDetails->price != '' && @$course->priceDetails->price != 0))
-                                    <div class="tab-pane fade " id="tab-single2-sub">
+                                    @endif
+
+                                    @if ( @$course->priceDetails && (@$course->priceDetails->price != '' && @$course->priceDetails->price != 0) && canStudentSubscribeToCourse(@$course->id, "installment"))
+                                    <div class="tab-pane fade @if(! canStudentSubscribeToCourse(@$course->id, 'full') && canStudentSubscribeToCourse(@$course->id, 'installment')) show active @endif" id="tab-single2-sub">
                                         <div class="card" style="max-width:700px;margin: auto;">
                                                 <div class="card-header">
                                                     <div class="card-title">{{ __('installment_paid') }}</div>
@@ -106,7 +109,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="card-body">
-                                                        <p >{{__('price')}} :  ({{$installment->price}}) دينار عراقى</p>
+                                                        <p >{{__('price')}} : @if($installment->price != "" && $installment->price !=0)  ({{$installment->price}}) دينار عراقى @else {{__('free_installment')}} @endif</p>
                                                         <hr>
                                                         <ul>
                                                         @foreach($lessons as $lesson)
@@ -122,7 +125,7 @@
                                                       <br>
                                                       <br>
                                                         @if(! in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id || @$currentInstallment == $untilLesson) )
-                                                        <a href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $untilLesson ?? '']) }}" style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
+                                                        <a href="{{ url('/user/installment-select-payment-method', ['course_id' => @$course->id ,'id' => $untilLesson ?? '','marketer_coupon' => request('marketer_coupon')]) }}" style="position:absolute;bottom:5px;text-align:center;cursor:pointer"
                                                          class="stop-payInstallment {{$untilLesson}} primary-btn w-50" alt="{{$untilLesson}}" >@if($lastSession->price !="" && $lastSession->price != 0) {{__('payment')}}  @else {{__('subscribe')}} @endif
                                                         </a>
                                                         @elseif(in_array($untilLesson,studentCourseSessionInstallmentsIDs($course->id)) && ($checkIfPreviousIsPaided == 1 || $firstInstallment->id == $installment->id) )

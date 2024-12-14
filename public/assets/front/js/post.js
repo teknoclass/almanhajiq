@@ -254,7 +254,7 @@ $(document).on('click', '.confirm-free-registeration', function(event) {
     var url = $(this).data('url');
     var id = $(this).data('id');
     var payment_type = $(this).data('payment_type');
-    var marketer_coupon = $(this).data('marketer_coupon');
+    var marketer_coupon = $('.marketer_coupon').val();
     var redirectUrl = $(this).data('to');
     var submit_free_reg_btn = $('#submit_free_reg_btn');
     event.preventDefault();

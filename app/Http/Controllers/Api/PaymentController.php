@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\CourseSessionsGroup;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\freeInstallmentRequest;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
 use App\Models\CourseSessionInstallment;
@@ -246,6 +247,89 @@ class PaymentController extends Controller
         }
     }
 
+
+    function subscribeDetailsFree(Request $request)
+    {
+        $id   = $request->target_id ?? 0;
+        $type = $request->type == "group" ? "group" : 'session';
+        if($type == "group")
+        {
+            // $title = CourseSessionsGroup::find($request->target_id)->title ?? "";
+            $model = CourseSessionsGroup::find($id);
+
+        }else{
+            $model = CourseSession::find($id);
+        }
+        if(!$model)
+        {
+            return $this->response_api('error' , __('validation.free_sesions_not_foud') );
+        }
+
+        if($model->price)
+        {
+            return $this->response_api('error' , $model->title . ' ' . __('not_free') );
+        }
+
+        $user = auth('api')->user();
+
+        if($type == "group"){
+            // if(request()->dd == 1){ $user->studentSubscribedSessions()->delete();}
+            $studentSubscribedSessionsIds = $user->studentSubscribedSessions()->pluck('course_session_id')->toArray();
+            
+            $sessions = CourseSession::where('group_id', $id)->get();
+            // if(request()->dd == 'sess'){ dd($studentSubscribedSessionsIds , $sessions , $user->studentSubscribedSessions);}
+
+            foreach($sessions as $session)
+            {
+                if(! in_array( $session->id,$studentSubscribedSessionsIds))
+                {
+                    CourseSessionSubscription::create([
+                        'student_id'                    => $user->id,
+                        'course_session_id'             => $session->id,
+                        'course_session_group_id'       => $id,
+                        'status'                        => 1,
+                        'subscription_date'             => now(),
+                        'course_session_group_id'       => $session->group_id,
+                        'related_to_group_subscription' => 1,
+                        'course_id'                     => $session->course_id
+                    ]);
+                }
+            }
+            if($session = $sessions->first()){
+                UserCourse::create([
+                    "course_id"           => $session->course_id,
+                    "group_id"            => $id,
+                    "user_id"             => $user->id,
+                    "lecturer_id"         => Courses::find($session->course_id)->user_id,
+                    "subscription_token"  => null,
+                    "is_paid"             => 1,
+                    "is_complete_payment" => 1,
+                    'is_installment'      => 1
+                ]);
+            }
+        }else{
+            $courseSession = CourseSessionSubscription::create([
+                'student_id'                    => $user->id,
+                'course_session_id'             => $id,
+                'status'                        => 1,
+                'subscription_date'             => now(),
+                'course_session_group_id'       => $model->group_id,
+                'related_to_group_subscription' => 0,
+                'course_id'                     => $model->course_id
+            ]);
+            UserCourse::create([
+                "course_id"           => $courseSession->course_id,
+                "user_id"             => $user->id,
+                "lecturer_id"         => Courses::find($courseSession->course_id)->user_id,
+                "subscription_token"  => null,
+                "is_paid"             => 1,
+                "is_complete_payment" => 1,
+                'is_installment'      => 1
+            ]);
+        }
+
+        return $this->response_api('success' , __('message.operation_accomplished_successfully') );
+    }
 
     function subscribeDetails(Request $request){
 
@@ -725,8 +809,6 @@ class PaymentController extends Controller
         else $id = 0;
         $installment = CourseSessionInstallment::where('course_id',$courseId)->where('course_session_id','>',$id)->first();
         return $installment;
-
-
     }
 
     function getRemainingInstallment($courseId){
@@ -804,31 +886,39 @@ class PaymentController extends Controller
 
     }
 
-    function freeInstallment($request){
+
+    ///
+
+
+    function freeInstallment(freeInstallmentRequest $request)
+    {
         $installment = $this->getCurInstallment($request->course_id);
+        if(!$installment){
+            return $this->response_api('error' , __('validation.installment_not_foud') );
+        }
         $price = $installment->price;
 
         if($price > 0){
-            return false;
+            return $this->response_api('error' , __('validation.installment_not_Free') , ['price' => $price]);
         }
 
         $courseSession = $installment;
         $item = StudentSessionInstallment::updateOrCreate([
-                'student_id' => auth('api')->id(),
-                'course_id' => $courseSession->course_id,
-                'access_until_session_id' => $courseSession->course_session_id
-            ]);
+            'student_id'              => auth('api')->id(),
+            'course_id'               => $courseSession->course_id,
+            'access_until_session_id' => $courseSession->course_session_id
+        ]);
 
-            UserCourse::create([
-                "course_id" => $courseSession->course_id,
-                "user_id" => auth('api')->id(),
-                "lecturer_id" => Courses::find($courseSession->course_id)->user_id,
-                "is_paid" => 1,
-                "is_complete_payment" => 1,
-                'is_installment' => 1
-            ]);
+        UserCourse::create([
+            "course_id"           => $courseSession->course_id,
+            "user_id"             => auth('api')->id(),
+            "lecturer_id"         => Courses::find($courseSession->course_id)->user_id,
+            "is_paid"             => 1,
+            "is_complete_payment" => 1,
+            'is_installment'      => 1
+        ]);
 
-        return true;
+        return $this->response_api('success' , __('free_installment_reserved_successfully') );
 
     }
 

@@ -211,6 +211,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>{{__('end_date')}}
@@ -221,6 +222,21 @@
                                                            class="form-control mb-5 "
                                                            name="end_date"
                                                            value="{{@$item->end_date}}"
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 subscription_end_date" @if(isset($item) && $item->type == "live") @else style="display:none" @endif>
+                                            <div class="form-group">
+                                                <label>{{__('subscription_end_date')}}
+                                                    <span class="text-danger"></span></label>
+                                                <br>
+                                                <div class="input-group date">
+                                                    <input type="date"
+                                                           class="form-control mb-5 "
+                                                           name="subscription_end_date"
+                                                           value="{{@$item->subscription_end_date}}"
                                                     />
 
                                                 </div>
@@ -297,6 +313,26 @@
                                                         </option>
                                                     <option value="0"
                                                         {{@$item->open_installments==0 ?'selected' :''}}>
+                                                        {{__('no')}}
+                                                    </option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group" >
+                                                <label>{{__('is_feature')}}
+                                                    <span class="text-danger"></span></label>
+                                                <select id="is_feature" name="is_feature" class="form-control mb-5 ">
+                                                    <option value="" selected disabled>{{__('choose_pls')}} </option>
+
+                                                        <option value="1"
+                                                            {{@$item->is_feature==1 ?'selected' :''}}>
+                                                            {{__('yes')}}
+                                                        </option>
+                                                    <option value="0"
+                                                        {{@$item->is_feature==0 ?'selected' :''}}>
                                                         {{__('no')}}
                                                     </option>
 
@@ -613,6 +649,16 @@
                     });
 
 
+                    $(document).on('change','#type',function(){
+                        var typeVal = $(this).val();
+
+                        if(typeVal == "live")
+                        {
+                            $('.subscription_end_date').show();
+                        }else{
+                            $('.subscription_end_date').hide();
+                        }
+                    });
               
                 });
              

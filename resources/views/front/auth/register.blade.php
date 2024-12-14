@@ -29,6 +29,7 @@
                                         <button class="w-100 active" id="studentBtn">{{ __('student1') }}</button>
                                         <button class="w-100" id="teacherBtn">{{ __('lecturer1') }}</button>
                                         <button class="w-100" id="marketerBtn">{{ __('marketer') }}</button>
+                                        <button class="w-100" id="parentBtn">{{ __('parent') }}</button>
                                 </div>
                                 <h4 class="text-center mt-3 mb-4 registeration-type">
                                     {{ __('now_you_are_registering_as') }} <strong>{{ __('student1') }}</strong>
@@ -300,6 +301,7 @@
                 let teacher = "{{ __('lecturer1') }}";
                 let marketer = "{{ __('marketer') }}";
                 let student1 = "{{ __('student1') }}";
+                let parent = "{{ __('parent') }}";
                 $('#registerModal').modal({
                     backdrop: 'static',
                     keyboard: false
@@ -311,6 +313,12 @@
                     $('#selectRole').val('student');
                     $('#registerModal').modal('hide');
                     $('.registeration-type strong').text(student1);
+                });
+                $('#parentBtn').on('click', function() {
+                    change_to_lecturer(0);
+                    $('#selectRole').val('parent');
+                    $('#registerModal').modal('hide');
+                    $('.registeration-type strong').text(parent);
                 });
 
                 $('#teacherBtn').on('click', function() {

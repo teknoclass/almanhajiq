@@ -174,29 +174,36 @@ class CourseSession extends Model
 
     public function getRecording()
     {
-        $link = "";
+        try{
 
-        $meetingId = $this->meeting_id;
+            $link = "";
 
-        $getRecordingsParams = new GetRecordingsParameters();
-        $getRecordingsParams->meetingId = $meetingId;
-        $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
-        $recording = null;
+            $meetingId = $this->meeting_id;
 
-        if (!empty($recordings))
-        {
-            if ($meetingId)
+            $getRecordingsParams = new GetRecordingsParameters();
+            $getRecordingsParams->meetingId = $meetingId;
+            $recordings = \Bigbluebutton::getRecordings($getRecordingsParams);
+            $recording = null;
+
+            if (!empty($recordings))
             {
-                $recording = collect($recordings)->firstWhere('meetingID', $meetingId);
+                if ($meetingId)
+                {
+                    $recording = collect($recordings)->firstWhere('meetingID', $meetingId);
+                }
+
+                if ($recording && isset($recording['playback']['format'][0]['url']))
+                {
+                    $link = $recording['playback']['format'][0]['url'];
+                }
             }
 
-            if ($recording && isset($recording['playback']['format'][0]['url']))
-            {
-                $link = $recording['playback']['format'][0]['url'];
-            }
+            return $link;
         }
+        catch(\Exception $e)
+        {
 
-        return $link;
+        }
     }
 
     function isNow(){

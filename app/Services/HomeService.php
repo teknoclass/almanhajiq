@@ -89,6 +89,27 @@ class HomeService extends MainService
         );
     }
 
+    // xx
+    function SonsStatistics()
+    {
+        $user = auth()->user();
+        $childs = $user->childs;
+        // $sons_ids = $sons->pluck('son_id')->toArray();
+
+        $data = [];
+        foreach ($childs as $key => $child) {
+            $data[] = [
+                "courses"                  => $child->courses->count(),
+                "courses_acheived"         => $child->courses->count(),
+                "live_lessons"             => $child->liveCourseCount(),
+                "live_lessons_acheived"    => $child->liveCourseCount(),
+                "private_lessons_count"    => $child->privateLessonsCount(),
+                "private_lessons_acheived" => $child->privateLessonsCount(),
+            ];
+        }
+
+        return $data;
+    }
 
 
 

@@ -26,9 +26,11 @@ class ApiSingleCourseResource extends JsonResource
         $fullCourseSub = $this->isSubscriber('api');
 
         $curriculumItems = new Collection();
-        $curriculumItems = $curriculumItems->merge(collect(new ApiGroupCollection($this->groups)));
-        $curriculumItems = $curriculumItems->merge(collect(new ApiSessionCollection($this->sessions->whereNull('group_id'))));
-        $items = collect(new ApiCurriculumItemCollection($this->items));
+        if($this->published){
+            $curriculumItems = $curriculumItems->merge(collect(new ApiGroupCollection($this->groups)));
+            $curriculumItems = $curriculumItems->merge(collect(new ApiSessionCollection($this->sessions->whereNull('group_id'))));
+        }
+        $items = collect(new ApiCurriculumItemCollection($this->items_active));
         if($this->type == 'live'){
             $itemsLive = $items;
             $itemsRec = null;

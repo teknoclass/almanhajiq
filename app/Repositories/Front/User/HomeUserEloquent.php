@@ -23,6 +23,7 @@ use App\Repositories\Front\LecturerProfileEloquent;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\JoinAsTeacherRequests;
+use App\Models\ParentSon;
 use App\Models\PrivateLessonMeeting;
 use App\Models\PrivateLessonMeetingParticipants;
 
@@ -120,6 +121,13 @@ class HomeUserEloquent extends HelperEloquent
                 $query->where('user_id', $user_id);
             })->first();
 
+
+        }
+        elseif($role==User::PARENT) {
+
+          $data['sons'] = ParentSon::where("parent_id",auth()->id())->where("status","confirmed")->with('son')->get();
+
+          $data['count_sons'] = count($data['sons']);
 
         }
         return $data;

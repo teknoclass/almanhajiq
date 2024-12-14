@@ -20,7 +20,7 @@
                     <th>{{ __('status') }}</th>
                     @endif
                     @if (@$type == 'upcoming')
-                    <th>{{ __('Actions') }}</th>
+                  {{--  <th>{{ __('Actions') }}</th> --}}
                     @endif
                     <th class="text-center">{{ __('join_to_meet') }}</th>
                     @if (@$type == 'finished')

@@ -11,6 +11,7 @@ use App\Http\Requests\Api\UpdateStudentRequest;
 use App\Http\Requests\Front\SignInRequest;
 use App\Mail\ResetPasswordEmail;
 use App\Models\User;
+use App\Repositories\ParentRepository;
 use App\Repositories\ResetPasswordRepository;
 use App\Repositories\TeacherRepository;
 use App\Repositories\UserRepository;
@@ -26,17 +27,20 @@ class AuthService extends MainService
 {
     public TeacherRepository $teacherRepository;
     public UserRepository $userRepository;
+    public ParentRepository $parentRepository;
     public ResetPasswordRepository $resetPasswordRepository;
 
     public function __construct(
         TeacherRepository $teacherRepository,
         UserRepository $userRepository,
-        ResetPasswordRepository $resetPasswordRepository
+        ResetPasswordRepository $resetPasswordRepository,
+        ParentRepository $parentRepository
     )
     {
-        $this->teacherRepository = $teacherRepository;
-        $this->userRepository = $userRepository;
+        $this->teacherRepository       = $teacherRepository;
+        $this->userRepository          = $userRepository;
         $this->resetPasswordRepository = $resetPasswordRepository;
+        $this->parentRepository        = $parentRepository;
     }
 
     public function joinAsTeacher(TeacherRequest $request): array
@@ -80,32 +84,72 @@ class AuthService extends MainService
             );
         }
     }
+
+    public function parentRegister(StudentRequest $studentRequest): array
+    {
+        try {
+            DB::beginTransaction();
+
+            $data                    = $studentRequest->all();
+            $data['validation_code'] = '0000';
+            $data['password_c']      = $studentRequest->get('password');
+            $data['password']        = Hash::make($studentRequest->get('password'));
+            $data['device_token']    = Hash::make($studentRequest->get('device_token'));
+            $data['role']            = 'parent';
+            $user                    = $this->parentRepository->updateOrCreateUser($data);
+            $token                   = $user->createToken('auth_token')->plainTextToken;
+            // $user->sendVerificationCode(); // ✔
+
+            $message = __('message.operation_accomplished_successfully');
+
+            DB::commit();
+            $user->token = $token;
+            return $this->createResponse(
+                $message,
+                true,
+                $user
+            );
+        } catch (\Exception $e) {
+            Log::alert($e->getMessage());
+            DB::rollback();
+            $message  = __('message.unexpected_error');
+            return $this->createResponse(
+                $e->getMessage(),
+                // $message,
+                false,
+                null
+            );
+        }
+
+    }
+
     public function studentRegister(StudentRequest $studentRequest): array
     {
         try {
             DB::beginTransaction();
 
-            $data                = $studentRequest->all();
-            $data['validation_code']    = '0000';
-            $data['password_c']  = $studentRequest->get('password');
-            $data['password']    = Hash::make($studentRequest->get('password'));
-            $user =  $this->userRepository->updateOrCreateUser($data);
-            $token = $user->createToken('auth_token')->plainTextToken;
-            //$user->sendVerificationCode();
+            $data                    = $studentRequest->all();
+            $data['validation_code'] = '0000';
+            $data['password_c']      = $studentRequest->get('password');
+            $data['password']        = Hash::make($studentRequest->get('password'));
+            $data['device_token']    = Hash::make($studentRequest->get('device_token'));
+            $user                    = $this->userRepository->updateOrCreateUser($data);
+            $token                   = $user->createToken('auth_token')->plainTextToken;
+            // $user->sendVerificationCode(); // ✔
 
             $message = __('message.operation_accomplished_successfully');
-//            try {
-//                $user->sendVerificationCode();
-//            }
-//            catch (\Exception $exception){
-//                DB::rollback();
-//                Log::error($exception->getMessage());
-//                return $this->createResponse(
-//                    __('message.message.unexpected_error'),
-//                    false,
-//                    null
-//                );
-//            }
+            // try {
+            //     $user->sendVerificationCode();
+            // }
+            // catch (\Exception $exception){
+            //     DB::rollback();
+            //     Log::error($exception->getMessage());
+            //     return $this->createResponse(
+            //         __('message.message.unexpected_error'),
+            //         false,
+            //         null
+            //     );
+            // }
             DB::commit();
             $user->token = $token;
             return $this->createResponse(
@@ -119,20 +163,28 @@ class AuthService extends MainService
             $message  = __('message.unexpected_error');
             return $this->createResponse(
                 $message,
-                true,
+                false,
                 null
             );
         }
 
     }
+
     public function singIn(SignInRequest  $request): array
     {
         $user     = $this->userRepository->getUserByEmail($request->email);
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 if($user->is_validation == 0 || $user->is_validation == null){
-                    //$user->sendVerificationCode();
+                    // $user->sendVerificationCode(); // ✔
+                    // return $this->createResponse(
+                    //     __('message.verify_your_mobile'),
+                    //     false,
+                    //     null
+                    // );
                 }
+                $user->device_token  = $request->device_token;
+                $user->save();
                 $token = $user->createToken('auth_token')->plainTextToken;
                 $user->token  = $token;
                 return $this->createResponse(
@@ -310,11 +362,7 @@ class AuthService extends MainService
         $code_5 = $request->get('code_5');
         $code_6 = $request->get('code_6');
 
-
-
         $code = $code_1 . $code_2 . $code_3 . $code_4 . $code_5 . $code_6;
-
-
 
         if ($code == '') {
             return
@@ -334,7 +382,8 @@ class AuthService extends MainService
                 ];
         }
 
-        if ($user->validation_code == $code || $code == 619812){
+        if ($user->validation_code == $code || $code == 619812)
+        {
             $user->is_validation = 1;
             $user->validation_at = Carbon::now();
             $user->save();
@@ -365,7 +414,7 @@ class AuthService extends MainService
                 'status' => false
             ];
         }else{
-            $user->sendVerificationCode();
+            // $user->sendVerificationCode(); // ✔
             return [
                 'message' => __('message.operation_accomplished_successfully'),
                 'status' => true

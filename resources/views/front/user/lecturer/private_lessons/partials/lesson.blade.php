@@ -126,7 +126,7 @@
 
     @endif
     <td>{{__(@$lesson->requests->last()->status)}}</td>
-    <td>{{@$lesson->requests->last()->admin_response}}</td>
+  {{--  <td>{{@$lesson->requests->last()->admin_response}}</td>
 
     <td>
         <span class="d-flex align-items-center w-100 justify-content-between">
@@ -158,9 +158,9 @@
                 </div>
             </div>
         </span>
-    </td>
+    </td> --}}
 
-    <td>
+   {{-- <td>
         <div>
 
             <button data-toggle="modal" data-id="{{ $lesson->id }}" data-target="#cancelModal" id="cancelButton" ><span class="far  fa-cancel"></span><label>{{ __('cancel')}}</label></button>
@@ -170,7 +170,7 @@
 
 
         </div>
-    </td>
+    </td> --}}
 </tr>
 
 

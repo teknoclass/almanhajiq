@@ -32,8 +32,8 @@ class StudentResource extends JsonResource
             'country_code'=>$this->code_country,
             'info'=>[
                 'courses_count'=>count($this->courses),
-                'private_lessons_count'=>count($this->privateLessons),
-            ],
+                // 'private_lessons_count'=>count($this->privateLessons),
+            ]+$this->user_activities(),
             'country'=> isset($this->country)?collect($this->country['translations'])->firstWhere('locale', $locale??'en')->name??'':'',
         ];
         if ($this->token)

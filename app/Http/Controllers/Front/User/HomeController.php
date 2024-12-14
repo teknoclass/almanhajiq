@@ -39,6 +39,12 @@ class HomeController extends Controller
 
             return view('front.user.home_user.marketer', $data);
         }
+        elseif($user->role == User::PARENT) {
+
+            $data = $this->home_user->index($request, User::PARENT);
+
+            return view('front.user.home_user.parent', $data);
+        }
     }
 
     public function cart()

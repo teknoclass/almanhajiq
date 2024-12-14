@@ -293,45 +293,49 @@
                                 </ul>
                             </div>
                         </li> --}}
-{{--                        <li class="main-menu__item">--}}
-{{--                            <a class="main-menu__link menu-toggle" href="javascript:;">--}}
-{{--                                <span class="main-menu__link-icon">--}}
-{{--                                    <img src="{{ asset('assets/front/images/panel/icon-07.svg') }}" alt="" loading="lazy"/>--}}
-{{--                                </span>--}}
-{{--                                <span class="main-menu__link-text">{{ __('private_lessons') }}</span>--}}
-{{--                                <span class="main-menu__ver-arrow">--}}
-{{--                                    <i class="fa-regular fa-chevron-{{ @$cursor_dir }}"></i>--}}
-{{--                                </span>--}}
-{{--                            </a>--}}
-{{--                            <div class="menu-submenu">--}}
-{{--                                <ul class="menu-subnav">--}}
-{{--                                    <li class="main-menu__item">--}}
-{{--                                        <a class="main-menu__link"--}}
-{{--                                            href="{{ route('user.lecturer.private_lessons.index') }}">--}}
-{{--                                            <div class="main-menu__icon">--}}
-{{--                                                <i class="fa-solid fa-circle"></i>--}}
-{{--                                            </div>--}}
-{{--                                            <span class="main-menu__link-text">{{ __('lessons_list') }} </span>--}}
-{{--                                        </a>--}}
-{{--                                    </li>--}}
-{{--                                    <li class="main-menu__item">--}}
-{{--                                        <a class="main-menu__link"--}}
-{{--                                           href="{{ route('user.private_lessons.request') }}">--}}
-{{--                                            <div class="main-menu__icon">--}}
-{{--                                                <i class="fa-solid fa-circle"></i>--}}
-{{--                                            </div>--}}
-{{--                                            <span class="main-menu__link-text">{{ __('my_live_lessons_requests') }}</span>--}}
-{{--                                        </a>--}}
-{{--                                    </li>--}}
-{{--                                    --}}{{-- <li class="main-menu__item">--}}
-{{--                                        <a class="main-menu__link"--}}
-{{--                                            href="{{ route('user.lecturer.private_lessons.create.index') }}">--}}
-{{--                                            <div class="main-menu__icon">--}}
-{{--                                                <i class="fa-solid fa-circle"></i>--}}
-{{--                                            </div>--}}
-{{--                                            <span class="main-menu__link-text">{{ __('add_private_lessons') }} </span>--}}
-{{--                                        </a>--}}
-{{--                                    </li> --}}
+                        <li class="main-menu__item">
+    <a class="main-menu__link menu-toggle" href="javascript:;">
+        <span class="main-menu__link-icon">
+            <img src="{{ asset('assets/front/images/panel/icon-07.svg') }}" alt="" loading="lazy"/>
+        </span>
+        <span class="main-menu__link-text">{{ __('private_lessons') }}</span>
+        <span class="main-menu__ver-arrow">
+            <i class="fa-regular fa-chevron-{{ @$cursor_dir }}"></i>
+        </span>
+    </a>
+    <div class="menu-submenu">
+        <ul class="menu-subnav">
+            <li class="main-menu__item">
+                <a class="main-menu__link" href="{{ route('user.lecturer.private_lessons.index') }}">
+                    <div class="main-menu__icon">
+                        <i class="fa-solid fa-circle"></i>
+                    </div>
+                    <span class="main-menu__link-text">{{ __('lessons_list') }}</span>
+                </a>
+            </li>
+          {{--  <li class="main-menu__item">
+                <a class="main-menu__link" href="{{ route('user.private_lessons.request') }}">
+                    <div class="main-menu__icon">
+                        <i class="fa-solid fa-circle"></i>
+                    </div>
+                    <span class="main-menu__link-text">{{ __('my_live_lessons_requests') }}</span>
+                </a>
+            </li> --}}
+            <!-- Uncomment the following block if needed in the future -->
+            <!-- 
+            <li class="main-menu__item">
+                <a class="main-menu__link" href="{{ route('user.lecturer.private_lessons.create.index') }}">
+                    <div class="main-menu__icon">
+                        <i class="fa-solid fa-circle"></i>
+                    </div>
+                    <span class="main-menu__link-text">{{ __('add_private_lessons') }}</span>
+                </a>
+            </li>
+            -->
+        </ul>
+    </div>
+</li>
+
 
 
 {{--                                    --}}{{-- <li class="main-menu__item">--}}

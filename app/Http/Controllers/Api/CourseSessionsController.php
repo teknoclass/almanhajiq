@@ -26,9 +26,9 @@ class CourseSessionsController  extends Controller
     }
 
     public function purchaseOptions(Request $request, $id){
-        $groups = $this->liveSessionService->getCourseSessionsGroups($id);
+        $groups   = $this->liveSessionService->getCourseSessionsGroups($id);
         $sessions = $this->liveSessionService->getCourseSessions($id);
-        $course = $this->courseService->getCourseByUserId($request,$id);
+        $course   = $this->courseService->getCourseByUserId($request,$id);
         if (!$groups['status']) {
             $response = new ErrorResponse($groups['message'], Response::HTTP_BAD_REQUEST);
 
@@ -44,10 +44,19 @@ class CourseSessionsController  extends Controller
 
             return response()->error($response);
         }
-        $CourseResource                 = new ApiCourseResource($course['data']);
-        $groupsCollection                = new CourseSessionGroupCollection($groups['data']);
-        $sessionsCollection                = new CourseSessionCollection($sessions['data']);
-        $courses = new SuccessResponse($groups['message'], [
+
+        $groups_data        = [];
+        foreach ($groups['data'] as $key => $group) {
+           $groups_data[] = $group;
+        }
+        if(request()->dd){
+            dd($groups['data'] , $groups_data);
+        }
+        $groups_data  = collect($groups_data);
+        $CourseResource     = new ApiCourseResource($course['data']);
+        $groupsCollection   = new CourseSessionGroupCollection($groups_data);
+        $sessionsCollection = new CourseSessionCollection($sessions['data']);
+        $courses            = new SuccessResponse($groups['message'], [
                 $CourseResource,$groupsCollection,$sessionsCollection
             ]
             , Response::HTTP_OK);

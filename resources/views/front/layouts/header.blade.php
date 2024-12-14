@@ -199,7 +199,9 @@
                                                     'href' => route('user.auth.logout'),
                                                 ],
                                             ];
-                                        } else {
+                                        }
+                                        elseif(getUser()->role == 'student')
+                                        {
                                             $user_menus = [
                                                 [
                                                     'title' => __('home'),
@@ -213,6 +215,31 @@
                                                     'title' => __('setting'),
                                                     'href' => route('user.settings.index'),
                                                 ],
+                                                [
+                                                    'title' => __('parent_settings'),
+                                                    'href' => route('user.profileSettings.profile.parent.index'),
+                                                ],
+                                                [
+                                                    'title' => __('user_menus.logout'),
+                                                    'href' => route('user.auth.logout'),
+                                                ],
+                                            ];
+                                        }
+                                        else {
+                                            $user_menus = [
+                                                [
+                                                    'title' => __('home'),
+                                                    'href' => route('user.home.index'),
+                                                ],
+                                                [
+                                                    'title' => __('modify_my_data'),
+                                                    'href' => route('user.profileSettings.profile.index'),
+                                                ],
+                                                [
+                                                    'title' => __('setting'),
+                                                    'href' => route('user.settings.index'),
+                                                ],
+                                            
                                                 [
                                                     'title' => __('user_menus.logout'),
                                                     'href' => route('user.auth.logout'),

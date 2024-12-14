@@ -22,7 +22,7 @@
                 {{ __('select_method') }} 
             </button>
     
-    </div>
+    </div> 
     
   
     <div class="payment-option-card" id="credit-card">
@@ -48,6 +48,8 @@
     
     </div>
 
+    <input name="marketer_coupon" value="{{  @$marketer_coupon }}" class="marketer_coupon form-control" style="width:96%;margin:auto" placeholder="{{__('have_coupon')}}" >
+    <br>
 </div>
 
 <style>
@@ -109,6 +111,7 @@
 </style>
 @push('front_js')
     <script src="{{ asset('assets/front/js/post.js') }}"></script>
+
 @endpush
 
 @endsection

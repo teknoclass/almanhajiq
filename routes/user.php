@@ -20,6 +20,7 @@ use App\Http\Controllers\Front\User\Lecturer\CoursesController as LecturerCourse
 use App\Http\Controllers\Front\User\CourseSessionSubscriptionsController;
 use App\Http\Controllers\Front\User\CourseSessionInstallmentsController;
 use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
+use App\Http\Controllers\Front\User\PrivateLessonSubscriptionsController;
 
 Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
     Route::group(['middleware' => 'checkActiveUser'], function () {
@@ -46,6 +47,8 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
             Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
                 Route::get('/', [ProfileSettingsController::class, 'indexProfile'])->name('index');
                 Route::post('/', [ProfileSettingsController::class, 'updateProfile'])->name('update');
+                Route::get('/parent', [ProfileSettingsController::class, 'indexParent'])->name('parent.index');
+                Route::post('/parent', [ProfileSettingsController::class, 'updateParent'])->name('parent.update');  
             });
 
             Route::group(['prefix' => 'change-password', 'as' => 'changePassword.'], function () {
@@ -191,17 +194,21 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         Route::group(['middleware' => 'auth'], function () {
 
         //subscriptions offers
-        Route::get('/session-select-payment-method/{course_id}/{id}/{type}',[CourseSessionSubscriptionsController::class,'selectPaymentMethod']);
+        Route::get('/session-select-payment-method/{course_id}/{id}/{type}/{marketer_coupon?}',[CourseSessionSubscriptionsController::class,'selectPaymentMethod']);
         Route::post('/subscribe-to-course-sessions',[CourseSessionSubscriptionsController::class,'subscribe']);
         Route::get('/subscribe-to-course-sessions-confirm',[CourseSessionSubscriptionsController::class,'confirmSubscribe']);
         //installments
-        Route::get('/installment-select-payment-method/{course_id}/{id}',[CourseSessionInstallmentsController::class,'selectPaymentMethod']);
+        Route::get('/installment-select-payment-method/{course_id}/{id}/{marketer_coupon?}',[CourseSessionInstallmentsController::class,'selectPaymentMethod']);
         Route::post('/pay-to-course-session-installment',[CourseSessionInstallmentsController::class,'pay']);
         Route::get('/pay-to-course-session-installment-confirm',[CourseSessionInstallmentsController::class,'confirmPayment']);
         //full subscription
         Route::get('/full-select-payment-method/{course_id}/{marketer_coupon?}',[CourseFullSubscriptionsController::class,'selectPaymentMethod']);
         Route::post('/full-subscribe-course',[CourseFullSubscriptionsController::class,'fullSubscribe']);
         Route::get('/full-subscribe-course-confirm',[CourseFullSubscriptionsController::class,'fullConfirmSubscribe']);
+  
+        //private lessons
+        Route::post('/private-lesson-subscription',[PrivateLessonSubscriptionsController::class,'pay']);
+        Route::get('/private-lesson-confirm',[PrivateLessonSubscriptionsController::class,'confirmPayment']);
         });
         
     });

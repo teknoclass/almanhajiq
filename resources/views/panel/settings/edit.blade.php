@@ -95,6 +95,12 @@
                                                 'icon'      => 'flaticon-settings-1',
                                                 'is_active' => false,
                                             ],
+                                            [
+                                                'id'        => 'tab_application_settings',
+                                                'title'     => __('application_settings'),
+                                                'icon'      => 'flaticon-settings-1',
+                                                'is_active' => false,
+                                            ],
                                         ];
                                         @endphp
                                         @foreach($tabs as $tab)
@@ -234,14 +240,7 @@
                                                        value="{{@$settings->valueOf('mobile')}}" required id="mobile"
                                                        placeholder=""/>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="whatsapp">{{__('whatsApp')}}
-                                                    <span class="text-danger">*</span></label>
-                                                <input type="text" name="whatsapp"
-                                                       class="form-control mb-10 d-flex align-items-center justify-content-between"
-                                                       value="{{@$settings->valueOf('whatsapp')}}" required id="mobile"
-                                                       placeholder=""/>
-                                            </div>
+                                          
                                             <div class="form-group">
                                                 <label for="mobile">{{__('address')}}
                                                     <span class="text-danger">*</span></label>
@@ -604,6 +603,54 @@
                                                     value="{{@$settings->valueOf('can_postpone_hours_before')}}"
                                                     id="can_postpone_hours_before" placeholder="" min="1"
                                                 />
+                                            </div>
+
+                                          
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_application_settings" role="tabpanel">
+
+                                            <div class="form-group">
+                                                <label for="android_release">{{__('android_release')}}</label>
+                                                <input type="text" name="android_release"
+                                                    class="form-control mb-10 d-flex align-items-center justify-content-between"
+                                                    value="{{@$settings->valueOf('android_release')}}"
+                                                    id="android_release" 
+                                                />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="android_update_status">{{__('android_update_status')}}</label>
+                                                <select type="text" name="android_update_status"
+                                                    class="form-control mb-10 d-flex align-items-center justify-content-between"
+                                              
+                                                    id="android_update_status" 
+                                                >
+                                                <option>{{__('choose_pls')}}</option>
+                                                <option value="0" @if(@$settings->valueOf('android_update_status') == 0) selected @endif>{{__('optional')}}</option>
+                                                <option value="1" @if(@$settings->valueOf('android_update_status') == 1) selected @endif>{{__('mandatory')}}</option>
+                                            </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="ios_release">{{__('ios_release')}}</label>
+                                                <input type="text" name="ios_release"
+                                                    class="form-control mb-10 d-flex align-items-center justify-content-between"
+                                                    value="{{@$settings->valueOf('ios_release')}}"
+                                                    id="ios_release"
+                                                />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="ios_update_status">{{__('ios_update_status')}}</label>
+                                                <select type="text" name="ios_update_status"
+                                                    class="form-control mb-10 d-flex align-items-center justify-content-between"
+                                              
+                                                    id="ios_update_status" 
+                                                >
+                                                <option>{{__('choose_pls')}}</option>
+                                                <option value="0" @if(@$settings->valueOf('ios_update_status') == 0) selected @endif>{{__('optional')}}</option>
+                                                <option value="1" @if(@$settings->valueOf('ios_update_status') == 1) selected @endif>{{__('mandatory')}}</option>
+                                            </select>
                                             </div>
 
                                           

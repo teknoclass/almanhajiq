@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\LiveSessionController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\LecturerCourseController;
+use App\Http\Controllers\Api\ParentController;
 use App\Http\Controllers\Api\TeacherBalanceController;
 use App\Http\Controllers\Api\TeacherHomeController;
 use App\Http\Controllers\TeacherStudentProfileController;
@@ -51,6 +52,28 @@ Route::group(['middleware' => 'language', 'prefix' => 'student'], function () {
 
         // Route to update the student's profile, requires authentication
         Route::post('/update', [StudentController::class, 'updateProfile']);
+    });
+});
+
+// Group for routes related to 'parent', applying the 'language' middleware
+Route::group(['middleware' => 'language', 'prefix' => 'parent'], function () {
+
+    // Route for parent registration, no authentication required
+    Route::post('/register', [ParentController::class, 'register']);
+
+    // Group for routes that require both 'language' and 'auth:sanctum' middleware
+    Route::group(['middleware' => ['auth:sanctum' , 'language']], function () {
+        // Route to get the parent profile, requires authentication
+        Route::get('/', [ParentController::class, 'showProfile']);
+
+        Route::get('/home', [HomeController::class, 'home_parent']);
+        Route::get('/my-sons', [ParentController::class, 'my_sons']);
+        Route::get('/my-sons/{id}', [ParentController::class, 'show_sons']);
+        Route::POST('/my-sons/store', [ParentController::class, 'store_sons']);
+        Route::POST('/my-sons/store/verify', [ParentController::class, 'store_sons_verify']);
+
+        // Route to update the parent's profile, requires authentication
+        Route::post('/update', [ParentController::class, 'updateProfile']);
     });
 });
 
@@ -110,7 +133,7 @@ Route::get('/teacher/{id}', [TeacherController::class, 'findTeacherById'])->name
 
 //payment
 
-Route::group(['prefix' => 'payment'], function () {
+Route::group(['prefix' => 'payment' , 'middleware' => 'auth:api'], function () {
 
     Route::post('/fullCourseDetails',[PaymentController::class,'fullSubscribeDetails']);
     Route::post('/fullCourse',[PaymentController::class,'fullSubscribe']);
@@ -118,7 +141,7 @@ Route::group(['prefix' => 'payment'], function () {
 
     Route::post('buyFree',[PaymentController::class,'buyFree']);
 
-    Route::post('/subscribe-to-course-sessions-details',[PaymentController::class,'subscribeDetails']);
+    Route::post('/subscribe-to-course-sessions-details',[PaymentController::class,'subscribeDetails']); //
     Route::post('/subscribe-to-course-sessions',[PaymentController::class,'subscribe']);
     Route::get('/subscribe-to-course-sessions-confirm',[PaymentController::class,'confirmSubscribe']);
     Route::get('/subscribe-to-course-group-confirm',[PaymentController::class,'confirmSubscribeGroup']);
@@ -126,6 +149,8 @@ Route::group(['prefix' => 'payment'], function () {
     Route::post('/pay-to-course-session-installment-details',[PaymentController::class,'installmentDetails']);
     Route::post('/pay-to-course-session-installment',[PaymentController::class,'installment']);
     Route::get('/pay-to-course-session-installment-confirm',[PaymentController::class,'confirmPayment']);
+
+    Route::post('/reserve-course-session-installment-free',[PaymentController::class,'subscribeDetailsFree']);
 
     Route::post('/buyFreeInstallment',[PaymentController::class,'freeInstallment']);
 
@@ -152,7 +177,7 @@ Route::get('/getRate',[CoursesController::class,'getRate']);
 
 
 //lesson
-Route::post('/endLesson',[CoursesController::class,'endLesson']);
+Route::post('courseStudy/endLesson',[CoursesController::class,'endLesson'])->middleware('auth:api');
 
 //quiz
 Route::prefix('quiz')->middleware(['language', 'auth:sanctum'])->group(function(){

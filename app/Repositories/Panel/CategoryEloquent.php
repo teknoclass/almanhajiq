@@ -42,9 +42,9 @@ class CategoryEloquent
         {
             $data['grade_levels'] =  Category::query()->select('id', 'value', 'parent', 'key')
             ->with('translations:category_id,name,locale')
-            ->where('key','grade_levels')->get();
+            ->where('key','grade_levels')->orderBy('order','asc')->get();
         }
-        $data['grade_levels']      = Category::where('key', 'grade_levels')->get();
+        $data['grade_levels']      = Category::where('key', 'grade_levels')->orderBy('order','asc')->get();
         $data['category'] = Category::query()->where('key', $parent)->first();
 
         return $data;
