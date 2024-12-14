@@ -206,7 +206,7 @@ function cutString($text, $length)
 
 //////////////////////start  Notifications /////////////////////////////
 
-function sendWebNotification($user_id, $user_type, $title, $text)
+/* function sendWebNotification($user_id, $user_type, $title, $text)
 {
     $url = 'https://fcm.googleapis.com/fcm/send';
     if ($user_type == 'user') {
@@ -259,7 +259,78 @@ function sendWebNotification($user_id, $user_type, $title, $text)
     // FCM response
     // dd($result);
 }
+ */
 
+
+function sendWebNotification($user_id, $user_type, $title, $text,$messageData = null){
+    if ($user_type == 'user') {
+        $FcmToken = User::where('id', $user_id)->whereNotNull('device_token')->pluck('device_token')->first();
+    } else {
+        $FcmToken = Admin::where('id', $user_id)->whereNotNull('device_token')->pluck('device_token')->first();
+    }
+
+    //$FcmToken = 'eBHS-AjkQfKmR16sdXmOyw:APA91bFWFERtrt7h98pUEe2BVjFzAlsWCydyRK7MQTV0SOyongX6PqrwFyyI1ajAfdfMdRZ9hTuhcPe_RsnmEhP9dCxE1nKVBupv4SzXZYhzDLxAOhoE6WRkefSjbsw2_4MqvoKHnMgD';
+    $credentialsPath = config('services.fcm.credentialsPath');
+    $projectId = config('services.fcm.project_id');
+    $credentials = new ServiceAccountCredentials(
+        'https://www.googleapis.com/auth/firebase.messaging',
+        $credentialsPath
+    );
+
+    $authToken = $credentials->fetchAuthToken()['access_token'];
+
+    $url = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
+
+    try {
+        $headers = [
+            "Authorization: Bearer $authToken",
+            'Content-Type: application/json'
+        ];
+
+        if($messageData === null){
+            $messageData = [
+                "type" => "notification"
+            ];
+        }
+
+        $data = [
+            "message" => [
+                "token" => $FcmToken,
+                "notification" => [
+                    'title' => $title,
+                    'body' => $text
+                ],
+                "data" => $messageData
+            ]
+        ];
+        $payload = json_encode($data);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send");
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        $response = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if ($err) {
+            return response()->json([
+                'message' => 'Curl Error: ' . $err
+            ], 500);
+        } else {
+            return response()->json([
+                'message' => 'Notification has been sent',
+                'response' => json_decode($response, true)
+            ]);
+        }
+    } catch (RequestException $e) {
+        return $e->getMessage();
+    }
+}
 function sendWebNotificationV2($user_id, $user_type, $title, $text,$messageData = null){
     if ($user_type == 'user') {
         $FcmToken = User::where('id', $user_id)->whereNotNull('device_token')->pluck('device_token')->first();
