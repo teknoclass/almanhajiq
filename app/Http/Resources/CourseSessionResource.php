@@ -11,7 +11,7 @@ class CourseSessionResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    publicu fnction toArray($request)
+    public function toArray($request)
     {
         $fullCourseSub = $this->course->isSubscriber('api');
         if ($fullCourseSub) {
