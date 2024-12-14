@@ -237,7 +237,7 @@ class CourseService extends MainService
                 return $response;
             }
 
-            if (!$course->isSubscriber()) {
+            if (!$course->isSubscriber('api')) {
 
                 $message = "أنت غير مسجل في هذه الدورة";
                 $status = false;
