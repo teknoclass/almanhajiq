@@ -2,28 +2,29 @@
 
 namespace App\Repositories\Common;
 
-use App\Http\Resources\ApiCurriculumAssignmentResource;
-use App\Http\Resources\ApiCurriculumLessonResource;
-use App\Http\Resources\ApiCurriculumQuizResource;
-use App\Models\CourseSession;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Courses;
-use App\Models\CourseAssignments;
+use App\Models\UserCourse;
+use Illuminate\Support\Str;
+use App\Models\CourseLessons;
+use App\Models\CourseQuizzes;
+use App\Models\CourseSession;
+use App\Models\Notifications;
 use App\Models\CourseComments;
 use App\Models\CourseCurriculum;
-use App\Models\CourseLessons;
-use App\Models\CourseLessonsLearning;
 use App\Models\CourseLiveLesson;
-use App\Models\CourseQuizzes;
+use App\Models\CourseAssignments;
 use App\Models\CourseSectionItems;
-use App\Models\Notifications;
-use App\Models\UserCourse;
-use App\Repositories\Front\User\HelperEloquent;
-use BigBlueButton\Parameters\GetRecordingsParameters;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CourseLessonsLearning;
 use PHPUnit\TextUI\Configuration\Constant;
+use App\Repositories\Front\User\HelperEloquent;
+use App\Http\Resources\ApiCurriculumQuizResource;
+use App\Http\Resources\ApiCurriculumItemCollection;
+use App\Http\Resources\ApiCurriculumLessonResource;
+use BigBlueButton\Parameters\GetRecordingsParameters;
+use App\Http\Resources\ApiCurriculumAssignmentResource;
 
 class CourseCurriculumEloquent extends HelperEloquent
 {
@@ -909,15 +910,68 @@ class CourseCurriculumEloquent extends HelperEloquent
         switch ($type){
             case 'lesson' :
                 $data['data'] = new ApiCurriculumLessonResource(CourseLessons::where('id',$id)->with('translations','attachments')->first());
+                $item = $data['data'];
                 break;
+
             case 'quiz' :
                 $data['data'] = new ApiCurriculumQuizResource(CourseQuizzes::where('id',$id)->with('translations')->first());
+                $item = $data['data'];
                 break;
 
             case 'assignment' :
                 $data['data'] = new ApiCurriculumAssignmentResource(CourseAssignments::where('id',$id)->with('translations')->first());
+                $item = $data['data'];
                 break;
 
+        }
+
+        $course = Courses::find($item->course_id);
+        $items = $course->items_active;
+        $array = array();
+
+        foreach($items as $item){
+            if(config("constants.item_model_types.".$item['itemable_type']) == "section"){
+                foreach($item->itemable->items as $item2){
+
+                    $payload = [
+                        'type' => config("constants.item_model_types.$item2->itemable_type"),
+                        'id' => $item2->itemable_id
+                    ];
+
+                    $array[] = $payload;
+                }
+
+            }else{
+                $payload = [
+                    'type' => config("constants.item_model_types.$item->itemable_type"),
+                    'id' => $item->itemable_id
+                ];
+                $array[] = $payload;
+            }
+
+
+        }
+
+        $index = -1;
+        for($i = 0 ; $i < sizeof($array) ; $i+=1){
+
+            if($array[$i]['id'] == $id){
+                $index = $i;
+                break;
+            }
+        }
+
+
+        if($index != 0){
+            $data['prev'] = $array[$index-1];
+        }else{
+            $data['prev'] = null;
+        }
+
+        if($index != sizeof($array)-1){
+            $data['next'] = $array[$index+1];
+        }else{
+            $data['next'] = null;
         }
 
         return $data;

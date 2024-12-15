@@ -29,7 +29,7 @@ class CoursesController extends Controller
     function getItemApi(Request $request , $id){
         $type = $request->get('type');
         $data = $this->course_curriculum->getItemApi($id,$type);
-
+        return $data;
         $response = new SuccessResponse(__('message.operation_accomplished_successfully'),$data,Response::HTTP_OK);
 
         return response()->success($response);
