@@ -24,7 +24,7 @@ class CategoryResource extends JsonResource
             ?? collect($this->translations)
                 ->firstWhere('locale', 'en');
         $data =  [
-            'id'=>$this->id,
+            'id'=>$this->value,
             'text'=>$translation?->text??'',
             'image'=> imageUrl($this->image,'100x100'),
             'name'=>$translation?->name??'',

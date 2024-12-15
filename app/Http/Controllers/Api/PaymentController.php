@@ -52,11 +52,13 @@ class PaymentController extends Controller
             'payment_methods' => [
                 [
                     'name' => 'gateway',
-                    'image' => url('/assets/front/images/qi-logo.png')
+                    'image' => url('/assets/front/images/qi-logo.png'),
+                    'message' => ''
                 ],
                 [
                     'name' => 'zain',
-                    'image' => url('/assets/front/images/zain-cash.png')
+                    'image' => url('/assets/front/images/zain-cash.png'),
+                    'message' => __('amount_must_exceed_1000_iqd')
                 ]
             ]
 
@@ -181,7 +183,8 @@ class PaymentController extends Controller
 
             return response()->success($response);
         }else{
-            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+
+            $response = new ErrorResponse($response['err']['msg'],Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
 
@@ -347,13 +350,15 @@ class PaymentController extends Controller
             'payment_methods' => [
                 [
                     'name' => 'gateway',
-                    'image' => url('/assets/front/images/qi-logo.png')
+                    'image' => url('/assets/front/images/qi-logo.png'),
+                    'message' => ''
                 ],
                 [
                     'name' => 'zain',
-                    'image' => url('/assets/front/images/zain-cash.png')
+                    'image' => url('/assets/front/images/zain-cash.png'),
+                    'message' => __('amount_must_exceed_1000_iqd')
                 ]
-        ]],Response::HTTP_OK);
+            ]],Response::HTTP_OK);
 
         return response()->success($response);
 
@@ -487,7 +492,7 @@ class PaymentController extends Controller
 
             return response()->success($response);
         }else{
-            $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse($response['err']['msg'],Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
@@ -674,13 +679,15 @@ class PaymentController extends Controller
             'payment_methods' => [
                 [
                     'name' => 'gateway',
-                    'image' => url('/assets/front/images/qi-logo.png')
+                    'image' => url('/assets/front/images/qi-logo.png'),
+                    'message' => ''
                 ],
                 [
                     'name' => 'zain',
-                    'image' => url('/assets/front/images/zain-cash.png')
+                    'image' => url('/assets/front/images/zain-cash.png'),
+                    'message' => __('amount_must_exceed_1000_iqd')
                 ]
-        ]],Response::HTTP_OK);
+            ]],Response::HTTP_OK);
 
         return response()->success($response);
 
@@ -745,7 +752,7 @@ class PaymentController extends Controller
 
             return response()->success($response);
         }else{
-            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse($response['err']['msg'],Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
