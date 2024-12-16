@@ -44,7 +44,23 @@ class PaymentController extends Controller
 
     function fullSubscribeDetails(Request $request){
         $course = Courses::find($request->id);
+        $price = 0;
+        if($course->priceDetails != null){
+            if($course->priceDetails->discount_price != null){
+                $price = $course->priceDetails->discount_price;
+            }else{
+                $price = $course->priceDetails->price;
+            }
+        }
 
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
+        if($price >= 250)$msg = '';
+        else $msg = __('amount_must_exceed_1000_iqd');
 
 
         $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
@@ -58,7 +74,7 @@ class PaymentController extends Controller
                 [
                     'name' => 'zain',
                     'image' => url('/assets/front/images/zain-cash.png'),
-                    'message' => __('amount_must_exceed_1000_iqd')
+                    'message' => $msg
                 ]
             ]
 
@@ -337,13 +353,27 @@ class PaymentController extends Controller
 
     function subscribeDetails(Request $request){
 
+
         if($request->type == "group")
         {
             $title = CourseSessionsGroup::find($request->target_id)->title??"";
+            $model = CourseSessionsGroup::find($request->target_id);
 
         }else{
             $title = CourseSession::find($request->target_id)->title??"";
+            $model = CourseSession::find($request->target_id);
+
         }
+        $price = $model->price;
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+        if($price >= 250)$msg = '';
+        else $msg = __('amount_must_exceed_1000_iqd');
+
 
         $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
             'course_details' => ['title' => $title],
@@ -356,7 +386,7 @@ class PaymentController extends Controller
                 [
                     'name' => 'zain',
                     'image' => url('/assets/front/images/zain-cash.png'),
-                    'message' => __('amount_must_exceed_1000_iqd')
+                    'message' => $msg
                 ]
             ]],Response::HTTP_OK);
 
@@ -659,11 +689,23 @@ class PaymentController extends Controller
     function installmentDetails(Request $request){
 
         $installment = $this->getCurInstallment($request->course_id);
-        return $installment;
+
         if(!$installment){
             $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
+
+        $price = $installment->price;
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
+        if($price >= 250)$msg = '';
+        else $msg = __('amount_must_exceed_1000_iqd');
+
 
         $course = Courses::find($request->course_id);
         $installmetns = $course->installments;
@@ -685,7 +727,7 @@ class PaymentController extends Controller
                 [
                     'name' => 'zain',
                     'image' => url('/assets/front/images/zain-cash.png'),
-                    'message' => __('amount_must_exceed_1000_iqd')
+                    'message' => $msg
                 ]
             ]],Response::HTTP_OK);
 
