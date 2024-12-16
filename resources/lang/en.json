@@ -1207,7 +1207,9 @@
     "balance":"Balance",
     "deposit_desc":"Deposit",
     "withdrow_desc":"Withdraw",
-    "order":"Order"
+    "order":"Order",
+    "specialization_required":"Specialization Required"
+
 
 
 

@@ -64,6 +64,12 @@ return [
             'key' => 'marketer',
             'is_default' => false,
         ],
+        [
+            'title' => 'أولياء الامور',
+            'name' => 'ولى أمر',
+            'key' => 'parent',
+            'is_default' => false,
+        ],
     ],
 
     'points_withdrawal_request_status' => [

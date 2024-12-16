@@ -35,6 +35,7 @@ class SignUpRequest  extends FormRequest
 
         if($this->role == User::LECTURER){
             $rules['certificate_id'] = 'required';
+            $rules['specialization_id'] = 'required';
         }
 
         return $rules;
@@ -51,6 +52,7 @@ class SignUpRequest  extends FormRequest
         $rules['certificate_id.required'] = __('certificate_is_required');
         $rules['password.min']      = __('Password_should_be_greater_than_or_equal_6_characters');
         $rules['agree_conditions']  = __('Must_agree_to_conditions');
+        $rules['specialization_id']  = __('specialization_required');
 
         return $rules;
     }
