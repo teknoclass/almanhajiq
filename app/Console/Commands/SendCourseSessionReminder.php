@@ -37,8 +37,10 @@ class SendCourseSessionReminder extends Command
         $targetDateTime = $now->copy()->addHours(4);
     
         $sessions = CourseSession::whereDate('date', $targetDateTime->toDateString())
-            ->whereTime('time', $targetDateTime->toTimeString())->get();
-    
+        ->whereTime('time', '>=', $targetDateTime->subMinutes(30)->toTimeString())
+        ->whereTime('time', '<=', $targetDateTime->addMinutes(30)->toTimeString())
+        ->get();
+
         foreach ($sessions as $session)
         {
             $course_id = $session->course_id;
