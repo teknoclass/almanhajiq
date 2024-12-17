@@ -46,37 +46,34 @@ class TransactiosController extends Controller
 
     public function lecturersProfitsDataTable()
     {
-        $balances = Transactios::selectRaw('
+        $balances = Balances::selectRaw("
         user_id,
-        SUM(CASE WHEN type = "deposit" THEN amount ELSE 0 END) as total_deposit,
-        SUM(CASE WHEN type = "withdrow" THEN amount ELSE 0 END) as total_withdrawal,
-        (SUM(CASE WHEN type = "deposit" THEN amount ELSE 0 END) - SUM(CASE WHEN type = "withdrow" THEN amount ELSE 0 END)) as balance
-        ')
-        ->where('user_type', 'lecturer')
+        SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END) AS total_deposit,
+        SUM(CASE WHEN type = 'withdraw' THEN amount ELSE 0 END) AS total_withdraw,
+        SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END) - SUM(CASE WHEN type = 'withdraw' THEN amount ELSE 0 END) AS balance
+        ")
         ->groupBy('user_id')
-        ->with('user') 
-        ->whereHas('user')
+        ->orderBy('user_id', 'desc')
         ->get();
-    
-       return Datatables::of($balances)
+
+        return Datatables::of($balances)
             ->addIndexColumn()
             ->addColumn('lecturer', function ($row) {
                 return $row->user->name ?? '-';
             })
             ->addColumn('balance', function ($row) {
-                return number_format($row->balance, 2);
+                return number_format($row->balance, 2) . " " . __('currency');
             })
             ->addColumn('action', function ($row) {
                 return '<button class="btn btn-primary btn-sm show-transactions" data-id="' . $row->user_id . '">'.__('details').'</button>';
             })
-            ->rawColumns(['action','balance','lecturer'])
+            ->rawColumns(['action', 'balance', 'lecturer'])
             ->make(true);
-    
     }
     
     public function getLecturerTransactions($id)
     {
-        $transactions = Transactios::where('user_id', $id)->get(['description', 'amount', 'type', 'created_at']);
+        $transactions = Balances::where('user_id', $id)->get(['description', 'amount', 'type', 'created_at']);
         return response()->json($transactions);
     }
     
