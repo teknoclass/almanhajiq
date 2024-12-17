@@ -49,8 +49,8 @@ class TransactiosController extends Controller
         $balances = Balances::selectRaw("
         user_id,
         SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END) AS total_deposit,
-        SUM(CASE WHEN type = 'withdraw' THEN amount ELSE 0 END) AS total_withdraw,
-        SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END) - SUM(CASE WHEN type = 'withdraw' THEN amount ELSE 0 END) AS balance
+        SUM(CASE WHEN type = 'withdrow' THEN amount ELSE 0 END) AS total_withdraw,
+        SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END) - SUM(CASE WHEN type = 'withdrow' THEN amount ELSE 0 END) AS balance
         ")
         ->groupBy('user_id')
         ->orderBy('user_id', 'desc')
