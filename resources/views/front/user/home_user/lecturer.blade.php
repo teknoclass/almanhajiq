@@ -61,32 +61,50 @@
             <div class="row g-5 gx-xxl-12 mb-4">
 
                 <!--begin::Students-->
-            {{--    <div class="col-md-6">
+             <div class="col-12">
                     <div class="bg-white p-4 mt-0 rounded-4">
                         <div class="row">
                             <div class="col-12">
-                                <h2 class="font-medium text-start">{{ __('private_lessons_list') }}</h2>
+                                <h2 class="font-medium text-start">{{ __('latest_live_lessons') }}</h2>
                                 <hr>
                                 <table class="table table-cart mb-3">
                                     <thead>
                                         <tr>
-                                            <td>{{ __('name') }}</td>
+                                            <td>{{ __('title') }}</td>
                                             <td>{{ __('date') }}</td>
+                                            <td>{{ __('time') }}</td>
+                                            <td>{{ __('details') }}</td>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (isset($private_lessons) && count(@$private_lessons) > 0)
-                                        @foreach($private_lessons as $private_lessson)
+                                        @if (isset($live_lessons) && count(@$live_lessons) > 0)
+                                        @foreach($live_lessons as $lessson)
+                                        @php
+                                        $sessionDateTime = \Carbon\Carbon::parse($lessson->date . ' ' . $lessson->time);
+                                        $now = now();
+                                        $isSessionNow = $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 10;
+                                        $isSessionInPast = $sessionDateTime->isPast();
+                                        $isSessionStartingSoon = $sessionDateTime->isFuture() || $sessionDateTime->diffInMinutes($now) <= 120;
+                                        @endphp
                                         <tr>
                                             <td>
                                                 <span>
                                                     <span class="ms-2">
-                                                        {{@$private_lessson->title}}
+                                                        {{@$lessson->title}}
                                                     </span>
                                                 </span>
                                             </td>
-                                            <td><span><i class="fa-regular fa-clock me-2"></i>{{@$private_lessson->meeting_date}}</span></td>
-
+                                            <td><span><i class="fa-regular fa-clock me-2"></i>{{@$lessson->date}}</span></td>
+                                            <td><span><i class="fa-regular fa-clock me-2"></i>{{@$lessson->time}}</span></td>
+                                            <td>
+                                            @if($isSessionNow)
+                                                <span><a href="{{ route('user.lecturer.live.createLiveSession', $lessson->id) }}" class="btn btn-primary  btn-sm">{{ __('Start Session') }}</a></span>
+                                            @elseif ($isSessionStartingSoon)
+                                                <button class="btn btn-warning btn-sm" disabled>{{ __('starting_soon') }}</button>
+                                            @elseif ($isSessionInPast)
+                                                <button class="btn btn-secondary  btn-sm" disabled>{{ __('Ended') }}</button>
+                                            @endif
+                                            </td>
                                         </tr>
                                         @endforeach
                                         @endif
@@ -95,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-                </div> --}}
+                </div> 
                 <!--end::Students-->
 
                 <!--begin::Students-->

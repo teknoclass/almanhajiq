@@ -1208,7 +1208,11 @@
     "deposit_desc":"Deposit",
     "withdrow_desc":"Withdraw",
     "order":"Order",
-    "specialization_required":"Specialization Required"
+    "specialization_required":"Specialization Required",
+    "latest_live_lessons":"Latest Live Sessons List",
+    "time_from":"Time From",
+    "time_to":"Time To"
+
 
 
 

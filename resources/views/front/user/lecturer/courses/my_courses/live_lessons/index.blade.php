@@ -62,7 +62,7 @@
                                                                 $now = now();
                                                                 $isSessionNow = $sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 10;
                                                                 $isSessionInPast = $sessionDateTime->isPast();
-                                                                $isSessionStartingSoon = $sessionDateTime->isFuture() && $sessionDateTime->diffInMinutes($now) <= 120;
+                                                                $isSessionStartingSoon = $sessionDateTime->isFuture() || $sessionDateTime->diffInMinutes($now) <= 120;
                                                             @endphp
                                                             <tr>
                                                                 <td>{{ $session->title }}</td>

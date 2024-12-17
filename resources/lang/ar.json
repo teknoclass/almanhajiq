@@ -1264,6 +1264,9 @@
     "withdrow_desc":"سحب",
     "order":"الترتيب",
     "specialization_required":"التخصص مطلوب",
+    "latest_live_lessons":"قائمة أحدث الجلسات المباشرة",
+    "time_from":"من وقت",
+    "time_to":"الى وقت",
 
     "": "",
     "x": ""
