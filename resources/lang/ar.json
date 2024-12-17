@@ -1267,6 +1267,8 @@
     "latest_live_lessons":"قائمة أحدث الجلسات المباشرة",
     "time_from":"من وقت",
     "time_to":"الى وقت",
+    "session_start_reminder_title":"تذكير الجلسة",
+    "session_start_reminder_msg":"ستبدأ جلستك فى أقل من أربع ساعات . يرجى التأكد من أنك مستعد",
 
     "": "",
     "x": ""
