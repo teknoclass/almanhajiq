@@ -58,12 +58,12 @@ class CourseSessionsController  extends Controller
         if($course['data']->can_subscribe_to_session_group == 1){
             $groupsCollection   = new CourseSessionGroupCollection($groups_data);
         }else{
-            $groupsCollection = [];
+            $groupsCollection = new CourseSessionGroupCollection([]);
         }
         if($course['data']->can_subscribe_to_session == 1){
             $sessionsCollection = new CourseSessionCollection($sessions['data']);
         }else{
-            $sessionsCollection = [];
+            $sessionsCollection = new CourseSessionCollection([]);
         }
         $courses            = new SuccessResponse($groups['message'], [
                 $CourseResource,$groupsCollection,$sessionsCollection
