@@ -55,12 +55,12 @@ class CourseSessionsController  extends Controller
         }
         $groups_data  = collect($groups_data);
         $CourseResource     = new ApiCourseResource($course['data']);
-        if($course['can_subscribe_to_session_group'] == 1){
+        if($course['data']->can_subscribe_to_session_group == 1){
             $groupsCollection   = new CourseSessionGroupCollection($groups_data);
         }else{
             $groupsCollection = [];
         }
-        if($course['can_subscribe_to_session'] == 1){
+        if($course['data']->can_subscribe_to_session == 1){
             $sessionsCollection = new CourseSessionCollection($sessions['data']);
         }else{
             $sessionsCollection = [];
