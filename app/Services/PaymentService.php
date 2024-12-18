@@ -167,17 +167,18 @@ class PaymentService
 
     public function createTransactionRecordApi(array $paymentDetails)
     {
-        Transactios::create([
+        Transactios::updateOrCreate([
+            'payment_id' => $paymentDetails['payment_id'] ?? null,
+            'transactionable_type' => $paymentDetails['transactionable_type'] ?? 'Order',
+            'transactionable_id' => $paymentDetails['transactionable_id'] ?? null,
+        ],[
             'description' => $paymentDetails['description'],
             'user_id' => auth('api')->id(),
             'user_type' => 'student',
-            'payment_id' => $paymentDetails['payment_id'] ?? null,
             'amount' => $paymentDetails['amount'],
             'amount_before_discount' => $paymentDetails['amount'],
             'type' => 'deposit',
             'status' => 'pinding',
-            'transactionable_type' => $paymentDetails['transactionable_type'] ?? 'Order',
-            'transactionable_id' => $paymentDetails['transactionable_id'] ?? null,
             'brand' => $paymentDetails['brand'] ?? null,
             'coupon' => $paymentDetails['coupon'] ?? null,
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
@@ -222,16 +223,18 @@ class PaymentService
         $system_commission = ($lecturer->system_commission ?? 0 > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
         $amount = $amount_before_commission - $system_commission;
 
-        Balances::create([
-            'description' => $paymentDetails['description'],
-            'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
+        Balances::updateOrCreate([
             'transaction_id' => $paymentDetails['transactionable_id'] ?? null,
-            'type' => 'deposit',
-            'is_retractable' => 1,
-            'becomes_retractable_at' => now(),
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
             'user_type' => 'lecturer',
             'user_id' => $lecturer->id ?? null,
+        ],
+        [
+            'description' => $paymentDetails['description'],
+            'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
+            'type' => 'deposit',
+            'is_retractable' => 1,
+            'becomes_retractable_at' => now(),
             'system_commission' => $system_commission,
             'amount' => $amount,
             'amount_before_commission' => $amount_before_commission,
