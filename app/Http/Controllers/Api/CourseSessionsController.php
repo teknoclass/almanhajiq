@@ -29,6 +29,7 @@ class CourseSessionsController  extends Controller
         $groups   = $this->liveSessionService->getCourseSessionsGroups($id);
         $sessions = $this->liveSessionService->getCourseSessions($id);
         $course   = $this->courseService->getCourseByUserId($request,$id);
+
         if (!$groups['status']) {
             $response = new ErrorResponse($groups['message'], Response::HTTP_BAD_REQUEST);
 
@@ -54,8 +55,16 @@ class CourseSessionsController  extends Controller
         }
         $groups_data  = collect($groups_data);
         $CourseResource     = new ApiCourseResource($course['data']);
-        $groupsCollection   = new CourseSessionGroupCollection($groups_data);
-        $sessionsCollection = new CourseSessionCollection($sessions['data']);
+        if($course['can_subscribe_to_session_group'] == 1){
+            $groupsCollection   = new CourseSessionGroupCollection($groups_data);
+        }else{
+            $groupsCollection = [];
+        }
+        if($course['can_subscribe_to_session'] == 1){
+            $sessionsCollection = new CourseSessionCollection($sessions['data']);
+        }else{
+            $sessionsCollection = [];
+        }
         $courses            = new SuccessResponse($groups['message'], [
                 $CourseResource,$groupsCollection,$sessionsCollection
             ]
