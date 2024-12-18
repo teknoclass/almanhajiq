@@ -52,6 +52,7 @@ class TransactiosController extends Controller
         SUM(CASE WHEN type = 'withdrow' THEN amount ELSE 0 END) AS total_withdraw,
         SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END) - SUM(CASE WHEN type = 'withdrow' THEN amount ELSE 0 END) AS balance
         ")
+        ->whereHas('user')
         ->groupBy('user_id')
         ->orderBy('user_id', 'desc')
         ->get();
