@@ -877,8 +877,11 @@ class CourseCurriculumEloquent extends HelperEloquent
         //     $lesson->recording_link = $playbackURL;
         // }
 
-        $lesson->meeting_status = "finished";
-        $lesson->update();
+        if($data['user']->role == "lecturer")
+        {
+            $lesson->meeting_status = "finished";
+            $lesson->update();
+        }
 
         return true;
 
