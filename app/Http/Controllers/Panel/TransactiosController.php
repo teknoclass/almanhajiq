@@ -77,7 +77,6 @@ class TransactiosController extends Controller
                         $q->where('title', 'like', "%{$search}%");
                     });
                 }
-               
             })
             ->rawColumns(['action', 'balance', 'lecturer'])
             ->make(true);
