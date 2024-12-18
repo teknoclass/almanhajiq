@@ -68,6 +68,17 @@ class TransactiosController extends Controller
             ->addColumn('action', function ($row) {
                 return '<button class="btn btn-primary btn-sm show-transactions" data-id="' . $row->user_id . '">'.__('details').'</button>';
             })
+            ->filter(function ($query) {
+                $search = request()->input('search.value');
+                if ($search) {
+                    $query->whereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    })->orWhereHas('course.translations', function ($q) use ($search) {
+                        $q->where('title', 'like', "%{$search}%");
+                    });
+                }
+               
+            })
             ->rawColumns(['action', 'balance', 'lecturer'])
             ->make(true);
     }
