@@ -54,8 +54,7 @@ class TransactiosController extends Controller
         ")
         ->whereHas('user')
         ->groupBy('user_id')
-        ->orderBy('user_id', 'desc')
-        ->get();
+        ->orderBy('user_id', 'desc');
 
         return Datatables::of($balances)
             ->addIndexColumn()
