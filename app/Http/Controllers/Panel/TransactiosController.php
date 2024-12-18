@@ -72,8 +72,6 @@ class TransactiosController extends Controller
                 if ($search) {
                     $query->whereHas('user', function ($q) use ($search) {
                         $q->where('name', 'like', "%{$search}%");
-                    })->orWhereHas('course.translations', function ($q) use ($search) {
-                        $q->where('title', 'like', "%{$search}%");
                     });
                 }
             })
