@@ -109,9 +109,9 @@
             <thead>
             <tr>
                 <th>{{ __('session_title') }}</th>
+                <th>{{ __('group') }}</th>
                 <th>{{ __('day') }}</th>
                 <th>{{ __('date') }}</th>
-                <th>{{ __('group') }}</th>
                 <th>{{ __('time') }}</th>
                 <th>{{ __('price') }}</th>
                 <th>{{ __('actions') }}</th>
@@ -119,13 +119,16 @@
             </thead>
             <tbody>
             @foreach ($item['sessions'] as $session)
+            @php
+                $isFuture = \Carbon\Carbon::parse($session->date . ' ' . $session->time)->isFuture();
+            @endphp
                 <tr>
                     <td>{{ $session->title }}</td>
-                    <td>{{__($session->day)}}</td>
-                    <td>{{ $session->date }}</td>
                     <td><span class="badge badge-info">{{ $session->group?->title??__('no_group') }}</span></td>
-                    <td>{{ $session->time }}</td>
-                    <td><input type="number" step="any" min="0" class="sessionPrice {{$session->id}} form-control" alt="{{$session->id}}" value="{{$session->price}}"></td>
+                    <td>{{__($session->day)}}</td>
+                    <td><input  {{ $isFuture ? '' : 'disabled' }} type="date" class="form-control changeDate {{$session->id}} " alt="{{$session->id}}"  value="{{ $session->date }}"></td>
+                    <td><input  {{ $isFuture ? '' : 'disabled' }} type="time" class="form-control changeTime {{$session->id}} " alt="{{$session->id}}"  value="{{ $session->time }}"></td>
+                    <td><input  {{ $isFuture ? '' : 'disabled' }} type="number" step="any" min="0" class="sessionPrice {{$session->id}} form-control" alt="{{$session->id}}" value="{{$session->price}}"></td>
                     <td>
                         @php
                             $sessionDateTime = \Carbon\Carbon::parse($session->date . ' ' . $session->time);

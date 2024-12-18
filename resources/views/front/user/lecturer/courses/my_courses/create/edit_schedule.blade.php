@@ -151,6 +151,41 @@ $(document).ready(function(){
                 );
         }
     });
+
+    $(document).on('change','.changeDate',function(){
+        var date = $(this).val();
+        var id = $(this).attr("alt");
+        
+        $.ajax({
+            url: "{{url('/user/lecturer/update-session-date')}}",
+            data:{id:id,date:date},
+            method: 'get',
+            success: function (response) {
+                customSweetAlert(
+                    response.status_msg,
+                    response.message,
+                );
+            }
+        });
+    });
+
+    $(document).on('change','.changeTime',function(){
+        var time = $(this).val();
+        var id = $(this).attr("alt");
+        
+        $.ajax({
+            url: "{{url('/user/lecturer/update-session-time')}}",
+            data:{id:id,time:time},
+            method: 'get',
+            success: function (response) {
+                customSweetAlert(
+                    response.status_msg,
+                    response.message,
+                );
+            }
+        });
+    });
+
 });
 </script>
 @endpush

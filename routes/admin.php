@@ -1040,5 +1040,7 @@ Route::group(
     });
 
     Route::get('/update-session-price',[AdminCourseSessionsController::class,'updateSessionPrice']);  
+    Route::get('/update-session-date',[AdminCourseSessionsController::class,'updateSessionDate']);  
+    Route::get('/update-session-time',[AdminCourseSessionsController::class,'updateSessionTime']);  
 
 });
