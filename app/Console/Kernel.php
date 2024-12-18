@@ -16,6 +16,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('coursereminder:email')->everyMinute();
 
         $schedule->command('private_lesson_reminder:email')->hourly();
+
+        $schedule->command('session_reminder:email')->everyThirtyMinutes();
     }
 
     /**

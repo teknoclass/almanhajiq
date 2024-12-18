@@ -52,9 +52,9 @@
                 tableBody.append(`
                     <tr>
                         <td>${transaction.description}</td>
-                        <td>${transaction.amount}</td>
+                        <td>${transaction.amount} ${window.translations['currency']}</td>
                         <td>${window.translations[transaction.type+'_desc'] || transaction.type}</td>
-                        <td>${transaction.created_at}</td>
+                      <td>${moment(transaction.created_at).format('YYYY-MM-DD HH:mm')}</td>
                     </tr>
                 `);
             });

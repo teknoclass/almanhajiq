@@ -5,7 +5,9 @@ namespace App\Repositories\Front\User;
 use App\Models\Balances;
 use App\Models\Category;
 use App\Models\Coupons;
+use App\Models\CourseLiveLesson;
 use App\Models\Courses;
+use App\Models\CourseSession;
 use App\Models\PrivateLessons;
 use App\Models\User;
 use App\Models\UserCompetition;
@@ -85,6 +87,10 @@ class HomeUserEloquent extends HelperEloquent
                 ->take(4)->get();
 
             $data['private_lessons'] = PrivateLessons::where('teacher_id', $data['user']->id)->latest()->take(4)->get();
+            $data['live_lessons'] = CourseSession::whereHas('course',function($query) use($data){
+                $query->where('user_id', $data['user']->id);
+            })
+            ->latest()->take(4)->get();
 
         } elseif($role==User::MARKETER) {
 

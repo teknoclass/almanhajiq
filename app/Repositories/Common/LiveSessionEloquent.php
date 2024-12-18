@@ -135,6 +135,7 @@ class LiveSessionEloquent  extends HelperEloquent
             $status  = true;
             DB::commit();
         } catch (\Exception $e) {
+            dd($e->getMessage());
             $message = __('message.unexpected_error');
             $status  = false;
             DB::rollback();
@@ -149,7 +150,17 @@ class LiveSessionEloquent  extends HelperEloquent
 
     public function setSessions($sessionData,$request,$course_id)
     {
-        CourseSession::where('course_id', $course_id)->delete();
+        DB::transaction(function () use ($course_id) {
+            DB::table('course_session_installments')
+                ->whereIn('course_session_id', function ($query) use ($course_id) {
+                    $query->select('id')
+                        ->from('course_sessions')
+                        ->where('course_id', $course_id);
+                })
+                ->delete();
+            CourseSession::where('course_id', $course_id)->delete();
+        });
+
         $sessionIds = [];
         $sessions = [];
         $i = 0;

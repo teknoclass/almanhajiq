@@ -1203,12 +1203,20 @@
     "parent_related_to_son":"You are already connected with this parent",
     "update_status":"Update Status",
     "confirmed":"Confirmed",
-    "lecturers_profits":"Lecturers Transactions",
+    "lecturers_profits":"Lecturers & Marketers Balances",
     "balance":"Balance",
     "deposit_desc":"Deposit",
     "withdrow_desc":"Withdraw",
     "order":"Order",
-    "specialization_required":"Specialization Required"
+    "specialization_required":"Specialization Required",
+    "latest_live_lessons":"Latest Live Sessons List",
+    "time_from":"Time From",
+    "time_to":"Time To",
+    "session_start_reminder_title":"Session Reminder",
+    "session_start_reminder_msg":"Your session will start soon. Please ensure you're prepared",
+    "session_ended":"Session Was Ended"
+
+
 
 
 
