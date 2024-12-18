@@ -143,17 +143,18 @@ class PaymentService
 
     public function createTransactionRecord(array $paymentDetails)
     {
-        Transactios::create([
+        Transactios::updateOrCreate([
+            'payment_id' => $paymentDetails['payment_id'] ?? null,
+            'transactionable_type' => $paymentDetails['transactionable_type'] ?? 'Order',
+            'transactionable_id' => $paymentDetails['transactionable_id'] ?? null,
+        ],[
             'description' => $paymentDetails['description'],
             'user_id' => isset($paymentDetails['user_id']) ? $paymentDetails['user_id'] : auth('web')->id(),
             'user_type' => 'student',
-            'payment_id' => $paymentDetails['payment_id'] ?? null,
             'amount' => $paymentDetails['amount'],
             'amount_before_discount' => $paymentDetails['amount'],
             'type' => isset($paymentDetails['type']) ? $paymentDetails['type'] : 'deposit',
             'status' => 'completed',
-            'transactionable_type' => $paymentDetails['transactionable_type'] ?? 'Order',
-            'transactionable_id' => $paymentDetails['transactionable_id'] ?? null,
             'brand' => $paymentDetails['brand'] ?? null,
             'coupon' => $paymentDetails['marketer_coupon'] ?? null,
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
@@ -195,16 +196,17 @@ class PaymentService
             $system_commission = ($lecturer->system_commission > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : $amount_before_commission / 2;
             $amount = $amount_before_commission - $system_commission;
 
-            Balances::create([
-                'description' => $paymentDetails['description'],
+            Balances::updateOrCreate([
                 'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
                 'transaction_id' => $paymentDetails['transactionable_id'] ?? null,
-                'type' => 'deposit',
-                'is_retractable' => 1,
-                'becomes_retractable_at' => now(),
                 'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
                 'user_type' => 'lecturer',
                 'user_id' => $lecturer->id,
+            ],[
+                'description' => $paymentDetails['description'],
+                'type' => 'deposit',
+                'is_retractable' => 1,
+                'becomes_retractable_at' => now(),
                 'system_commission' => $system_commission,
                 'amount' => $amount,
                 'amount_before_commission' => $amount_before_commission,
