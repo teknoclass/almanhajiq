@@ -101,7 +101,7 @@ class RefundsController extends Controller
                 "orderId" => $response['requestId'],
                 "payment_id" => $response['paymentId'],
                 "refund_id" => $response['refundId'],
-                "amount" => 0 - $transaction->amount,
+                "amount" =>  $transaction->amount,
                 "transactionable_type" => $transaction->transactionable_type,
                 "transactionable_id" => $transaction->transactionable_id,
                 "brand" => "card",
