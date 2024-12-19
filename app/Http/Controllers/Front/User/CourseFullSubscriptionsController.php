@@ -227,6 +227,7 @@ class CourseFullSubscriptionsController extends Controller
                 "subscription_token"  => $paymentDetails['payment_id'],
                 "is_paid" => 1,
                 "is_complete_payment" => 1,
+                "is_installment" => 0
             ]);
 
             $coursePriceAfterCoupon = $this->executeCoupon($paymentDetails);
