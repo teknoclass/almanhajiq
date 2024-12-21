@@ -50,7 +50,7 @@ class RefundsController extends Controller
                 return response()->json(['success' => false, 'message' => "رقم العملية غير صحيح","status" => "error"]);
             }
             
-            //check related target
+            //delete related target
             if($transaction->transactionable_type == "App\\Models\\Courses")
             {
                 $item = UserCourse::where('course_id',$transaction->transactionable_id)->where('user_id',$transaction->user_id)->first();
@@ -59,6 +59,8 @@ class RefundsController extends Controller
                 {
                     return response()->json(['success' => false, 'message' => __("course_not_found"),"status" => "error"]);
                 }
+
+                $item->delete();
             }
             elseif($transaction->transactionable_type == "App\\Models\\CourseSession")
             {
@@ -80,17 +82,22 @@ class RefundsController extends Controller
                 {
                     return response()->json(['success' => false, 'message' => __("course_not_found"),"status" => "error"]);
                 }
+
+                $item->delete();
             }
             elseif($transaction->transactionable_type == "App\\Models\\CourseSessionsGroup" )
             {
-                $item = CourseSessionSubscription::where('course_session_group_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)
-                ->where('course_id',$transaction->course_id)
-                ->first();   
+                $item = CourseSessionSubscription::where('course_session_group_id',$transaction->transactionable_id)
+                ->where('student_id',$transaction->user_id)
+                ->first();
                 $course_id = $item->course_id;
                 if(! $course_id)
                 {
                     return response()->json(['success' => false, 'message' => __("course_not_found"),"status" => "error"]);
                 }
+                $item = CourseSessionSubscription::where('course_session_group_id',$transaction->transactionable_id)
+                ->where('student_id',$transaction->user_id)
+                ->delete();
             }
 
             //make refund transaction
@@ -135,12 +142,10 @@ class RefundsController extends Controller
             $transaction->refund_id = isset($response['refundId']) ? $response['refundId'] : "";
             $transaction->save();
 
-            //delete related target
-            $item->delete();
-
             DB::commit(); 
             return response()->json(['success' => true, 'message' => __('done_operation'),"status" => "success"]);
         } catch (\Exception $e) {
+            dd($e->getLine().$e->getMessage());
             DB::rollback(); 
             \Log::error($e->getMessage());
             \Log::error($e->getLine());
