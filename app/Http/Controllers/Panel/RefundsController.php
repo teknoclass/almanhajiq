@@ -15,6 +15,7 @@ use App\Models\CourseSessionsGroup;
 use App\Models\StudentSessionInstallment;
 use App\Models\CourseSessionSubscription;
 use App\Services\PaymentService;
+use Exception;
 
 class RefundsController extends Controller
 {
@@ -48,6 +49,49 @@ class RefundsController extends Controller
             {
                 return response()->json(['success' => false, 'message' => "رقم العملية غير صحيح","status" => "error"]);
             }
+            
+            //check related target
+            if($transaction->transactionable_type == "App\\Models\\Courses")
+            {
+                $item = UserCourse::where('course_id',$transaction->transactionable_id)->where('user_id',$transaction->user_id)->first();
+                $course_id = $transaction->transactionable_id;
+                if(! $course_id)
+                {
+                    return response()->json(['success' => false, 'message' => __("course_not_found"),"status" => "error"]);
+                }
+            }
+            elseif($transaction->transactionable_type == "App\\Models\\CourseSession")
+            {
+                $checkIsInstallment = StudentSessionInstallment::where('access_until_session_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)->first();
+                $checkIsOffer = CourseSessionSubscription::where('course_session_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)->first();   
+                if($checkIsInstallment)
+                {
+                    $item = $checkIsInstallment;
+                }else{
+                    $item = $checkIsOffer;
+                }
+                $course_id = $item->course_id;
+                if(! $course_id)
+                {
+                    return response()->json(['success' => false, 'message' => __("course_not_found"),"status" => "error"]);
+                }
+                $course_id = $item->course_id;
+                if(! $course_id)
+                {
+                    return response()->json(['success' => false, 'message' => __("course_not_found"),"status" => "error"]);
+                }
+            }
+            elseif($transaction->transactionable_type == "App\\Models\\CourseSessionsGroup" )
+            {
+                $item = CourseSessionSubscription::where('course_session_group_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)
+                ->where('course_id',$transaction->course_id)
+                ->first();   
+                $course_id = $item->course_id;
+                if(! $course_id)
+                {
+                    return response()->json(['success' => false, 'message' => __("course_not_found"),"status" => "error"]);
+                }
+            }
 
             //make refund transaction
             $response = $this->paymentService->makeRefund($paymentId);
@@ -63,36 +107,6 @@ class RefundsController extends Controller
             elseif(!isset($response['status']) || $response['status'] != "SUCCESS")
             {
                 return response()->json(['success' => false, 'message' => "تم رفض العملية ","status" => "error"]);
-            }
-            
-            //delete related target
-            if($transaction->transactionable_type == "App\\Models\\Courses")
-            {
-                UserCourse::where('course_id',$transaction->transactionable_id)->where('user_id',$transaction->user_id)->delete();
-                @$course_id = $transaction->transactionable_id;
-            }
-            elseif($transaction->transactionable_type == "App\\Models\\StudentSessionInstallment")
-            {
-                $item = StudentSessionInstallment::where('access_until_session_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)->first();
-                @$course_id = $item->course_id;
-                $item->delete();
-            }
-            elseif($transaction->transactionable_type == "App\\Models\\CourseSessionSubscription")
-            {
-                if($transaction->purchase_type == "session")
-                {
-                   $item = CourseSessionSubscription::where('course_session_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)
-                    ->first();   
-                    @$course_id = $item->course_id;
-                    $item->delete();
-                }else{
-                    $item = CourseSessionSubscription::where('course_session_group_id',$transaction->transactionable_id)->where('student_id',$transaction->user_id)
-                    ->where('course_id',$transaction->course_id)
-                    ->first();   
-                    @$course_id = $item->course_id;
-                    $item->delete();
-                }
-              
             }
 
             //make transaction
@@ -120,6 +134,9 @@ class RefundsController extends Controller
             $transaction->is_refunded = 1;
             $transaction->refund_id = isset($response['refundId']) ? $response['refundId'] : "";
             $transaction->save();
+
+            //delete related target
+            $item->delete();
 
             DB::commit(); 
             return response()->json(['success' => true, 'message' => __('done_operation'),"status" => "success"]);

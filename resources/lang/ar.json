@@ -1270,6 +1270,7 @@
     "session_start_reminder_title":"تذكير الجلسة",
     "session_start_reminder_msg":"ستبدأ جلستك فى قريبا . يرجى التأكد من أنك مستعد",
     "session_ended":"الجلسة منتهية",
+    "course_not_found":"الدورة غير موجودة",
 
     "": "",
     "x": ""
