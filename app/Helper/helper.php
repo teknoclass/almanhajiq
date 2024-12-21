@@ -1035,7 +1035,9 @@ function isCourseonStudentCourse($course_id)
     $checkStudentCourses = UserCourse::select('id', 'user_id', 'course_id')
     ->where([
         ['user_id', auth('web')->user()->id],
-        ['course_id', $course_id]
+        ['course_id', $course_id],
+        ['is_paid' , 1],
+        ['is_installment' , 0]
     ])->exists();
 
     return $checkStudentCourses;

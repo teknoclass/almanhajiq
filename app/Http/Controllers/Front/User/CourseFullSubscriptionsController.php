@@ -219,13 +219,15 @@ class CourseFullSubscriptionsController extends Controller
             }
 
             //user course create
-            UserCourse::create([
+            UserCourse::updateOrCreate([
                 "course_id" => $paymentDetails['course_id'],
                 "user_id" => auth('web')->user()->id,
+            ],[
                 "lecturer_id" => Courses::find($paymentDetails['course_id'])->user_id??"",
                 "subscription_token"  => $paymentDetails['payment_id'],
                 "is_paid" => 1,
                 "is_complete_payment" => 1,
+                "is_installment" => 0
             ]);
 
             $coursePriceAfterCoupon = $this->executeCoupon($paymentDetails);
@@ -323,12 +325,13 @@ class CourseFullSubscriptionsController extends Controller
 
     public function addBalance(array $params)
     {
-        Balances::create([
-            'description' => $params['description'],
+        Balances::updateOrCreate([
             'user_id' => $params['user_id'],
             'user_type' => $params['user_type'],
             'type' => Balances::DEPOSIT,
             'transaction_id' => $params['transaction_id'],
+        ],[
+            'description' => $params['description'],
             'transaction_type' => $params['transaction_type'],
             'amount' => $params['amount'],
             'system_commission' => $params['system_commission'],
@@ -343,11 +346,12 @@ class CourseFullSubscriptionsController extends Controller
 
     public function saveTransactios(array $params)
     {
-        Transactios::create([
-            'description' => $params['description'],
+        Transactios::updateOrCreate([
             'user_id' => $params['user_id'],
             'user_type' => $params['user_type'],
             'payment_id' => $params['payment_id'],
+        ],[
+            'description' => $params['description'],
             'amount' => $params['amount'],
             'amount_before_discount' => $params['amount_before_discount'],
             'type' => $params['type'],
