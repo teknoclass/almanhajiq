@@ -145,7 +145,7 @@ class RefundsController extends Controller
             DB::commit(); 
             return response()->json(['success' => true, 'message' => __('done_operation'),"status" => "success"]);
         } catch (\Exception $e) {
-            dd($e->getLine().$e->getMessage());
+            // dd($e->getLine().$e->getMessage());
             DB::rollback(); 
             \Log::error($e->getMessage());
             \Log::error($e->getLine());
