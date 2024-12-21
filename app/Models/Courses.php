@@ -722,7 +722,12 @@ class Courses extends Model
         $userCourse = UserCourse::where('course_id',$this->id)->where('user_id',auth('api')->id())->first();
 
         if($userCourse){
-            return $userCourse->is_rating;
+            if(Carbon::parse($this->end_date)->isToday() || Carbon::parse($this->end_date)->isPast()){
+                return 1;
+            }else{
+                return 0;
+            }
+
         }else{
             return 0;
         }
