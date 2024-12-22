@@ -21,7 +21,7 @@ class Balances extends Model
     protected $fillable = [
         'description','user_id','user_type', 'transaction_id', 'transaction_type','amount',
         'system_commission','amount_before_commission'
-        ,'type','is_retractable','becomes_retractable_at','pay_transaction_id','is_paid'
+        ,'type','is_retractable','becomes_retractable_at','pay_transaction_id','is_paid','payment_id'
     ];
 
     public function user()

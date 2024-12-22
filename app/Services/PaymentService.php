@@ -198,6 +198,7 @@ class PaymentService
             $amount = $amount_before_commission - $system_commission;
 
             Balances::updateOrCreate([
+                'payment_id' => $paymentDetails['payment_id'] ?? null,
                 'transaction_type' => $paymentDetails['transactionable_type'] ?? 'Order',
                 'transaction_id' => $paymentDetails['transactionable_id'] ?? null,
                 'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
@@ -224,6 +225,7 @@ class PaymentService
         $amount = $amount_before_commission - $system_commission;
 
         Balances::updateOrCreate([
+            'payment_id' => $paymentDetails['payment_id'] ?? null,
             'transaction_id' => $paymentDetails['transactionable_id'] ?? null,
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
             'user_type' => 'lecturer',
