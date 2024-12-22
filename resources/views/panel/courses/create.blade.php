@@ -140,7 +140,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                      
+
                                         <div class="form-group col-6">
                                             <label>{{ __('grade_level') }}
                                                 <span class="text-danger">*</span></label>
@@ -153,7 +153,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                   
+
                                         <div class="form-group col-6">
                                             <label>{{ __('grade_sub_level_id') }}
                                                 <span class="text-danger">*</span></label>
@@ -176,7 +176,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                     
+
                                         <div class="col-md-6">
                                             <div class="form-group stdeunt_fields">
                                                 <label>{{__('age_categories')}}
@@ -193,9 +193,9 @@
                                                 </select>
                                             </div>
                                         </div>
-                                     
 
-                                      
+
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>{{__('start_date')}}
@@ -211,7 +211,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>{{__('end_date')}}
@@ -256,6 +256,29 @@
                                                     <option value="0"
                                                         {{@$item->lessons_follow_up==0 ?'selected' :''}}>
                                                         {{__('no')}}
+                                                    </option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group" >
+                                                <label>{{__('valid_on')}}
+                                                    <span class="text-danger"></span></label>
+                                                <select id="valid_on" name="valid_on" class="form-control mb-5 ">
+                                                    <option value="" selected disabled>{{__('type_select')}} </option>
+
+                                                        <option value="both"
+                                                            {{@$item->valid_on=="both" ?'selected' :''}}>
+                                                            {{__('both')}}
+                                                        </option>
+                                                    <option value="app"
+                                                        {{@$item->valid_on=="app" ?'selected' :''}}>
+                                                        {{__('app')}}
+                                                    </option>
+                                                    <option value="web"
+                                                        {{@$item->valid_on=="web" ?'selected' :''}}>
+                                                        {{__('web')}}
                                                     </option>
 
                                                 </select>
@@ -628,7 +651,7 @@
                             });
                         }
                     });
-               
+
                     $('#sub_level_id').change(function() {
                     let id = $(this).val();
                     $('#material_id').prop('disabled', !id);
@@ -659,9 +682,9 @@
                             $('.subscription_end_date').hide();
                         }
                     });
-              
+
                 });
-             
+
             </script>
     @endpush
 @stop

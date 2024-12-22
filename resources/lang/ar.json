@@ -1270,6 +1270,9 @@
     "session_start_reminder_title":"تذكير الجلسة",
     "session_start_reminder_msg":"ستبدأ جلستك فى قريبا . يرجى التأكد من أنك مستعد",
     "session_ended":"الجلسة منتهية",
+    "app" : "التطبيق" ,
+    "web" : "الموقع",
+    "valid_on" : "محتوى الدورة سيظهر على",
 
     "": "",
     "x": ""

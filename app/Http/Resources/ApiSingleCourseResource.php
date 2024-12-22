@@ -31,12 +31,18 @@ class ApiSingleCourseResource extends JsonResource
             $curriculumItems = $curriculumItems->merge(collect(new ApiSessionCollection($this->sessions->whereNull('group_id'))));
         }
         $items = collect(new ApiCurriculumItemCollection($this->items_active));
-        if($this->type == 'live'){
-            $itemsLive = $items;
-            $itemsRec = null;
+        if($this->valid_on != 'web'){
+
+            if($this->type == 'live'){
+                $itemsLive = $items;
+                $itemsRec = null;
+            }else{
+                $itemsLive = null;
+                $itemsRec = $items;
+            }
         }else{
             $itemsLive = null;
-            $itemsRec = $items;
+            $itemsRec = null;
         }
 
         $sessionDays = $this->sessions()->select('day', 'time')->get();
@@ -66,6 +72,7 @@ class ApiSingleCourseResource extends JsonResource
             'can_subscribe_to_session_group' => $this->can_subscribe_to_session_group,
             'open_installments' => $this->open_installments,
             'can_rate' => $this->canRate('api'),
+            'valid_on' => $this->valid_on,
             'type' => $this->type,
             'teacher'=>[
                 'id' => $this->lecturer->id ?? null,

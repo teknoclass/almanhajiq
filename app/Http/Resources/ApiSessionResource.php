@@ -51,7 +51,7 @@ class ApiSessionResource extends JsonResource
             'session' => [
                 'group_id' => $this->group_id,
                 'price' => $this->price,
-                'day' => $this->day,
+                'day' => __($this->day),
                 'date' => $this->date,
                 'time' => $this->time,
                 'title' => $this->title,

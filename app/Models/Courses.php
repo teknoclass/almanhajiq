@@ -37,7 +37,8 @@ class Courses extends Model
         'number_of_free_lessons','age_range_id', 'lessons_follow_up',
         'language_id', 'category_id', 'age_range_id','level_id', 'type','duration','grade_level_id','grade_sub_level',
         'total_rate', 'is_active','status', 'video_type', 'total_sales', 'is_delete',
-        'can_subscribe_to_session','can_subscribe_to_session_group','open_installments','material_id','is_feature','subscription_end_date'
+        'can_subscribe_to_session','can_subscribe_to_session_group','open_installments','material_id','is_feature','subscription_end_date',
+        'valid_on'
     ];
 
     public $translatedAttributes = ['title', 'description', 'welcome_text_for_registration', 'certificate_text'];

@@ -36,6 +36,7 @@ class CoursesRequest extends FormRequest
             $rules['title_' . $key]       = 'required';
             $rules['description_' . $key] = 'required';
         }
+        $rules['valid_on'] = 'required';
         return $rules;
     }
 

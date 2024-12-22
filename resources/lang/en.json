@@ -1214,7 +1214,10 @@
     "time_to":"Time To",
     "session_start_reminder_title":"Session Reminder",
     "session_start_reminder_msg":"Your session will start soon. Please ensure you're prepared",
-    "session_ended":"Session Was Ended"
+    "session_ended":"Session Was Ended",
+    "app" : "app",
+    "web" : "web",
+    "valid_on" : "course content is shown on"
 
 
 

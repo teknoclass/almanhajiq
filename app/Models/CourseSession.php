@@ -33,6 +33,8 @@ class CourseSession extends Model
 
     public function canAccess($userId)
     {
+        if($this->course->user_id == $userId)return true;
+
         $first = DB::table('course_session_subscriptions')
                  ->where(['course_session_id'=> $this->id,'student_id'=> $userId])
                  ->exists();
@@ -126,13 +128,13 @@ class CourseSession extends Model
             'logoutUrl'      => route('user.meeting.finished' , [$this->id , auth($type)->id()]),
         ]);
         $this->public_password = $attendeePW;
-        $this->save();
         $url =  Bigbluebutton::join([
             'meetingID' => $this->meeting_id,
             'userName'  => auth($type)->user()->name,
             'role'      => 'MODERATOR',
             'password'  => $moderatorPW
         ]);
+        $this->save();
 
         return $url;
     }
