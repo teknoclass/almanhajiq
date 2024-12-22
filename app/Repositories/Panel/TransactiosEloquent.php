@@ -31,7 +31,7 @@ class TransactiosEloquent
         'user' => function ($query) {
             $query->select('id', 'name', 'image');
         }
-    ])->orderByDesc('created_at')->get();
+    ])->orderByDesc('id')->get();
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('action', 'panel.transactios.partials.actions')

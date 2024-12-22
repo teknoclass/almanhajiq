@@ -7,6 +7,10 @@
     window.columns = [{
         data: 'DT_RowIndex', name: 'DT_RowIndex'
     },
+    {
+            data: 'id',
+            title: '{{__('ID')}}',
+        },
         {
             title: '{{__('user')}}',
             data: function(data) {
