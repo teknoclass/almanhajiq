@@ -354,6 +354,7 @@ class CourseSessionInstallmentsController extends Controller
     public function addBalance(array $params)
     {
         Balances::updateOrCreate([
+            'payment_id' => $paymentDetails['payment_id'] ?? null,
             'user_id' => $params['user_id'],
             'user_type' => $params['user_type'],
             'type' => Balances::DEPOSIT,

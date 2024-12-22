@@ -1217,7 +1217,9 @@
     "session_ended":"Session Was Ended",
     "app" : "app",
     "web" : "web",
-    "valid_on" : "course content is shown on"
+    "valid_on" : "course content is shown on",
+    "course_not_found":"This Course is not found"
+
 
 
 
