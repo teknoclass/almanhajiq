@@ -29,7 +29,7 @@ class CoursesController extends Controller
     }
 
 
-    public function single($id, $title)
+    public function single($id, $title = '')
     {
         $data = $this->courses->single($id);
 

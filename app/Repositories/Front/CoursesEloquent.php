@@ -142,7 +142,8 @@ class CoursesEloquent
                 'level_id',
                 'grade_level_id',
                 'grade_sub_level',
-                'end_date'
+                'end_date',
+                'valid_on'
             )
             ->with('translations:courses_id,title,locale,description,welcome_text_for_registration,certificate_text')
             ->with([

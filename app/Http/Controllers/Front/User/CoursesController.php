@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Courses;
 use App\Repositories\Common\CourseCurriculumEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -55,6 +56,13 @@ class CoursesController extends Controller
     }
     public function curriculumItem($course_id, $curclm_item_id = null, $section_item_id = null)
     {
+
+        $course = Courses::find($course_id);
+
+        if($course->valid_on == 'app'){
+
+            return redirect(url("courses/single/$course_id"));
+        }
 
         $data = $this->course_curriculum->curriculumItem($course_id, $curclm_item_id, $section_item_id);
 

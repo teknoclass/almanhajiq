@@ -122,18 +122,18 @@
                                 </svg>
                             </span>
                             <div class="text">
-                                {{__('type')}} : {{__(@$course->type) }} 
+                                {{__('type')}} : {{__(@$course->type) }}
                                 <br>
-                          
+
                             @if(@App\Models\Category::find(@$course->grade_level_id)->name != "" )
                             {{ __('grade_level') }}:
-                            {{@App\Models\Category::find(@$course->grade_level_id)->name ?? ""}} 
+                            {{@App\Models\Category::find(@$course->grade_level_id)->name ?? ""}}
                                 <br>
-                            @endif 
+                            @endif
                         @if(@App\Models\Category::find(@$course->grade_sub_level)->name != "")
                         {{ __('grade_sub_level_id') }}:
-                            {{@App\Models\Category::find(@$course->grade_sub_level)->name ?? ""}} 
-                        
+                            {{@App\Models\Category::find(@$course->grade_sub_level)->name ?? ""}}
+
                         @endif
                         </div>
                         </div>
@@ -169,7 +169,7 @@
                         </div>
                     </div>
                     <div class="pt-2 d-flex align-items-center">{!! @$course->getPriceDisc() !!}</div>
-                    
+
                     @if(@auth('web')->user()->role != "marketer")
                         @if (!$course->isSubscriber())
                            {{-- <div class="pt-2 d-flex align-items-center">
@@ -178,16 +178,22 @@
                                     {{ __('register_now') }}
                                 </a>
                             </div> --}}
-                          
+
                         @else
-                            <div class="pt-2">
-                                <a href="{{url('/user/courses/curriculum/item/'.$course->id)}}"
-                                    class="primary-btn py-2 d-block w-100 text-center font-bold">
-                                    {{__('continue_course')}}
-                                </a>
-                            </div>
+                            @if($course->valid_on != 'app')
+                                <div class="pt-2">
+                                    <a href="{{url('/user/courses/curriculum/item/'.$course->id)}}"
+                                        class="primary-btn py-2 d-block w-100 text-center font-bold">
+                                        {{__('continue_course')}}
+                                    </a>
+                                </div>
+                            @else
+                                <div class="pt-2">
+                                    <h6>{{__('this_course_is_on_the_mobile_app_only')}}</h6>
+                                </div>
+                            @endif
                         @endif
-                 
+
                     @endif
                 </div>
             </div>

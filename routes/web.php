@@ -79,7 +79,7 @@ Route::group(
     // courses
     Route::group(['prefix' => '/courses', 'as' => 'courses.'], function () {
         Route::get('/',                     [FrontCoursesController::class, 'index'])->name('index');
-        Route::get('/single/{id}/{title}',  [FrontCoursesController::class, 'single'])->name('single')->where(['id' => '[0-9]+']);
+        Route::get('/single/{id}/{title?}',  [FrontCoursesController::class, 'single'])->name('single')->where(['id' => '[0-9]+']);
 
         // These routes just to show html and will be DELETED
         Route::get('/test-courses',         [FrontHomeController::class, 'testCourses'])->name('test.courses');
