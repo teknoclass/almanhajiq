@@ -938,7 +938,9 @@ class CourseCurriculumEloquent extends HelperEloquent
 
                     $payload = [
                         'type' => config("constants.item_model_types.$item2->itemable_type"),
-                        'id' => $item2->itemable_id
+                        'id' => $item2->itemable_id,
+                        'is_completed' => $item->is_completed()
+
                     ];
 
                     $array[] = $payload;
@@ -947,7 +949,8 @@ class CourseCurriculumEloquent extends HelperEloquent
             }else{
                 $payload = [
                     'type' => config("constants.item_model_types.$item->itemable_type"),
-                    'id' => $item->itemable_id
+                    'id' => $item->itemable_id,
+                    'is_completed' => $item->is_completed()
                 ];
                 $array[] = $payload;
             }
