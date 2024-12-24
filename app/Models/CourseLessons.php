@@ -90,7 +90,7 @@ class CourseLessons extends Model
 
     public function is_completed()
     {
-        $is_completed = $this->learningStatus()->where('user_id', auth()->id())->first();
+        $is_completed = $this->learningStatus()->where('user_id', auth('api')->id())->first();
 
         return $is_completed ? true : false;
     }
