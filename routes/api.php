@@ -173,7 +173,7 @@ Route::prefix('/comment')->group(function(){
 
 
 //course curriculum
-Route::get('/itemApi/{id}',[CoursesController::class , 'getItemApi']);
+Route::get('/itemApi/{id}',[CoursesController::class , 'getcItemApi']);
 Route::get('/itemComments',[CoursesController::class,'getComments']);
 Route::get('/getReply/{comment_id}',[CoursesController::class,'getReplys']);
 Route::post('/addRate',[CoursesController::class,'addRate'])->middleware('auth:api');

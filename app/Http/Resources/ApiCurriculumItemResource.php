@@ -49,6 +49,7 @@ class ApiCurriculumItemResource extends JsonResource
             'order' => $this->order,
             'start_date' => $this->itemable->start_date,
             'end_date' => $this->itemable->end_date,
+            'can_access' => $this->canAccessApi(),
             'is_completed' => $this->is_completed(),
             config("constants.item_model_types.$this->itemable_type") => [
                 'order' => $this->order,

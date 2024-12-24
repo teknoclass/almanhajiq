@@ -33,17 +33,19 @@ class CourseSectionItems extends Model
     {
         $strategy = ItemStrategyFactory::create($this->itemable_type,null);
         return $strategy->isCompleted();
-    }    public function scopeActive($query)
-{
-    return $query->whereHasMorph('itemable', [
-        CourseLessons::class,
-        CourseQuizzes::class,
-        CourseAssignments::class,
-        CourseSections::class
-    ], function ($query) {
-        $query->active();
-    });
-}
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->whereHasMorph('itemable', [
+            CourseLessons::class,
+            CourseQuizzes::class,
+            CourseAssignments::class,
+            CourseSections::class
+        ], function ($query) {
+            $query->active();
+        });
+    }
 
     public function scopeCompletedItems($query, array $itemTypes)
     {
@@ -150,6 +152,53 @@ class CourseSectionItems extends Model
     function isSubInInstallment()
     {
         return 0;
+    }
+
+    function canAccessApi(){
+        if($this->course->lessons_follow_up == 0)return 1;
+
+        $course = $this->course;
+        $items = $course->items_active;
+        $array = array();
+
+        foreach($items as $item){
+            if(config("constants.item_model_types.".$item['itemable_type']) == "section"){
+                foreach($item->itemable->items as $item2){
+
+                    $payload = [
+                        'type' => config("constants.item_model_types.$item2->itemable_type"),
+                        'id' => $item2->itemable_id,
+                        'is_completed' => $item2->is_completed()
+                    ];
+
+                    $array[] = $payload;
+                }
+
+            }else{
+                $payload = [
+                    'type' => config("constants.item_model_types.$item->itemable_type"),
+                    'id' => $item->itemable_id,
+                    'is_completed' => $item->is_completed()
+                ];
+                $array[] = $payload;
+            }
+
+
+        }
+
+        $index = -1;
+        for($i = 0 ; $i < sizeof($array) ; $i+=1){
+
+            if($array[$i]['id'] == $this->itemable_id){
+                $index = $i;
+                break;
+            }
+        }
+        if($index == 0)return 1;
+        if($index == -1)return 0;
+        if($array[$index-1]['is_completed'] == 1)return 1;
+        else return 0;
+
     }
 
 }
