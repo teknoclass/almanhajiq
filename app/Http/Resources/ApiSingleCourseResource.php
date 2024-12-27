@@ -68,6 +68,8 @@ class ApiSingleCourseResource extends JsonResource
             'groups_count' => count($this->groups),
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
+            'subscribe_end_date' => $this->subscription_end_date, 
+            'can_subscribe' => $this->canSubscribe(),
             'can_subscribe_to_session' => $this->can_subscribe_to_session,
             'can_subscribe_to_session_group' => $this->can_subscribe_to_session_group,
             'open_installments' => $this->open_installments,

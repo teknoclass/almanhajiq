@@ -19,7 +19,7 @@ class CourseSession extends Model
 
     protected $fillable = ['course_id', 'day', 'date', 'time',
 
-    'title', 'group_id','public_password','status', 'price', 'meeting_id','meeting_status'];
+    'title', 'group_id','public_password','status', 'price', 'meeting_id','meeting_status','private_password'];
 
     public function course()
     {
@@ -128,6 +128,7 @@ class CourseSession extends Model
             'logoutUrl'      => route('user.meeting.finished' , [$this->id , auth($type)->id()]),
         ]);
         $this->public_password = $attendeePW;
+        $this->private_password = $moderatorPW;
         $url =  Bigbluebutton::join([
             'meetingID' => $this->meeting_id,
             'userName'  => auth($type)->user()->name,
@@ -159,12 +160,23 @@ class CourseSession extends Model
     public function joinLiveSessionV2($type = 'web') {
         try {
 
-            $response = Bigbluebutton::join([
-                'meetingID' => $this->meeting_id,
-                'userName' => auth($type)->user()->name,
-                'password' => $this->public_password,
 
-            ]);
+            if(auth($type)->user()->role == 'student'){
+
+                $response = Bigbluebutton::join([
+                    'meetingID' => $this->meeting_id,
+                    'userName' => auth($type)->user()->name,
+                    'password' => $this->public_password,
+
+                ]);
+            }else{
+                $response =  Bigbluebutton::join([
+                    'meetingID' => $this->meeting_id,
+                    'userName'  => auth($type)->user()->name,
+                    'role'      => 'MODERATOR',
+                    'password'  => $this->private_password
+                ]);
+            }
             Log::info('Join Live Session Response: ', ['response' => $response]);
 
             return $response;

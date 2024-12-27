@@ -734,5 +734,13 @@ class Courses extends Model
         }
     }
 
+    function canSubscribe(){
+        if(Carbon::parse($this->subscription_end_date)->isPast()){
+            return 0;
+        }else{
+            return 1;
+        }
+    }
+
 
 }

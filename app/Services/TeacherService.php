@@ -21,7 +21,7 @@ class TeacherService extends MainService
 
     public function getById($id)
     {
-        $teacher = $this->teacherRepository->findByIdWith($id,['lecturerSetting.translations','lecturerExpertise.translations']);
+        $teacher = $this->teacherRepository->findByIdWith($id,['lecturerSetting.translations','lecturerExpertise.translations','timeTable']);
         if (!$teacher) {
             return $this->createResponse(
                 __('message.not_found'),

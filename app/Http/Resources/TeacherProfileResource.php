@@ -29,7 +29,12 @@ class TeacherProfileResource extends JsonResource
             'mother_lang'=>@$this->motherLang?->name,
             'rating'=>$this->getRating(),
             'teaching_duration'=>null,
-            'reviews'=>$this->reviews?collect(new TeacherReviewsCollection($this->reviews)):null
+            'can_add_half_hour' => $this->can_add_half_hour,
+            'reviews'=>$this->reviews?collect(new TeacherReviewsCollection($this->reviews)):null,
+            'times' => $this->timeTable?collect(new TeacherTimeTableCollection($this->timeTable)):null,
+            'hour_price' => $this->hour_price,
+            'half_hour_price' => $this->half_hour_price
         ];
     }
 }
+
