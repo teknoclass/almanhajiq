@@ -310,7 +310,7 @@ Route::get('/migrate',function(){
         // "2024_10_28_215959_change_assignment_date_to_date_time_on_course_assignments_table.php",
         // "2024_10_30_011604_add_dob_column_to_join_as_teacher_requests_table.php",
 
-        //balances
+        /* //balances
         "2024_10_31_124047_change_pay_transaction_id_to_string_on_balances_table.php",
 
         //courses
@@ -350,7 +350,7 @@ Route::get('/migrate',function(){
         "2024_10_10_095450_add_read_at_to_chat_messages_table.php",
         "2024_11_23_133757_change_course_lessons_storage_column_to_be_string.php",
         "2024_12_04_135905_create_payment_details_table.php",
-        "2024_12_05_142018_add_is_refunded_column_to_transactios_table.php",
+        "2024_12_05_142018_add_is_refunded_column_to_transactios_table.php", */
         "2024_12_09_111058_add_is_feature_column_to_courses_table.php",
         "2024_12_10_115716_make_role_string_in_users_table.php",
         "2024_12_10_113824_create_parent_sons_table.php",
