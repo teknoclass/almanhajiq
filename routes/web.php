@@ -351,7 +351,7 @@ Route::get('/migrate',function(){
         "2024_11_23_133757_change_course_lessons_storage_column_to_be_string.php",
         "2024_12_04_135905_create_payment_details_table.php",
         "2024_12_05_142018_add_is_refunded_column_to_transactios_table.php", */
-        "2024_12_09_111058_add_is_feature_column_to_courses_table.php",
+        //"2024_12_09_111058_add_is_feature_column_to_courses_table.php",
         "2024_12_10_115716_make_role_string_in_users_table.php",
         "2024_12_10_113824_create_parent_sons_table.php",
         "2024_12_11_113925_add_subscription_end_date_column_to_courses_table.php",
