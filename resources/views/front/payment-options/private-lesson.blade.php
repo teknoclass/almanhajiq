@@ -6,29 +6,31 @@ $id = $transaction->id;
 @endphp
 <div class="payment-options-container">
     <h2>{{__('select_payment_method')}}</h2>
-  
-    <div class="payment-option-card" id="credit-card">
-        <img src="{{asset('assets/front/images/qi-logo.png')}}" alt="Credit Card">
-        <h3>{{__('visa_master')}}</h3>
-        
-        <button 
-        style="color:white;font-size:16px;font-weight:normal"
-     type="button"
-                class="btn-primary p-1 private-lesson-sub w-50"
-                data-id="{{ @$id }}"
-                data-payment_type="gateway"
-                data-is_relpad_page="true">
-                {{ __('select_method') }} 
-            </button>
-    
-    </div>
-    
-  
+
+    @if (getSeting('qi'))
+        <div class="payment-option-card" id="credit-card">
+            <img src="{{asset('assets/front/images/qi-logo.png')}}" alt="Credit Card">
+            <h3>{{__('visa_master')}}</h3>
+
+            <button
+            style="color:white;font-size:16px;font-weight:normal"
+        type="button"
+                    class="btn-primary p-1 private-lesson-sub w-50"
+                    data-id="{{ @$id }}"
+                    data-payment_type="gateway"
+                    data-is_relpad_page="true">
+                    {{ __('select_method') }}
+                </button>
+
+        </div>
+    @endif
+
+
     <div class="payment-option-card" id="credit-card">
         <img src="{{asset('assets/front/images/zain-cash.png')}}" alt="Credit Card">
         <h3>{{__('zain_cash')}}</h3>
-    
-        <button 
+
+        <button
         style="color:white;font-weight:normal"
         type="button"
         class="btn-primary p-1  @if($transaction->amount > 1000) private-lesson-sub @else disabledBtn @endif w-50"
@@ -36,12 +38,12 @@ $id = $transaction->id;
         data-payment_type="zaincash"
         data-is_relpad_page="true">
         @if($transaction->amount > 1000)
-        {{ __('select_method') }} 
-        @else 
+        {{ __('select_method') }}
+        @else
         {{__('amount_must_exceed_1000_iqd')}}
         @endif
        </button>
-    
+
     </div>
 
 </div>
@@ -85,20 +87,20 @@ $id = $transaction->id;
     color: #555;
 }
 .disabledBtn {
-  background-color: #ccc; 
-  color: red !important; 
-  cursor: not-allowed; 
+  background-color: #ccc;
+  color: red !important;
+  cursor: not-allowed;
   border: 1px solid #aaa;
-  opacity: 0.6; 
-  pointer-events: none; 
-  padding: 10px 20px; 
+  opacity: 0.6;
+  pointer-events: none;
+  padding: 10px 20px;
   font-size: 16px;
   border-radius: 5px;
 }
 
 .disabledBtn:hover,
 .disabledBtn:focus {
-  background-color: #ccc; 
+  background-color: #ccc;
   color: #666
 }
 
@@ -107,12 +109,12 @@ $id = $transaction->id;
     <script src="{{ asset('assets/front/js/post.js') }}"></script>
 
 <script>
-    
+
  $(document).ready(function(){
         $(document).on('click','.private-lesson-sub',function(){
             var id = "{{$id}}";
             var payment_type = $(this).data('payment_type');
-            
+
             if(id != "")
             {
             $.ajax({

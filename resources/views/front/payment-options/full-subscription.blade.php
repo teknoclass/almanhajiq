@@ -4,32 +4,33 @@
 
 <div class="payment-options-container">
     <h2>{{__('select_payment_method')}}</h2>
-  
-    <div class="payment-option-card" id="credit-card">
-        <img src="{{asset('assets/front/images/qi-logo.png')}}" alt="Credit Card">
-        <h3>{{__('visa_master')}}</h3>
-        
-        <button 
-        style="color:white;font-size:16px;font-weight:normal"
-        id="submit_free_reg_btn" type="button"
-                class="btn-primary p-1 confirm-free-registeration w-50"
-                data-url="{{ url('user/full-subscribe-course') }}"
-                data-id="{{ @$course_id }}"
-                data-to="{{ route('user.courses.curriculum.item', ['course_id' => @$course_id]) }}"
-                data-marketer_coupon="{{  @$marketer_coupon }}"
-                data-payment_type="gateway"
-                data-is_relpad_page="true">
-                {{ __('select_method') }} 
-            </button>
-    
-    </div> 
-    
-  
+    @if (getSeting('qi'))
+        <div class="payment-option-card" id="credit-card">
+            <img src="{{asset('assets/front/images/qi-logo.png')}}" alt="Credit Card">
+            <h3>{{__('visa_master')}}</h3>
+
+            <button
+            style="color:white;font-size:16px;font-weight:normal"
+            id="submit_free_reg_btn" type="button"
+                    class="btn-primary p-1 confirm-free-registeration w-50"
+                    data-url="{{ url('user/full-subscribe-course') }}"
+                    data-id="{{ @$course_id }}"
+                    data-to="{{ route('user.courses.curriculum.item', ['course_id' => @$course_id]) }}"
+                    data-marketer_coupon="{{  @$marketer_coupon }}"
+                    data-payment_type="gateway"
+                    data-is_relpad_page="true">
+                    {{ __('select_method') }}
+                </button>
+
+        </div>
+    @endif
+
+
     <div class="payment-option-card" id="credit-card">
         <img src="{{asset('assets/front/images/zain-cash.png')}}" alt="Credit Card">
         <h3>{{__('zain_cash')}}</h3>
-    
-        <button 
+
+        <button
         style="color:white;font-weight:normal"
         id="submit_free_reg_btn" type="button"
         class="btn-primary p-1  @if($price > 1000) confirm-free-registeration @else disabledBtn @endif w-50"
@@ -40,12 +41,12 @@
         data-payment_type="zaincash"
         data-is_relpad_page="true">
         @if($price > 1000)
-        {{ __('select_method') }} 
-        @else 
+        {{ __('select_method') }}
+        @else
         {{__('amount_must_exceed_1000_iqd')}}
         @endif
        </button>
-    
+
     </div>
 
     <input name="marketer_coupon" value="{{  @$marketer_coupon }}" class="marketer_coupon form-control" style="width:96%;margin:auto" placeholder="{{__('have_coupon')}}" >
@@ -91,20 +92,20 @@
     color: #555;
 }
 .disabledBtn {
-  background-color: #ccc; 
-  color: red !important; 
-  cursor: not-allowed; 
+  background-color: #ccc;
+  color: red !important;
+  cursor: not-allowed;
   border: 1px solid #aaa;
-  opacity: 0.6; 
-  pointer-events: none; 
-  padding: 10px 20px; 
+  opacity: 0.6;
+  pointer-events: none;
+  padding: 10px 20px;
   font-size: 16px;
   border-radius: 5px;
 }
 
 .disabledBtn:hover,
 .disabledBtn:focus {
-  background-color: #ccc; 
+  background-color: #ccc;
   color: #666
 }
 

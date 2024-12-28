@@ -62,21 +62,25 @@ class PaymentController extends Controller
         if($price >= 250)$msg = '';
         else $msg = __('amount_must_exceed_1000_iqd');
 
+        $paymentMethods = [
+            [
+                'name' => 'zain',
+                'image' => url('/assets/front/images/zain-cash.png'),
+                'message' => $msg
+            ]
+        ];
+        if(getSeting('qi')){
+            $paymentMethods[] = [
+                'name' => 'gateway',
+                'image' => url('/assets/front/images/qi-logo.png'),
+                'message' => ''
+            ];
+        }
+
 
         $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
             'course_details' => new ApiCourseResource($course),
-            'payment_methods' => [
-                [
-                    'name' => 'gateway',
-                    'image' => url('/assets/front/images/qi-logo.png'),
-                    'message' => ''
-                ],
-                [
-                    'name' => 'zain',
-                    'image' => url('/assets/front/images/zain-cash.png'),
-                    'message' => $msg
-                ]
-            ]
+            'payment_methods' => $paymentMethods
 
         ],Response::HTTP_OK);
 
@@ -375,20 +379,25 @@ class PaymentController extends Controller
         else $msg = __('amount_must_exceed_1000_iqd');
 
 
+        $paymentMethods = [
+            [
+                'name' => 'zain',
+                'image' => url('/assets/front/images/zain-cash.png'),
+                'message' => $msg
+            ]
+        ];
+        if(getSeting('qi')){
+            $paymentMethods[] = [
+                'name' => 'gateway',
+                'image' => url('/assets/front/images/qi-logo.png'),
+                'message' => ''
+            ];
+        }
+
         $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
             'course_details' => ['title' => $title],
-            'payment_methods' => [
-                [
-                    'name' => 'gateway',
-                    'image' => url('/assets/front/images/qi-logo.png'),
-                    'message' => ''
-                ],
-                [
-                    'name' => 'zain',
-                    'image' => url('/assets/front/images/zain-cash.png'),
-                    'message' => $msg
-                ]
-            ]],Response::HTTP_OK);
+            'payment_methods' => $paymentMethods
+        ],Response::HTTP_OK);
 
         return response()->success($response);
 
@@ -711,6 +720,22 @@ class PaymentController extends Controller
         $installmetns = $course->installments;
         $remaining = $this->getRemainingInstallment($request->course_id);
 
+        $paymentMethods = [
+            [
+                'name' => 'zain',
+                'image' => url('/assets/front/images/zain-cash.png'),
+                'message' => $msg
+            ]
+        ];
+        if(getSeting('qi')){
+            $paymentMethods[] = [
+                'name' => 'gateway',
+                'image' => url('/assets/front/images/qi-logo.png'),
+                'message' => ''
+            ];
+        }
+
+
         $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
             'course_details' => [
                 'course' => new ApiCourseResource($course),
@@ -718,18 +743,8 @@ class PaymentController extends Controller
                 'times' => ApiPaymentInstallmentsTimesResource::collection($remaining)
             ],
             'price' => $installment->price,
-            'payment_methods' => [
-                [
-                    'name' => 'gateway',
-                    'image' => url('/assets/front/images/qi-logo.png'),
-                    'message' => ''
-                ],
-                [
-                    'name' => 'zain',
-                    'image' => url('/assets/front/images/zain-cash.png'),
-                    'message' => $msg
-                ]
-            ]],Response::HTTP_OK);
+            'payment_methods' => $paymentMethods
+        ],Response::HTTP_OK);
 
         return response()->success($response);
 
