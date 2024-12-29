@@ -29,6 +29,8 @@ use function PHPUnit\Framework\returnSelf;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\ApiPaymentInstallmentsResource;
 use App\Http\Resources\ApiPaymentInstallmentsTimesResource;
+use App\Models\PaymentDetail;
+use App\Models\PrivateLessons;
 
 class PaymentController extends Controller
 {
@@ -952,6 +954,260 @@ class PaymentController extends Controller
         }
 
     }
+
+    function privateLessonDetails(Request $request){
+        $price = 0;
+        foreach($request->get('times') as $time){
+            $price += $time['price'];
+        }
+
+        if(!$price){
+            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'),Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
+        if($price >= 250)$msg = '';
+        else $msg = __('amount_must_exceed_1000_iqd');
+
+
+
+        $paymentMethods = [
+            [
+                'name' => 'zain',
+                'image' => url('/assets/front/images/zain-cash.png'),
+                'message' => $msg
+            ]
+        ];
+        if(getSeting('qi')){
+            $paymentMethods[] = [
+                'name' => 'gateway',
+                'image' => url('/assets/front/images/qi-logo.png'),
+                'message' => ''
+            ];
+        }
+
+
+        $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            'course_details' => $request->get('times'),
+            'price' => $price,
+            'payment_methods' => $paymentMethods
+        ],Response::HTTP_OK);
+
+        return response()->success($response);
+    }
+
+    function privateLesson(Request $request){
+        if($request->payment_type == "gateway")
+        {
+            return $this->privateLessonGateway($request);
+        }else{
+            return $this->privateLessonZain($request);
+        }
+    }
+
+    function privateLessonGateway(Request $request){
+
+        $orderId = genereatePaymentOrderID();
+
+        $price = 0;
+        foreach($request->get('times') as $time){
+            $price += $time['price'];
+        }
+
+        if(!$price){
+            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'),Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
+        $response = $this->paymentService->processPaymentApi([
+            "amount" => $price,
+            "currency" => "IQD",
+            "successUrl" => url('/api/payment/pay-to-private-lesson-confirm'),
+            "notificationUrl" => url('/api/payment/pay-to-private-lesson-confirm'),
+            'orderId' => $orderId
+        ]);
+        if($response && $response['status'] == "CREATED")
+        {
+
+            foreach($request->get('times') as $time){
+                $detail = PaymentDetail::create([
+                    'details' => json_encode($time)
+                ]);
+                $paymentDetails = [
+                    "description" => "دفع درس خصوصي",
+                    "orderId" => $response['requestId'],
+                    "payment_id" => $response['paymentId'],
+                    "amount" => $time['price'],
+                    "transactionable_type" => "App\\Models\\PrivateLessons",
+                    "transactionable_id" => $detail->id,
+                    "brand" => "card",
+                    'coupon' => $request->get('code')
+                ];
+                $this->paymentService->createTransactionRecordApi($paymentDetails);
+            }
+
+
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+                'payment_link' => $response['formUrl']
+            ],Response::HTTP_OK);
+
+            return response()->success($response);
+        }else{
+            $response = new ErrorResponse($response['err']['msg'],Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+    }
+
+    function privateLessonZain($request){
+        $orderId = genereatePaymentOrderID();
+
+        $price = 0;
+        foreach($request->get('times') as $time){
+            $price += $time['price'];
+        }
+
+        if(!$price){
+            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'),Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+
+        if($price_after_discount['status']){
+            $price = $price_after_discount['price'];
+        }
+
+
+        $response = $this->zainCashService->processPaymentApi($price,
+        url('/api/payment/pay-to-private-lesson-confirm'),"دفع درس خصوصي",$orderId);
+
+        if(isset($response['id']))
+        {
+
+            foreach($request->get('times') as $time){
+                $detail = PaymentDetail::create([
+                    'details' => json_encode($time)
+                ]);
+                $paymentDetails = [
+                    "description" => "دفع درس خصوصي",
+                    "orderId" => $response['orderId'],
+                    "payment_id" => $response['id'],
+                    "amount" => $time['price'],
+                    "transactionable_type" => "App\\Models\\PrivateLessons",
+                    "transactionable_id" => $detail->id,
+                    "brand" => "zaincash",
+                    "transaction_id" => $response['referenceNumber'],
+                    'coupon' => $request->get('code')
+                ];
+                $this->paymentService->createTransactionRecordApi($paymentDetails);
+            }
+
+
+
+            $transaction_id = $response['id'];
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+                'payment_link' => $paymentUrl
+            ],Response::HTTP_OK);
+
+            return response()->success($response);
+        }else{
+            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+            return response()->error($response);
+        }
+    }
+
+    function privateLessonConfirm(Request $request){
+
+        DB::beginTransaction();
+        try
+        {
+
+            $cartId = $request->get('requestId');
+            $token = $request->get('token');
+            if($cartId == null){
+                $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
+                $cartId = $data->orderid;
+            }
+            $paymentDetails = Transactios::where('order_id',$cartId)->first();
+
+            //check qi payment status
+            if($paymentDetails["brand"] == "card"){
+
+                $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
+
+                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
+                {
+                    return redirect('/payment-failure');
+                }
+            }else{
+                $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
+                if($statusCheck["status"] == "failed")
+                {
+                    return redirect('/payment-failure');
+                }
+            }
+
+            $paymentDetails = Transactios::where('order_id',$cartId)->get();
+
+            foreach($paymentDetails as $payment){
+                $payment->status = 'completed';
+                $payment->is_paid = 1;
+                $payment->save();
+
+                $detail = PaymentDetail::find($payment->transactionable_id);
+                $detail = json_decode($detail->details,1);
+
+                $privateLesson = PrivateLessons::create([
+                    'category_id' => 0,
+                    'teacher_id' => $detail['teacher_id'],
+                    'student_id' => $payment->user_id,
+                    'price' => $detail['price'],
+                    'meeting_date' => $detail['meeting_date'],
+                    'time_form' => $detail['from'],
+                    'time_to' => $detail['to'],
+                    'time_type' => $detail['type'],
+                    'status' => 'acceptable'
+                ]);
+
+
+
+                $this->paymentService->storeBalanceApi($payment,'private_lesson',$detail['teacher_id']);
+            }
+
+
+
+            DB::commit();
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+            return response()->success($response);
+        }
+        catch (\Exception $e)
+        {
+            DB::rollback();
+            Log::error($e->getMessage());
+            Log::error($e->getFile());
+            Log::error($e->getLine());
+            return $e->getMessage();
+            return redirect('/payment-failure');
+        }
+
+
+    }
+
 
 
     ///

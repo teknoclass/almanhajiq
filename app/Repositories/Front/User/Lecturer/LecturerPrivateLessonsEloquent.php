@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Front\User\Lecturer;
 
+use App\Http\Resources\PrivateLessonCollection;
 use App\Models\Category;
 use App\Models\CategoryPrice;
 use App\Models\Balances;
@@ -78,6 +79,68 @@ class LecturerPrivateLessonsEloquent extends HelperEloquent
         // dd($data['lessons']);
         return $data;
     }
+
+    public function indexApi($type, $is_web=true)
+    {
+
+        $user = $this->getUser($is_web);
+        if($is_web)$data = $this->getStatistics();
+
+
+        $data['type'] = $type;
+
+        if($is_web)$data['materials']  = $user->materials->map->category;
+
+        $studentsWithLessons = PrivateLessons::distinct('student_id')->pluck('student_id');
+        if($is_web)$data['students'] = $user->RelatedStudents()->select('id','name')->get();
+
+        $data['lessons'] = PrivateLessons::query()->where('teacher_id', $user->id)
+                            ->with('student');
+
+    $time_now = now()->toTimeString();
+    $date_now = now()->toDateString();
+
+    if ($type == 'upcoming') {
+        $data['lessons']->where(function ($query) use ($time_now, $date_now) {
+                $query->where('meeting_date', '>', $date_now)
+                    ->orWhere(function ($query) use ($time_now, $date_now) {
+                        $query->where('meeting_date', '=', $date_now)
+                            ->where('time_to', '>=', $time_now);
+                    });
+                })
+                ->where('status', '!=', 'unacceptable')
+                ->orderBy('meeting_date', 'asc');
+        }else if ($type == 'now'){
+            $data['lessons']->where('meeting_date', '=', $date_now)
+            ->where('time_to' , '<=' , $time_now)
+            ->where('time_form' , '>=' , $time_now)
+            ->where('status', '!=', 'unacceptable')
+            ->orderBy('meeting_date', 'asc');
+
+        }else{
+            $data['lessons']->where(function ($query) use ($time_now, $date_now) {
+                $query->where('meeting_date', '<', $date_now)
+                ->orWhere(function ($query) use ($time_now, $date_now) {
+                    $query->where('meeting_date', '=', $date_now)
+                        ->where('time_to', '<', $time_now);
+                })
+                ->orWhere('status', 'unacceptable');
+                })
+                ->orderBy('meeting_date', 'desc');
+        }
+
+        $data['lessons'] = $data['lessons']->paginate(10);
+
+        if(!$is_web){
+            $data['lessons'] = new PrivateLessonCollection($data['lessons']);
+
+        }
+
+
+        // dd($data['lessons']);
+        return $data;
+    }
+
 
     public function filters($request, $is_web = true)
     {

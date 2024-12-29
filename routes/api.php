@@ -23,9 +23,12 @@ use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\LecturerCourseController;
 use App\Http\Controllers\Api\ParentController;
+use App\Http\Controllers\Api\PrivateLessonsController;
 use App\Http\Controllers\Api\TeacherBalanceController;
 use App\Http\Controllers\Api\TeacherHomeController;
+use App\Http\Controllers\Api\TeacherPrivateLessonsController;
 use App\Http\Controllers\TeacherStudentProfileController;
+use App\Models\PrivateLessons;
 use Twilio\Rest\Api\V2010\Account\Call\PaymentContext;
 
 /*
@@ -130,6 +133,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'live-sessions'], function
 });
 
 Route::get('/teacher/{id}', [TeacherController::class, 'findTeacherById'])->name('teacher')->middleware('language');
+Route::get('/teacherTimes/{id}',[TeacherController::class,'getTimeByDate']);
 
 //payment
 
@@ -149,6 +153,10 @@ Route::group(['prefix' => 'payment' , 'middleware' => 'auth:api'], function () {
     Route::post('/pay-to-course-session-installment-details',[PaymentController::class,'installmentDetails']);
     Route::post('/pay-to-course-session-installment',[PaymentController::class,'installment']);
     Route::get('/pay-to-course-session-installment-confirm',[PaymentController::class,'confirmPayment'])->withoutMiddleware('auth:api');
+
+    Route::post('pay-to-private-lesson-details',[PaymentController::class,'privateLessonDetails']);
+    Route::post('pay-to-private-lesson',[PaymentController::class,'privateLesson']);
+    Route::get('/pay-to-private-lesson-confirm',[PaymentController::class,'privateLessonConfirm'])->withoutMiddleware('auth:api');
 
     Route::post('/reserve-course-session-installment-free',[PaymentController::class,'subscribeDetailsFree']);
 
@@ -204,6 +212,12 @@ Route::prefix('/favourite')->group(function(){
     Route::get('/get',[FavouriteController::class,'get'])->middleware('auth:api');
 });
 
+//private lessons
+Route::prefix('privateLessons')->group(function(){
+
+    Route::get('/get/{type}',[PrivateLessonsController::class,'get']);
+
+});
 
 
 
@@ -309,6 +323,12 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
         Route::get('/index/{id}',[TeacherStudentProfileController::class,'index']);
         Route::get('/courses/{id}',[TeacherStudentProfileController::class,'courses']);
         Route::get('/comments/{id}',[TeacherStudentProfileController::class,'comments']);
+
+    });
+
+    Route::prefix('privateLessons')->group(function(){
+
+        Route::get('get/{type}',[TeacherPrivateLessonsController::class,'get']);
 
     });
 

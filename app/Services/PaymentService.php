@@ -4,7 +4,7 @@ namespace App\Services;
 use App\Models\UserCourse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
-use App\Models\{Transactios,Balances, Courses, CourseSession, CourseSessionInstallment};
+use App\Models\{Transactios,Balances, Courses, CourseSession, CourseSessionInstallment, User};
 
 class PaymentService
 {
@@ -216,9 +216,9 @@ class PaymentService
         }
     }
 
-    public function storeBalanceApi($paymentDetails , $type = 'course')
+    public function storeBalanceApi($paymentDetails , $type = 'course',$id = 0)
     {
-        $lecturer = $this->getLecturer($type , $paymentDetails['transactionable_id']);
+        $lecturer = $this->getLecturer($type , $paymentDetails['transactionable_id'],$id);
 
         $amount_before_commission = $paymentDetails['amount'];
         $system_commission = ($lecturer->system_commission ?? 0 > 0) ? ($lecturer->system_commission/100)*$amount_before_commission : 0;
@@ -243,7 +243,7 @@ class PaymentService
         ]);
     }
 
-    function getLecturer($type , $id){
+    function getLecturer($type , $id , $id2){
 
         switch($type){
             case 'course' :
@@ -266,6 +266,10 @@ class PaymentService
                 $installment = CourseSessionInstallment::find($id);
                 return $installment->courseSession->course->lecturer;
                 break;
+
+            case 'private_lesson' :
+                return User::find($id2);
+
         }
 
 

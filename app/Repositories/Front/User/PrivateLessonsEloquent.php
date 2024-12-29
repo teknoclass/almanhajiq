@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Front\User;
 
+use App\Http\Resources\PrivateLessonCollection;
 use App\Models\Balances;
 use App\Models\LecturerTimeTable;
 use App\Models\Notifications;
@@ -76,6 +77,73 @@ class PrivateLessonsEloquent extends HelperEloquent
 
         return $data;
     }
+
+    public function indexApi($type, $is_web=true)
+    {
+        $data['type'] = $type;
+
+        $data['user'] = $this->getUser($is_web);
+
+        $privateLessons = PrivateLessons::query()->getStudentPrivateLessons($data['user']->id)
+        ->with(['category' => function ($query) {
+                $query->select('id', 'title', 'value', 'parent')
+                    ->with('translations:category_id,name,locale');
+            }
+        ])
+        ->with(['teacher' => function ($query) {
+            $query->select('id', 'name','image');
+        }
+        ]);
+
+
+
+        $time_now = now()->toTimeString();
+        $date_now = now()->toDateString();
+
+
+        if ($type == 'upcoming') {
+            $privateLessons->where(function ($query) use ($time_now, $date_now) {
+                $query->where('meeting_date', '>', $date_now)
+                    ->orWhere(function ($query) use ($time_now, $date_now) {
+                        $query->where('meeting_date', '=', $date_now)
+                            ->where('time_to', '>=', $time_now);
+                    });
+                })
+                ->where('status', '!=', 'unacceptable')
+                ->orderBy('meeting_date', 'asc');
+        }else if($type == 'now'){
+            $privateLessons->where(function ($query) use ($time_now, $date_now) {
+                $query->where('meeting_date', '=', $date_now)
+                    ->where('time_form' , '<=' , $time_now)
+                    ->where('time_to' , '>=', $time_now);
+                })
+                ->where('status', '!=', 'unacceptable')
+                ->orderBy('meeting_date', 'asc');
+        }else{
+            $privateLessons->where(function ($query) use ($time_now, $date_now) {
+                $query->where('meeting_date', '<', $date_now)
+                ->orWhere(function ($query) use ($time_now, $date_now) {
+                    $query->where('meeting_date', '=', $date_now)
+                        ->where('time_to', '<', $time_now);
+                })
+                ->orWhere('status', 'unacceptable');
+                })
+                ->orderBy('meeting_date', 'desc');
+        }
+
+        $data['privateLessons'] = $privateLessons->paginate(10);
+
+        if(!$is_web){
+
+            $data['privateLessons'] = new PrivateLessonCollection($data['privateLessons']);
+            unset($data['user']);
+
+        }
+
+
+        return $data;
+    }
+
 
     public function book($request, $id, $is_web = true)
     {
@@ -348,7 +416,7 @@ class PrivateLessonsEloquent extends HelperEloquent
                     'is_paid' => $use_old_hours ? 1 : 0,
                 ];
                 session()->put('private-balance-'.auth('web')->user()->id,$params_balance);
-                
+
 
             }
 
@@ -401,7 +469,7 @@ class PrivateLessonsEloquent extends HelperEloquent
                   if($total_money_to_pay == 0)
                   {
                     (new PrivateLessonsEloquent())->pay_realated($transaction_id);
-    
+
                     $response['redirect_url'] =  url("/user/private-lessons");
                   }else{
                       $response['redirect_url'] = route('user.payment.checkout', $transaction->id);
