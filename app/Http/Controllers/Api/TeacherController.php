@@ -111,6 +111,7 @@ class TeacherController extends Controller
                 else $yes = 1;
                 $response[] = [
                     'from' => Carbon::parse($curTime)->format('H:i'),
+                    'to' => Carbon::parse($editTime)->format('H:i'),
                     'availabe' => $yes
                 ];
                 if($data['type'] == 'hour'){

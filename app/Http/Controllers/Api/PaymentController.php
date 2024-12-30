@@ -1152,12 +1152,14 @@ class PaymentController extends Controller
 
                 if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
                 {
+                    return $statusCheck;
                     return redirect('/payment-failure');
                 }
             }else{
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
                 if($statusCheck["status"] == "failed")
                 {
+                    return $statusCheck;
                     return redirect('/payment-failure');
                 }
             }
@@ -1197,6 +1199,7 @@ class PaymentController extends Controller
         }
         catch (\Exception $e)
         {
+            return $e->getMessage();
             DB::rollback();
             Log::error($e->getMessage());
             Log::error($e->getFile());
