@@ -180,7 +180,7 @@ class CourseSessionSubscriptionsController extends Controller
             $transactionable_type = "App\\Models\\CourseSession";
         }
 
-        if($response && $response['status'] == "CREATED")
+        if($response && isset($response['status']) && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "description" => $description,
