@@ -128,6 +128,7 @@ class CourseFullSubscriptionsController extends Controller
                 'redirect_url' => $response['formUrl']
             ];
         }else{
+            dd($response);
             return  $response = [
                 'status_msg' => 'error',
                 'message' => __('message.unexpected_error'),
