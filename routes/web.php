@@ -352,15 +352,16 @@ Route::get('/migrate',function(){
         "2024_12_04_135905_create_payment_details_table.php",
         "2024_12_05_142018_add_is_refunded_column_to_transactios_table.php", */
         //"2024_12_09_111058_add_is_feature_column_to_courses_table.php",
-        "2024_12_10_115716_make_role_string_in_users_table.php",
-        "2024_12_10_113824_create_parent_sons_table.php",
-        "2024_12_11_113925_add_subscription_end_date_column_to_courses_table.php",
-        "2024_12_12_130218_add_parent_mobile_number_to_users_table.php",
-        "2024_12_12_132103_create_parent_son_requests_table.php",
-        "2024_12_14_114803_add_order_column_to_categories_table.php",
-        "2024_12_22_064324_add_valid_on_to_courses_table.php",
-        "2024_12_22_065128_add_payment_id_to_balances_table.php",
-        "2024_12_26_213011_add_private_password_to_course_sessions_table.php"
+        // "2024_12_10_115716_make_role_string_in_users_table.php",
+        // "2024_12_10_113824_create_parent_sons_table.php",
+        // "2024_12_11_113925_add_subscription_end_date_column_to_courses_table.php",
+        // "2024_12_12_130218_add_parent_mobile_number_to_users_table.php",
+        // "2024_12_12_132103_create_parent_son_requests_table.php",
+        // "2024_12_14_114803_add_order_column_to_categories_table.php",
+        // "2024_12_22_064324_add_valid_on_to_courses_table.php",
+        // "2024_12_22_065128_add_payment_id_to_balances_table.php",
+        // "2024_12_26_213011_add_private_password_to_course_sessions_table.php",
+        "2024_12_31_081856_add_private_and_public_password_to_private_lessons_table.php"
 
     ];
 

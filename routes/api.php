@@ -329,6 +329,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
     Route::prefix('privateLessons')->group(function(){
 
         Route::get('get/{type}',[TeacherPrivateLessonsController::class,'get']);
+        Route::post('/createOrJoin/{id}',[TeacherPrivateLessonsController::class,'createOrJoin']);
 
     });
 

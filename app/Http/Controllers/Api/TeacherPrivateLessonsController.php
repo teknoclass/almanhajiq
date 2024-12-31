@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\PrivateLessons;
 use App\Repositories\Front\User\Lecturer\LecturerPrivateLessonsEloquent;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,23 @@ class TeacherPrivateLessonsController extends Controller
         $message = __('message.operation_accomplished_successfully');
 
         return $this->response_api(true,$message,$data);
+
+    }
+
+    function createOrJoin($id){
+        $lesson = PrivateLessons::find($id);
+        if($lesson->meeting_link == null){
+            $url = $lesson->createLiveSession('api');
+        }else{
+            $url = $lesson->joinLiveSessionV2('api');
+        }
+
+
+
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$url);
+
 
     }
 }

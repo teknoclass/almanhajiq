@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
+use BigBlueButton\Parameters\GetRecordingsParameters;
+
 
 class PrivateLessons extends Model
 {
@@ -398,6 +401,78 @@ class PrivateLessons extends Model
     public function ratings()
     {
         return $this->hasMany('App\Models\Ratings', 'sourse_id', 'id');
+    }
+
+    function generateSimplePassword($length = 8) {
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $charactersLength = strlen($characters);
+        $randomPassword = '';
+
+        // Generate the password
+        for ($i = 0; $i < $length; $i++) {
+            $randomPassword .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $randomPassword;
+    }
+
+    public function createLiveSession ($type = 'web'){
+        $attendeePW = $this->generateSimplePassword(8);
+        $moderatorPW = $this->generateSimplePassword(8);
+        $meeting_id = "course_session_with_id_".$this->id.time();
+        $this->meeting_id = $meeting_id;
+
+        Bigbluebutton::create([
+            'meetingID'      => $meeting_id,
+            'meetingName'    => $this->meeting_id,
+            'autoStartRecording' => true,
+            'allowStartStopRecording' => false,
+            'record'         => true,
+            'attendeePW'     => $attendeePW,
+            'moderatorPW'    => $moderatorPW,
+            'endCallbackUrl' => route('user.meeting.finished' , $this->id),
+            'logoutUrl'      => route('user.meeting.finished' , [$this->id , auth($type)->id()]),
+        ]);
+        $this->public_password = $attendeePW;
+        $this->private_password = $moderatorPW;
+        $url =  Bigbluebutton::join([
+            'meetingID' => $this->meeting_id,
+            'userName'  => auth($type)->user()->name,
+            'role'      => 'MODERATOR',
+            'password'  => $moderatorPW
+        ]);
+        $this->meeting_link = $url;
+
+        $this->save();
+
+        return $url;
+    }
+
+    public function joinLiveSessionV2($type = 'web') {
+        try {
+
+
+            if(auth($type)->user()->role == 'student'){
+
+                $response = Bigbluebutton::join([
+                    'meetingID' => $this->meeting_id,
+                    'userName' => auth($type)->user()->name,
+                    'password' => $this->public_password,
+
+                ]);
+            }else{
+                $response =  Bigbluebutton::join([
+                    'meetingID' => $this->meeting_id,
+                    'userName'  => auth($type)->user()->name,
+                    'role'      => 'MODERATOR',
+                    'password'  => $this->private_password
+                ]);
+            }
+
+            return $response;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Could not join session.'], 500);
+        }
     }
 
 }
