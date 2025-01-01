@@ -105,15 +105,15 @@ class LecturerPrivateLessonsEloquent extends HelperEloquent
                 $query->where('meeting_date', '>', $date_now)
                     ->orWhere(function ($query) use ($time_now, $date_now) {
                         $query->where('meeting_date', '=', $date_now)
-                            ->where('time_to', '>=', $time_now);
+                            ->where('time_form', '>=', $time_now);
                     });
                 })
                 ->where('status', '!=', 'unacceptable')
                 ->orderBy('meeting_date', 'asc');
         }else if ($type == 'now'){
             $data['lessons']->where('meeting_date', '=', $date_now)
-            ->where('time_to' , '<=' , $time_now)
-            ->where('time_form' , '>=' , $time_now)
+            ->where('time_to' , '>=' , $time_now)
+            ->where('time_form' , '<=' , $time_now)
             ->where('status', '!=', 'unacceptable')
             ->orderBy('meeting_date', 'asc');
 

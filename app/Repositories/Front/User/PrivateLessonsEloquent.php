@@ -663,4 +663,18 @@ class PrivateLessonsEloquent extends HelperEloquent
 
     }
 
+    function postpone($request){
+
+        $request = PrivateLessonsRequest::create([
+            'private_lesson_id' => $request->id,
+            'user_id' => auth('api')->id(),
+            'user_type' => auth('api')->user()->role,
+            'type' => 'postpone',
+            'statuss' => 'pending',
+            'chosen_date' => $request->date
+        ]);
+
+
+    }
+
 }

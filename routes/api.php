@@ -216,6 +216,7 @@ Route::prefix('/favourite')->group(function(){
 Route::prefix('privateLessons')->group(function(){
 
     Route::get('/get/{type}',[PrivateLessonsController::class,'get']);
+    Route::post('/postpone',[PrivateLessonsController::class,'postpone']);
 
 });
 

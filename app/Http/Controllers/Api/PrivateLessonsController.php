@@ -24,4 +24,14 @@ class PrivateLessonsController extends Controller
 
     }
 
+    function postpone(Request $request){
+
+        $data = $this->private_lessons->postpone($request);
+
+        $message = __('message.operation_accomplished_successfully');
+        return $this->response_api(true,$message);
+
+
+    }
+
 }

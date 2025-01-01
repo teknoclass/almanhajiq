@@ -76,6 +76,7 @@ class TeacherController extends Controller
 
     function getLessonsByDay($data){
 
+        
         $dayOrder = Carbon::parse($data['date'])->dayOfWeek;
         $times = LecturerTimeTable::where('user_id',$data['user_id'])->where('day_no',$dayOrder)->get();
         $response = [];
