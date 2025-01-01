@@ -665,16 +665,84 @@ class PrivateLessonsEloquent extends HelperEloquent
 
     function postpone($request){
 
+        $data = [
+            'date' => $request->date,
+            'from' => $request->from,
+            'to' => $request->to
+        ];
+        $json = json_encode($data);
+        $paths = array();
+        foreach($request->files as $file){
+            foreach($file as $f){
+                $paths[] = uploadFile($f);
+            }
+
+        }
+
         $request = PrivateLessonsRequest::create([
-            'private_lesson_id' => $request->id,
+            'private_lesson_id' => $request->lesson_id,
             'user_id' => auth('api')->id(),
             'user_type' => auth('api')->user()->role,
             'type' => 'postpone',
             'statuss' => 'pending',
-            'chosen_date' => $request->date
+            'suggested_dates' => $json,
+            'optional_files' => $paths
         ]);
 
 
+
+
     }
+
+    function getRequests(){
+        $data = PrivateLessonsRequest::where('status','pending')->where('type','postpone')->where('user_type','teacher')
+        ->whereHas('privateLesson',function($q){
+            $q->where('student_id',auth('api')->id());
+        })->paginate(10);
+
+        return $data;
+    }
+
+    function respodeToRequest($request){
+
+        $postRequest = PrivateLessonsRequest::find($request->request_id);
+
+        $postRequest->status = $request->status;
+        $postRequest->save();
+
+        if($request->status == 'accepted'){
+            $lesson = PrivateLessons::find($postRequest->private_lesson_id);
+            $data = json_decode($postRequest->suggested_dates,1);
+
+            $lesson->meeting_date = $data['date'];
+            $lesson->time_form = $data['from'];
+            $lesson->time_to = $data['to'];
+            $lesson->save();
+        }
+
+    }
+
+
+    function showRequest($id){
+        $request = PrivateLessonsRequest::find($id);
+        $data = json_decode($request->suggested_dates,1);
+        $files = array();
+        foreach($request->optional_files as $file){
+            $files[] = fileUrl($file);
+        }
+        $data = [
+            'id' => $id,
+            'old_date' => $request->privateLesson->meeting_date,
+            'old_from' => $request->privateLesson->time_form,
+            'old_to' => $request->privateLesson->time_to,
+            'date' => $data['date'],
+            'from' => $data['from'],
+            'to' => $data['to'],
+            'files' => $files
+        ];
+
+        return $data;
+    }
+
 
 }

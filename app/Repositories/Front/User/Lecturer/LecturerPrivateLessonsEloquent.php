@@ -2,24 +2,25 @@
 
 namespace App\Repositories\Front\User\Lecturer;
 
-use App\Http\Resources\PrivateLessonCollection;
-use App\Models\Category;
-use App\Models\CategoryPrice;
-use App\Models\Balances;
-use App\Models\LecturerSetting;
-use App\Models\PrivateLessons;
-use App\Models\Ratings;
+use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Ratings;
+use App\Models\Balances;
+use App\Models\Category;
 use App\Models\UserCategory;
-use App\Repositories\Front\User\HelperEloquent;
-use Illuminate\Support\Facades\Auth;
+use App\Models\CategoryPrice;
+use Jubaer\Zoom\Facades\Zoom;
+use App\Models\PrivateLessons;
+use App\Models\LecturerSetting;
 use Illuminate\Support\Facades\DB;
 use Kreait\Firebase\Http\Requests;
 use App\Models\PrivateLessonMeeting;
+use Illuminate\Support\Facades\Auth;
+use App\Models\PrivateLessonsRequest;
+use App\Http\Resources\PrivateLessonCollection;
+use App\Repositories\Front\User\HelperEloquent;
 use App\Models\PrivateLessonMeetingParticipants;
-use Carbon\Carbon;
 use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
-use Jubaer\Zoom\Facades\Zoom;
 
 class LecturerPrivateLessonsEloquent extends HelperEloquent
 {
@@ -680,6 +681,15 @@ class LecturerPrivateLessonsEloquent extends HelperEloquent
         ]);
 
         return $url;
+    }
+
+    function getRequests(){
+        $data = PrivateLessonsRequest::where('status','pending')->where('type','postpone')->where('user_type','student')
+        ->whereHas('privateLesson',function($q){
+            $q->where('teacher_id',auth('api')->id());
+        })->paginate(10);
+
+        return $data;
     }
 
 

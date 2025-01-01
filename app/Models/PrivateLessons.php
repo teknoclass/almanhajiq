@@ -475,4 +475,19 @@ class PrivateLessons extends Model
         }
     }
 
+    function canPostpone(){
+
+        $date = $this->meeting_date;
+        $time = $this->time_form;
+
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', "$date $time");
+
+        $twentyFourHoursBefore = $dateTime->subHours(24);
+
+        $yes1 = Carbon::now()->lt($twentyFourHoursBefore);
+
+        $exist = PrivateLessonsRequest::where('private_lesson_id',$this->id)->where('status','pending')->first();
+        return ($yes1 && !$exist);
+    }
+
 }

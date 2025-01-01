@@ -217,6 +217,9 @@ Route::prefix('privateLessons')->group(function(){
 
     Route::get('/get/{type}',[PrivateLessonsController::class,'get']);
     Route::post('/postpone',[PrivateLessonsController::class,'postpone']);
+    Route::get('/getRequests',[PrivateLessonsController::class,'getRequests']);
+    Route::post('respondeToRequest',[PrivateLessonsController::class,'responde']);
+    Route::get('/showRequest/{id}',[PrivateLessonsController::class,'show']);
 
 });
 
@@ -331,6 +334,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
 
         Route::get('get/{type}',[TeacherPrivateLessonsController::class,'get']);
         Route::post('/createOrJoin/{id}',[TeacherPrivateLessonsController::class,'createOrJoin']);
+        Route::get('/getRequests',[TeacherPrivateLessonsController::class,'getRequests']);
 
     });
 

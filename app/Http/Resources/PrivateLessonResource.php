@@ -38,6 +38,7 @@ class PrivateLessonResource extends JsonResource
             'name' => $this->student->name ?? null,
             'image' => imageUrl($this->student->image)
         ];
+        $data['can_postpone'] = $this->canPostpone();
 
 
         return $data;
