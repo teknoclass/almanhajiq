@@ -106,7 +106,7 @@ class PrivateLessonsEloquent extends HelperEloquent
                 $query->where('meeting_date', '>', $date_now)
                     ->orWhere(function ($query) use ($time_now, $date_now) {
                         $query->where('meeting_date', '=', $date_now)
-                            ->where('time_to', '>=', $time_now);
+                            ->where('time_form', '>=', $time_now);
                     });
                 })
                 ->where('status', '!=', 'unacceptable')
