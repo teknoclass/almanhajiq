@@ -68,6 +68,9 @@ class PaymentService
                 return $response->json();
             }
         } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            Log::error($e->getLine());
+            Log::error($e->getFile());
             return ['error' => $e->getMessage()];
         }
     }

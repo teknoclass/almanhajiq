@@ -102,7 +102,7 @@ class CourseFullSubscriptionsController extends Controller
             "notificationUrl" => url('/full-subscribe-course-webhook')
         ]);  
  
-        if($response && $response['status'] == "CREATED")
+        if($response && isset($response['status']) && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "description" => 'اشتراك كلى فى الدورة',
@@ -128,6 +128,7 @@ class CourseFullSubscriptionsController extends Controller
                 'redirect_url' => $response['formUrl']
             ];
         }else{
+            dd($response);
             return  $response = [
                 'status_msg' => 'error',
                 'message' => __('message.unexpected_error'),

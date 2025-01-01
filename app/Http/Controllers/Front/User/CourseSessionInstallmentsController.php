@@ -127,7 +127,7 @@ class CourseSessionInstallmentsController extends Controller
             "notificationUrl" => url('/pay-to-course-session-installment-webhook'),
         ]);  
         
-        if($response && $response['status'] == "CREATED")
+        if($response && isset($response['status']) && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "description" => "دفع قسط جلسات دورة",

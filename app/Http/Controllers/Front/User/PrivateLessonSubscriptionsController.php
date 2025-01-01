@@ -49,7 +49,7 @@ class PrivateLessonSubscriptionsController extends Controller
             "notificationUrl" => url('/private-lesson-subscribe-webhook')
         ]);  
  
-        if($response && $response['status'] == "CREATED")
+        if($response && isset($response['status']) && $response['status'] == "CREATED")
         {
             $paymentDetails = [
                 "transaction_id" => $transaction->id,
