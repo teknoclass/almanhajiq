@@ -15,9 +15,15 @@ class PrivateLessonPosponeRequestResource extends JsonResource
     public function toArray(Request $request): array
     {
         $data['id'] = $this->id;
-        $data['suggested_dates'] = $this->suggested_dates;
+        $json = $this->suggested_dates;
+        $array = json_decode($json,1);
+        $data['date'] = $array['date'];
+        $data['from'] = $array['from'];
+        $data['to'] = $array['to'];
         $data['teacher_name'] = $this->privateLesson->teacher->name;
+        $data['teacher_photo'] = imageUrl($this->privateLesson->teacher->image);
         $data['student_name'] = $this->privateLesson->student->name;
+        $data['student_photo'] = imageUrl($this->privateLesson->student->image);
 
         return $data;
 

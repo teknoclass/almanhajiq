@@ -738,7 +738,11 @@ class PrivateLessonsEloquent extends HelperEloquent
             'date' => $data['date'],
             'from' => $data['from'],
             'to' => $data['to'],
-            'files' => $files
+            'files' => $files,
+            'teacher_name' => $request->privateLesson->teacher->name,
+            'teacher_photo' => imageUrl($request->privateLesson->teacher->image),
+            'student_name' => $request->privateLesson->student->name,
+            'student_photo' => imageUrl($request->privateLesson->student->image)
         ];
 
         return $data;
