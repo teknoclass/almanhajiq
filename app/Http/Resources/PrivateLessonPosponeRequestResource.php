@@ -31,6 +31,7 @@ class PrivateLessonPosponeRequestResource extends JsonResource
         $data['teacher_photo'] = imageUrl($this->privateLesson->teacher->image);
         $data['student_name'] = $this->privateLesson->student->name;
         $data['student_photo'] = imageUrl($this->privateLesson->student->image);
+        $data['teacher_id'] = $this->privateLesson->teacher->id;
 
         return $data;
 
