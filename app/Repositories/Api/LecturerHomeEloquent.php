@@ -12,10 +12,13 @@ use App\Http\Resources\TeacherHomeCharResource;
 use App\Repositories\Front\User\HelperEloquent;
 use App\Http\Resources\Lecturer\Home\CharResource;
 use App\Http\Resources\Lecturer\Home\LecturerMyProfileResource;
+use App\Http\Resources\TeacherCalendarCourseSessionResource;
+use App\Http\Resources\TeacherCalendarPrivateLessonResource;
 use App\Http\Resources\TeacherCourseFilterResource;
 use App\Http\Resources\TeacherIncomingSessionCollection;
 use App\Http\Resources\TeacherMyProfileResource;
 use App\Http\Resources\TeacherStudentsCollection;
+use App\Models\PrivateLessons;
 
 class LecturerHomeEloquent extends HelperEloquent{
 
@@ -131,6 +134,47 @@ class LecturerHomeEloquent extends HelperEloquent{
         $data['user'] = $user;
         $data['ratings'] = Ratings::where('sourse_type','user')->where('sourse_id',$user->id)->with('user')->limit(20)->get();
         return new TeacherMyProfileResource($data);
+
+
+    }
+
+    function calendar($request,$is_web = false){
+        $date_now = now()->toDateString();
+
+        $courseSessionDates = CourseSession::whereHas('course',function($q){
+            $q->where('user_id',auth('api')->id());
+        })->where('date','>=',$date_now)->distinct()->pluck('date');
+
+        $privateLessonDates = PrivateLessons::where('teacher_id',auth('api')->id())
+        ->where('meeting_date','>=',$date_now)->distinct()->pluck('meeting_date');
+
+        $mergedArray = array_merge($courseSessionDates->toArray(), $privateLessonDates->toArray());
+        $uniqueDates = array_unique($mergedArray);
+        sort($uniqueDates);
+
+
+        if($request->get('date')){
+            $date = $request->get('date');
+        }else{
+            $date = $date_now;
+        }
+
+        $courseSession = CourseSession::whereHas('course',function($q){
+            $q->where('user_id',auth('api')->id());
+        })->where('date','=',$date)->get();
+
+        $privateLessons = PrivateLessons::where('teacher_id',auth('api')->id())
+        ->where('meeting_date','=',$date)->get();
+
+        $courseSession = TeacherCalendarCourseSessionResource::collection($courseSession);
+        $privateLessons = TeacherCalendarPrivateLessonResource::collection($privateLessons);
+
+
+        return [
+            'dates' => $uniqueDates,
+            'sessions' => $courseSession,
+            'lessons' => $privateLessons
+        ];
 
 
     }

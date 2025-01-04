@@ -307,6 +307,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
     Route::get('/getStudents',[TeacherHomeController::class,'getStudents']);
     Route::get('/courseFilter',[TeacherHomeController::class,'courseFilter']);
     Route::get('/myProfile',[TeacherHomeController::class,'profile']);
+    Route::get('/calendar',[TeacherHomeController::class,'calendar']);
 
 
 
@@ -337,6 +338,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
         Route::get('/getRequests',[TeacherPrivateLessonsController::class,'getRequests']);
 
     });
+
 
 
 

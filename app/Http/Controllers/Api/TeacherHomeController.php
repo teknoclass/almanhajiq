@@ -60,6 +60,14 @@ class TeacherHomeController extends Controller
         return $this->response_api(true,$message,$data);
     }
 
+    function calendar(Request $request){
+        $data = $this->home->calendar($request,false);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+
+    }
+
 
 
 

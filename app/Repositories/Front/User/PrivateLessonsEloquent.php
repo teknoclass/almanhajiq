@@ -665,12 +665,19 @@ class PrivateLessonsEloquent extends HelperEloquent
 
     function postpone($request){
 
-        $data = [
-            'date' => $request->date,
-            'from' => $request->from,
-            'to' => $request->to
-        ];
-        $json = json_encode($data);
+        if($request->date){
+
+            $data = [
+                'date' => $request->date,
+                'from' => $request->from,
+                'to' => $request->to
+            ];
+            $json = json_encode($data);
+        }else{
+            $json = null;
+        }
+
+
         $paths = array();
         foreach($request->files as $file){
             foreach($file as $f){
@@ -695,7 +702,7 @@ class PrivateLessonsEloquent extends HelperEloquent
     }
 
     function getRequests(){
-        $data = PrivateLessonsRequest::where('status','pending')->where('type','postpone')->where('user_type','teacher')
+        $data = PrivateLessonsRequest::where('status','pending')->where('type','postpone')->where('user_type','lecturer')
         ->whereHas('privateLesson',function($q){
             $q->where('student_id',auth('api')->id());
         })->paginate(10);
@@ -708,16 +715,28 @@ class PrivateLessonsEloquent extends HelperEloquent
         $postRequest = PrivateLessonsRequest::find($request->request_id);
 
         $postRequest->status = $request->status;
-        $postRequest->save();
 
         if($request->status == 'accepted'){
             $lesson = PrivateLessons::find($postRequest->private_lesson_id);
-            $data = json_decode($postRequest->suggested_dates,1);
+            if($request->date){
+
+                $data = [
+                    'date' => $request->date,
+                    'from' => $request->from,
+                    'to' => $request->to
+                ];
+                $json = json_encode($data);
+                $postRequest->suggested_dates = $json;
+            }else{
+                $data = json_decode($postRequest->suggested_dates,1);
+            }
+
 
             $lesson->meeting_date = $data['date'];
             $lesson->time_form = $data['from'];
             $lesson->time_to = $data['to'];
             $lesson->save();
+            $postRequest->save();
         }
 
     }
