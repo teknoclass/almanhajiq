@@ -32,7 +32,7 @@ class PrivateLessonPosponeRequestResource extends JsonResource
         $data['student_name'] = $this->privateLesson->student->name;
         $data['student_photo'] = imageUrl($this->privateLesson->student->image);
         $data['teacher_id'] = $this->privateLesson->teacher->id;
-        $data['time_type'] = $this->privateLesson->timeType;
+        $data['time_type'] = $this->privateLesson->time_type;
 
         return $data;
 
