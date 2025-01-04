@@ -2,11 +2,17 @@
 
 namespace App\Services;
 
-use App\Models\Category;
+use App\Models\User;
 use App\Models\Courses;
 use App\Models\Ratings;
-use App\Models\User;
+use App\Models\Category;
+use App\Models\CourseSession;
+use App\Models\PrivateLessons;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\TeacherCalendarCourseSessionResource;
+use App\Http\Resources\TeacherCalendarPrivateLessonResource;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class HomeService extends MainService
 {
@@ -110,6 +116,64 @@ class HomeService extends MainService
 
         return $data;
     }
+
+    function calendar($request,$is_web = false){
+
+        $ids = Courses::withTrashed()->active()->accepted()
+        ->where(function($query) {
+            $query->where('id',studentSubscriptionCoursessIds('api'));
+            $query->orWhere('id',studentInstallmentsCoursessIds('api'));
+
+            $query->orWhereHas('students', function (Builder $query) {
+                $query->where('user_id', auth('api')->id())
+                ->where(function ($query) {
+                    $query ->where('is_complete_payment', 1)
+                    ->orWhere('is_free_trial', 1);
+                });
+            });
+        })->where('type', Courses::LIVE)->pluck('id');
+
+
+        $date_now = now()->toDateString();
+
+        $courseSessionDates = CourseSession::whereIn('course_id',$ids)
+        ->where('date','>=',$date_now)->distinct()->pluck('date');
+
+        $privateLessonDates = PrivateLessons::where('student_id',auth('api')->id())
+        ->where('meeting_date','>=',$date_now)->distinct()->pluck('meeting_date');
+
+        $mergedArray = array_merge($courseSessionDates->toArray(), $privateLessonDates->toArray());
+        $uniqueDates = array_unique($mergedArray);
+        sort($uniqueDates);
+
+
+        if($request->get('date')){
+            $date = $request->get('date');
+        }else{
+            $date = $date_now;
+        }
+
+        $courseSession = CourseSession::whereHas('course',function($q){
+            $q->where('user_id',auth('api')->id());
+        })->where('date','=',$date)->get();
+
+        $privateLessons = PrivateLessons::where('teacher_id',auth('api')->id())
+        ->where('meeting_date','=',$date)->get();
+
+        $courseSession = TeacherCalendarCourseSessionResource::collection($courseSession);
+        $privateLessons = TeacherCalendarPrivateLessonResource::collection($privateLessons);
+
+
+        return [
+            'dates' => $uniqueDates,
+            'sessions' => $courseSession,
+            'lessons' => $privateLessons
+        ];
+
+
+    }
+
+
 
 
 

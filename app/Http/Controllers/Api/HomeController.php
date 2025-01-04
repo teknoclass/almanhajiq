@@ -139,4 +139,13 @@ class HomeController  extends Controller
         return response()->success($response);
     }
 
+    function calendar(Request $request){
+        $data = $this->homeService->calendar($request,false);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+
+    }
+
+
 }

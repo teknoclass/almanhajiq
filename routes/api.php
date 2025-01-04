@@ -121,6 +121,8 @@ Route::get('/homeSearch',[HomeController::class,'homeSearch'])->middleware('lang
 
 Route::get('/getAllOpinion',[HomeController::class,'getOpinion']);
 
+Route::get('/calendar',[HomeController::class,'calendar']);
+
 Route::group([ 'prefix' => 'courses'], function () {
     Route::post('/filter', [CourseController::class, 'courseFilter'])->name('filter')->middleware('check.sanctum.token');
     Route::get('/{id}', [CourseController::class, 'getCourse'])->name('singleCourse')->middleware('check.sanctum.token');

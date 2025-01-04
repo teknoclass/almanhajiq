@@ -16,6 +16,7 @@ class TeacherCalendarPrivateLessonResource extends JsonResource
     {
         $data['id'] = $this->id;
         $data['teacher_name'] = $this->teacher->name;
+        $data['student_name'] = $this->student->name;
         $data['from'] = $this->time_form;
         $data['to'] = $this->time_to;
 
