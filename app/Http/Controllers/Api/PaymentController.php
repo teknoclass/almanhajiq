@@ -11,26 +11,27 @@ use App\Models\UserCourse;
 use App\Models\Transactios;
 use Illuminate\Http\Request;
 use App\Models\CourseSession;
+use App\Models\Notifications;
+use App\Models\PaymentDetail;
+use App\Models\PrivateLessons;
 use App\Services\PaymentService;
 use App\Services\ZainCashService;
 use Illuminate\Support\Facades\DB;
 use App\Models\CourseSessionsGroup;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\freeInstallmentRequest;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
 use App\Models\CourseSessionInstallment;
 use App\Http\Resources\ApiCourseResource;
 use App\Models\CourseSessionSubscription;
+
 use App\Models\StudentSessionInstallment;
 use function PHPUnit\Framework\returnSelf;
-
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\Api\freeInstallmentRequest;
 use App\Http\Resources\ApiPaymentInstallmentsResource;
 use App\Http\Resources\ApiPaymentInstallmentsTimesResource;
-use App\Models\PaymentDetail;
-use App\Models\PrivateLessons;
 
 class PaymentController extends Controller
 {
@@ -1165,7 +1166,7 @@ class PaymentController extends Controller
             }
 
             $paymentDetails = Transactios::where('order_id',$cartId)->get();
-
+            $teacher_id = 0;
             foreach($paymentDetails as $payment){
                 $payment->status = 'completed';
                 $payment->is_paid = 1;
@@ -1185,11 +1186,27 @@ class PaymentController extends Controller
                     'time_type' => $detail['type'],
                     'status' => 'acceptable'
                 ]);
-
+                $teacher_id = $payment['teacher_id'];
 
 
                 $this->paymentService->storeBalanceApi($payment,'private_lesson',$detail['teacher_id']);
             }
+
+            $user = User::find($payment->user_id);
+            // Send notification if need reviewing
+            $title = 'حجز درس خصوصي';
+            $text = "قام " . $user->name . "بحجز درس خصوصي";
+            $notification['title'] = $title;
+            $notification['text'] = $text;
+            $notification['user_type'] = $user->role;
+            $notification['action_type'] = 'private_lesson';
+            $notification['action_id'] = $detail->id;
+            $notification['created_at'] = \Carbon\Carbon::now();
+            $notification['user_id'] = $teacher_id;
+
+
+            Notifications::insert($notification);
+            sendWebNotification($notification['user_id'], 'user', $title, $text);
 
 
 

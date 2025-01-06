@@ -697,6 +697,25 @@ class PrivateLessonsEloquent extends HelperEloquent
         ]);
 
 
+        // Send notification if need reviewing
+        $title = 'طلب تأجيل درس خصوصي';
+        $text = "قام " . auth('api')->user()->name . "بطلب تأجيل درس خصوصي";
+        $notification['title'] = $title;
+        $notification['text'] = $text;
+        $notification['user_type'] = auth('api')->user()->role;
+        $notification['action_type'] = 'private_lesson_request';
+        $notification['action_id'] = $request->id;
+        $notification['created_at'] = \Carbon\Carbon::now();
+        if(auth('api')->user()->role == 'student'){
+
+            $notification['user_id'] = $request->privateLesson->teacher_id;
+        }else{
+            $notification['user_id'] = $request->privateLesson->student_id;
+        }
+
+        Notifications::insert($notification);
+        sendWebNotification($notification['user_id'], 'user', $title, $text);
+
 
 
     }
@@ -736,8 +755,25 @@ class PrivateLessonsEloquent extends HelperEloquent
             $lesson->time_form = $data['from'];
             $lesson->time_to = $data['to'];
             $lesson->save();
-            $postRequest->save();
         }
+        $postRequest->save();
+
+
+        // Send notification if need reviewing
+        $title = 'طلب تأجيل درس خصوصي';
+        $text = "قام " . auth('api')->user()->name . " بالرد على طلب التاجيل";
+        $notification['title'] = $title;
+        $notification['text'] = $text;
+        $notification['user_type'] = auth('api')->user()->role;
+        $notification['action_type'] = 'private_lesson_request';
+        $notification['action_id'] = $request->id;
+        $notification['created_at'] = \Carbon\Carbon::now();
+
+        $notification['user_id'] = $postRequest->user_id;
+
+
+        Notifications::insert($notification);
+        sendWebNotification($notification['user_id'], 'user', $title, $text);
 
     }
 
