@@ -29,6 +29,7 @@ class StudentRequest extends FormRequest
         $rules['country_id']       = 'nullable|numeric';
         $rules['agree_conditions'] = 'required';
         $rules['code_country']     = 'required';
+        $rules['market_id']      = 'string';
 
 
 

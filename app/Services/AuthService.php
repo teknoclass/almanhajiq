@@ -10,6 +10,8 @@ use App\Http\Requests\Api\TeacherRequest;
 use App\Http\Requests\Api\UpdateStudentRequest;
 use App\Http\Requests\Front\SignInRequest;
 use App\Mail\ResetPasswordEmail;
+use App\Models\CouponMarketers;
+use App\Models\Coupons;
 use App\Models\User;
 use App\Repositories\ParentRepository;
 use App\Repositories\ResetPasswordRepository;
@@ -123,7 +125,7 @@ class AuthService extends MainService
 
     }
 
-    public function studentRegister(StudentRequest $studentRequest): array
+    public function studentRegister(StudentRequest $studentRequest)
     {
         try {
             DB::beginTransaction();
@@ -133,6 +135,10 @@ class AuthService extends MainService
             $data['password_c']      = $studentRequest->get('password');
             $data['password']        = Hash::make($studentRequest->get('password'));
             $data['device_token']    = Hash::make($studentRequest->get('device_token'));
+            $coupon = Coupons::where('code',$data['market_id'])->first();
+            $marketerCoupon = CouponMarketers::where('coupon_id',$coupon->id)->first();
+            $data['market_id']     = $marketerCoupon->user_id;
+        
             $user                    = $this->userRepository->updateOrCreateUser($data);
             $token                   = $user->createToken('auth_token')->plainTextToken;
             // $user->sendVerificationCode(); // ✔
@@ -160,6 +166,7 @@ class AuthService extends MainService
         } catch (\Exception $e) {
             Log::alert($e->getMessage());
             DB::rollback();
+            return $e->getMessage();
             $message  = __('message.unexpected_error');
             return $this->createResponse(
                 $message,

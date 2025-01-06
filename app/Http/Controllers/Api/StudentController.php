@@ -27,7 +27,7 @@ class StudentController extends Controller
     public function registerStudent(StudentRequest $studentRequest)
     {
         $student = $this->authService->studentRegister($studentRequest);
-
+        return $student;
         if (!$student['status']) {
             $response = new ErrorResponse($student['message'], Response::HTTP_BAD_REQUEST);
 

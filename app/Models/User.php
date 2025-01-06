@@ -675,12 +675,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function myParent()
     {
-        return $this->belongsTo(ParentSon::class,'son_id','id')->where('status','confirmed');   
+        return $this->belongsTo(ParentSon::class,'son_id','id')->where('status','confirmed');
     }
 
     public function myParentRequest()
     {
-        return $this->hasOne(ParentSonRequest::class,'son_id','id')->orderBy('id','desc'); 
+        return $this->hasOne(ParentSonRequest::class,'son_id','id')->orderBy('id','desc');
     }
 
     public function transactions()
