@@ -1182,7 +1182,7 @@ function canStudentSubscribeToCourse($course_id, $subscription_type)
         }
     }elseif($subscription_type == "installment")
     {
-        $studentInstallments =  StudentSessionInstallment::where('student_id',auth()->guard('web')->user()->id)
+        $studentInstallments =  StudentSessionInstallment::where('student_id',@auth()->guard('web')->user()->id)
         ->where('course_id',$course_id)->first();
 
         if($studentInstallments || $course->subscription_end_date >= date('Y-m-d'))
