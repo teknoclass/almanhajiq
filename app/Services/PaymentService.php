@@ -54,9 +54,6 @@ class PaymentService
                 ]
             ];
 
-            unset($payload['finishPaymentUrl']);
-            unset($payload['notificationUrl']);
-            
             if(env('APP_ENV') != 'local')
             {
                 unset($payload['finishPaymentUrl']);
