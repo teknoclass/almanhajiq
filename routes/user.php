@@ -21,6 +21,7 @@ use App\Http\Controllers\Front\User\CourseSessionSubscriptionsController;
 use App\Http\Controllers\Front\User\CourseSessionInstallmentsController;
 use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
 use App\Http\Controllers\Front\User\PrivateLessonSubscriptionsController;
+use App\Http\Controllers\Front\User\PaymentOperationsController;
 
 Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
     Route::group(['middleware' => 'checkActiveUser'], function () {
@@ -205,10 +206,13 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         Route::get('/full-select-payment-method/{course_id}/{marketer_coupon?}',[CourseFullSubscriptionsController::class,'selectPaymentMethod']);
         Route::post('/full-subscribe-course',[CourseFullSubscriptionsController::class,'fullSubscribe']);
         Route::get('/full-subscribe-course-confirm',[CourseFullSubscriptionsController::class,'fullConfirmSubscribe']);
-  
         //private lessons
         Route::post('/private-lesson-subscription',[PrivateLessonSubscriptionsController::class,'pay']);
         Route::get('/private-lesson-confirm',[PrivateLessonSubscriptionsController::class,'confirmPayment']);
+
+        //handle confirm payment
+        Route::get('/confirm-payment',[PaymentOperationsController::class,'confirmPayment']);
+
         });
         
     });

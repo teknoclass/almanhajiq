@@ -122,9 +122,7 @@ class CourseSessionInstallmentsController extends Controller
  
        $response = $this->paymentService->processPayment([
             "amount" => $price,
-            "currency" => "IQD",
-            "finishPaymentUrl" => url('/user/pay-to-course-session-installment-confirm'),
-            "notificationUrl" => url('/pay-to-course-session-installment-webhook'),
+            "currency" => "IQD"
         ]);  
         
         if($response && isset($response['status']) && $response['status'] == "CREATED")
@@ -140,6 +138,7 @@ class CourseSessionInstallmentsController extends Controller
                 'course_id' => $request->course_id,
                 "user_id" => auth('web')->user()->id,
                 "marketer_coupon" => $request->marketer_coupon,
+                "payment_type" => "installment"
             ];
 
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -199,6 +198,7 @@ class CourseSessionInstallmentsController extends Controller
                 "transaction_id" => $response['referenceNumber'],
                 'course_id' => $request->course_id,
                 "marketer_coupon" => $request->marketer_coupon,
+                "payment_type" => "installment"
             ];
 
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);

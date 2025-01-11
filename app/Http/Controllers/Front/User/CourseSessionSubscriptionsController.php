@@ -166,9 +166,7 @@ class CourseSessionSubscriptionsController extends Controller
 
         $response = $this->paymentService->processPayment([
             "amount" => $price,
-            "currency" => "IQD",
-            "finishPaymentUrl" => url('/user/subscribe-to-course-sessions-confirm'),
-            "notificationUrl" => url('/subscribe-to-course-sessions-webhook'),
+            "currency" => "IQD"
         ]);  
       
         if($request->type == "group")
@@ -194,6 +192,7 @@ class CourseSessionSubscriptionsController extends Controller
                 "purchase_type" => $request->type,
                 "user_id" => auth('web')->user()->id,
                 "marketer_coupon" => $request->marketer_coupon,
+                "payment_type" => "sessions"
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -274,6 +273,7 @@ class CourseSessionSubscriptionsController extends Controller
                 'course_id' => $request->course_id,
                 "purchase_type" => $request->type,
                 "marketer_coupon" => $request->marketer_coupon,
+                "payment_type" => "sessions"
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);

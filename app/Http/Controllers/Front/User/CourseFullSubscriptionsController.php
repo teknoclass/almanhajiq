@@ -35,7 +35,6 @@ class CourseFullSubscriptionsController extends Controller
         {
             return back();
         }
-
         
         $data['course_id'] = $request->course_id;
         //calc course price after coupon
@@ -97,9 +96,7 @@ class CourseFullSubscriptionsController extends Controller
 
         $response = $this->paymentService->processPayment([
             "amount" => $price,
-            "currency" => "IQD",
-            "finishPaymentUrl" => url('/user/full-subscribe-course-confirm'),
-            "notificationUrl" => url('/full-subscribe-course-webhook')
+            "currency" => "IQD"
         ]);  
  
         if($response && isset($response['status']) && $response['status'] == "CREATED")
@@ -115,7 +112,8 @@ class CourseFullSubscriptionsController extends Controller
                 'course_id' => $course->id,
                 "purchase_type" => $request->type,
                 "marketer_coupon" => $request->marketer_coupon,
-                "user_id" => auth('web')->user()->id
+                "user_id" => auth('web')->user()->id,
+                "payment_type" => "full"
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -128,7 +126,6 @@ class CourseFullSubscriptionsController extends Controller
                 'redirect_url' => $response['formUrl']
             ];
         }else{
-            dd($response);
             return  $response = [
                 'status_msg' => 'error',
                 'message' => __('message.unexpected_error'),
@@ -174,7 +171,8 @@ class CourseFullSubscriptionsController extends Controller
                 "transaction_id" => $response['referenceNumber'],
                 'course_id' => $course->id,
                 "purchase_type" => $request->type,
-                "marketer_coupon" => $request->marketer_coupon
+                "marketer_coupon" => $request->marketer_coupon,
+                "payment_type" => "full"
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
