@@ -45,14 +45,20 @@ class PaymentService
                 'currency' => $paymentDetails['currency'],
                 'locale' => app()->getLocale(),
                 'timestamp' => now()->toIso8601String(),
-                'finishPaymentUrl' => $paymentDetails['finishPaymentUrl'],
-                'notificationUrl' => $paymentDetails['notificationUrl'],
+                'finishPaymentUrl' => url('/user/confirm-payment'),
+                'notificationUrl' =>  url('/payment-webhook'),
                 'customerInfo' => [
                     "firstName" => auth('web')->user()->name,
                     "phone" => auth('web')->user()->mobile,
                     "email" => auth('web')->user()->email
                 ]
             ];
+
+            if(env('APP_ENV') != 'local')
+            {
+                unset($payload['finishPaymentUrl']);
+                unset($payload['notificationUrl']);
+            }
 
             $response = Http::withHeaders([
                 'Authorization' => "Basic {$auth}",
