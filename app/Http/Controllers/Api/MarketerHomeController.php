@@ -22,4 +22,19 @@ class MarketerHomeController extends Controller
         $response = $this->home_user->joinAsMarketRequest($request);
         return $this->response_api($response['status'], $response['message']);
     }
+
+    public function home(Request $request)
+    {
+        $data = $this->home_user->MarkterHome($request,false);
+
+        return $this->response_api(200,__('message.operation_accomplished_successfully'),$data);
+
+    }
+
+    public function customers(Request $request)
+    {
+        $data = $this->home_user->allCustomers($request);
+
+        return $this->response_api(200,__('message.operation_accomplished_successfully'),$data);
+    }
 }

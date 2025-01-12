@@ -352,7 +352,8 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
 Route::prefix('marketerApi')->group(function(){
 
     Route::post('/joinAsMarketerRequest', [MarketerHomeController::class, 'joinAsMarketRequest'])->name('joinAsMarketRequest');
-
+    Route::get('/home',[MarketerHomeController::class,'home']);
+    ROute::get('/customers',[MarketerHomeController::class,'customers']);
 
 });
 

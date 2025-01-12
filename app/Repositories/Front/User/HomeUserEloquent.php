@@ -2,6 +2,9 @@
 
 namespace App\Repositories\Front\User;
 
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UsersCollection;
+use App\Http\Resources\UsersResources;
 use App\Models\Balances;
 use App\Models\Category;
 use App\Models\Coupons;
@@ -260,5 +263,53 @@ class HomeUserEloquent extends HelperEloquent
 
 
         return true;
+    }
+
+    function MarkterHome($request,$is_web = true){
+
+        $data['user'] = $this->getUser($is_web);
+        $data['count_customers']=User::where('market_id', $data['user']->id)->count();
+
+        $data['last_customers']=UsersResources::collection(User::where('market_id', $data['user']->id)
+        ->orderBy('id', 'desc')->get());
+
+        $user_id=$data['user']->id;
+
+        $data['profits']=Balances::select('user_id', 'type', 'amount')
+        ->where('user_id', $user_id)
+        ->where('type', 'deposit')
+        ->where('user_type', User::MARKETER)
+        ->sum('amount');
+
+        $data['withdrawable_amounts']=abs(
+            (Balances::select('user_id', 'type', 'amount')->where('user_id', $user_id)
+        ->where('type', 'deposit')
+        ->where('user_type', User::MARKETER)
+        ->whereRaw(("case WHEN becomes_retractable_at IS  NOT NULL THEN becomes_retractable_at < now()  END"))
+        ->sum('amount'))
+            -
+            (Balances::select('user_id', 'type', 'amount')
+            ->where('user_id', $user_id)->where('type', 'withdrow')
+            ->where('user_type', User::MARKETER)
+            ->sum('amount'))
+        );
+        ;
+
+        $user_id=$data['user']->id;
+
+        $data['coupon']=Coupons::whereHas('allMarketers', function (Builder $query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        })->first();
+        unset($data['user']);
+        return $data;
+
+    }
+
+    function allCustomers(){
+        $user = $this->getUser(false);
+
+        $data['customers']=User::where('market_id', $user->id)->paginate(10);
+
+        return new UserCollection($data['customers']);
     }
 }
