@@ -48,6 +48,7 @@ class HomeController  extends Controller
     {
       $topTeachers = $this->homeService->topTeachers();
       $topCourses  = $this->homeService->mostOrderedCourses();
+      $featuredCourses = $this->homeService->featuredCourses();
       $lastCourses = $this->homeService->lastCourses();
       $gradeLevels = $this->homeService->allGradeLevels();
       $lastPosts   = $this->blogService->latestPosts();
@@ -74,6 +75,7 @@ class HomeController  extends Controller
         $response = new SuccessResponse('message.success',[
             'grade_levels' => collect(new GradeLevelCollection($gradeLevels['data'])),
             'top_courses'  => collect(new ApiCourseCollection($topCourses['data'])),
+            'featured_courses'  => collect(new ApiCourseCollection($featuredCourses['data'])),
             'last_courses' => collect(new ApiCourseCollection($lastCourses['data'])),
             'top_teachers' => collect(new TeacherCollection($topTeachers['data'])),
             'last_posts'   => collect(new PostsCollection($lastPosts['data'])),

@@ -41,29 +41,29 @@ class HomeService extends MainService
             'lecturer',
             'priceDetails',
             'material'
-            ])->orderBy('students_count', 'desc')->take(5)->get();
+        ])->orderBy('students_count', 'desc')->take(5)->get();
+
+        return $this->createResponse(
+            __('message.success'),
+            true,
+            $courses
+        );
+    }
+    function lastCourses(){
+        $courses = Courses::active()->with([
+            'grade_sub_level',
+            'category',
+            'lecturer',
+            'priceDetails',
+            'material'
+            ])->take(5)->get();
 
             return $this->createResponse(
                 __('message.success'),
                 true,
                 $courses
             );
-        }
-        function lastCourses(){
-            $courses = Courses::active()->with([
-                'grade_sub_level',
-                'category',
-                'lecturer',
-                'priceDetails',
-                'material'
-                ])->take(5)->get();
-
-                return $this->createResponse(
-                    __('message.success'),
-                    true,
-                    $courses
-                );
-        }
+    }
 
     public function topTeachers()
     {
@@ -171,6 +171,22 @@ class HomeService extends MainService
         ];
 
 
+    }
+
+    function featuredCourses(){
+        $courses = Courses::with([
+            'grade_sub_level',
+            'category',
+            'lecturer',
+            'priceDetails',
+            'material'
+        ])->where('is_feature' , 1)->paginate(10);
+
+        return $this->createResponse(
+            __('message.success'),
+            true,
+            $courses
+        );
     }
 
 
