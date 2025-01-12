@@ -735,6 +735,7 @@ class Courses extends Model
     }
 
     function canSubscribe(){
+        if($this->subscription_end_date == null)return 1;
         if(Carbon::parse($this->subscription_end_date)->isPast()){
             return 0;
         }else{
