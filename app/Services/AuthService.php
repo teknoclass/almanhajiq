@@ -185,6 +185,8 @@ class AuthService extends MainService
                 }
                 $user->device_token  = $request->device_token;
                 $user->save();
+                $user->tokens()->whereNull('expires_at')->update(['expires_at' => now()]);
+
                 $token = $user->createToken('auth_token')->plainTextToken;
                 $user->token  = $token;
                 return $this->createResponse(

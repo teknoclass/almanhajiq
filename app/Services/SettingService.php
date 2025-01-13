@@ -43,6 +43,7 @@ class SettingService extends MainService
             'android_update_status' => getSeting("android_update_status"),
             'ios_release'           => getSeting("ios_release"),
             'ios_update_status'     => getSeting("ios_update_status"),
+            'available_payment'     => getSeting('available_payment')
         ];
 
         return $this->createResponse(

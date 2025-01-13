@@ -14,6 +14,7 @@ class ParentRepository extends MainRepository
     public function updateOrCreateUser($data)
     {
         $data['role'] = 'parent';
+        $data['is_validation'] = 1;
         $user = User::updateOrCreate(['id' => 0], $data);
         $user->update();
 

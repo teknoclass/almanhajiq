@@ -49,7 +49,7 @@ class AuthEloquent extends HelperEloquent
             ];
             return $response;
         }
-      
+
         try {
             DB::beginTransaction();
             $password           = substr(sprintf("%06d", mt_rand(1, 999999)), 0, 6);
@@ -99,6 +99,7 @@ class AuthEloquent extends HelperEloquent
                 sendNotifications('طلب تسجيل مسوق جديد', $text, 'request_join_marketers', $join_request->id, 'show_marketers_joining_requests', 'admin');
             }
             else{
+                if($request->role == 'parent')$data['is_validation'] = 1;
                 $user = User::updateOrCreate(['id' => 0], $data);
 
                 $user->last_login_at = Carbon::now();
@@ -231,7 +232,7 @@ class AuthEloquent extends HelperEloquent
                 // ];
                 // return $response;
             }
-    
+
             $session_token = Str::random(60);
 
             $device_token = $request->device_token;
@@ -373,7 +374,7 @@ class AuthEloquent extends HelperEloquent
         // $user->save();
 
         $this->guard()->logout();
-        
+
         // $request->session()->invalidate();
 
         return redirect()->route('user.auth.login');
