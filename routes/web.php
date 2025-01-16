@@ -223,7 +223,7 @@ Route::post('/subscribe-to-course-sessions-webhook',[CourseSessionSubscriptionsC
 Route::post('/pay-to-course-session-installment-webhook',[CourseSessionInstallmentsController::class,'handleWebhook']);
 Route::post('/private-lesson-subscribe-webhook',[PrivateLessonSubscriptionsController::class,'handleWebhook']);
 //handle payment webhook
-Route::post('/payment-webhook',[PaymentOperationsController::class,'handleWebhook']);
+Route::post('/user/payment-webhook',[PaymentOperationsController::class,'handleWebhook']);
 
 ////////////////////////
 
