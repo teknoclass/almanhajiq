@@ -22,7 +22,7 @@ class SonRequestsController extends Controller
     public function index()
     {
         $data['son_requests'] = ParentSonRequest::where('parent_id',getUser()->id)->get();
-        
+
         return view('front.user.parent.sons-requests.index',$data);
     }
 
@@ -31,7 +31,7 @@ class SonRequestsController extends Controller
         $parentRequest = ParentSonRequest::find($id);
 
         $linkSon = ParentSon::updateOrCreate([
-            'son_id' => auth()->id(),
+            'son_id' => $parentRequest->son_id,
             'parent_id' => $parentRequest->parent_id,
         ],['status' => 'confirmed']);
 
