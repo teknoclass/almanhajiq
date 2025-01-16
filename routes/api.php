@@ -1,13 +1,17 @@
 <?php
 
 use App\Models\Payment;
+use App\Models\PrivateLessons;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\PagesController;
+use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\ParentController;
 use App\Http\Controllers\Api\CoursesController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\StudentController;
@@ -16,20 +20,17 @@ use App\Http\Controllers\Api\LecturerController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\FavouriteController;
 use App\Http\Controllers\Api\AssignmentController;
-use App\Http\Controllers\Api\ChatController;
-use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\LiveSessionController;
+use App\Http\Controllers\Api\TeacherHomeController;
 use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Api\MarketerHomeController;
 use App\Http\Controllers\Api\CourseSessionsController;
 use App\Http\Controllers\Api\LecturerCourseController;
-use App\Http\Controllers\Api\ParentController;
 use App\Http\Controllers\Api\PrivateLessonsController;
 use App\Http\Controllers\Api\TeacherBalanceController;
-use App\Http\Controllers\Api\TeacherHomeController;
-use App\Http\Controllers\Api\TeacherPrivateLessonsController;
-use App\Http\Controllers\TeacherStudentProfileController;
-use App\Models\PrivateLessons;
 use Twilio\Rest\Api\V2010\Account\Call\PaymentContext;
+use App\Http\Controllers\TeacherStudentProfileController;
+use App\Http\Controllers\Api\TeacherPrivateLessonsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -346,5 +347,15 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
 
 
 });
+
+
+Route::prefix('marketerApi')->group(function(){
+
+    Route::post('/joinAsMarketerRequest', [MarketerHomeController::class, 'joinAsMarketRequest'])->name('joinAsMarketRequest');
+    Route::get('/home',[MarketerHomeController::class,'home']);
+    ROute::get('/customers',[MarketerHomeController::class,'customers']);
+
+});
+
 
 

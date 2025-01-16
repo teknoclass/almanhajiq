@@ -31,6 +31,7 @@ use App\Http\Controllers\Front\User\CourseFullSubscriptionsController;
 use App\Models\Category;
 use App\Models\CategoryTranslation;
 use App\Http\Controllers\Front\User\PrivateLessonSubscriptionsController;
+use App\Http\Controllers\Front\User\PaymentOperationsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -221,6 +222,9 @@ Route::post('/full-subscribe-course-webhook',[CourseFullSubscriptionsController:
 Route::post('/subscribe-to-course-sessions-webhook',[CourseSessionSubscriptionsController::class,'handleWebhook']);
 Route::post('/pay-to-course-session-installment-webhook',[CourseSessionInstallmentsController::class,'handleWebhook']);
 Route::post('/private-lesson-subscribe-webhook',[PrivateLessonSubscriptionsController::class,'handleWebhook']);
+//handle payment webhook
+Route::post('/payment-webhook',[PaymentOperationsController::class,'handleWebhook']);
+
 ////////////////////////
 
 Route::get('checkout', [PaymentController::class, 'checkout']);

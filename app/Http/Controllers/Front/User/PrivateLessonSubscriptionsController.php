@@ -44,9 +44,7 @@ class PrivateLessonSubscriptionsController extends Controller
     {
         $response = $this->paymentService->processPayment([
             "amount" => $transaction->amount,
-            "currency" => "IQD",
-            "finishPaymentUrl" => url('/user/private-lesson-confirm'),
-            "notificationUrl" => url('/private-lesson-subscribe-webhook')
+            "currency" => "IQD"
         ]);  
  
         if($response && isset($response['status']) && $response['status'] == "CREATED")
@@ -61,6 +59,7 @@ class PrivateLessonSubscriptionsController extends Controller
                 "transactionable_id" => $transaction->transactionable_id,
                 "brand" => "card",
                 "user_id" => auth('web')->user()->id,
+                "payment_type" => "private"
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
@@ -97,6 +96,7 @@ class PrivateLessonSubscriptionsController extends Controller
                 "transactionable_id" => $transaction->transactionable_id,
                 "brand" => "zaincash",
                 "user_id" => auth('web')->user()->id,
+                "payment_type" => "private"
             ];
     
             session()->put('payment-'.auth('web')->user()->id,$paymentDetails);
