@@ -62,9 +62,6 @@ class CourseFullSubscriptionsController extends Controller
 
     public function fullSubscribe(Request $request)
     {
-      
-        try
-        {
         $course = Courses::find($request->id);
 
         if($request->payment_type == "gateway")
@@ -72,11 +69,6 @@ class CourseFullSubscriptionsController extends Controller
             return $this->paymentGateway($request);
         }else{
             return $this->zainCash($request);
-        }
-        }
-        catch (\Exception $e)
-        {
-            dd($e->getMessage()." ".$e->getFile().$e->getLine());
         }
     }
 
@@ -106,7 +98,7 @@ class CourseFullSubscriptionsController extends Controller
             "amount" => $price,
             "currency" => "IQD"
         ]);  
- 
+ dd($response);
         if($response && isset($response['status']) && $response['status'] == "CREATED")
         {
             $paymentDetails = [
