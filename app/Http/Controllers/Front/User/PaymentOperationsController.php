@@ -58,6 +58,7 @@ class PaymentOperationsController extends Controller
         catch (\Exception $e)
         {
             DB::rollback(); 
+            dd($e->getMessage()." ".$e->getFile()." ".getLine());
             Log::error($e->getMessage());
             Log::error($e->getFile());
             Log::error($e->getLine());
