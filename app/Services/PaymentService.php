@@ -40,7 +40,7 @@ class PaymentService
 
             $payload = [
                 'requestId' => genereatePaymentOrderID(),
-                'withoutAuthenticate' => true,
+                'withoutAuthenticate' => false,
                 'amount' => $paymentDetails['amount'],
                 'currency' => $paymentDetails['currency'],
                 'locale' => app()->getLocale(),
