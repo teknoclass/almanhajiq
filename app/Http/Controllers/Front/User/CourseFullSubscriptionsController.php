@@ -98,7 +98,7 @@ class CourseFullSubscriptionsController extends Controller
             "amount" => $price,
             "currency" => "IQD"
         ]);  
- dd($response);
+ 
         if($response && isset($response['status']) && $response['status'] == "CREATED")
         {
             $paymentDetails = [
