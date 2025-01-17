@@ -40,7 +40,7 @@ class PaymentService
 
             $payload = [
                 'requestId' => genereatePaymentOrderID(),
-                'withoutAuthenticate' => false,
+                'withoutAuthenticate' => (env('APP_ENV') != 'local') ? false : true,
                 'amount' => $paymentDetails['amount'],
                 'currency' => $paymentDetails['currency'],
                 'locale' => app()->getLocale(),
