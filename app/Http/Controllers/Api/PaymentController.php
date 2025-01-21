@@ -133,7 +133,6 @@ class PaymentController extends Controller
             'orderId' => $orderId,
             'notificationUrl' => ''
         ]);
-        return $response;
         if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [
