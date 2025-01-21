@@ -126,7 +126,7 @@ class PaymentController extends Controller
             $price = $price_after_discount['price'];
         }
 
-        $response = $this->paymentService->processPayment([
+        $response = $this->paymentService->processPaymentApi([
             "amount" => $price??0,
             "currency" => "IQD",
             "successUrl" => url('/api/payment/full-subscribe-course-confirm'),
