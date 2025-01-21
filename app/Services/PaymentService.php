@@ -118,8 +118,6 @@ class PaymentService
                 'currency' => $paymentDetails['currency'],
                 'locale' => app()->getLocale(),
                 'timestamp' => now()->toIso8601String(),
-                'finishPaymentUrl' => url('/user/confirm-payment'),
-                'notificationUrl' => url('/payment-webhook'),
                 'customerInfo' => [
                     "firstName" => auth('api')->user()->name,
                     "phone" => auth('api')->user()->mobile,
