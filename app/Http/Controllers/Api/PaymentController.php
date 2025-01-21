@@ -145,7 +145,8 @@ class PaymentController extends Controller
                 "brand" => "card",
                 'course_id' => $course->id,
                 "purchase_type" => $request->payment_type,
-                'coupon' => $request->get('code')
+                'coupon' => $request->get('code'),
+                'payment_type' => 'full'
             ];
 
             $this->paymentService->createTransactionRecordApi($paymentDetails);
@@ -425,11 +426,13 @@ class PaymentController extends Controller
             $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
             $transactionable_type = "App\\Models\\CourseSessionsGroup";
             $model = CourseSessionsGroup::find($request->target_id);
+            $paymentType = 'group';
         }else{
             $redirect = url('/api/payment/subscribe-to-course-sessions-confirm');
             $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
             $transactionable_type = "App\\Models\\CourseSession";
             $model = CourseSession::find($request->target_id);
+            $paymentType = 'session';
         }
         $orderId = genereatePaymentOrderID();
 
@@ -461,7 +464,8 @@ class PaymentController extends Controller
                 "transactionable_type" => $transactionable_type,
                 "transactionable_id" => $request->target_id,
                 "brand" => "card",
-                'coupon' => $request->get('code')
+                'coupon' => $request->get('code'),
+                'payment_type' => $paymentType
             ];
 
             $this->paymentService->createTransactionRecordApi($paymentDetails);
@@ -801,7 +805,8 @@ class PaymentController extends Controller
                 "transactionable_id" => $installment->id,
                 "brand" => "card",
                 'course_id' => $request->course_id,
-                'coupon' => $request->get('code')
+                'coupon' => $request->get('code'),
+                'payment_type' => 'installment'
             ];
             $this->paymentService->createTransactionRecordApi($paymentDetails);
 
@@ -1055,7 +1060,8 @@ class PaymentController extends Controller
                     "transactionable_type" => "App\\Models\\PrivateLessons",
                     "transactionable_id" => $detail->id,
                     "brand" => "card",
-                    'coupon' => $request->get('code')
+                    'coupon' => $request->get('code'),
+                    'payment_type' => 'private_lesson'
                 ];
                 $this->paymentService->createTransactionRecordApi($paymentDetails);
             }

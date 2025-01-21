@@ -32,36 +32,62 @@ class PaymentOperationsController extends Controller
         DB::beginTransaction();
         try
         {
-            $userId = auth('web')->user()->id ?? null;
-            $paymentDetails = session("payment-$userId");
-            $paymentType = $paymentDetails['payment_type'] ?? null;
+            $cartId = $request->get('requestId');
+            $paymentDetails = Transactios::where('order_id',$cartId)->first();
+            if($paymentDetails['place'] == 'web'){
 
-            if($paymentType == "full")
-            {
-                return redirect (url('/user/full-subscribe-course-confirm'));
-            }
-            elseif($paymentType == "sessions")
-            {
-                return redirect(url('/user/subscribe-to-course-sessions-confirm'));   
-            }
-            elseif($paymentType == "installment")
-            {
-                return redirect(url('/user/pay-to-course-session-installment-confirm'));   
-            }
-            elseif($paymentType == "private")
-            {
-                return redirect(url('/user/private-lesson-confirm'));   
+                $userId = auth('web')->user()->id ?? null;
+                $paymentDetails = session("payment-$userId");
+                $paymentType = $paymentDetails['payment_type'] ?? null;
+
+                if($paymentType == "full")
+                {
+                    return redirect (url('/user/full-subscribe-course-confirm'));
+                }
+                elseif($paymentType == "sessions")
+                {
+                    return redirect(url('/user/subscribe-to-course-sessions-confirm'));
+                }
+                elseif($paymentType == "installment")
+                {
+                    return redirect(url('/user/pay-to-course-session-installment-confirm'));
+                }
+                elseif($paymentType == "private")
+                {
+                    return redirect(url('/user/private-lesson-confirm'));
+                }
+            }else{
+                if($paymentDetails['payment_type'] == "full")
+                {
+                    return redirect (url('/api/payment/full-subscribe-course-confirm') . "?requestId=$cartId");
+                }
+                elseif($paymentDetails['payment_type'] == "session")
+                {
+                    return redirect(url('/api/payment/subscribe-to-course-sessions-confirm') . "?requestId=$cartId");
+                }
+                elseif($paymentDetails['payment_type'] == "group")
+                {
+                    return redirect(url('/api/payment/subscribe-to-course-group-confirm') . "?requestId=$cartId");
+                }
+                elseif($paymentDetails['payment_type'] == "installment")
+                {
+                    return redirect(url('/api/payment/pay-to-course-session-installment-confirm') . "?requestId=$cartId");
+                }
+                elseif($paymentDetails['payment_type'] == "private_lesson")
+                {
+                    return redirect(url('/api/payment/pay-to-private-lesson-confirm') . "?requestId=$cartId");
+                }
             }
 
-            DB::commit(); 
+            DB::commit();
         }
         catch (\Exception $e)
         {
-            DB::rollback(); 
+            DB::rollback();
             Log::error($e->getMessage());
             Log::error($e->getFile());
             Log::error($e->getLine());
-            return redirect('/payment-failure'); 
+            return redirect('/payment-failure');
         }
     }
 
@@ -73,7 +99,7 @@ class PaymentOperationsController extends Controller
             $userId = auth('web')->user()->id ?? null;
             $paymentDetails = session("payment-$userId");
             $paymentType = $paymentDetails['payment_type'] ?? null;
-    
+
             switch ($paymentType) {
                 case 'full':
                     return app(CourseFullSubscriptionsController::class)->handleWebhook($request);
@@ -96,5 +122,5 @@ class PaymentOperationsController extends Controller
             ]);
         }
     }
-     
+
 }

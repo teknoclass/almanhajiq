@@ -186,7 +186,9 @@ class PaymentService
             'coupon' => $paymentDetails['coupon'] ?? null,
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
             'is_paid' => false,
-            'order_id' => $paymentDetails['orderId']
+            'order_id' => $paymentDetails['orderId'],
+            'place' => 'api',
+            'payment_type' => $paymentDetails['payment_type']
         ]);
     }
 
