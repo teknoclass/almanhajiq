@@ -126,13 +126,14 @@ class PaymentController extends Controller
             $price = $price_after_discount['price'];
         }
 
-        $response = $this->paymentService->processPaymentApi([
+        $response = $this->paymentService->processPayment([
             "amount" => $price??0,
             "currency" => "IQD",
             "successUrl" => url('/api/payment/full-subscribe-course-confirm'),
             'orderId' => $orderId,
             'notificationUrl' => ''
         ]);
+        return $response;
         if($response && $response['status'] == "CREATED")
         {
             $paymentDetails = [

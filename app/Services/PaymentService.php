@@ -54,11 +54,7 @@ class PaymentService
                 ]
             ];
 
-            if(env('APP_ENV') != 'local')
-            {
-                unset($payload['finishPaymentUrl']);
-                unset($payload['notificationUrl']);
-            }
+
 
             $response = Http::withHeaders([
                 'Authorization' => "Basic {$auth}",
@@ -122,8 +118,8 @@ class PaymentService
                 'currency' => $paymentDetails['currency'],
                 'locale' => app()->getLocale(),
                 'timestamp' => now()->toIso8601String(),
-                'finishPaymentUrl' => $paymentDetails['successUrl'],
-                'notificationUrl' => $paymentDetails['notificationUrl'],
+                'finishPaymentUrl' => url('/user/confirm-payment'),
+                'notificationUrl' => url('/payment-webhook'),
                 'customerInfo' => [
                     "firstName" => auth('api')->user()->name,
                     "phone" => auth('api')->user()->mobile,
