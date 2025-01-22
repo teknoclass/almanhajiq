@@ -22,7 +22,9 @@ class UserResource extends JsonResource
             'email'=>$this->email,
             'is_validation' => $this->is_validation,
             'mobile' => $this->mobile,
-            'code_country' => $this->code_country
+            'code_country' => $this->code_country,
+            'last_login' => $this->last_login_at,
+            'join_date' => $this->created_at
 
         ];
         if ($this->token){

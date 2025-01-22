@@ -149,9 +149,11 @@
 
 
                                                 @if($isSessionNow && $session->meeting_status != "finished")
-                                                    <span><a
-                                                            href="{{ route('user.lecturer.live.createLiveSession', $session->id) }}"
-                                                            class="btn btn-primary" id="startSession">{{ __('Start Session') }}</a></span>
+                                                    <span><a href="{{ route('user.lecturer.live.createLiveSession', $session->id) }}"
+                                                        class="btn btn-primary"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onclick="setTimeout(() => location.reload(), 500);">{{ __('Start Session') }}</a></span>
                                                 @elseif ($isSessionStartingSoon)
                                                     <button class="btn btn-warning"
                                                             disabled>{{ __('starting_soon') }}</button>
@@ -275,17 +277,3 @@
     @endpush
 @endsection
 
-<script>
-    document.getElementById("startSession").addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent default navigation
-        let url = this.href; // Get the link URL
-
-        // Open the link in a new tab
-        window.open(url, "_blank");
-
-        // Reload the current tab after a short delay
-        setTimeout(() => {
-            location.reload();
-        }, 500); // Adjust delay if needed
-    });
-</script>

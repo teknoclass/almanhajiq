@@ -110,34 +110,39 @@ class CourseSession extends Model
         return $randomPassword;
     }
     public function createLiveSession ($type = 'web'){
-        $attendeePW = $this->generateSimplePassword(8);
-        $moderatorPW = $this->generateSimplePassword(8);
-        $meeting_id = "course_session_with_id_".$this->id.time();
-        $this->meeting_id = $meeting_id;
-        $this->meeting_status = "started";
+        if($this->meeting_status = "started"){
+            return $this->joinLiveSessionV2($type);
+        }else{
 
-        Bigbluebutton::create([
-            'meetingID'      => $meeting_id,
-            'meetingName'    => $this->title,
-            'autoStartRecording' => true,
-            'allowStartStopRecording' => false,
-            'record'         => true,
-            'attendeePW'     => $attendeePW,
-            'moderatorPW'    => $moderatorPW,
-            'endCallbackUrl' => route('user.meeting.finished' , $this->id),
-            'logoutUrl'      => route('user.meeting.finished' , [$this->id , auth($type)->id()]),
-        ]);
-        $this->public_password = $attendeePW;
-        $this->private_password = $moderatorPW;
-        $url =  Bigbluebutton::join([
-            'meetingID' => $this->meeting_id,
-            'userName'  => auth($type)->user()->name,
-            'role'      => 'MODERATOR',
-            'password'  => $moderatorPW
-        ]);
-        $this->save();
+            $attendeePW = $this->generateSimplePassword(8);
+            $moderatorPW = $this->generateSimplePassword(8);
+            $meeting_id = "course_session_with_id_".$this->id.time();
+            $this->meeting_id = $meeting_id;
+            $this->meeting_status = "started";
 
-        return $url;
+            Bigbluebutton::create([
+                'meetingID'      => $meeting_id,
+                'meetingName'    => $this->title,
+                'autoStartRecording' => true,
+                'allowStartStopRecording' => false,
+                'record'         => true,
+                'attendeePW'     => $attendeePW,
+                'moderatorPW'    => $moderatorPW,
+                'endCallbackUrl' => route('user.meeting.finished' , $this->id),
+                'logoutUrl'      => route('user.meeting.finished' , [$this->id , auth($type)->id()]),
+            ]);
+            $this->public_password = $attendeePW;
+            $this->private_password = $moderatorPW;
+            $url =  Bigbluebutton::join([
+                'meetingID' => $this->meeting_id,
+                'userName'  => auth($type)->user()->name,
+                'role'      => 'MODERATOR',
+                'password'  => $moderatorPW
+            ]);
+            $this->save();
+
+            return $url;
+        }
     }
 
     public function joinLiveSession($request) {
