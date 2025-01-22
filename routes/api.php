@@ -210,13 +210,13 @@ Route::prefix('assignment')->middleware('auth:api')->group(function(){
 });
 
 
-Route::prefix('/favourite')->group(function(){
+Route::prefix('/favourite')->middleware('auth:sanctum')->group(function(){
     Route::post('/set',[FavouriteController::class,'set'])->middleware('auth:api');
     Route::get('/get',[FavouriteController::class,'get'])->middleware('auth:api');
 });
 
 //private lessons
-Route::prefix('privateLessons')->group(function(){
+Route::prefix('privateLessons')->middleware('auth:sanctum')->group(function(){
 
     Route::get('/get/{type}',[PrivateLessonsController::class,'get']);
     Route::post('/postpone',[PrivateLessonsController::class,'postpone']);
@@ -245,7 +245,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'lecturer'], function () {
 
 });
 
-Route::group(['middleware' => 'language', 'prefix' => 'user'], function () {
+Route::group(['middleware' => ['language','auth:sanctum'], 'prefix' => 'user'], function () {
 
     Route::get('/myCourses',[UserProfileController::class,'myCourses']);
 
@@ -255,7 +255,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'user'], function () {
 
 //chat
 
-Route::prefix('chat')->group(function(){
+Route::prefix('chat')->middleware('auth:sanctum')->group(function(){
 
     Route::get('/index',[ChatController::class,'index']);
     Route::get('/create/{receiver_id}',[ChatController::class,'create']);
@@ -267,13 +267,13 @@ Route::prefix('chat')->group(function(){
 
 
 //my notification
-Route::get('/myNotification',[UserProfileController::class,'myNotification']);
+Route::get('/myNotification',[UserProfileController::class,'myNotification'])->middleware('auth:sanctum');
 
 
 
 //lecturer apis
 
-Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function () {
+Route::group(['middleware' => ['language','auth:sanctum'], 'prefix' => 'teacherApi'], function () {
 
 
     //courses
@@ -349,7 +349,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'teacherApi'], function ()
 });
 
 
-Route::prefix('marketerApi')->group(function(){
+Route::prefix('marketerApi')->middleware('auth:sanctum')->group(function(){
 
     Route::post('/joinAsMarketerRequest', [MarketerHomeController::class, 'joinAsMarketRequest'])->name('joinAsMarketRequest');
     Route::get('/home',[MarketerHomeController::class,'home']);
