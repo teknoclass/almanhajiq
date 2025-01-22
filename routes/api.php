@@ -351,7 +351,7 @@ Route::group(['middleware' => ['language','auth:sanctum'], 'prefix' => 'teacherA
 
 Route::prefix('marketerApi')->middleware('auth:sanctum')->group(function(){
 
-    Route::post('/joinAsMarketerRequest', [MarketerHomeController::class, 'joinAsMarketRequest'])->name('joinAsMarketRequest');
+    Route::post('/joinAsMarketerRequest', [MarketerHomeController::class, 'joinAsMarketRequest'])->name('joinAsMarketRequest')->withoutMiddleware('auth:api');;
     Route::get('/home',[MarketerHomeController::class,'home']);
     Route::get('/customers',[MarketerHomeController::class,'customers']);
     Route::get('/getRefferalLink/{id}',[MarketerHomeController::class,'getReferralLink']);
