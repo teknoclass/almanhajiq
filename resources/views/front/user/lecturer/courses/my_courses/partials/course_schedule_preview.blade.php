@@ -92,7 +92,7 @@
                                     <tbody>
 
                                     @foreach ($item['sessions'] as $session)
-                                    
+
                                         <tr>
                                             <td>{{ $session->title }}</td>
                                             <td>{{__($session->day)}}</td>
@@ -128,10 +128,10 @@
 
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
                                                             data-bs-target="#cancelModal" id="cancelButton" class="btn btn-danger btn-sm " style="width:100px">
-                                                           
-                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}} 
+
+                                                            <i class="fa fa-cancel"></i>     {{ __('cancel')}}
                                                     </button>
-                                              
+
                                                     @if(\Carbon\Carbon::now() <= $cutoffTime)
                                                     <button data-bs-toggle="modal" data-id="{{ $session->id }}"
                                                              id="postPoneButton" class="btn btn-primary btn-sm "
@@ -151,12 +151,12 @@
                                                 @if($isSessionNow && $session->meeting_status != "finished")
                                                     <span><a
                                                             href="{{ route('user.lecturer.live.createLiveSession', $session->id) }}"
-                                                            class="btn btn-primary">{{ __('Start Session') }}</a></span>
+                                                            class="btn btn-primary" id="startSession">{{ __('Start Session') }}</a></span>
                                                 @elseif ($isSessionStartingSoon)
                                                     <button class="btn btn-warning"
                                                             disabled>{{ __('starting_soon') }}</button>
                                                 @elseif ($isSessionInPast)
-                                                     
+
                                                 <p class="text-center">{{ __('Ended') }}</p>
                                                 @if($session->getRecording() != "" && $session->meeting_status == "finished")
                                                 <a class="btn btn-secondary" target="_blank" href="{{$session->getRecording()}}">{{__('recording_link')}} </a>
@@ -166,7 +166,7 @@
                                                             disabled>{{ __('did_not_start_yet') }}</button>
 
                                             </td>
-                                          
+
 
                                             @endif
                                             @endforeach
@@ -274,3 +274,18 @@
         </script>
     @endpush
 @endsection
+
+<script>
+    document.getElementById("startSession").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default navigation
+        let url = this.href; // Get the link URL
+
+        // Open the link in a new tab
+        window.open(url, "_blank");
+
+        // Reload the current tab after a short delay
+        setTimeout(() => {
+            location.reload();
+        }, 500); // Adjust delay if needed
+    });
+</script>
