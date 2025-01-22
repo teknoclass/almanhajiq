@@ -353,7 +353,8 @@ Route::prefix('marketerApi')->group(function(){
 
     Route::post('/joinAsMarketerRequest', [MarketerHomeController::class, 'joinAsMarketRequest'])->name('joinAsMarketRequest');
     Route::get('/home',[MarketerHomeController::class,'home']);
-    ROute::get('/customers',[MarketerHomeController::class,'customers']);
+    Route::get('/customers',[MarketerHomeController::class,'customers']);
+    Route::get('/getRefferalLink/{id}',[MarketerHomeController::class,'getReferralLink']);
 
 });
 
