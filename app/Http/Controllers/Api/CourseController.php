@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\FilterRequest;
-use App\Http\Resources\ApiCourseFilterCollection;
-use App\Http\Resources\ApiSingleCourseResource;
-use App\Http\Resources\TeacherCollection;
+use App\Models\Coupons;
+use App\Models\Courses;
 use Illuminate\Http\Request;
+use App\Services\CourseService;
+use App\Http\Controllers\Controller;
 use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
-use App\Services\CourseService;
+use App\Http\Requests\Api\FilterRequest;
+use App\Http\Resources\TeacherCollection;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\ApiSingleCourseResource;
+use App\Http\Resources\ApiCourseFilterCollection;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class CourseController extends Controller
 {
@@ -64,7 +68,23 @@ class CourseController extends Controller
             return response()->error($response);
         }
         $collection                 = new ApiSingleCourseResource($course['data']);
-        $courses = new SuccessResponse($course['message'],  [ "title"=>__('courses'),'courses' => collect($collection)]
+        $crs = Courses::find($id);
+        $user = auth('api')->user();
+        $link = "";
+        if($user && $user->role == 'marketer'){
+            $user_id = $user->id;
+            $url_course = route('courses.single', ['id' => @$crs->id, 'title' => mergeString(@$crs->title, '')]);
+            $data['coupon']=Coupons::whereHas('allMarketers', function (Builder $query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            })->first();
+            $code = $data['coupon']->code;
+            $link = "$url_course?marketer_coupon=$code";
+
+        }
+        $courses = new SuccessResponse($course['message'],  [
+            "title"=>__('courses'),'courses' => collect($collection),
+            'link' => $link
+        ]
         , Response::HTTP_OK);
 
         return response()->success($courses);
