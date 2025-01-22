@@ -20,7 +20,7 @@ class TeacherIncomingSessionResource extends JsonResource
         $data['date'] = $this->date;
         $data['time'] = $this->time;
         $data['course_name'] = $this->course->title ?? "";
-        $data['course_image'] =  imageUrl($this->course->image,'100x100');
+        $data['course_image'] =  imageUrl($this->course->image);
         $data['remaining_time_in_second'] = $this->time_difference;
 
         return $data;

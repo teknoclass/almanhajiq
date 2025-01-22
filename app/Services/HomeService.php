@@ -35,7 +35,7 @@ class HomeService extends MainService
 
     public function mostOrderedCourses(): array
     {
-        $courses = Courses::withCount('students')->with([
+        $courses = Courses::active()->accepted()->withCount('students')->with([
             'grade_sub_level',
             'category',
             'lecturer',
@@ -50,7 +50,7 @@ class HomeService extends MainService
         );
     }
     function lastCourses(){
-        $courses = Courses::active()->with([
+        $courses = Courses::active()->accepted()->with([
             'grade_sub_level',
             'category',
             'lecturer',
@@ -174,7 +174,7 @@ class HomeService extends MainService
     }
 
     function featuredCourses(){
-        $courses = Courses::with([
+        $courses = Courses::active()->accepted()->with([
             'grade_sub_level',
             'category',
             'lecturer',

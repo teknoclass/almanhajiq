@@ -26,7 +26,7 @@ class CategoryResource extends JsonResource
         $data =  [
             'id'=>$this->value,
             'text'=>$translation?->text??'',
-            'image'=> imageUrl($this->image,'100x100'),
+            'image'=> imageUrl($this->image),
             'name'=>$translation?->name??'',
             'description'=>$translation?->description??'',
         ];

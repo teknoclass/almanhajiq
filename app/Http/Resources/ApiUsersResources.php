@@ -18,7 +18,7 @@ class ApiUsersResources extends JsonResource
         return [
             'id'=>$this->id,
             'name'=>$this->name ,
-            'image'=>imageUrl($this->image,'100x100') ,
+            'image'=>imageUrl($this->image) ,
             'role'=>$this->role ,
             'email'=>$this->email,
             'token'=> $this->token,

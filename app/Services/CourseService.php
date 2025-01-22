@@ -126,7 +126,7 @@ class CourseService extends MainService
 
     public function mostOrderCourses(FilterRequest $filterRequest): array
     {
-        $courses = Courses::active()->withCount('students')
+        $courses = Courses::active()->accepted()->withCount('students')
                           ->with([
                               'grade_sub_level',
                               'category',

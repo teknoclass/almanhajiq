@@ -31,7 +31,7 @@ class ApiCourseFilterResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'image' => imageUrl($this->image,'100x100'),
+            'image' => imageUrl($this->image),
             'title' => $translation->title??$this->title,
             'teacher' => $this->lecturer->name ?? "",
             'description' => $translation->description??$this->description,

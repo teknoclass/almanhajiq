@@ -29,7 +29,7 @@ class BlogSliderResource extends JsonResource
             'title'=>$translation?->title??'',
             'text'=>$translation?->text??'',
             'is_favourite'=>$this->is_favourite,
-            'image'=> imageUrl($this->image,'100x100'),
+            'image'=> imageUrl($this->image),
             'created_at'=> $this->created_at,
             'category'=> [
                 'id'=>$this->category?->value,
@@ -41,7 +41,7 @@ class BlogSliderResource extends JsonResource
             'user'=>[
                 'id'=>$this->user?->id,
                 'name'=>$this->user?->name,
-                'image'=>imageUrl($this->user?->image,'100x100')
+                'image'=>imageUrl($this->user?->image)
             ],
         ];
 

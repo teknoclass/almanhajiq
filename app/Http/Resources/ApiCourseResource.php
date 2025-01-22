@@ -22,7 +22,7 @@ class ApiCourseResource extends JsonResource
 
         $data =  [
             'id'=>$this->id,
-            'image'=>imageUrl($this->image,'100x100'),
+            'image'=>imageUrl($this->image),
             'title'=>collect($this->translations)->firstWhere('locale', $locale??'en')->title ,
             'description'=>collect($this->translations)->firstWhere('locale', $locale??'en')->description ,
             'grade_sub_level'=>$gradeSubLevel ? collect($gradeSubLevel->translations)->firstWhere('locale', $locale??'en')->name : "",

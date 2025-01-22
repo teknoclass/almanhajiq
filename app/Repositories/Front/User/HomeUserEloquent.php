@@ -155,7 +155,6 @@ class HomeUserEloquent extends HelperEloquent
             ->whereHas('userRoles', function (Builder $query) {
                 $query->where('role', User::MARKETER);
             })->first();
-
             if($user){
                 $message = __('message.the_email_is_linked_to_a_marketer_account');
                 $status = false;
@@ -167,6 +166,7 @@ class HomeUserEloquent extends HelperEloquent
             }
 
             $data = $request->all();
+
 
             $item = RequestJoinMarketer::updateOrCreate(['id' => 0], $data);
 
@@ -209,7 +209,7 @@ class HomeUserEloquent extends HelperEloquent
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            $message = __('message.unexpected_error');
+            $message = $e->getMessage();
             $status = false;
             $response = [
                 'message' => $message,
@@ -300,6 +300,8 @@ class HomeUserEloquent extends HelperEloquent
         $data['coupon']=Coupons::whereHas('allMarketers', function (Builder $query) use ($user_id) {
             $query->where('user_id', $user_id);
         })->first();
+        $code = $data['coupon']->code;
+        $data['link'] = route('user.auth.register')."?coupon=$code";
         unset($data['user']);
         return $data;
 

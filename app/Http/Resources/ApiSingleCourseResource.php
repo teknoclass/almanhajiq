@@ -58,8 +58,8 @@ class ApiSingleCourseResource extends JsonResource
             'ttt' => app()->getLocale(),
             'id' => $this->id,
             'slider' => [
-               ['type'=>'image','media' => imageUrl($this->image,'100x100')],
-                ['type'=>'image', 'media' =>imageUrl($this->video_image,'100x100')],
+               ['type'=>'image','media' => imageUrl($this->image)],
+                ['type'=>'image', 'media' =>imageUrl($this->video_image)],
                 ['type'=>'video','media' => $this->video],
             ],
             'title' => $translation->title ?? $this->title,
@@ -68,7 +68,7 @@ class ApiSingleCourseResource extends JsonResource
             'groups_count' => count($this->groups),
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
-            'subscribe_end_date' => $this->subscription_end_date, 
+            'subscribe_end_date' => $this->subscription_end_date,
             'can_subscribe' => $this->canSubscribe(),
             'can_subscribe_to_session' => $this->can_subscribe_to_session,
             'can_subscribe_to_session_group' => $this->can_subscribe_to_session_group,
@@ -80,7 +80,7 @@ class ApiSingleCourseResource extends JsonResource
                 'id' => $this->lecturer->id ?? null,
                 'name' => $this->lecturer->name ?? null,
                 'teacher_rating' => $this->lecturer ? $this->lecturer->getRating() : null,
-                'image' => imageUrl($this->lecturer->image ?? null,'100x100'),
+                'image' => imageUrl($this->lecturer->image ?? null),
 
             ],
 

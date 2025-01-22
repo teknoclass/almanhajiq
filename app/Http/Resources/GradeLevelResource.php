@@ -28,7 +28,7 @@ class GradeLevelResource extends JsonResource
         ];
         if ($this->gradeLevels){
 
-            $data['image'] = imageUrl($this->gradeLevels->image,'100x100');
+            $data['image'] = imageUrl($this->gradeLevels->image);
             $data['description'] =$this->gradeLevels->translations?
                 collect($this->gradeLevels->translations)
                     ->firstWhere('locale', $locale??'en')?->description:$this->gradeLevels?->description??null;

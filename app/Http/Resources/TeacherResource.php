@@ -25,7 +25,7 @@ class TeacherResource extends JsonResource
             'description'=>$lecturerSettingTranslation ?$lecturerSettingTranslation->description: $this->lecturerSetting?->description,
             'position'=>$lecturerSettingTranslation ?$lecturerSettingTranslation->position: $this->lecturerSetting?->position,
 
-            'image'=>imageUrl($this->image,'100x100'),
+            'image'=>imageUrl($this->image),
             'experience'=>$this->lecturerSetting?->exp_years,
             'mother_lang'=>$this->motherLang?->name,
             'rating'=>$this->getRating(),

@@ -26,7 +26,7 @@ class StudentResource extends JsonResource
             'email'=>$this->email,
             'name'=>$this->name,
             'role'=>$this->role ,
-            'image'=> imageUrl($this->image,'100x100'),
+            'image'=> imageUrl($this->image),
             'mobile'=>$this->mobile,
             'is_validation' => $this->is_validation ?? 0,
             'country_code'=>$this->code_country,
