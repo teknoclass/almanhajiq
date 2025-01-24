@@ -92,9 +92,9 @@ Route::middleware(['language', 'auth:sanctum'])->group(function () {
     Route::post('/verify',[StudentController::class,'verify']);
     Route::post('/resendCode',[StudentController::class,'resend']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user/delete', [AuthController::class, 'deleteUser']);
+    Route::delete('/user/delete', [AuthController::class, 'deleteUser']);
 });
-
+    
 // Teacher registration routes with language middleware
 Route::group(['middleware' => 'language', 'prefix' => 'teacher'], function () {
     Route::post('/register', [AuthController::class, 'registerTeacher']);

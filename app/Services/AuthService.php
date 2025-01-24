@@ -135,10 +135,18 @@ class AuthService extends MainService
             $data['password_c']      = $studentRequest->get('password');
             $data['password']        = Hash::make($studentRequest->get('password'));
             $data['device_token']    = Hash::make($studentRequest->get('device_token'));
-            $coupon = Coupons::where('code',$data['market_id'])->first();
-            $marketerCoupon = CouponMarketers::where('coupon_id',$coupon->id)->first();
-            $data['market_id']     = $marketerCoupon->user_id;
-        
+            $data['role']            = 'student';
+            if(isset($data['market_id'])){
+                $coupon = Coupons::where('code',$data['market_id'])->first();
+                if($coupon){
+
+                    $marketerCoupon = CouponMarketers::where('coupon_id',$coupon->id)->first();
+                    $data['market_id']     = $marketerCoupon->user_id;
+                }else{
+                    unset($data['market_id']);
+                }
+            }
+
             $user                    = $this->userRepository->updateOrCreateUser($data);
             $token                   = $user->createToken('auth_token')->plainTextToken;
             // $user->sendVerificationCode(); // ✔
