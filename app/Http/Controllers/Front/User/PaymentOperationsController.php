@@ -87,6 +87,7 @@ class PaymentOperationsController extends Controller
             Log::error($e->getMessage());
             Log::error($e->getFile());
             Log::error($e->getLine());
+            return $e->getMessage();
             return redirect('/payment-failure');
         }
     }
