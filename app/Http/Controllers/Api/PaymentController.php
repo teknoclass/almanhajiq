@@ -236,6 +236,7 @@ class PaymentController extends Controller
 
                 if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
                 {
+                    return $statusCheck;
                     return redirect('/payment-failure');
                 }
             }else{
@@ -269,6 +270,7 @@ class PaymentController extends Controller
         } catch (\Exception $e)
         {
             DB::rollback();
+            return $e->getMessage();
             return redirect('/payment-failure');
             $response = new ErrorResponse($e->getMessage(),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
