@@ -49,7 +49,7 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
                 Route::get('/', [ProfileSettingsController::class, 'indexProfile'])->name('index');
                 Route::post('/', [ProfileSettingsController::class, 'updateProfile'])->name('update');
                 Route::get('/parent', [ProfileSettingsController::class, 'indexParent'])->name('parent.index');
-                Route::post('/parent', [ProfileSettingsController::class, 'updateParent'])->name('parent.update');  
+                Route::post('/parent', [ProfileSettingsController::class, 'updateParent'])->name('parent.update');
             });
 
             Route::group(['prefix' => 'change-password', 'as' => 'changePassword.'], function () {
@@ -211,10 +211,10 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         Route::get('/private-lesson-confirm',[PrivateLessonSubscriptionsController::class,'confirmPayment']);
 
         //handle confirm payment
-        Route::get('/confirm-payment',[PaymentOperationsController::class,'confirmPayment']);
+        Route::get('/confirm-payment',[PaymentOperationsController::class,'confirmPayment'])->withoutMiddleware('auth');
 
         });
-        
+
     });
 
 
