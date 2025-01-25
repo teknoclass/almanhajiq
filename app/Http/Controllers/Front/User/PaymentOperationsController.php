@@ -34,6 +34,7 @@ class PaymentOperationsController extends Controller
         {
             $cartId = $request->get('requestId');
             $paymentDetails = Transactios::where('order_id',$cartId)->first();
+
             if($paymentDetails['place'] == 'web'){
 
                 $userId = auth('web')->user()->id ?? null;
@@ -87,7 +88,6 @@ class PaymentOperationsController extends Controller
             Log::error($e->getMessage());
             Log::error($e->getFile());
             Log::error($e->getLine());
-            return $e->getMessage();
             return redirect('/payment-failure');
         }
     }
