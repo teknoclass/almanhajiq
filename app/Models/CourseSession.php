@@ -110,7 +110,7 @@ class CourseSession extends Model
         return $randomPassword;
     }
     public function createLiveSession ($type = 'web'){
-        if($this->meeting_status = "started"){
+        if($this->meeting_status == "started"){
             return $this->joinLiveSessionV2($type);
         }else{
 
