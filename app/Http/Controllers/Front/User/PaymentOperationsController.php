@@ -60,23 +60,23 @@ class PaymentOperationsController extends Controller
             }else{
                 if($paymentDetails['payment_type'] == "full")
                 {
-                    return redirect (url('/api/payment/full-subscribe-course-confirm') . "?requestId=$cartId");
+                    return redirect (url('/api/payment/full-subscribe-course-confirm') . "?requestId=$cartId&status=SUCCESS");
                 }
                 elseif($paymentDetails['payment_type'] == "session")
                 {
-                    return redirect(url('/api/payment/subscribe-to-course-sessions-confirm') . "?requestId=$cartId");
+                    return redirect(url('/api/payment/subscribe-to-course-sessions-confirm') . "?requestId=$cartId&status=SUCCESS");
                 }
                 elseif($paymentDetails['payment_type'] == "group")
                 {
-                    return redirect(url('/api/payment/subscribe-to-course-group-confirm') . "?requestId=$cartId");
+                    return redirect(url('/api/payment/subscribe-to-course-group-confirm') . "?requestId=$cartId&status=SUCCESS");
                 }
                 elseif($paymentDetails['payment_type'] == "installment")
                 {
-                    return redirect(url('/api/payment/pay-to-course-session-installment-confirm') . "?requestId=$cartId");
+                    return redirect(url('/api/payment/pay-to-course-session-installment-confirm') . "?requestId=$cartId&status=SUCCESS");
                 }
                 elseif($paymentDetails['payment_type'] == "private_lesson")
                 {
-                    return redirect(url('/api/payment/pay-to-private-lesson-confirm') . "?requestId=$cartId");
+                    return redirect(url('/api/payment/pay-to-private-lesson-confirm') . "?requestId=$cartId&status=SUCCESS");
                 }
             }
 
