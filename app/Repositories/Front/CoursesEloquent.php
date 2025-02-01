@@ -52,7 +52,8 @@ class CoursesEloquent
             'level_id',
             'grade_level_id',
             'grade_sub_level',
-            'end_date'
+            'end_date',
+            'subscription_end_date'
         )
         ->with('translations:courses_id,title,locale,description')
         ->with([

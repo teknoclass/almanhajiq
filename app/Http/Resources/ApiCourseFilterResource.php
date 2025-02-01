@@ -39,6 +39,7 @@ class ApiCourseFilterResource extends JsonResource
             'price' => $this->priceDetails?->price,
             'discount_price' => $this->priceDetails?->discount_price,
             'rate'=>$this->rate,
+            'teacher_exp_years' => $this->lecturer->lecturerSetting->exp_years ?? null,
             'is_favourite' => $this->isFavorite('api')
 
         ];

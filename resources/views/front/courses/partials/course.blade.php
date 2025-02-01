@@ -7,7 +7,7 @@
     <div class="courses-content">
         <div class="mb-2  single-courses" style="min-height: 260px">
             <div class="item-courses {{ @$course->is_delete == 1 ? 'deletedCourse' : '' }}">
-        
+
                 @if(@$course->material)
                 <div class="category">
                     <div class="icon">
@@ -45,16 +45,16 @@
                         </div>
                         <p class="text-color-muted" style="font-size: 13px;">
                             <span class="fw-bold text-color-primary">{{ __('grade_level') }}:</span>
-                            {{@App\Models\Category::find(@$course->grade_level_id)->name ?? ""}} 
+                            {{@App\Models\Category::find(@$course->grade_level_id)->name ?? ""}}
                         </p>
-                    
+
                         <p class="text-color-muted" style="font-size: 13px;">
                             <span class="fw-bold text-color-primary">{{ __('grade_sub_level_id') }}:</span>
-                            {{@App\Models\Category::find(@$course->grade_sub_level)->name ?? ""}} 
+                            {{@App\Models\Category::find(@$course->grade_sub_level)->name ?? ""}}
                         </p>
-                    
+
                         <div class="info">
-                      
+
                             <div class="info-item d-flex gap-2 mb-2">
                                {{--<div class="image"><img
                                         src="{{ asset('assets/front/images/newimages/courses-time-icon.png') }}"
@@ -67,8 +67,23 @@
                                     <span class="fw-bold text-color-primary">{{ __('price') }}:</span>
                                     {!! @$course->getPriceDisc() !!}
                                 </p>
-                            </div> 
-                            
+                            </div>
+
+                        </div>
+                        <div class="info">
+
+                            <div class="info-item d-flex gap-2 mb-2">
+
+                                <p class="text-color-muted">
+                                    <span class="fw-bold text-color-primary">{{ __('subscription_end_date') }}:</span>
+                                    @if ($course->subscription_end_date != null)
+                                        {{$course->subscription_end_date}}
+                                    @else
+                                        {{__('no_date')}}
+                                    @endif
+                                </p>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -89,7 +104,7 @@
                             </a>
                         @endif
 
-                    @else 
+                    @else
                         <a href="{{ @$url_course }}"
                             class="primary-btn p-1 w-100 d-block text-center border-0 rounded-0 py-2">
                             {{ __('view') }}

@@ -1219,7 +1219,8 @@
     "web" : "web",
     "valid_on" : "course content is shown on",
     "course_not_found":"This Course is not found",
-    "this_course_is_on_the_mobile_app_only" : "This course is on the mobile app only"
+    "this_course_is_on_the_mobile_app_only" : "This course is on the mobile app only",
+    "no_date" : "no date"
 
 
 

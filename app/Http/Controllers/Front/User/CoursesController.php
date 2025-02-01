@@ -58,10 +58,12 @@ class CoursesController extends Controller
     {
 
         $course = Courses::find($course_id);
+        if($course){
 
-        if($course->valid_on == 'app'){
+            if($course->valid_on == 'app'){
 
-            return redirect(url("courses/single/$course_id"));
+                return redirect(url("courses/single/$course_id"));
+            }
         }
 
         $data = $this->course_curriculum->curriculumItem($course_id, $curclm_item_id, $section_item_id);
