@@ -31,7 +31,7 @@ class StudentResource extends JsonResource
             'is_validation' => $this->is_validation ?? 0,
             'country_code'=>$this->code_country,
             'info'=>[
-                'courses_count'=>count($this->courses),
+                'courses_count'=>$this->validCourses(),
                 // 'private_lessons_count'=>count($this->privateLessons),
             ]+$this->user_activities(),
             'country'=> isset($this->country)?collect($this->country['translations'])->firstWhere('locale', $locale??'en')->name??'':'',
