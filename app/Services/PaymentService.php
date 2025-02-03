@@ -188,7 +188,7 @@ class PaymentService
             'is_paid' => false,
             'order_id' => $paymentDetails['orderId'],
             'place' => 'api',
-            'payment_type' => $paymentDetails['payment_type']
+            'payment_type' => $paymentDetails['payment_type'] ?? null
         ]);
     }
 
