@@ -119,9 +119,10 @@
                                                             <div class="p-3">
                                                                 @foreach (locales() as $locale => $value)
                                                                     <div class="form-group">
-                                                                        <input class="form-control" type="text"
+                                                                        <label>{{ __('question') }} ({{ __($value) }})</label>
+                                                                        <textarea class="form-control tinymce" type="text"
                                                                             name="questions_{{ $locale }}[]"
-                                                                            placeholder="{{ __('question') }} ({{ __($value) }})" />
+                                                                            ></textarea>
                                                                     </div>
                                                                 @endforeach
                                                                 <div class="form-group">
