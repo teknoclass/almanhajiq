@@ -152,18 +152,18 @@ class AuthService extends MainService
             // $user->sendVerificationCode(); // ✔
 
             $message = __('message.operation_accomplished_successfully');
-            // try {
-            //     $user->sendVerificationCode();
-            // }
-            // catch (\Exception $exception){
-            //     DB::rollback();
-            //     Log::error($exception->getMessage());
-            //     return $this->createResponse(
-            //         __('message.message.unexpected_error'),
-            //         false,
-            //         null
-            //     );
-            // }
+            try {
+                $user->sendVerificationCode();
+            }
+            catch (\Exception $exception){
+                DB::rollback();
+                Log::error($exception->getMessage());
+                return $this->createResponse(
+                    __('message.message.unexpected_error'),
+                    false,
+                    null
+                );
+            }
             DB::commit();
             $user->token = $token;
             return $this->createResponse(
