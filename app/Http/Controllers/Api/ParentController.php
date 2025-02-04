@@ -140,4 +140,10 @@ class ParentController extends Controller
         return response()->success($response);
     }
 
+    function showAttendance($id,$course_id){
+        $data = $this->parentService->showAttendance($id,$course_id);
+        $response = new SuccessResponse(__('message.success'),$data,Response::HTTP_OK);
+        return  response()->success($response);
+    }
+
 }

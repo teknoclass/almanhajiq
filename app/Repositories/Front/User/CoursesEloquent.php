@@ -23,6 +23,7 @@ use App\Models\CourseSections;
 use App\Models\Notifications;
 use Carbon\Carbon;
 use App\Models\PrivateLessons;
+use App\Models\SessionAttendance;
 use App\Models\Transactios;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
@@ -668,8 +669,9 @@ class CoursesEloquent extends HelperEloquent
     public function joinLiveSession($request)
     {       /** @var CourseSession $session***/
         $session = CourseSession::find($request->id);
-
-        return $session->joinLiveSession($request);
+        $attendance = SessionAttendance::firstOrCreate(['user_id' => auth('api')->id(),
+                                          'session_id' => $request->id]);
+        return $session->joinLiveSessionV2('api');
     }
 
     function endLessons($request,$is_web = true)

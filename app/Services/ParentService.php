@@ -3,7 +3,11 @@
 namespace App\Services;
 
 use App\Http\Requests\Api\UpdateStudentRequest;
+use App\Http\Resources\SessionAttendanceResource;
+use App\Models\Courses;
+use App\Models\CourseSession;
 use App\Models\ParentSon;
+use App\Models\SessionAttendance;
 use App\Models\User;
 use App\Repositories\ParentRepository;
 use Carbon\Carbon;
@@ -211,6 +215,26 @@ class ParentService extends MainService
             true,
             null
         );
+    }
+
+    function showAttendance($id,$course_id){
+        $sessions = CourseSession::where('course_id',$course_id)->get();
+        $response = array();
+        foreach($sessions as $session){
+            $attend = SessionAttendance::where('session_id',$session->id)->where('user_id',$id)->first();
+            if($attend)$attend = 1;
+            else $attend = 0;
+
+            $response[] = [
+                'id' => $session->id,
+                'day' => $session->day,
+                'time' => $session->time,
+                'date' => $session->date,
+                'title' => $session->title,
+                'attend' => $attend,
+            ];
+        }
+        return $response;
     }
 
 }

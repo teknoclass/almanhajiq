@@ -73,6 +73,7 @@ Route::group(['middleware' => 'language', 'prefix' => 'parent'], function () {
         Route::get('/home', [HomeController::class, 'home_parent']);
         Route::get('/my-sons', [ParentController::class, 'my_sons']);
         Route::get('/my-sons/{id}', [ParentController::class, 'show_sons']);
+        Route::get('/showAttendance/{id}/{course_id}',[ParentController::class,'showAttendance']);
         Route::POST('/my-sons/store', [ParentController::class, 'store_sons']);
         Route::POST('/my-sons/store/verify', [ParentController::class, 'store_sons_verify']);
 
@@ -94,7 +95,7 @@ Route::middleware(['language', 'auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::delete('/user/delete', [AuthController::class, 'deleteUser']);
 });
-    
+
 // Teacher registration routes with language middleware
 Route::group(['middleware' => 'language', 'prefix' => 'teacher'], function () {
     Route::post('/register', [AuthController::class, 'registerTeacher']);
