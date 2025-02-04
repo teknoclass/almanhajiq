@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\CourseSession;
 use App\Models\CourseSessionAttachments;
 use App\Repositories\Common\LiveSessionEloquent;
 use Illuminate\Http\JsonResponse;
@@ -87,10 +88,29 @@ class LiveSessionsController extends Controller
 
     function getAttachmentModal()
     {
-        $id = request()->query('session-id');
+        $id = request()->query('session_id');
         $data = CourseSessionAttachments::where('session_id',$id)->get();
-        $content = View::make('front.user.lecturer.courses.my_courses.create.components.schedule.modals.attachment.attachment',['data' => $data])->render();
+        $session = CourseSession::find($id);
+        $content = View::make('front.user.lecturer.courses.my_courses.create.components.schedule.modals.attachment.attachment',['attachments' => $data,'session' => $session])->render();
         return response()->json(['content' => $content]);
 
+    }
+
+    function deleteAttachemnt(Request $request){
+        $attachment = CourseSessionAttachments::find($request['id']);
+        $attachment->delete();
+        return response()->json([
+            'success'=>true,
+            'message' => __('message.success')
+        ]);
+    }
+
+    function addAttachemnt(Request $request){
+        $data = $this->liveSessionService->addAttachemnt($request);
+        return response()->json([
+            'success'=>true,
+            'attachment' => $data,
+            'message' => __('message.success')
+        ]);
     }
 }

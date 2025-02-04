@@ -5,11 +5,34 @@
                 <div class="scroll scroll-lesson">
                     <div class="modal-body px-5 py-0">
                         <button class="btn-close" onclick="closeModal()"></button>
-                        <ul>
-                            @foreach($data as $attachment)
-                                <li>{{ $attachment->original_name }}</li>
-                            @endforeach
-                        </ul>
+                        @if($attachments->isNotEmpty())
+                        <table id="attachment-table" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{{__('name')}}</th>
+                                    <th>{{__('delete')}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($attachments as $attachment)
+                                    <tr id="attachment-row-{{ $attachment->id }}">
+                                        <td>{{ $attachment->original_name }}</td>
+                                        <td>
+                                            <button class="btn btn-danger delete-attachment" data-id="{{ $attachment->id }}" data-id="{{ $attachment->id }}">
+                                                {{__('delete')}}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <p>{{__('no_data')}}</p>
+                    @endif
+
+                    <input type="file" id="fileInput" style="display: none;" data-session-id="{{$session->id}}">
+
+                    <button class="btn btn-primary mt-3" id="addAttachmentBtn" >{{__('add')}}</button>
                     </div>
                 </div>
             </div>

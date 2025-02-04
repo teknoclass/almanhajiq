@@ -608,6 +608,8 @@ Route::group(
                 Route::post('/{id}', [CoursesController::class, 'updateCourseFaqs'])->name('update');
             });
             Route::get('/get-attachment-modal', [LiveSessionsController::class, 'getAttachmentModal'])->name('get_attachment_modal');
+            Route::post('/delete-attachment',[LiveSessionsController::class,'deleteAttachemnt'])->name('delete_attachment');
+            Route::post('/add-attachment',[LiveSessionsController::class,'addAttachemnt'])->name('add_attachment');
             Route::group(['prefix' => 'course_schedule', 'as' => 'courseSchedule.'], function () {
                 Route::get('/{id}', [CoursesController::class, 'editCourseSchedule'])->name('index');
                 Route::post('/{id}', [CoursesController::class, 'updateCourseSchedule'])->name('update');

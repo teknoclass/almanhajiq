@@ -4,6 +4,7 @@ namespace App\Repositories\Common;
 
 use App\Models\Courses;
 use App\Models\CourseSession;
+use App\Models\CourseSessionAttachments;
 use App\Models\CourseSessionsGroup;
 use App\Repositories\Front\User\HelperEloquent;
 use Illuminate\Support\Facades\DB;
@@ -247,5 +248,15 @@ class LiveSessionEloquent  extends HelperEloquent
         }])->findOrFail($request->groupId);
 
 
+    }
+
+    function addAttachemnt($request){
+        $file = $request->file('file');
+        $attachment = CourseSessionAttachments::create([
+            'session_id' => $request->session_id,
+            'original_name' => $file->getClientOriginalName(),
+            'file' => uploadFile($file)
+        ]);
+        return $attachment;
     }
 }
