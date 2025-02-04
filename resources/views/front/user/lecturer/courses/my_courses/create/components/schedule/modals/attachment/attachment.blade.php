@@ -4,7 +4,7 @@
             <div class="py-3">
                 <div class="scroll scroll-lesson">
                     <div class="modal-body px-5 py-0">
-                        <button class="btn-close" onclick="closeModal()"></button>
+                        <button type='button' class="btn-close" onclick="closeModal()"></button>
                         @if($attachments->isNotEmpty())
                         <table id="attachment-table" class="table table-bordered">
                             <thead>
@@ -18,7 +18,7 @@
                                     <tr id="attachment-row-{{ $attachment->id }}">
                                         <td>{{ $attachment->original_name }}</td>
                                         <td>
-                                            <button class="btn btn-danger delete-attachment" data-id="{{ $attachment->id }}" data-id="{{ $attachment->id }}">
+                                            <button type='button' class="btn btn-danger delete-attachment" data-id="{{ $attachment->id }}" data-id="{{ $attachment->id }}">
                                                 {{__('delete')}}
                                             </button>
                                         </td>
@@ -32,7 +32,7 @@
 
                     <input type="file" id="fileInput" style="display: none;" data-session-id="{{$session->id}}">
 
-                    <button class="btn btn-primary mt-3" id="addAttachmentBtn" >{{__('add')}}</button>
+                    <button class="btn btn-primary mt-3" type="button" id="addAttachmentBtn" >{{__('add')}}</button>
                     </div>
                 </div>
             </div>
