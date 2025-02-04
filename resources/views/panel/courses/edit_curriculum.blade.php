@@ -149,7 +149,7 @@
 
     @push('panel_js')
         @include('front.user.lecturer.courses.my_courses.create.partials.curriculum_scripts')
-
+ 
         <script src="{{ asset('assets/panel/js/post.js') }}"></script>
         <script src="{{ asset('assets/panel/js/pages/features/miscellaneous/perfect-scrollbar.min.js') }}"></script>
         <script src="{{ asset('assets/panel/js/pages/crud/forms/editors/summernote.min.js') }}"></script>

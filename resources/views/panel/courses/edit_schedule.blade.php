@@ -84,7 +84,8 @@
                         </div>
                      </div>
 
-
+                    <div id="targetDiv">
+                    </div>
 
                   </div>
                   <!--end::Form-->
@@ -112,6 +113,44 @@
 @endif
 <script src="{{asset('assets/panel/js/pages/crud/forms/widgets/bootstrap-datetimepicker.js')}}"></script>
 @include("panel.courses.partials.session_script")
+
+<script>
+    $(document).ready(function() {
+
+        // Close modal if clicked outside of it
+        $(document).on('click', '.attachment_modal', function(e) {
+            var session_id = $(this).data('session-id');
+            console.log(session_id);
+            $('#load').show();
+            $.ajax({
+                url: "{{ route('panel.courses.edit.get_attachment_modal') }}", // Use the new endpoint
+                method: "GET",
+                data: {
+                    session_id: session_id
+                },
+                success: function(response) {
+                    $('#load').hide();
+                    $("#targetDiv").html(response.content);
+                    console.log('success');
+                    showMyModal();
+
+                },
+                error: function(xhr, status, error) {
+                    $('#load').hide();
+                    console.log("AJAX Error:", error);
+                    console.log("Status:", status);
+                    console.log("Response Text:", xhr.responseText);
+                    console.error("Failed to fetch lesson modal.");
+                }
+            });
+        });
+
+        function showMyModal() {
+            // Assuming your modal has an ID, e.g., #myModal
+            $("#modalAddAttachment").show();
+        }
+    });
+</script>
 
 @endpush
 @stop
