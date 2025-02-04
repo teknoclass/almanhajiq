@@ -713,6 +713,12 @@ class Courses extends Model
         $total_completed = $data['lessons_achievement']  + $data['quizzes_achievement'] + $data['assignments_achievement'];
         $data['course_achievement']  = $total_completed / 3;
 
+        $data['total_sessions'] = CourseSession::whereIn('course_id',$courses_ids)->count();
+        $data['attended_sessions'] = SessionAttendance::where('user_id',$user_id)->whereHas('session',function($q) use ($courses_ids){
+            $q->whereIn('course_id',$courses_ids);
+        })->count();
+
+
         if(array_key_exists($key , $data)) {
             return $data[$key];
         }

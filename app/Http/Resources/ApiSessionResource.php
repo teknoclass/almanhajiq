@@ -48,6 +48,7 @@ class ApiSessionResource extends JsonResource
             'meeting_type' => $meetType,
             'is_now' => $this->isNow(),
             'can_postpone' => $this->canPostpone(),
+            'attachments' => CourseSessionAttachemntResource::collection($this->attachments),
             'session' => [
                 'group_id' => $this->group_id,
                 'price' => $this->price,

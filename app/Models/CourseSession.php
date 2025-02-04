@@ -26,6 +26,10 @@ class CourseSession extends Model
         return $this->belongsTo(Courses::class,'course_id');
     }
 
+    function attachments(){
+        return  $this->hasMany(CourseSessionAttachments::class,'session_id');
+    }
+
     public function group()
     {
         return $this->belongsTo(CourseSessionsGroup::class);

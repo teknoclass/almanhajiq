@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\CourseSessionAttachments;
 use App\Repositories\Common\LiveSessionEloquent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
+
 
 class LiveSessionsController extends Controller
 {
@@ -80,5 +83,14 @@ class LiveSessionsController extends Controller
             'group' => $group,
             'sessions' => $group->sessions,  // Include the group's sessions
         ]);
+    }
+
+    function getAttachmentModal()
+    {
+        $id = request()->query('session-id');
+        $data = CourseSessionAttachments::where('session_id',$id)->get();
+        $content = View::make('front.user.lecturer.courses.my_courses.create.components.schedule.modals.attachment.attachment',['data' => $data])->render();
+        return response()->json(['content' => $content]);
+
     }
 }

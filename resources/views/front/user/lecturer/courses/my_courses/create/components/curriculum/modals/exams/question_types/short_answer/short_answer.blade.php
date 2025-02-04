@@ -21,10 +21,11 @@
             <div class="row">
                 @foreach (locales() as $locale => $value)
                     <div class="form-group col-md-10 mb-3">
-                        <input class="form-control"
-                            type="text" value="{{ @$is_edit ? @$question->translate($locale)->title : '' }}"
+                        <label>{{ __('question') }} ({{ __($value) }})</label>
+                        <textarea class="form-control tinymce"
+                            type="text"
                             name="complete_questions_{{ $locale }}[]"
-                            placeholder="{{ __('question') }} ({{ __($value) }})" />
+                            ></textarea>
                     </div>
                 @endforeach
 
