@@ -212,7 +212,7 @@ class AuthEloquent extends HelperEloquent
                     ];
             }
 
-            if (Auth('web')->user()->is_validation == 0) {
+            if (Auth('web')->user()->is_validation == 0 && getSeting('is_account_confirmation_required') == 1) {
 
                 $this->guard()->logout();
 

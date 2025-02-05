@@ -24,7 +24,11 @@ class StudentRequest extends FormRequest
     {
         $rules['name']             = 'required|string';
         $rules['email']            = 'required|email|unique:users';
-        $rules['mobile']           = 'required|numeric|unique:users';
+        $rules['mobile']           = [
+                                        'required',
+                                        'numeric',
+                                        Rule::unique('users')->whereNull('deleted_at')
+                                     ];
         $rules['password']         = "required|min:6|confirmed";
         $rules['country_id']       = 'nullable|numeric';
         $rules['agree_conditions'] = 'required';
