@@ -28,7 +28,7 @@ class StudentResource extends JsonResource
             'role'=>$this->role ,
             'image'=> imageUrl($this->image),
             'mobile'=>$this->mobile,
-            'is_validation' => $this->is_validation ?? 0,
+            'is_validation' => max($this->is_validation,getSeting('is_account_confirmation_required')^1),
             'country_code'=>$this->code_country,
             'info'=>[
                 'courses_count'=>$this->validCourses(),
