@@ -264,31 +264,7 @@
                     });
                 });
 
-                const handleImageUpload = (blobInfo, success, failure) => new Promise((resolve, reject) => {
-                    const formData = new FormData()
-                    formData.append('image', blobInfo.blob())
-                    formData.append('width', '')
-                    formData.append('height', '')
-                    formData.append('custome_path', $('#custome_path').val());
-                    $.ajax({
-                        url: '/image/upload',
-                        method: 'post',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            const location = response.file_name
-                            setTimeout(function () {
-                                /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-                                success(window.base_image_url + '/' + location);
-                            }, 2000);
-                        },
-                        error: function (jqXhr) {
-                            toastr.error(window.unexpected_error);
-                        }
-                    });
-
-                });
+                
 
                 function showExamModal() {
                     // Assuming your modal has an ID, e.g., #myModal
