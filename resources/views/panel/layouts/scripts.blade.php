@@ -81,7 +81,8 @@
 
 <script>
 
-
+    window.base_url = "{{env('APP_URL')}}";
+    window.base_image_url = window.base_url + '/image'
     function showLoader() {
         const button = document.querySelector("#kt_page_loading_overlay");
 
@@ -111,6 +112,7 @@
             }, 3000);
         });
     }
+
 
     function hideLoader() {
         var loading = new KTDialog({

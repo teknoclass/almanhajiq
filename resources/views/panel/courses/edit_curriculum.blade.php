@@ -149,7 +149,7 @@
 
     @push('panel_js')
         @include('front.user.lecturer.courses.my_courses.create.partials.curriculum_scripts')
- 
+
         <script src="{{ asset('assets/panel/js/post.js') }}"></script>
         <script src="{{ asset('assets/panel/js/pages/features/miscellaneous/perfect-scrollbar.min.js') }}"></script>
         <script src="{{ asset('assets/panel/js/pages/crud/forms/editors/summernote.min.js') }}"></script>
@@ -239,15 +239,17 @@
                                 },
 
                                 selector: '.tinymce',
+                                images_upload_handler: handleImageUpload,
+                                images_upload_url: 'image/upload',
                                 language: "ar",
                                 language_url: '/assets/panel/plugins/custom/tinymce/langs/ar.js',
                                 // path from the root of your web application — / — to the language pack(s)
                                 directionality: 'rtl',
                                 // menubar: false,
                                 toolbar: ['styleselect fontselect fontsizeselect ',
-                                    'undo redo | cut copy paste | bold italic | table link image | alignleft aligncenter alignright alignjustify',
-                                    'bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  fullscreen'],
-                                plugins: 'advlist autolink link image lists table charmap print preview  fullscreen',
+                                    'undo redo | cut copy paste | bold italic | table link image media | alignleft aligncenter alignright alignjustify',
+                                    'bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  fullscreen '],
+                                plugins: 'advlist autolink link image lists table charmap print preview  fullscreen media',
                                 content_style:
                                     "body { color: #000; font-size: 18pt; font-family: Arial;text-align: justify }",
                                 forced_root_block_attrs: { style: 'text-align: justify;' }
@@ -260,6 +262,32 @@
                             console.error("Failed to fetch lesson modal.");
                         }
                     });
+                });
+
+                const handleImageUpload = (blobInfo, success, failure) => new Promise((resolve, reject) => {
+                    const formData = new FormData()
+                    formData.append('image', blobInfo.blob())
+                    formData.append('width', '')
+                    formData.append('height', '')
+                    formData.append('custome_path', $('#custome_path').val());
+                    $.ajax({
+                        url: '/image/upload',
+                        method: 'post',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            const location = response.file_name
+                            setTimeout(function () {
+                                /* no matter what you upload, we will turn it into TinyMCE logo :)*/
+                                success(window.base_image_url + '/' + location);
+                            }, 2000);
+                        },
+                        error: function (jqXhr) {
+                            toastr.error(window.unexpected_error);
+                        }
+                    });
+
                 });
 
                 function showExamModal() {
@@ -300,20 +328,23 @@
                                 },
 
                                 selector: '.tinymce',
+                                images_upload_handler: handleImageUpload,
+                                images_upload_url: 'image/upload',
                                 language: "ar",
                                 language_url: '/assets/panel/plugins/custom/tinymce/langs/ar.js',
                                 // path from the root of your web application — / — to the language pack(s)
                                 directionality: 'rtl',
                                 // menubar: false,
                                 toolbar: ['styleselect fontselect fontsizeselect ',
-                                    'undo redo | cut copy paste | bold italic | table link image | alignleft aligncenter alignright alignjustify',
-                                    'bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  fullscreen'],
-                                plugins: 'advlist autolink link image lists table charmap print preview  fullscreen',
+                                    'undo redo | cut copy paste | bold italic | table link image media | alignleft aligncenter alignright alignjustify',
+                                    'bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  fullscreen '],
+                                plugins: 'advlist autolink link image lists table charmap print preview  fullscreen media',
                                 content_style:
                                     "body { color: #000; font-size: 18pt; font-family: Arial;text-align: justify }",
                                 forced_root_block_attrs: { style: 'text-align: justify;' }
 
                             });
+
                             showTaskModal();
                         },
                         error: function() {
@@ -321,6 +352,32 @@
                             console.error("Failed to fetch lesson modal.");
                         }
                     });
+                });
+
+                const handleImageUpload = (blobInfo, success, failure) => new Promise((resolve, reject) => {
+                    const formData = new FormData()
+                    formData.append('image', blobInfo.blob())
+                    formData.append('width', '')
+                    formData.append('height', '')
+                    formData.append('custome_path', $('#custome_path').val());
+                    $.ajax({
+                        url: '/image/upload',
+                        method: 'post',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            const location = response.file_name
+                            setTimeout(function () {
+                                /* no matter what you upload, we will turn it into TinyMCE logo :)*/
+                                success(window.base_image_url + '/' + location);
+                            }, 2000);
+                        },
+                        error: function (jqXhr) {
+                            toastr.error(window.unexpected_error);
+                        }
+                    });
+
                 });
 
                 function showTaskModal() {
