@@ -1082,7 +1082,7 @@ function checkIfInstallmentHasStudents($installment_id)
 
     return StudentSessionInstallment::where('access_until_session_id',$course_session_id)->where('course_id',$installment->course_id)
     ->whereHas('student',function($q){
-        $q->wereNotNull('deleted_at');
+        $q->whereNotNull('deleted_at');
     })
     ->first();
 }

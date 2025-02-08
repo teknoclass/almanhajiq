@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use BigBlueButton\Parameters\GetRecordingsParameters;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 
 class CourseSession extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     public static  $waiting = 'waiting';
     protected           $table = "course_sessions";

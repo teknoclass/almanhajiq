@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Front\User\Parent;
 
-use App\Http\Controllers\Controller;
-use App\Models\CourseAssignments;
-use App\Models\CourseLessons;
-use App\Models\CourseQuizzes;
+use DB;
+use App\Models\User;
 use App\Models\Courses;
 use App\Models\ParentSon;
-use App\Models\User;
-use App\Models\{CourseQuizzesResults,UserCourse};
-use App\Models\CourseAssignmentResults;
-use App\Repositories\Front\User\AssignmentsEloquent;
 use Illuminate\Http\Request;
+use App\Models\CourseLessons;
+use App\Models\CourseQuizzes;
+use App\Models\CourseSession;
+use App\Models\CourseAssignments;
+use App\Models\SessionAttendance;
+use App\Http\Controllers\Controller;
+use App\Models\CourseAssignmentResults;
 use Illuminate\Database\Eloquent\Builder;
-use DB;
+use App\Models\{CourseQuizzesResults,UserCourse};
+use App\Repositories\Front\User\AssignmentsEloquent;
 
 class ParentSonsController extends Controller
 {
@@ -100,54 +102,76 @@ class ParentSonsController extends Controller
             abort(404);
 
         $course_id= $course_id;
+        if($data['course']->type == 'recorded'){
 
-        $data['completed_lessons'] = CourseLessons::where('course_id',$course_id)
+            $data['completed_lessons'] = CourseLessons::where('course_id',$course_id)
 
-        ->whereHas('learningStatus', function (Builder $query) use ($user_id) {
-            $query->where('user_id',$user_id);
-        })->get();
+            ->whereHas('learningStatus', function (Builder $query) use ($user_id) {
+                $query->where('user_id',$user_id);
+            })->get();
 
-        $data['uncompleted_lessons'] = CourseLessons::where('course_id',$course_id)
+            $data['uncompleted_lessons'] = CourseLessons::where('course_id',$course_id)
 
-        ->WhereDoesntHave('learningStatus', function (Builder $query) use ($user_id) {
-            $query->where('user_id',$user_id);
-        })->get();
+            ->WhereDoesntHave('learningStatus', function (Builder $query) use ($user_id) {
+                $query->where('user_id',$user_id);
+            })->get();
 
-        // quizzes
-        $data['completed_quizzes'] = CourseQuizzes::where('course_id',$course_id)
-        ->whereHas('quizResults', function ($query) use ($user_id) {
-            $query->where('user_id', $user_id)
-                ->where('status', '!=', CourseQuizzesResults::$waiting);
-        })->get();
+            // quizzes
+            $data['completed_quizzes'] = CourseQuizzes::where('course_id',$course_id)
+            ->whereHas('quizResults', function ($query) use ($user_id) {
+                $query->where('user_id', $user_id)
+                    ->where('status', '!=', CourseQuizzesResults::$waiting);
+            })->get();
 
-        $data['uncompleted_quizzes'] = CourseQuizzes::where('course_id',$course_id)
-        ->whereDoesntHave('quizResults', function ($query) use ($user_id) {
-            $query->where('user_id', $user_id);
-        })->get();
+            $data['uncompleted_quizzes'] = CourseQuizzes::where('course_id',$course_id)
+            ->whereDoesntHave('quizResults', function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            })->get();
 
-        //assignments
+            //assignments
 
-        $data['completed_assignments'] = CourseAssignments::where('course_id',$course_id)
-        ->whereHas('assignmentResults', function ($query) use ($user_id) {
-            $query->where('student_id', $user_id)
-                ->where('status', '!=', CourseAssignmentResults::$notSubmitted);
-        })->get();
+            $data['completed_assignments'] = CourseAssignments::where('course_id',$course_id)
+            ->whereHas('assignmentResults', function ($query) use ($user_id) {
+                $query->where('student_id', $user_id)
+                    ->where('status', '!=', CourseAssignmentResults::$notSubmitted);
+            })->get();
 
 
 
-        $data['uncompleted_assignments'] = CourseAssignments::where('course_id',$course_id)
-        ->whereDoesntHave('assignmentResults', function ($query) use ($user_id) {
-            $query->where('student_id', $user_id);
-        })->get();
+            $data['uncompleted_assignments'] = CourseAssignments::where('course_id',$course_id)
+            ->whereDoesntHave('assignmentResults', function ($query) use ($user_id) {
+                $query->where('student_id', $user_id);
+            })->get();
 
-        $data['completed_lessons_count'] = count($data['completed_lessons']);
-        $data['completed_quizzes_count'] = count($data['completed_quizzes']);
-        $data['completed_assignments_count'] = count($data['completed_assignments']);
-        $data['uncompleted_lessons_count'] = count($data['uncompleted_lessons']);
-        $data['uncompleted_quizzes_count'] = count($data['uncompleted_quizzes']);
-        $data['uncompleted_assignments_count'] = count($data['uncompleted_assignments']);
+            $data['completed_lessons_count'] = count($data['completed_lessons']);
+            $data['completed_quizzes_count'] = count($data['completed_quizzes']);
+            $data['completed_assignments_count'] = count($data['completed_assignments']);
+            $data['uncompleted_lessons_count'] = count($data['uncompleted_lessons']);
+            $data['uncompleted_quizzes_count'] = count($data['uncompleted_quizzes']);
+            $data['uncompleted_assignments_count'] = count($data['uncompleted_assignments']);
 
-        return view('front.user.parent.sons-courses.details',$data);
+            return view('front.user.parent.sons-courses.details',$data);
+        }else{
+            $sessions = CourseSession::where('course_id',$course_id)->get();
+        $response = array();
+            foreach($sessions as $session){
+                $attend = SessionAttendance::where('session_id',$session->id)->where('user_id',$son_id)->first();
+                if($attend)$attend = 1;
+                else $attend = 0;
+
+                $response[] = [
+                    'id' => $session->id,
+                    'day' => $session->day,
+                    'time' => $session->time,
+                    'date' => $session->date,
+                    'title' => $session->title,
+                    'attend' => $attend,
+                ];
+            }
+            $data['sessions'] = $response;
+
+            return view('front.user.parent.sons-courses.details_live',$data);
+        }
 
     }
 
@@ -218,13 +242,13 @@ class ParentSonsController extends Controller
                 $status = false;
             }
 
-            DB::commit(); 
+            DB::commit();
             return $this->response_api($status, $message);
-          
+
         }
         catch (\Exception $e)
         {
-            DB::rollback(); 
+            DB::rollback();
             \Log::error($e->getMessage());
             \Log::error($e->getFile());
             \Log::error($e->getLine());
@@ -256,9 +280,9 @@ class ParentSonsController extends Controller
             $parentSon = ParentSon::where('son_id',$son->id)->where('parent_id',auth()->id())->where('status','pending')->first();
             $otp = $request->otp;
             if($parentSon && $otp == $parentSon->otp)
-            { 
-                $parentSon->update(['status' => 'confirmed']);   
-                
+            {
+                $parentSon->update(['status' => 'confirmed']);
+
                 $message = __('done_operation');
                 $status = true;
             }else{
@@ -266,13 +290,13 @@ class ParentSonsController extends Controller
                 $status = false;
             }
 
-            DB::commit(); 
+            DB::commit();
             return $this->response_api($status, $message);
-      
+
         }
         catch (\Exception $e)
         {
-            DB::rollback(); 
+            DB::rollback();
             \Log::error($e->getMessage());
             \Log::error($e->getFile());
             \Log::error($e->getLine());
