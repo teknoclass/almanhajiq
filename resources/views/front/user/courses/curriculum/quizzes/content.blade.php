@@ -48,12 +48,12 @@
 				</div>
 			</div>
 
-            <form id="save_answer" action="{{ route('user.courses.curriculum.quiz.store.result', ['course_id' => @$quiz->course->id, 'id' => @$quiz->id]) }}" method="post" class="">
+            <form id="save_answer" action="{{ route('user.storeResult', ['course_id' => @$quiz->course->id, 'id' => @$quiz->id]) }}" method="post" class="">
                 @csrf
                 <div class="row">
                     <input type="hidden" name="quiz_result_id" value="{{ $quizResult->id }}" class="form-control" placeholder=""/>
                     {{-- <input type="hidden" name="attempt_number" value="{{ $attempt_count }}" class="form-control" placeholder=""/> --}}
-
+                    <input type="hidden" name="quiz_id" value="{{ $quiz->id }}">
                     @foreach($quizQuestions as $key => $question)
 
                         @switch($question->type)

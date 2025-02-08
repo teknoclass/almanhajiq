@@ -50,4 +50,29 @@ class AssignmentsController extends Controller
 
         return $response;
     }
+
+
+    public function uploadFile2(Request $request, $course_id,$assignment_id,$question_id)
+    {
+        $response = $this->assignment->uploadFile($request, $course_id , true , $assignment_id , $question_id);
+
+        return $response;
+    }
+
+    function submitAnswer(Request $request)
+    {
+        $response = $this->assignment->submitAnswer($request,true);
+
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$response);
+    }
+
+    function endAssignmentApi(Request $request)
+    {
+        $data = $this->assignment->endAssignmentApi($request,true);
+
+
+        return redirect()->route('user.courses.curriculum.openByItem', ['course_id' => $data['course_id'], 'type' => 'assignment', 'id' => $data['assignment_id']]);
+    }
 }

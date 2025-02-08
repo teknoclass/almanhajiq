@@ -51,10 +51,11 @@
 				</div>
 			</div>
 
-            <form id="save_answer" action="{{ route('user.courses.curriculum.assignment.store.result', ['course_id' => @$assignment->course->id, 'id' => @$assignment->id]) }}" method="post" enctype="multipart/form-data" class="">
+            <form id="save_answer" action="{{ route('user.assignment.storeAssignment') }}" method="post" enctype="multipart/form-data" class="">
                 @csrf
                 <div class="row">
                     <input type="hidden" name="assignment_result_id" value="{{ $assignmentResult->id }}" class="form-control" placeholder=""/>
+                    <input type="hidden" name="assignment_id" value="{{ $assignment->id }}" class="form-control" placeholder=""/>
 
                     @foreach($assignmentQuestions as $key => $question)
 

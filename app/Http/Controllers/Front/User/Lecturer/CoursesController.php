@@ -380,7 +380,7 @@ class CoursesController extends Controller
 
     public function updateSessionPrice(Request $request)
     {
-        $item = CourseSession::find($request->id);   
+        $item = CourseSession::find($request->id);
         if($item)
         {
              $item->price = $request->price;
@@ -396,5 +396,20 @@ class CoursesController extends Controller
              ];
         }
     }
+    function submitMark(Request $request)
+    {
+        $data = $this->courses->submitMark($request,true);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+    }
+
+    function submitResult(Request $request){
+        $data = $this->courses->submitResult($request,true);
+        $message = __('message.operation_accomplished_successfully');
+
+        return $this->response_api(true,$message,$data);
+    }
+
 
 }

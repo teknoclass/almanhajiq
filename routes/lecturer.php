@@ -132,6 +132,8 @@ Route::group(['middleware' => ['auth:web', 'checkIsLecturer', 'shareGeneralSetti
             Route::get('/quizz-students', [LecturerHomeController::class , 'quizz_students'])->name('quizzes.students');
             Route::get('/tasks/{course_id}', [LecturerCoursesController::class , 'tasks'])->name('tasks.all');
             Route::get('/task-students/{task_id}', [LecturerCoursesController::class , 'task_students'])->name('tasks.students');
+            Route::post('/submitMark',[LecturerCoursesController::class,'submitMark'])->name('tasks.submitMark');
+            Route::post('/submitResult',[LecturerCoursesController::class,'submitResult'])->name('tasks.submitResults');
             Route::get('/comments/{course_id}', [LecturerCoursesController::class, 'comments'])->name('comments');
             Route::post('comment/delete/{comment_id}', [LecturerCoursesController::class, 'deleteComment'])->name('delete_comment');
             Route::post('comment/operation', [LecturerCoursesController::class, 'publish_comment'])->name('comment_publish');
