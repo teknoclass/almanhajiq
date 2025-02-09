@@ -1,6 +1,6 @@
 <div class="col-12 mb-3">
 	<div class="bg-white rounded-2 p-3 item-question">
-		<h5 class="font-medium mb-3">{{ Illuminate\Support\Str::limit(strip_tags($question->title), $limit = 71, $end = '...') }}</h5>
+		<h5 class="font-medium mb-3">{!! $question->title!!}</h5>
 		<div class="row">
 			<div class="col-lg-4">
 				<div class="input-question">

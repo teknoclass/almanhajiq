@@ -241,6 +241,9 @@
                                 selector: '.tinymce',
                                 images_upload_handler: handleImageUpload,
                                 images_upload_url: 'image/upload',
+                                relative_urls: false,
+                                remove_script_host: false,
+                                convert_urls: false,
                                 language: "ar",
                                 language_url: '/assets/panel/plugins/custom/tinymce/langs/ar.js',
                                 // path from the root of your web application — / — to the language pack(s)
@@ -264,7 +267,7 @@
                     });
                 });
 
-                
+
 
                 function showExamModal() {
                     // Assuming your modal has an ID, e.g., #myModal
@@ -306,6 +309,9 @@
                                 selector: '.tinymce',
                                 images_upload_handler: handleImageUpload,
                                 images_upload_url: 'image/upload',
+                                relative_urls: false,
+                                remove_script_host: false,
+                                convert_urls: false,
                                 language: "ar",
                                 language_url: '/assets/panel/plugins/custom/tinymce/langs/ar.js',
                                 // path from the root of your web application — / — to the language pack(s)

@@ -14,7 +14,7 @@ if($question->userAnswer != null){
 	<div class="bg-white rounded-2 p-3 item-question border border-{{ $questionStatus ? 'success' : 'danger' }}">
 
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <h5 class="font-medium"><span class="square"></span>{{ Illuminate\Support\Str::limit(strip_tags($question->title), $limit = 71, $end = '...') }}</h5>
+            <h5 class="font-medium"><span class="square"></span>{!!$question->title!!}</h5>
             <div class="question-grade font-medium d-flex align-items-center border-{{ $questionStatus ? 'success' : 'danger' }} text-{{ $questionStatus ? 'success' : 'danger' }}">
                 {{ $question->grade }} / {{ $questionGrade }}
             </div>
