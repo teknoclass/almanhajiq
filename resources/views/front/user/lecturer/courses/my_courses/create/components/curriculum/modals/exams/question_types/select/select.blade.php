@@ -26,7 +26,7 @@
 
                 <div class="form-group col-md-10 mb-3">
                     <label>{{ __('question') }} ({{ __($value) }})</label>
-                    <textarea class="form-control tinymce"
+                    <textarea class="form-control tinymce2"
                         type="text"
                         name="questions_{{ $locale }}[]"
                         ></textarea>

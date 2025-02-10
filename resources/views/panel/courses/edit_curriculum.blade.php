@@ -238,7 +238,7 @@
                                     });
                                 },
 
-                                selector: '.tinymce',
+                                selector: '.tinymce3',
                                 images_upload_handler: handleImageUpload,
                                 images_upload_url: 'image/upload',
                                 relative_urls: false,

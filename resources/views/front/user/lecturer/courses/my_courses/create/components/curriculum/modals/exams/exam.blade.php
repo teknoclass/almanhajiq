@@ -130,7 +130,7 @@
                                                         @include('front.user.lecturer.courses.my_courses.create.components.curriculum.modals.exams.question', ['question_no' => @$question_no + 1])
                                                     @endforeach
                                                 @else
-                                                    @include('front.user.lecturer.courses.my_courses.create.components.curriculum.modals.exams.question', ['question_no' => 1])
+
                                                 @endif
                                             </div>
 
@@ -140,7 +140,7 @@
                                                         <button
                                                             class="btn p-0 bg-transparent border-0 me-2 font-medium btn-add-new-qestion"
                                                             type="button"
-                                                            data-question_no = {{ @$question_no + 2 }}>
+                                                            data-question_no = {{ @$question_no + 1 }}>
                                                             <i class="fa-regular fa-plus ms-1"></i>
                                                             {{ __('new_question') }}
                                                         </button>
