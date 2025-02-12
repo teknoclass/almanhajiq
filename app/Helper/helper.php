@@ -916,6 +916,10 @@ function CourseImageUrl($course_id, $file)
 {
     return url('get-course-file/' . $course_id . '/images/' . $file);
 }
+function CourseLiveSessionAttachmenteUrl($course_id, $file)
+{
+    return url('get-course-file/' . $course_id . '/liveAttachment/' . $file);
+}
 
 function getCurriculumWidgetIcon($item_type, $file_type)
 {

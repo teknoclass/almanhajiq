@@ -252,10 +252,12 @@ class LiveSessionEloquent  extends HelperEloquent
 
     function addAttachemnt($request){
         $file = $request->file('file');
+        $lesson_type = 'liveAttachment';
+        $session = CourseSession::find($request->session_id);
         $attachment = CourseSessionAttachments::create([
             'session_id' => $request->session_id,
             'original_name' => $file->getClientOriginalName(),
-            'file' => uploadFile($file)
+            'file' => uploadFile($file,'courses/' . $session->course_id . '/' . $lesson_type)
         ]);
         return $attachment;
     }
