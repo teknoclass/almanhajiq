@@ -18,4 +18,3 @@ class CourseSessionAttachemntResource extends JsonResource
 
     }
 }
-git add
