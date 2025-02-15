@@ -17,7 +17,7 @@ jobs:
       - name: Debug SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/github_actions_key
+          echo "$SSH_PRIVATE_KEY_DEV" | tr -d '\r' > ~/.ssh/github_actions_key
           chmod 600 ~/.ssh/github_actions_key
           ls -la ~/.ssh/
           file ~/.ssh/github_actions_key
@@ -27,7 +27,7 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_actions_key
+          echo "${{ secrets.SSH_PRIVATE_KEY_DEV }}" > ~/.ssh/github_actions_key
           chmod 600 ~/.ssh/github_actions_key
           ssh-keyscan -p 65533 ecstatic-joliot.138-201-36-198.plesk.page >> ~/.ssh/known_hosts
 
