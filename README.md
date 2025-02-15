@@ -1,2 +1,2 @@
-# almanhajiq-platform1
+# almanhajiq-platform2
 منصة المنهج
