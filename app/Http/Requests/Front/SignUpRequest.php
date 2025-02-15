@@ -27,7 +27,11 @@ class SignUpRequest  extends FormRequest
     {
         $pass_role                 = $this->role == User::LECTURER ? 'nullable' : 'required';
         $rules['name']             = 'required|string';
-        $rules['email']            = 'required|email|unique:users';
+        $rules['email']            = [
+                                        'required',
+                                        'email',
+                                        Rule::unique('users')->whereNull('deleted_at')
+                                    ];
         $rules['mobile']           = [
                                         'required',
                                         'numeric',

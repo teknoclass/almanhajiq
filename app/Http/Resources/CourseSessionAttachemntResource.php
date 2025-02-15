@@ -11,7 +11,7 @@ class CourseSessionAttachemntResource extends JsonResource
     {
         $data['id'] = $this->id;
         $data['original_name'] = $this->original_name;
-        $data['file'] = fileUrl($this->file);
+        $data['file'] = CourseLiveSessionAttachmenteUrl($this->session->course_id,$this->file);
 
         return $data;
 

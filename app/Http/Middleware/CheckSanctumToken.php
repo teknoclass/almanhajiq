@@ -13,11 +13,16 @@ class CheckSanctumToken
     {
 
         if ($request->bearerToken()) {
-            $user = PersonalAccessToken::findToken($request->bearerToken())->tokenable;
+            $userT = PersonalAccessToken::findToken($request->bearerToken());
 
-            if ($user) {
-                $request->attributes->set('user', $user);
-                Auth::login($user);
+            if($userT){
+                $user =  PersonalAccessToken::findToken($request->bearerToken())->tokenable;
+                if ($user) {
+                    $request->attributes->set('user', $user);
+                    Auth::login($user);
+                }
+
+
             }
         }
 

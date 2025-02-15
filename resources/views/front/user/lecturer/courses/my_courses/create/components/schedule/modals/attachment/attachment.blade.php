@@ -30,7 +30,7 @@
                         <p>{{__('no_data')}}</p>
                     @endif
 
-                    <input type="file" id="fileInput" style="display: none;" data-session-id="{{$session->id}}">
+                    <input type="file" id="fileInput" style="display: none;" data-session-id="{{$session->id}}" accept="application/pdf">
 
                     <button class="btn btn-primary mt-3" type="button" id="addAttachmentBtn" >{{__('add')}}</button>
                     </div>

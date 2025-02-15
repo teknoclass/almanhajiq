@@ -23,7 +23,11 @@ class StudentRequest extends FormRequest
     public function rules(): array
     {
         $rules['name']             = 'required|string';
-        $rules['email']            = 'required|email|unique:users';
+        $rules['email']            = [
+                                        'required',
+                                        'email',
+                                        Rule::unique('users')->whereNull('deleted_at')
+                                    ];
         $rules['mobile']           = [
                                         'required',
                                         'numeric',
