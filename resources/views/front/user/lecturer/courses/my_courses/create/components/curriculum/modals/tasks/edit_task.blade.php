@@ -131,10 +131,8 @@
                                                                     <input type="hidden" name="question_ids[]" value="{{ $question->id }}" />
                                                                     @foreach (locales() as $locale => $value)
                                                                         <div class="form-group">
-                                                                            <input class="form-control" type="text"
-                                                                                name="questions_{{ $locale }}[]"
-                                                                                value="{{ @$question->translate($locale)->title }}"
-                                                                                placeholder="{{ __('question') }} ({{ __($value) }})" />
+                                                                            <textarea class="form-control tinymce" type="text"
+                                                                                name="questions_{{ $locale }}[]">{{ @$question->translate($locale)->title }}</textarea>
                                                                         </div>
                                                                     @endforeach
 

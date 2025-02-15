@@ -43,7 +43,7 @@ class TeacherRepository extends MainRepository
     }
     public function getTeachersByFilter($teacher_id)
     {
-        return Courses::active()
+        return Courses::active()->accepted()
                       ->select(
             'id',
             'image',
@@ -56,7 +56,7 @@ class TeacherRepository extends MainRepository
         )
 
                       ->where('user_id', $teacher_id)
-                      ->where('type', 'live')
+                      
                       ->with('translations:courses_id,title,locale,description')
                       ->withCount('lecturers')
                       ->withCount('items')

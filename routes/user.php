@@ -128,6 +128,15 @@ Route::group(['middleware' => [ 'shareGeneralSettings']], function () {
         });
 
         // courses
+        Route::prefix('quiz')->group(function(){
+            Route::post('/submitAnswer',[QuizController::class,'submitAnswer'])->name('submitAnswer');
+            Route::post('/storeResult',[QuizController::class,'storeResultUpd'])->name('storeResult');
+        });
+        Route::prefix('assignment')->group(function(){
+            Route::post('/submitAnswer',[AssignmentsController::class,'submitAnswer'])->name('assignment.submitAnswer');
+            Route::post('/upload-file/{course_id}/{assignment_id}/{question_id}', [AssignmentsController::class, 'uploadFile2'])->name('file.upload');
+            Route::post('/storeResultApi',[AssignmentsController::class,'endAssignmentApi'])->name('assignment.storeAssignment');
+        });
         Route::group(['prefix' => 'courses', 'as' => 'courses.'], function () {
             Route::group(['prefix' => 'live', 'as' => 'live.'], function () {
                 Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {

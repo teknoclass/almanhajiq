@@ -607,6 +607,9 @@ Route::group(
                 Route::get('/{id}', [CoursesController::class, 'editCourseFaqs'])->name('index');
                 Route::post('/{id}', [CoursesController::class, 'updateCourseFaqs'])->name('update');
             });
+            Route::get('/get-attachment-modal', [LiveSessionsController::class, 'getAttachmentModal'])->name('get_attachment_modal');
+            Route::post('/delete-attachment',[LiveSessionsController::class,'deleteAttachemnt'])->name('delete_attachment');
+            Route::post('/add-attachment',[LiveSessionsController::class,'addAttachemnt'])->name('add_attachment');
             Route::group(['prefix' => 'course_schedule', 'as' => 'courseSchedule.'], function () {
                 Route::get('/{id}', [CoursesController::class, 'editCourseSchedule'])->name('index');
                 Route::post('/{id}', [CoursesController::class, 'updateCourseSchedule'])->name('update');
@@ -842,7 +845,7 @@ Route::group(
             Route::post('/{id}', [PrivateLessonRequestsController::class, 'update'])->name('update');
         });
     });
-  
+
 
     //private_lessons
     Route::group(['prefix' => 'packages', 'as' => 'packages.', 'middleware' => 'permission:show_private_lessons'], function () {
@@ -889,7 +892,7 @@ Route::group(
     });
 
     Route::group(['prefix' => 'course_session_requests', 'as' => 'CourseSessionRequests.', 'middleware' => 'permission:show_courses'], function() {
-    
+
         Route::get('/', [CoursesSessionsController::class, 'index'])->name('index');
         Route::post('/respond', [CoursesSessionsController::class, 'respondToRequest'])->name('respond');
         Route::get('/data', [CoursesSessionsController::class, 'getDataTable'])->name('data');
@@ -1039,8 +1042,8 @@ Route::group(
         Route::post('/operation', [CouponsController::class, 'operation'])->name('operation');
     });
 
-    Route::get('/update-session-price',[AdminCourseSessionsController::class,'updateSessionPrice']);  
-    Route::get('/update-session-date',[AdminCourseSessionsController::class,'updateSessionDate']);  
-    Route::get('/update-session-time',[AdminCourseSessionsController::class,'updateSessionTime']);  
+    Route::get('/update-session-price',[AdminCourseSessionsController::class,'updateSessionPrice']);
+    Route::get('/update-session-date',[AdminCourseSessionsController::class,'updateSessionDate']);
+    Route::get('/update-session-time',[AdminCourseSessionsController::class,'updateSessionTime']);
 
 });

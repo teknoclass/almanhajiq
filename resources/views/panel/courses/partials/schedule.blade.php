@@ -51,6 +51,7 @@
                    <th>{{ __('Time') }}</th>
                    <th>{{ __('Session Title') }}</th>
                    <th>{{ __('Actions') }}</th>
+
                </tr>
                </thead>
                <tbody>
@@ -115,6 +116,7 @@
                 <th>{{ __('time') }}</th>
                 <th>{{ __('price') }}</th>
                 <th>{{ __('actions') }}</th>
+                <th>{{ __('Attachments') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -147,8 +149,9 @@
                         @else
                             <button class="btn btn-primary" disabled>{{ __('did_not_start_yet') }}</button>
                         @endif
-                        @endforeach
                     </td>
+                    <td><span><a class="btn btn-primary attachment_modal" data-session-id="{{ $session->id }}">{{ __('add') }}</a></span></td>
+                    @endforeach
             </tbody>
         </table>
         @endif
@@ -160,7 +163,7 @@
                         <div class="accordion-header" id="heading{{ $groupIndex }}">
                             <h2 class="mb-0">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $groupIndex }}">
-                                    {{ $group->title }} 
+                                    {{ $group->title }}
                                     <span style="padding: 0 20px;"><i class="bi bi-cash-stack"></i> {{__('price')}} : {{$group->price}}</span>
                                 </button>
                                 <input type="text" name="group_{{ $groupIndex }}_title" hidden value="{{ $group->title }}">

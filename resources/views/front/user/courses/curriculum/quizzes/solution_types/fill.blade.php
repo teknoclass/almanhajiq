@@ -1,18 +1,20 @@
 @php
 $userAnswer = $questionGrade = $questionStatus = 0;
 
-if (isset($student_solutions[$question->id])) {
-    $userAnswer = $student_solutions[$question->id]['answer'] ?? 0;
-    $questionGrade = $student_solutions[$question->id]['grade'] ?? 0;
-    $questionStatus = $student_solutions[$question->id]['status'] ?? 0;
+
+if($question->userAnswer != null){
+    $userAnswer = $question->userAnswer->text_answer;
+    $questionGrade = $question->userAnswer->mark;
+    $questionStatus = $question->userAnswer->status;
 }
+
 @endphp
 
 <div class="col-12 mb-3">
 	<div class="bg-white rounded-2 p-3 item-question border border-{{ $questionStatus ? 'success' : 'danger' }}">
 
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <h5 class="font-medium"><span class="square"></span>{{ $question->title }}</h5>
+            <h5 class="font-medium"><span class="square"></span>{!!$question->title!!}</h5>
             <div class="question-grade font-medium d-flex align-items-center border-{{ $questionStatus ? 'success' : 'danger' }} text-{{ $questionStatus ? 'success' : 'danger' }}">
                 {{ $question->grade }} / {{ $questionGrade }}
             </div>

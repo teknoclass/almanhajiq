@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'image'=> imageUrl($this->image) ,
             'role'=>$this->role ,
             'email'=>$this->email,
-            'is_validation' => $this->is_validation,
+            'is_validation' => max($this->is_validation,getSeting('is_account_confirmation_required')^1),
             'mobile' => $this->mobile,
             'code_country' => $this->code_country,
             'last_login' => $this->last_login_at,

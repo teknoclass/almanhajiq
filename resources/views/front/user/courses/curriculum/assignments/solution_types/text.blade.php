@@ -1,15 +1,14 @@
 @php
 $userAnswer = $questionGrade = null;
-
-if (isset($student_solutions[$question->id])) {
-    $userAnswer = $student_solutions[$question->id]['answer'];
-    $questionGrade = $student_solutions[$question->id]['grade'];
+if($question->userAnswers != null){
+    $userAnswer = $question->userAnswers->answer;
+    $questionGrade = $question->userAnswers->mark;
 }
 @endphp
 <div class="col-12 mb-3">
 	<div class="bg-white rounded-2 p-3 item-question">
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <h5 class="font-medium"><span class="square"></span>{{ $question->title }}</h5>
+            <h5 class="font-medium"><span class="square"></span>{!! $question->title !!}</h5>
             @if ($course_item->studentAssignmentResults[0]->status != 'not_submitted' && $course_item->studentAssignmentResults[0]->status != 'pending')
                 <div class="question-grade font-medium d-flex align-items-center ">
                     {{ $questionGrade ?? 0 }}

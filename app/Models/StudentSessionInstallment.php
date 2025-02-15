@@ -17,12 +17,12 @@ class StudentSessionInstallment extends Model
 
     public function student()
     {
-        return $this->belongsTo(User::class,'id','student_id');
+        return $this->belongsTo(User::class,'student_id','id');
     }
 
     public function course()
     {
-        return $this->belongsTo(Courses::class,'id','course_id');
+        return $this->belongsTo(Courses::class,'course_id','id');
     }
 
     public function session()

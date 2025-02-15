@@ -17,13 +17,15 @@
             <hr/>
 
              @if ($course_item->assignmentResults[0]->status == 'not_submitted' || $course_item->assignmentResults[0]->status == 'pending')
-            <form id="task_correct_form" action="{{route('user.lecturer.course.curriculum.assignment.correct_assignment')}}" to="{{ route('user.lecturer.my_courses.tasks.students' , $item_id) }}" method="POST" enctype="multipart/form-data">
+            <form id="task_correct_form" action="{{route('user.lecturer.my_courses.tasks.submitResults')}}" to="{{ route('user.lecturer.my_courses.tasks.students' , $item_id) }}" method="POST" enctype="multipart/form-data">
 
                 @csrf
 
                 <input type="hidden" name="student_id" id="student_id" value="{{@$student_id}}">
                 <input type="hidden" name="course_id"  id="course_id"  value="{{@$course_id}}">
                 <input type="hidden" name="item_id"    id="item_id"    value="{{@$item_id}}">
+                <input type="hidden" name="result_id"    id="result_id"    value="{{@$course_item->assignmentResults[0]->id}}">
+
 
                @foreach($course_item->assignmentQuestions as $key => $question)
 
@@ -44,7 +46,7 @@
              <div class="form-group text-center mt-3">
                 <div class="d-flex align-items-center justify-content-center">
                     <div class="col-lg-3 me-3">
-                        <button id="btn_submit" type="submit" class="btn btn-primary px-1 w-100 btn-add-qestion-task">{{ __('save') }}</button>
+                        <button id="btn_submit remove" type="submit" class="btn btn-primary px-1 w-100 btn-add-qestion-task" onclick="setTimeout(() => location.reload(), 1000)">{{ __('save') }}</button>
                     </div>
                 </div>
             </div>

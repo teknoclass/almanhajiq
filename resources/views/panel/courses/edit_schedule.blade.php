@@ -84,7 +84,8 @@
                         </div>
                      </div>
 
-
+                    <div id="targetDiv">
+                    </div>
 
                   </div>
                   <!--end::Form-->
@@ -112,6 +113,112 @@
 @endif
 <script src="{{asset('assets/panel/js/pages/crud/forms/widgets/bootstrap-datetimepicker.js')}}"></script>
 @include("panel.courses.partials.session_script")
+
+<script>
+    $(document).ready(function() {
+
+        // Close modal if clicked outside of it
+        $(document).on('click', '.attachment_modal', function(e) {
+            var session_id = $(this).data('session-id');
+            $('#load').show();
+            $.ajax({
+                url: "{{ route('panel.courses.edit.get_attachment_modal') }}", // Use the new endpoint
+                method: "GET",
+                data: {
+                    session_id: session_id
+                },
+                success: function(response) {
+                    $('#load').hide();
+                    $("#targetDiv").html(response.content);
+                    showMyModal();
+
+                },
+                error: function(xhr, status, error) {
+                    $('#load').hide();
+
+                    console.error("Failed to fetch lesson modal.");
+                }
+            });
+        });
+
+        function showMyModal() {
+            // Assuming your modal has an ID, e.g., #myModal
+            let modal = $("#modalAddAttachment");
+            modal.show();
+            modal.removeAttr("aria-hidden");
+        }
+    });
+
+    $(document).on('click', '#addAttachmentBtn', function() {
+        $('#fileInput').click();
+    });
+
+    // Handle file selection and upload
+    $(document).on('change', '#fileInput', function(event) {
+        var file = event.target.files[0]; // Get the selected file
+        if (!file) return;
+        var sessionId = $(this).data('session-id');
+        var formData = new FormData();
+        formData.append('file', file);
+        formData.append('_token', "{{ csrf_token() }}");
+        formData.append('session_id', sessionId);
+        $.ajax({
+            url: "{{ route('panel.courses.edit.add_attachment') }}", // API route for upload
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    var newRow = `
+                        <tr id="attachment-row-${response.attachment.id}">
+                            <td>${response.attachment.original_name}</td>
+                            <td>
+                                <button class="btn btn-danger delete-attachment" data-id="${response.attachment.id}">
+                                    {{__('delete')}}
+                                </button>
+                            </td>
+                        </tr>`;
+                    console.log(newRow);
+                    $("#attachment-table tbody").append(newRow);
+                } else {
+                    alert("Failed to upload file.");
+                }
+            },
+            error: function(xhr) {
+                console.error("Upload Error");
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-attachment', function() {
+        var attachmentId = $(this).data('id');
+        var rowElement = $("#attachment-row-" + attachmentId); // Select the row
+
+
+        $.ajax({
+            url: "{{ route('panel.courses.edit.delete_attachment') }}", // Your API route
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: attachmentId
+            },
+            success: function(response) {
+                if (response.success) {
+                    rowElement.fadeOut(300, function() {
+                        $(this).remove(); // Remove the row smoothly
+                    });
+                } else {
+                    alert("Failed to delete attachment.");
+                }
+            },
+            error: function(xhr) {
+                console.error("Error");
+            }
+        });
+
+    });
+</script>
 
 @endpush
 @stop
