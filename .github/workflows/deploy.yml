@@ -1,0 +1,46 @@
+name: Deploy To Server
+
+on:
+  push:
+    branches:
+      - main  # branch name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Debug SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY_LIVE" | tr -d '\r' > ~/.ssh/github_actions_key
+          chmod 600 ~/.ssh/github_actions_key
+          ls -la ~/.ssh/
+          file ~/.ssh/github_actions_key
+          cat ~/.ssh/github_actions_key | head -n 5
+
+      # 2. Set up SSH key
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY_LIVE }}" > ~/.ssh/github_actions_key
+          chmod 600 ~/.ssh/github_actions_key
+          ssh-keyscan -p 65533 ecstatic-joliot.138-201-36-198.plesk.page >> ~/.ssh/known_hosts
+
+      - name: Test SSH Connection
+        run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/github_actions_key -p 65533 almanhage-admin@ecstatic-joliot.138-201-36-198.plesk.page "echo 'SSH Connection Successful'"
+
+      # 3. Add GitHub to known hosts
+      - name: Add GitHub to known hosts
+        run: |
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts  # Set permissions for the trusted key
+
+      # 4. Deploy to server
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/github_actions_key -p 65533 almanhage-admin@ecstatic-joliot.138-201-36-198.plesk.page "cd /var/www/vhosts/almanhajiq.com/httpdocs && git pull origin main"
