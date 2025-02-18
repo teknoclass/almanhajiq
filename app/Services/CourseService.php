@@ -172,7 +172,7 @@ class CourseService extends MainService
         catch (\Exception  $exception){
             Log::error($exception->getMessage());
             return $this->createResponse(
-                __('message.not_found'),
+                $exception->getMessage(),
                 false,
                 null
             );
