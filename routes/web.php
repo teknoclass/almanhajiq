@@ -368,8 +368,9 @@ Route::get('/migrate',function(){
         //"2024_12_31_081856_add_private_and_public_password_to_private_lessons_table.php"
         //"2025_01_21_063207_add_type_to_transactions.php",
         //"2025_01_21_063935_add_payment_type_to_transactions.php"
-        "2025_02_04_125713_create_session_attendances_table.php",
-        "2025_02_04_131835_create_course_session_attachments_table.php"
+        //"2025_02_04_125713_create_session_attendances_table.php",
+        //"2025_02_04_131835_create_course_session_attachments_table.php"
+        "2025_02_19_143215_create_sessions_table.php"
     ];
 
     foreach($migrations as $migration)
