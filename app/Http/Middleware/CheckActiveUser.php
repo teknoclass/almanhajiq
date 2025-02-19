@@ -20,7 +20,9 @@ class CheckActiveUser
     {
         $user=auth()->user();
 
-
+        if(!$user){
+            return Redirect::to('/login');
+        }
         if ($user!='') {
             if ($user->is_block==1) {
                 Auth::guard('web')->logout();
@@ -50,6 +52,7 @@ class CheckActiveUser
                 }
             }
         }
+
 
 
         return $next($request);
