@@ -1,2 +1,2 @@
-# almanhajiq-platform7
-منصة المنهج
+# almanhajiq-platform
+منصة المنهج  
