@@ -55,7 +55,8 @@ class SendCourseSessionReminder extends Command
 
             foreach ($participants as $participant)
             {
-                sendEmail(__('session_start_reminder_title'),__('session_start_reminder_msg'),$participant->email);
+                sendNotification(__('session_start_reminder_title'),__('session_start_reminder_msg'). ' ' . __('session_title') . ': ' . $session->title,$participant->id,'user');
+                sendEmail(__('session_start_reminder_title'),__('session_start_reminder_msg'). ' ' . __('session_title') . ': ' . $session->title,$participant->email);
             }
         }
 

@@ -670,7 +670,7 @@ class Courses extends Model
             ->WhereDoesntHave('learningStatus', function (Builder $query) use ($user_id) {
                 $query->where('user_id',$user_id);
             })
-        ->count();
+        ->count(); 
 
         $total_lessons               = $data['completed_lessons'] + $data['uncompleted_lessons'];
         $data['lessons_achievement'] = $total_lessons ? (100 * $data['completed_lessons']) / ($total_lessons) : 0;

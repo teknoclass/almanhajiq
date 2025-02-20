@@ -1058,7 +1058,7 @@ class CoursesEloquent extends HelperEloquent
     public function task_students($assignment_id , $is_web=true)
     {
         $data['user']        = $this->getUser($is_web);
-        $data['assignmentt']  =  CourseAssignments::where(['id' => $assignment_id  , 'user_id' =>   $data['user']->id ])
+        $data['assignmentt']  =  CourseAssignments::where(['id' => $assignment_id ])
         ->with(['course'])->first();
         $data['assignments'] = [];
         if( $data['assignmentt']) {
