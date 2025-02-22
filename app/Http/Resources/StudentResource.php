@@ -31,7 +31,7 @@ class StudentResource extends JsonResource
             'is_validation' => max($this->is_validation,getSeting('is_account_confirmation_required')^1),
             'country_code'=>$this->code_country,
             'info'=>[
-                'courses_count'=>$this->validCourses(),
+                'courses_count'=>$this->validCourses($this->id),
                 // 'private_lessons_count'=>count($this->privateLessons),
             ]+$this->user_activities(),
             'country'=> isset($this->country)?collect($this->country['translations'])->firstWhere('locale', $locale??'en')->name??'':'',

@@ -688,8 +688,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Transactios::class, 'user_id');
     }
 
-    function validCourses(){
-        return UserCourse::where('user_id',auth('api')->id())->whereHas('course',function($q){
+    function validCourses($id = -1){
+        if($id == -1)$id = auth('api')->id();
+        return UserCourse::where('user_id',$id)->whereHas('course',function($q){
             $q->whereNull('deleted_at');
         })->count();
     }
