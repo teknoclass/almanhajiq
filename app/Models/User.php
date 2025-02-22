@@ -691,7 +691,10 @@ class User extends Authenticatable implements MustVerifyEmail
     function validCourses($id = -1){
         if($id == -1)$id = auth('api')->id();
         return UserCourse::where('user_id',$id)->whereHas('course',function($q){
-            $q->whereNull('deleted_at');
+            $q->whereNull('deleted_at')
+            ->where('is_active', 1)
+            ->where('status', 'accepted');
+
         })->count();
     }
 
