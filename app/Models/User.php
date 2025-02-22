@@ -664,7 +664,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // + reserved_courses
     public function getReservedCoursesAttribute()
     {
-        return Courses::whereIn('id',$this->courses->whereNotNull('deleted_at')->pluck('course_id')->toArray())->get();
+        return Courses::whereIn('id',$this->courses->whereNull('deleted_at')->pluck('course_id')->toArray())->get();
     }
 
     // + user_activities
@@ -690,7 +690,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     function validCourses(){
         return UserCourse::where('user_id',auth('api')->id())->whereHas('course',function($q){
-            $q->whereNotNull('deleted_at');
+            $q->whereNull('deleted_at');
         })->count();
     }
 
