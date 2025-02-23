@@ -165,6 +165,8 @@
 
 
         <script>
+            window.base_image_url = "{{ env('APP_URL') }}/image";
+
             $(document).ready(function() {
                 // Close modal if clicked outside of it
                 $(document).on('click', '.outer_modal_lesson', function(e) {
@@ -268,6 +270,7 @@
                     $("#modalAddExam").show();
                 }
 
+
                 $(document).on('click', '.outer_modal_assignment', function(e) {
                     var course_id = $(this).data('course_id');
                     var course_type = $(this).data('course_type');
@@ -329,6 +332,37 @@
                     });
                 });
 
+                const handleImageUpload = (blobInfo, success, failure) => new Promise((resolve, reject) => {
+                    const formData = new FormData()
+                    formData.append('image', blobInfo.blob())
+                    formData.append('width', '')
+                    formData.append('height', '')
+                    formData.append('custome_path', $('#custome_path').val());
+                    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+                    $.ajax({
+                        url: '/image/upload',
+                        method: 'post',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            const location = response.file_name
+                            console.log(window.base_image_url);
+                            setTimeout(function () {
+                                /* no matter what you upload, we will turn it into TinyMCE logo :)*/
+                                success(window.base_image_url + '/' + location);
+                            }, 2000);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error:", xhr);
+                            console.error("Status:", status);
+                            console.error("Error Message:", error);
+                            console.error("Response Text:", xhr.responseText); // To log the full response
+                        }
+                    });
+
+                });
                 function showTaskModal() {
                     // Assuming your modal has an ID, e.g., #myModal
                     $("#modalAddTasks").show();
