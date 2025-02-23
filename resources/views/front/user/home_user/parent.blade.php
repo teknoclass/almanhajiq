@@ -12,7 +12,7 @@
                         'icon' => 'user',
                         'href' => '',
                     ],
-                  
+
                 ];
 
             @endphp
@@ -24,7 +24,7 @@
                         </h3>
                     </div>
                 </div>
-              
+
             </div>
             <div class="row gy-5 g-lg-3 my-4">
                 @foreach ($statistics as $i => $statistic)
@@ -32,7 +32,7 @@
                 @endforeach
             </div>
 
-           
+
 
             <div class="row text-start mb-3 pt-5 justify-content-between align-items-center">
                 <div class="col-8">
@@ -42,7 +42,7 @@
                     @endif
                   </div>
                 </div>
-               
+
                 <div class="col-2 mb-2 d-flex justify-content-end">
                     <a class="btn btn-primary font-medium me-auto" data-bs-toggle="modal" data-bs-target="#studentModal">{{ __('add_son') }}</a>
                 </div>
@@ -57,7 +57,7 @@
                     <thead>
                         <tr>
                             <th width="">{{ __('name') }}</th>
-                          
+
                             <th>
                                 {{ __('date_of_registration') }}
                             </th>
@@ -76,13 +76,13 @@
                                 <td>
                                     {{ @$son->son->name }}
                                 </td>
-                               
+
                                 <td>
                                     {{ @$son->son->created_at }}
                                 </td>
 
                                 <td>
-                                <a class="btn btn-primary  btn-sm" href="{{route('user.parent.sons.courses',$son->son_id)}}">   {{ @$son->son->courses()->count() }} </a>
+                                <a class="btn btn-primary  btn-sm" href="{{route('user.parent.sons.courses',$son->son_id)}}">   {{ @$son->son->validCourses($son->son->id) }} </a>
                                 </td>
                                 <td>
                                 <a class="btn btn-primary  btn-sm" href="{{route('user.parent.sons.courses',$son->son_id)}}">   {{__('courses_details')}}</a>
@@ -116,6 +116,6 @@
                 toastr.success("{{ __('copy_completed_successfully') }}")
             }
         </script>
-        
+
     @endpush
 @endsection
