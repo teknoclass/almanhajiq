@@ -242,9 +242,9 @@ class AuthEloquent extends HelperEloquent
                 ->where('user_id', $user->id)
                 ->where('id', '!=', session()->getId())
                 ->delete();
-            $request->session()->regenerate();
 
             $user->tokens()->whereNull('expires_at')->update(['expires_at' => now()]);
+                $request->session()->regenerate();
             return
                 [
                     'message' => __('message.operation_accomplished_successfully'),

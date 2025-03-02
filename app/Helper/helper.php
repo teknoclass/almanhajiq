@@ -891,6 +891,10 @@ function CourseVideoUrl($course_id, $file)
 {
     return url('get-course-file/' . $course_id . '/videos/' . $file);
 }
+function CourseVideoUrlStream($course_id, $file)
+{
+    return url('get-course-file-stream/' . $course_id . '/videos/' . $file);
+}
 
 function CourseAudioUrl($course_id, $file)
 {

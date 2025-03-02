@@ -237,7 +237,6 @@
                                         // console.log(e.content);
                                     });
                                 },
-
                                 selector: '.tinymce3',
                                 images_upload_handler: handleImageUpload,
                                 images_upload_url: 'image/upload',
@@ -256,7 +255,6 @@
                                 content_style:
                                     "body { color: #000; font-size: 18pt; font-family: Arial;text-align: justify }",
                                 forced_root_block_attrs: { style: 'text-align: justify;' }
-
                             });
                             showExamModal();
                         },
@@ -323,7 +321,21 @@
                                 plugins: 'advlist autolink link image lists table charmap print preview  fullscreen media',
                                 content_style:
                                     "body { color: #000; font-size: 18pt; font-family: Arial;text-align: justify }",
-                                forced_root_block_attrs: { style: 'text-align: justify;' }
+                                forced_root_block_attrs: { style: 'text-align: justify;' },
+                                setup: function (editor) {
+                                    editor.on('init', function () {
+                                    // إضافة رسالة أسفل زر رفع الصور
+                                    const uploadDialog = document.querySelector('.tox-dropzone');
+                                    if (uploadDialog) {
+                                        const infoText = document.createElement("p");
+                                        infoText.textContent = "مسموح برفع الصور فقط بصيغ: JPG, JPEG, PNG, GIF, WEBP.";
+                                        infoText.style.fontSize = "12px";
+                                        infoText.style.color = "#666";
+                                        infoText.style.marginTop = "5px";
+                                        uploadDialog.appendChild(infoText);
+                                    }
+                                    });
+                                }
 
                             });
 
@@ -361,6 +373,7 @@
                     });
 
                 });
+
 
                 function showTaskModal() {
                     // Assuming your modal has an ID, e.g., #myModal

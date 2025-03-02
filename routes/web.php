@@ -216,6 +216,9 @@ Route::post('/files/upload-file', [FileController::class, 'uploadFile'])->name('
 Route::group(['prefix' => '/get-course-file', 'middleware' => ['CheckCanAccessCourseFiles'], 'as' => 'get.course.file.'], function () {
     Route::get('{course_id}/{lesson_type}/{file}', [FileController::class, 'getCourseLessonItemLink'])->name('type');
 });
+Route::group(['prefix' => '/get-course-file-stream', 'middleware' => ['CheckCanAccessCourseFiles'], 'as' => 'get.course.file.stream'], function () {
+    Route::get('{course_id}/{lesson_type}/{file}', [FileController::class, 'getCourseLessonItemLinkStream']);
+});
 ////////////////////
 //payment webhook
 Route::post('/full-subscribe-course-webhook',[CourseFullSubscriptionsController::class,'handleWebhook']);
