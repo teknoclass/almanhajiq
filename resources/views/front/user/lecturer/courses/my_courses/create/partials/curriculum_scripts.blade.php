@@ -124,6 +124,8 @@
                     formData.append('width', '')
                     formData.append('height', '')
                     formData.append('custome_path', $('#custome_path').val());
+                    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
                     $.ajax({
                         url: '/image/upload',
                         method: 'post',

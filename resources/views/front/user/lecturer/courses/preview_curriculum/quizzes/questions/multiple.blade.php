@@ -2,7 +2,7 @@
 <div class="col-12 mb-3">
 	<div class="bg-white rounded-2 p-3 item-question border">
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <h5 class="font-medium"><span class="square"></span>{{ $question->title }}</h5>
+            <h5 class="font-medium"><span class="square"></span>{!! $question->title !!}</h5>
             <div class="question-grade font-medium d-flex align-items-center">
                 {{ $question->grade }}
             </div>

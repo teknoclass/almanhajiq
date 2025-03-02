@@ -15,7 +15,6 @@ class ImageController extends Controller
 
     public function uploadImage() {
 
-        
         $photo = \Input::all();
         $response = $this->image->upload($photo, 'image');
         return $response;
