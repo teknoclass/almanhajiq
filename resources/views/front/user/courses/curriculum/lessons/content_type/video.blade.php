@@ -2,9 +2,9 @@
     <div class="col-12">
         @switch(@$course_item->storage)
             @case('upload')
-            <video class="player" id="videoPlayer" controls preload="auto">
-                    <source type="video/mp4">
-                </video>
+            <video id="videoPlayer" width="640" height="360" controls>
+                <source src="{{ CourseVideoUrlStream(@$course->id, @$course_item->file) }}" type="video/mp4">
+            </video>
                 @break
 
             @case('youtube')
