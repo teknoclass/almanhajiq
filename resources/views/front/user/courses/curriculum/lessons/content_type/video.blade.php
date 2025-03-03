@@ -2,9 +2,9 @@
     <div class="col-12">
         @switch(@$course_item->storage)
             @case('upload')
-            <video id="videoPlayer" width="640" height="360" controls>
-                <source src="{{ CourseVideoUrlStream(@$course->id, @$course_item->file) }}" type="video/mp4">
-            </video>
+            <video class="player" id="videoPlayer" controls preload="auto">
+                    <source type="video/mp4">
+                </video>
                 @break
 
             @case('youtube')
@@ -50,7 +50,7 @@
     </div>
 </div>
 <script>
-   fetch('{{ CourseVideoUrlStream(@$course->id, @$course_item->file) }}', {
+   fetch('{{ courseVideoUrl(@$course->id, @$course_item->file) }}', {
             headers: {
                 Range: 'bytes=0-1048576'
             }
