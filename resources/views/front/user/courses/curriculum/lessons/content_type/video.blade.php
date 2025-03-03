@@ -28,10 +28,10 @@
 
                 @case('vimeo_link')
                 <div class="video-container">
-                    <iframe src="https://player.vimeo.com/video/{{ @$course_item->file }}" 
-                style="position:absolute;top:0;left:0;width:100%;height:100%;" 
-                frameborder="0" 
-                allow="autoplay; fullscreen" 
+                    <iframe src="https://player.vimeo.com/video/{{ @$course_item->file }}"
+                style="position:absolute;top:0;left:0;width:100%;height:100%;"
+                frameborder="0"
+                allow="autoplay; fullscreen"
                 allowfullscreen>
                 </iframe>
 
@@ -50,10 +50,10 @@
     </div>
 </div>
 <script>
-   fetch('{{ courseVideoUrl(@$course->id, @$course_item->file) }}', {
+   fetch('{{ CourseVideoUrlStream(@$course->id, @$course_item->file) }}', {
             headers: {
                 Range: 'bytes=0-1048576'
-            } 
+            }
         })
         .then(response => response.blob())
         .then(blob => {
