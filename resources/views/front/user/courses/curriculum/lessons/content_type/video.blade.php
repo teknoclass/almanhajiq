@@ -2,10 +2,10 @@
     <div class="col-12">
         @switch(@$course_item->storage)
             @case('upload')
-            <video class="player" id="videoPlayer" controls preload="auto">
-                    <source type="video/mp4">
-                </video>
-                @break
+            <video id="videoPlayer" width="640" height="360" controls>
+                <source src="{{ CourseVideoUrlStream(@$course->id, @$course_item->file) }}" type="video/mp4">
+            </video>
+            @break
 
             @case('youtube')
                 <div class="video-container">
@@ -49,16 +49,4 @@
         @endswitch
     </div>
 </div>
-<script>
-   fetch('{{ courseVideoUrl(@$course->id, @$course_item->file) }}', {
-            headers: {
-                Range: 'bytes=0-1048576'
-            }
-        })
-        .then(response => response.blob())
-        .then(blob => {
-            const url = URL.createObjectURL(blob);
-            const video = document.getElementById('videoPlayer');
-            video.src = url;
-        });
-</script>
+
