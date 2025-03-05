@@ -358,7 +358,7 @@ class AssignmentsEloquent extends HelperEloquent
 
             // update the progress
             $course = $assignment->course;
-            //$course->updateProgress($guardType);
+            $course->updateProgress($guardType);
             $data['status'] = true;
             $data['message'] = __('message.operation_accomplished_successfully');
             return $data;
