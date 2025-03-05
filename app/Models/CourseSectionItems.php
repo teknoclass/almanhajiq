@@ -47,53 +47,53 @@ class CourseSectionItems extends Model
         });
     }
 
-    public function scopeCompletedItems($query, array $itemTypes)
+    public function scopeCompletedItems($query, array $itemTypes,$type = 'web')
     {
-        return $query->where(function ($query) use ($itemTypes) {
-            $query->when(in_array('lesson', $itemTypes), function ($query) {
-                $query->orWhere(function ($query) {
+        return $query->where(function ($query) use ($itemTypes,$type) {
+            $query->when(in_array('lesson', $itemTypes), function ($query) use ($type) {
+                $query->orWhere(function ($query) use ($type) {
                     $query->where('itemable_type', CourseLessons::class)
-                          ->whereHas('lessonStatus', function ($query) {
-                              $query->where('user_id', auth()->id());
+                          ->whereHas('lessonStatus', function ($query) use ($type) {
+                              $query->where('user_id', auth($type)->id());
                           });
                 });
             });
 
-            $query->when(in_array('quiz', $itemTypes), function ($query) {
-                $query->orWhere(function ($query) {
+            $query->when(in_array('quiz', $itemTypes), function ($query) use ($type) {
+                $query->orWhere(function ($query) use ($type) {
                     $query->where('itemable_type', CourseQuizzes::class)
-                          ->whereHas('quizResults', function ($query) {
-                              $query->where('user_id', auth()->id())
+                          ->whereHas('quizResults', function ($query) use ($type) {
+                              $query->where('user_id', auth($type)->id())
                                     ->where('status', '!=', CourseQuizzesResults::$waiting);
                           });
                 });
             });
 
-            $query->when(in_array('assignment', $itemTypes), function ($query) {
-                $query->orWhere(function ($query) {
+            $query->when(in_array('assignment', $itemTypes), function ($query) use ($type) {
+                $query->orWhere(function ($query) use ($type) {
                     $query->where('itemable_type', CourseAssignments::class)
-                          ->whereHas('assignmentResults', function ($query) {
-                              $query->where('student_id', auth()->id())
+                          ->whereHas('assignmentResults', function ($query) use ($type) {
+                              $query->where('student_id', auth($type)->id())
                                     ->where('status', '!=', CourseAssignmentResults::$notSubmitted);
                           });
                 });
             });
         });
     }
-    public function scopeAllCompletedItems($query)
+    public function scopeAllCompletedItems($query,$type = 'web')
     {
-        return $query->where(function ($query) {
-            $query->completedItems(['lesson', 'quiz', 'assignment'])
-                  ->orWhere(function ($query) {
-                      $query->sectionHasCompletedItem();
+        return $query->where(function ($query) use ($type) {
+            $query->completedItems(['lesson', 'quiz', 'assignment'],$type)
+                  ->orWhere(function ($query) use ($type) {
+                      $query->sectionHasCompletedItem($type);
                   });
         });
     }
-    public function scopeSectionHasCompletedItem($query)
+    public function scopeSectionHasCompletedItem($query,$type = 'web')
     {
         return $query->where('itemable_type', CourseSections::class)
-                     ->whereHas('section.items', function ($query) {
-                         $query->completedItems(['lesson', 'quiz', 'assignment']);
+                     ->whereHas('section.items', function ($query) use ($type) {
+                         $query->completedItems(['lesson', 'quiz', 'assignment'],$type);
                      });
     }
 

@@ -366,7 +366,7 @@ class QuizEloquent extends HelperEloquent
             ]);
             // update the progress
             $course = $quiz->course;
-            if($is_web)$course->updateProgress();
+            $course->updateProgress($guardType);
         }else{
 
             if($results->result_token != null){
@@ -391,7 +391,7 @@ class QuizEloquent extends HelperEloquent
 
                 // update the progress
                 $course = $quiz->course;
-                if($is_web)$course->updateProgress();
+                $course->updateProgress($guardType);
 
                 $data['message'] = 'quiz_time_passed';
                 $data['status'] = false;
@@ -436,7 +436,7 @@ class QuizEloquent extends HelperEloquent
                 ]);
 
                 $course = $quiz->course;
-                if($is_web)$course->updateProgress($guardType);
+                $course->updateProgress($guardType);
 
                 $data['status'] = true;
                 $data['message'] = __('message.operation_accomplished_successfully');

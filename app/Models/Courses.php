@@ -344,11 +344,11 @@ class Courses extends Model
         return $items + $section_items;
     }
 
-    public function gettotalCompletedItemsCount()
+    public function gettotalCompletedItemsCount($type = 'web')
     {
 
-        $completed_items = CourseCurriculum::active()->where('course_id', $this->id)->where('itemable_type', '!=', 'section')->allCompletedItems()->count();
-        $completed_section_items = CourseSectionItems::active()->where('course_id', $this->id)->allCompletedItems()->count();
+        $completed_items = CourseCurriculum::active()->where('course_id', $this->id)->where('itemable_type', '!=', 'section')->allCompletedItems($type)->count();
+        $completed_section_items = CourseSectionItems::active()->where('course_id', $this->id)->allCompletedItems($type)->count();
 
         return $completed_items + $completed_section_items;
     }
@@ -360,7 +360,7 @@ class Courses extends Model
         if ($total_items === 0)
             return 0;
 
-        $total_completed_items = $this->gettotalCompletedItemsCount();
+        $total_completed_items = $this->gettotalCompletedItemsCount($type);
 
         $progress = round(($total_completed_items / $total_items) * 100, 2);
 
@@ -670,7 +670,7 @@ class Courses extends Model
             ->WhereDoesntHave('learningStatus', function (Builder $query) use ($user_id) {
                 $query->where('user_id',$user_id);
             })
-        ->count(); 
+        ->count();
 
         $total_lessons               = $data['completed_lessons'] + $data['uncompleted_lessons'];
         $data['lessons_achievement'] = $total_lessons ? (100 * $data['completed_lessons']) / ($total_lessons) : 0;
