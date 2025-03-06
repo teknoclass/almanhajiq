@@ -23,8 +23,8 @@ class LecturerCourseUserQuizzesResource extends JsonResource
         $data['grade'] = $this->user_grade;
         $data['full_grade'] = $this->quiz->grade;
 
-        $grade = $this->grade;
-        $full = $this->quiz->grad;
+        $grade = $this->user_grade;
+        $full = $this->quiz->grade;
         if($full == 0) $data['percentage'] = 0;
         else {
             $data['percentage'] = ($grade * 100)/$full;
