@@ -684,7 +684,7 @@ class CoursesEloquent extends HelperEloquent
             'lesson_type' => 'normal'
         ]);
 
-        $lesson = CourseLessons::where('lesson_id',$request->get('lesson_id'))->first();
+        $lesson = CourseLessons::where('id',$request->get('lesson_id'))->first();
         $course = $lesson->course;
         $course->updateProgress('api');
 
