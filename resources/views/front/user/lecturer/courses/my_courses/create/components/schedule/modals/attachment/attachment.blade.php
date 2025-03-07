@@ -68,7 +68,7 @@
                         <tr id="attachment-row-${response.attachment.id}">
                             <td>${response.attachment.original_name}</td>
                             <td>
-                                <button class="btn btn-danger delete-attachment" data-id="${response.attachment.id}">
+                                <button class="btn btn-danger delete-attachment" type="button" data-id="${response.attachment.id}">
                                     {{__('delete')}}
                                 </button>
                             </td>
@@ -139,6 +139,40 @@
                     );
                 let dz = Dropzone.forElement("#kt_dropzone_1");
                 dz.removeFile(file);
+            },
+            init: function() {
+                this.on("addedfile", function(file) {
+                    let progressBar = `
+                        <div class="dz-progress">
+                            <div class="dz-upload" style="width: 0%; height: 5px; background: #007bff;"></div>
+                        </div>
+                    `;
+                    $(file.previewElement).append(progressBar);
+                });
+
+                this.on("uploadprogress", function(file, progress) {
+                    $(file.previewElement).find(".dz-upload").css("width", progress + "%");
+                });
+
+                this.on("success", function(file) {
+                    $(file.previewElement).find(".dz-upload").css({
+                        "background": "green",
+                        "width": "100%"
+                    });
+                });
+
+                this.on("error", function(file) {
+                    $(file.previewElement).find(".dz-upload").css({
+                        "background": "red",
+                        "width": "100%"
+                    });
+                });
+
+                this.on("complete", function(file) {
+                    setTimeout(function() {
+                        $(file.previewElement).find(".dz-progress").fadeOut();
+                    }, 1000);
+                });
             }
         });
 
