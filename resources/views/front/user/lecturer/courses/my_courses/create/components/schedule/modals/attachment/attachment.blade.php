@@ -104,9 +104,41 @@
                     let dz = Dropzone.forElement("#kt_dropzone_1");
                     dz.removeFile(file);
                 });
+                $(file.previewElement).find('.dz-remove').on('click', function() {
+                    var attachmentId = response.attachment.id;
+
+
+                    $.ajax({
+                        url: "{{ route('panel.courses.edit.delete_attachment') }}", // Your API route
+                        method: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id: attachmentId
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                console.log('delete done');
+                            } else {
+                                alert("Failed to delete attachment.");
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error("Error");
+                        }
+                    });
+
+                    let dz = Dropzone.forElement("#kt_dropzone_1");
+                    dz.removeFile(file);
+                });
             },
             error: function(file, errorMessage) {
-                console.error("Upload failed:", errorMessage);
+                customSweetAlert(
+                        'error',
+                        'فقط ملفات ال pdf مسموحة',
+                        ''
+                    );
+                let dz = Dropzone.forElement("#kt_dropzone_1");
+                dz.removeFile(file);
             }
         });
 
