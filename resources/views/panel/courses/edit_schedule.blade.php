@@ -151,6 +151,7 @@
 
 
 
+
     $(document).on('click', '#addAttachmentBtn', function() {
         $('#fileInput').click();
     });
