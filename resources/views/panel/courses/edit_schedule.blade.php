@@ -152,58 +152,7 @@
 
 
 
-    $(document).on('click', '#addAttachmentBtn', function() {
-        $('#fileInput').click();
-    });
-
-    // Handle file selection and upload
-    $(document).on('change', '#fileInput', function(event) {
-        var file = event.target.files[0]; // Get the selected file
-        if (!file) return;
-        if (file && file.type !== 'application/pdf') {
-            customSweetAlert(
-                            'error',
-                            'فقط ملفات ال pdf مسموحة',
-                            ''
-                            );
-            this.value = ''; // Clear the selected file
-        }else{
-
-            var sessionId = $(this).data('session-id');
-            var formData = new FormData();
-            formData.append('file', file);
-            formData.append('_token', "{{ csrf_token() }}");
-            formData.append('session_id', sessionId);
-            $.ajax({
-                url: "{{ route('panel.courses.edit.add_attachment') }}", // API route for upload
-                method: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.success) {
-                        var newRow = `
-                            <tr id="attachment-row-${response.attachment.id}">
-                                <td>${response.attachment.original_name}</td>
-                                <td>
-                                    <button class="btn btn-danger delete-attachment" data-id="${response.attachment.id}">
-                                        {{__('delete')}}
-                                    </button>
-                                </td>
-                            </tr>`;
-                        console.log(newRow);
-                        $("#attachment-table tbody").append(newRow);
-                    } else {
-                        alert("Failed to upload file.");
-                    }
-                },
-                error: function(xhr) {
-                    console.error("Upload Error");
-                }
-            });
-        }
-    });
-
+    
     $(document).on('click', '.delete-attachment', function() {
         var attachmentId = $(this).data('id');
         var rowElement = $("#attachment-row-" + attachmentId); // Select the row

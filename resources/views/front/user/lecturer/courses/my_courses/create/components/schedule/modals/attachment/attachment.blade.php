@@ -39,6 +39,10 @@
 <script src="{{ asset('assets/front/js/post.js') }}"></script>
 <script src="{{ asset('assets/front/js/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('assets/front/js/summernote.min.js') }}"></script>
+<script src="{{asset('assets/panel/plugins/global/plugins.bundle.js')}}"></script>
+<script src="{{asset('assets/panel/js/sweetalert2.min.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/panel/js/custom.sweet.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/panel/js/jquery.validate.js')}}" type="text/javascript"></script>
 <script>
     $('.scroll').each(function() {
         const ps = new PerfectScrollbar($(this)[0]);
@@ -132,6 +136,7 @@
                 });
             },
             error: function(file, errorMessage) {
+                console.log('asd');
                 customSweetAlert(
                         'error',
                         'فقط ملفات ال pdf مسموحة',

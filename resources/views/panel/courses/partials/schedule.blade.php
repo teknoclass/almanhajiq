@@ -116,7 +116,7 @@
                 <th>{{ __('time') }}</th>
                 <th>{{ __('price') }}</th>
                 <th>{{ __('actions') }}</th>
-                <th>{{ __('Attachments') }}</th>
+                <th>{{ __('Attachments') }}</th> 
             </tr>
             </thead>
             <tbody>

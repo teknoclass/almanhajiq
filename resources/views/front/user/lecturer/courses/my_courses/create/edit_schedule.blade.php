@@ -83,7 +83,8 @@ $breadcrumb_links=[
                          </div>
                      </div>
 
-
+                     <div id="targetDiv">
+                    </div>
 
                   </div>
                   <!--end::Form-->
@@ -155,7 +156,7 @@ $(document).ready(function(){
     $(document).on('change','.changeDate',function(){
         var date = $(this).val();
         var id = $(this).attr("alt");
-        
+
         $.ajax({
             url: "{{url('/user/lecturer/update-session-date')}}",
             data:{id:id,date:date},
@@ -172,7 +173,7 @@ $(document).ready(function(){
     $(document).on('change','.changeTime',function(){
         var time = $(this).val();
         var id = $(this).attr("alt");
-        
+
         $.ajax({
             url: "{{url('/user/lecturer/update-session-time')}}",
             data:{id:id,time:time},
@@ -188,5 +189,74 @@ $(document).ready(function(){
 
 });
 </script>
+
+<script>
+    $(document).ready(function() {
+
+        // Close modal if clicked outside of it
+        $(document).on('click', '.attachment_modal', function(e) {
+            var session_id = $(this).data('session-id');
+            $('#load').show();
+            $.ajax({
+                url: "{{ route('user.lecturer.get_attachment_modal') }}", // Use the new endpoint
+                method: "GET",
+                data: {
+                    session_id: session_id
+                },
+                success: function(response) {
+                    $('#load').hide();
+                    $("#targetDiv").html(response.content);
+                    showMyModal();
+
+                },
+                error: function(xhr, status, error) {
+                    $('#load').hide();
+
+                    console.error("Failed to fetch lesson modal.");
+                }
+            });
+        });
+
+        function showMyModal() {
+            // Assuming your modal has an ID, e.g., #myModal
+            let modal = $("#modalAddAttachment");
+            modal.show();
+            modal.removeAttr("aria-hidden");
+        }
+    });
+
+
+
+
+
+    $(document).on('click', '.delete-attachment', function() {
+        var attachmentId = $(this).data('id');
+        var rowElement = $("#attachment-row-" + attachmentId); // Select the row
+
+
+        $.ajax({
+            url: "{{ route('panel.courses.edit.delete_attachment') }}", // Your API route
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: attachmentId
+            },
+            success: function(response) {
+                if (response.success) {
+                    rowElement.fadeOut(300, function() {
+                        $(this).remove(); // Remove the row smoothly
+                    });
+                } else {
+                    alert("Failed to delete attachment.");
+                }
+            },
+            error: function(xhr) {
+                console.error("Error");
+            }
+        });
+
+    });
+</script>
+
 @endpush
 @stop

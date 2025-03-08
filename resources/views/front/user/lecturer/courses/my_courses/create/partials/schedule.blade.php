@@ -5,7 +5,7 @@
 </style>
 
 <div  class="form-group row align-items-center" id="schedule_form">
-   <div class="col-md-10" id="schedule">
+   <div class="col-md-12" id="schedule">
        @if (!$item->published)<h2>{{__('Create a lesson plan')}}</h2>
        <div class="row" >
            <div class="col-md-6">
@@ -113,6 +113,8 @@
                     <th>{{ __('time') }}</th>
                     <th>{{ __('price') }}</th>
                     <th>{{ __('actions') }}</th>
+                    <th>{{ __('Attachments') }}</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -144,7 +146,7 @@
                                 <button class="btn btn-primary" disabled>{{ __('did_not_start_yet') }}</button>
                             @endif
 
-
+                            <td><span><a class="btn btn-primary attachment_modal" data-session-id="{{ $session->id }}">{{ __('add') }}</a></span></td>
                             @endforeach
                         </td>
                 </tbody>

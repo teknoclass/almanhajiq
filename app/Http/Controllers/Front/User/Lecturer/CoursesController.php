@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Front\User\Lecturer;
 
-use App\Http\Controllers\Controller;
-use App\Models\CourseSession;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Courses;
 use Illuminate\Http\Request;
+use App\Models\CourseLessons;
+use App\Models\CourseQuizzes;
+use App\Models\CourseSession;
+use App\Models\CourseLiveLesson;
+use App\Models\CourseAssignments;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
+use App\Models\CourseSessionAttachments;
+use App\Repositories\Common\CourseCurriculumEloquent;
 use App\Repositories\Front\User\Lecturer\CoursesEloquent;
 use App\Http\Requests\Front\User\Lecturer\Courses\AddCourse;
 use App\Http\Requests\Front\User\Lecturer\Courses\CoursePriceDetailsRequest;
-use App\Models\CourseAssignments;
-use App\Models\Courses;
-use App\Models\CourseLessons;
-use App\Models\CourseLiveLesson;
-use App\Models\CourseQuizzes;
-use App\Models\User;
-use App\Repositories\Common\CourseCurriculumEloquent;
 
 class CoursesController extends Controller
 {
@@ -409,6 +410,35 @@ class CoursesController extends Controller
         $message = __('message.operation_accomplished_successfully');
 
         return $this->response_api(true,$message,$data);
+    }
+
+
+    function getAttachmentModal()
+    {
+        $id = request()->query('session_id');
+        $data = CourseSessionAttachments::where('session_id',$id)->get();
+        $session = CourseSession::find($id);
+        $content = View::make('front.user.lecturer.courses.my_courses.create.components.schedule.modals.attachment.attachment',['attachments' => $data,'session' => $session])->render();
+        return response()->json(['content' => $content]);
+
+    }
+
+    function deleteAttachemnt(Request $request){
+        $attachment = CourseSessionAttachments::find($request['id']);
+        $attachment->delete();
+        return response()->json([
+            'success'=>true,
+            'message' => __('message.success')
+        ]);
+    }
+
+    function addAttachemnt(Request $request){
+        $data = $this->courses->addAttachemnt($request);
+        return response()->json([
+            'success'=>true,
+            'attachment' => $data,
+            'message' => __('message.success')
+        ]);
     }
 
 

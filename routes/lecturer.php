@@ -13,6 +13,9 @@ use App\Http\Controllers\Front\User\Lecturer\LecturerSettingsController;
 
 Route::group(['middleware' => ['auth:web', 'checkIsLecturer', 'shareGeneralSettings']], function () {
     Route::group(['middleware' => 'checkActiveUser'], function () {
+        Route::get('/get-attachment-modal', [LecturerCoursesController::class, 'getAttachmentModal'])->name('get_attachment_modal');
+        Route::post('/delete-attachment',[LecturerCoursesController::class,'deleteAttachemnt'])->name('delete_attachment');
+        Route::post('/add-attachment',[LecturerCoursesController::class,'addAttachemnt'])->name('add_attachment');
         //home
         Route::group(['prefix' => 'home', 'as' => 'home.'], function () {
             Route::get('/', [HomeController::class, 'index'])->name('index');

@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Front\User\Lecturer;
 
-use App\Http\Resources\GetTeacherMyCategoriesResource;
 use Carbon\Carbon;
 use App\Models\Faqs;
 use App\Models\Admin;
@@ -16,8 +15,8 @@ use App\Models\CourseQuizzes;
 use App\Models\CourseSession;
 use App\Models\Notifications;
 use App\Models\CourseComments;
-
 use App\Models\CourseSections;
+
 use GPBMetadata\Google\Api\Log;
 use App\Models\CourseLiveLesson;
 use App\Models\AddCourseRequests;
@@ -30,22 +29,24 @@ use App\Models\CourseContentDetails;
 use App\Models\CourseQuizzesResults;
 use App\Models\CourseSuggestedDates;
 use App\Models\CourseAssignmentResults;
+use App\Http\Resources\ShowQuizResource;
+use App\Models\CourseSessionAttachments;
+use App\Models\CourseAssignmentQuestions;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Resources\ShowAssignmentResource;
 use App\Models\CourseAssignmentsResultsAnswer;
 use App\Repositories\Front\User\HelperEloquent;
 use App\Repositories\Common\LiveSessionEloquent;
 use App\Http\Resources\InCourseStudentCollection;
 use App\Http\Resources\LecturerCourseQuizResource;
+use App\Http\Resources\GetTeacherMyCategoriesResource;
 use App\Http\Resources\Quiz\ShowResultQuestionResource;
 use App\Models\CourseQuizzesQuestionsAnswerTranslation;
 use App\Http\Resources\LecturerCourseAssignmentsResource;
+use App\Http\Resources\TeacherStudentHomeworksCollection;
 use App\Http\Resources\LecturerCourseUserQuizzesCollection;
 use App\Http\Resources\LecturerCourseUserAssignmentsCollection;
 use App\Http\Resources\LecturerCourseUserAssignmentAnswerResource;
-use App\Http\Resources\ShowAssignmentResource;
-use App\Http\Resources\ShowQuizResource;
-use App\Http\Resources\TeacherStudentHomeworksCollection;
-use App\Models\CourseAssignmentQuestions;
 
 class CoursesEloquent extends HelperEloquent
 {
@@ -1543,4 +1544,15 @@ class CoursesEloquent extends HelperEloquent
         return $data;
     }
 
+    function addAttachemnt($request){
+        $file = $request->file('file');
+        $lesson_type = 'liveAttachment';
+        $session = CourseSession::find($request->session_id);
+        $attachment = CourseSessionAttachments::create([
+            'session_id' => $request->session_id,
+            'original_name' => $file->getClientOriginalName(),
+            'file' => uploadFile($file,'courses/' . $session->course_id . '/' . $lesson_type)
+        ]);
+        return $attachment;
+    }
 }
