@@ -204,9 +204,9 @@ class AuthService extends MainService
 
                 $token = $user->createToken('auth_token')->plainTextToken;
                 $user->token  = $token;
-                /* DB::table('sessions')
+                DB::table('sessions')
                     ->where('user_id', $user->id)
-                    ->delete(); */
+                    ->delete();
                 return $this->createResponse(
                     __('message.operation_accomplished_successfully'),
                     true,
