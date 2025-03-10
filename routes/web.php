@@ -306,7 +306,7 @@ Route::get('copy-subjects',function(){
 
 Route::get('/migrate',function(){
     $migrations = [
-        "2025_02_19_143215_create_sessions_table.php"
+        "2025_03_10_023254_create_courses_coupons_table.php"
     ];
 
     foreach($migrations as $migration)
