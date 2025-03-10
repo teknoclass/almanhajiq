@@ -31,10 +31,10 @@ class ApiSessionResource extends JsonResource
 
 
             if($this->meeting_status == "finished"){
-                $join_url = $this->getRecording();
+                $join_url = "";
                 $meetType = 'recorded';
             }else{
-                $join_url = $this->joinLiveSessionV2();
+                $join_url = "";
                 $meetType = 'live';
             }
 
