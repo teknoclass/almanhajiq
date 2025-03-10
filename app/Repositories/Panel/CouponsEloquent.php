@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Panel;
 
+use App\Helper\CouponGenerator;
 use App\Models\CouponMarketers;
 use App\Models\Coupons;
 use App\Models\CoursesCoupon;
@@ -94,6 +95,101 @@ class CouponsEloquent
             ];
 
             return $response;
+        }
+        catch(Exception $e){
+            Log::info($e->getMessage());
+        }
+    }
+    public function storeMultiple($request)
+    {
+
+        try{
+            $coupons = array();
+            for($i = 0 ; $i < $request->number ; $i+=1){
+
+                $data = $request->all();
+                $data['code'] = CouponGenerator::generateCoupon();
+                $coupons[] = $data['code'];
+                if ($request->expiry_date) {
+                    $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
+                }
+
+                $coupon=Coupons::updateOrCreate(['id' => 0], $data);
+                if($request->course_ids){
+
+                    foreach($request->course_ids as $id){
+                        CoursesCoupon::firstOrCreate([
+                            'course_id' => $id,
+                            'coupon_id' => $coupon->id
+                        ]);
+                    }
+                }
+                $marketer_id = $request->marketer_id;
+                $check_coupon=CouponMarketers::where('user_id', $marketer_id)
+                ->where('coupon_id', '!=', $coupon->id)
+                ->first();
+                if($check_coupon) {
+                    $response = [
+                        'message' => 'المسوق له كوبون اخر',
+                        'status' =>false,
+                    ];
+
+                    return $response;
+                }
+                if($marketer_id){
+                    CouponMarketers::create([
+                        'user_id'=>$marketer_id,
+                        'coupon_id'=>$coupon->id,
+                        'add_by'=>CouponMarketers::MANUALLY
+                    ]);
+                }
+            }
+
+
+            $message = 'تمت العملية بنجاح';
+            $status = true;
+
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
+            return $response;
+
+            $colspan = 3;
+            $i = 1;
+            $table = chr(239) . chr(187) . chr(191);
+            $table .= '<table border="1">
+            <thead>
+            <tr style="text-align: center;font-size:16px;">
+            <th colspan="' . $colspan . '" style="background-color:#eee;">' . __('dashboard.most_requested_brands') . '
+            </th></tr>
+            <tr style="font-size:16px;text-align: center;" >
+                <th >#</th>
+                <th > coupon </th>
+            </tr>
+            </thead>
+            <tbody>';
+
+            if (count($coupons) > 0) {
+                foreach ($coupons as $item) {
+                    $row = "<tr style='font-size:16px;text-align: center;'>" .
+                        "<td >" . $i . "</td>" .
+                        "<td >" . @$item . "</td>";
+                    $row .= "</tr>";
+                    ++$i;
+                    $table .= $row;
+                }
+            } else {
+                $table .= '<tr style="text-align: center;font-size:16px;"><th colspan="' . $colspan . '" style="background-color:#eee;">' . __('dashboard.no_data') . '</th></tr>';
+            }
+
+            $table = $table . '</tbody></table>';
+            return response()->streamDownload(function () use ($table) {
+                echo $table;
+            }, 'reports_' . date('d_m_Y') . '.xls', [
+                'Content-Type' => 'application/vnd.ms-excel',
+                'Content-Disposition' => 'attachment; filename="coupons_' . date('d_m_Y') . '.xls"',
+            ]);
         }
         catch(Exception $e){
             Log::info($e->getMessage());

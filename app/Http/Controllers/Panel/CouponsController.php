@@ -52,18 +52,29 @@ class CouponsController extends Controller
 
         return view('panel.coupons.create');
     }
-
     public function store(couponsRequest $request)
     {
         $response = $this->coupons->store($request);
 
         return $this->response_api($response['status'], $response['message']);
     }
+    public function createMultiple()
+    {
+
+        return view('panel.coupons.createMulty');
+    }
+    public function storeMultiple(Request $request)
+    {
+        $response = $this->coupons->storeMultiple($request);
+
+        return $this->response_api($response['status'], $response['message']);
+    }
+
 
     public function edit($id)
     {
         $data = $this->coupons->edit($id);
-        
+
 
         return view('panel.coupons.create', $data);
     }

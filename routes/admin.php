@@ -1024,6 +1024,8 @@ Route::group(
     //coupons
     Route::group(['prefix' => 'coupons', 'as' => 'coupons.', 'middleware' => 'permission:show_coupons'], function () {
         Route::group(['prefix' => 'create', 'as' => 'create.'], function () {
+            Route::get('/multiple', [CouponsController::class, 'createMultiple'])->name('multiple');
+            Route::post('/multiple', [CouponsController::class, 'storeMultiple'])->name('storemultiple');
             Route::get('/', [CouponsController::class, 'create'])->name('index');
             Route::post('/', [CouponsController::class, 'store'])->name('store');
         });

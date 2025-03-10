@@ -234,7 +234,7 @@ class CourseSession extends Model
     function isNow(){
         $sessionDateTime = Carbon::parse($this->date . ' ' . $this->time);
         $now = now();
-        return ($sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 15);
+        return ($sessionDateTime->equalTo($now) || $sessionDateTime->diffInMinutes($now) <= 90);
     }
 
     function canPostpone(){
