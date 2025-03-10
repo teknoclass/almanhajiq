@@ -8,6 +8,7 @@ use App\Repositories\Panel\UsersEloquent;
 use Illuminate\Http\Request;
 use App\Models\Coupons;
 use App\Http\Requests\Panel\CouponsRequest;
+use App\Models\Courses;
 use App\Repositories\Panel\CouponsEloquent;
 
 class CouponsController extends Controller
@@ -48,6 +49,7 @@ class CouponsController extends Controller
 
     public function create()
     {
+
         return view('panel.coupons.create');
     }
 
@@ -61,7 +63,7 @@ class CouponsController extends Controller
     public function edit($id)
     {
         $data = $this->coupons->edit($id);
-
+        
 
         return view('panel.coupons.create', $data);
     }

@@ -21,7 +21,7 @@ class CouponController extends Controller
 
     function check(Request $request){
 
-        $data = $this->coupons->check($request->get('code'),$request->get('amount'));
+        $data = $this->coupons->check($request->get('code'),$request->get('amount'),$request->get('course_id'));
 
         if($data['status']){
             $response = new SuccessResponse($data['message'] , $data['items'] , Response::HTTP_OK);

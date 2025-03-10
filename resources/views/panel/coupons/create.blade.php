@@ -121,14 +121,44 @@
                                                 </option>
                                             @endif
                                         </select>
-                                        {{-- <select class="form-control p-1 text-left select2 "
-                                name="marketer_ids[]"  id="search_marketers" >
-                                @foreach ($marketers as $marketer)
-                                <option  selected value="{{@$marketer->user->id}}">
-                                    {{@$marketer->user->name}}
-                                </option>
-                                @endforeach
-                            </select> --}}
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label>الدورات
+                                            <span class="text-info">
+                                                دع هذا الجدول فارغا اذا أردت الكوبون لجميع الدورات
+                                            </span></label>
+                                        @php
+                                            $cpnCourses = [];
+                                            if (isset($couponCourses)) {
+                                                $cpnCourses = $couponCourses;
+                                            }
+                                        @endphp
+
+                                        <table class="table table-bordered" id="courses-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>{{__('course_name')}}</th>
+                                                    <th>{{__('action')}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($cpnCourses as $course)
+                                                    <tr>
+                                                        <td>{{ $course->course->title }}</td>
+                                                        <td>
+                                                            <input type="hidden" name="course_ids[]" value="{{ $course->course->id }}">
+                                                            <div class="btn btn-danger remove-course">{{__('delete')}}</div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        <select class="form-control mb-5 text-right directionRTL"
+                                            id="search_courses">
+                                        </select>
+                                        <div class="btn btn-primary" id="add-course-coupon">{{__('add')}}</div>
+
                                     </div>
                                     <div class="marketer-options"
                                         @if (count($marketers) == 0) style="display:none" @endif>
@@ -204,6 +234,65 @@
                         $('.marketer-options').show();
                     }
                 });
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.querySelectorAll(".remove-course").forEach(button => {
+                        button.addEventListener("click", function () {
+                            this.closest("tr").remove();
+                        });
+                    });
+                    document.getElementById("add-course-coupon").addEventListener("click", function () {
+                        let select = document.getElementById("search_courses");
+                        let selectedOption = select.options[select.selectedIndex];
+
+
+                        if (!selectedOption) {
+                            customSweetAlert(
+                                'error',
+                                'يجب عليك اختيار كورس اولا',
+                                ''
+                            );
+                            console.log('ad');
+                            return;
+                        }
+                        let courseId = selectedOption.value;
+                        let courseName = selectedOption.getAttribute("title");
+
+                        // Check if the course is already added
+                        if (document.querySelector(`tr[data-id='${courseId}']`)) {
+                            customSweetAlert(
+                                'error',
+                                'تم اضافة هذا الكورس من قبل',
+                                ''
+                            );
+                            return;
+                        }
+
+                        // Create a new table row
+                        let tableBody = document.querySelector("#courses-table tbody");
+                        let row = document.createElement("tr");
+                        row.setAttribute("data-id", courseId);
+
+                        row.innerHTML = `
+                            <td>${courseName}</td>
+                            <td>
+                                <input type="hidden" name="course_ids[]" value="${courseId}">
+                                <button type="button" class="btn btn-danger remove-course">{{__('delete')}}</button>
+                            </td>
+                        `;
+
+                        tableBody.appendChild(row);
+                        document.querySelectorAll(".remove-course").forEach(button => {
+                            button.addEventListener("click", function () {
+                                this.closest("tr").remove();
+                            });
+                        });
+                        select.value = "";
+                        select.title = "";
+                        selectedOption.remove();
+                    });
+                });
             </script>
+
+
         @endpush
     @stop

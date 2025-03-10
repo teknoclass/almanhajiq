@@ -7,9 +7,9 @@ use Illuminate\Validation\Rule;
 
 class CouponsRequest  extends FormRequest
 {
-    
 
-    
+
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -30,7 +30,8 @@ class CouponsRequest  extends FormRequest
         $rules['title'] = 'required';
         $rules['amount_type'] = 'required';
         $rules['amount'] = 'required';
-        
+        $rules['course_ids'] = 'array';
+
         if (request()->route('id')) {
             $rules['code'] = 'required|regex:/^\S*$/u|' . Rule::unique('coupons')->whereNotNull('code')->whereNot('id', request('id'));
         } else {

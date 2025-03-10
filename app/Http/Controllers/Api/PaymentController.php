@@ -10,6 +10,7 @@ use App\Models\Courses;
 use App\Models\UserCourse;
 use App\Models\Transactios;
 use Illuminate\Http\Request;
+use App\Models\CoursesCoupon;
 use App\Models\CourseSession;
 use App\Models\Notifications;
 use App\Models\PaymentDetail;
@@ -24,8 +25,8 @@ use App\Http\Response\ErrorResponse;
 use App\Http\Response\SuccessResponse;
 use App\Models\CourseSessionInstallment;
 use App\Http\Resources\ApiCourseResource;
-use App\Models\CourseSessionSubscription;
 
+use App\Models\CourseSessionSubscription;
 use App\Models\StudentSessionInstallment;
 use function PHPUnit\Framework\returnSelf;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +57,7 @@ class PaymentController extends Controller
             }
         }
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'),$request->id);
 
         if($price_after_discount['status']){
             $price = $price_after_discount['price'];
@@ -120,7 +121,7 @@ class PaymentController extends Controller
             }
         }
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'),$request->id);
 
         if($price_after_discount['status']){
             $price = $price_after_discount['price'];
@@ -171,7 +172,7 @@ class PaymentController extends Controller
         $course = Courses::find($request->id);
         $price = $course->getPriceForPayment();
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'),$request->id);
 
         if($price_after_discount['status']){
             $price = $price_after_discount['price'];
@@ -243,7 +244,7 @@ class PaymentController extends Controller
                 if($statusCheck["status"] == "failed")
                 {
 
-                    
+
                     //return $statusCheck;
                     return redirect('/payment-failure');
                 }
@@ -1275,7 +1276,7 @@ class PaymentController extends Controller
     }
 
 
-    function getPriceWithCoupon($amount,$code){
+    function getPriceWithCoupon($amount,$code,$course_id = 0){
         $coupon = Coupons::where('code', $code)->first();
 
         if ($coupon == '') {
@@ -1291,6 +1292,12 @@ class PaymentController extends Controller
             if ($checkNumUses > $coupon->num_uses) {
                 return ['status' => false];
             }
+        }
+
+        $courseIds = CoursesCoupon::where('coupon_id', $coupon->id)->pluck('course_id')->toArray();
+
+        if (count($courseIds) > 0 && !in_array($course_id, $courseIds)) {
+            return ['status' => false];
         }
 
         if (@$coupon->amount_type == 'fixed') {

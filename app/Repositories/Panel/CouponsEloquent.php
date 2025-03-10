@@ -4,7 +4,10 @@ namespace App\Repositories\Panel;
 
 use App\Models\CouponMarketers;
 use App\Models\Coupons;
+use App\Models\CoursesCoupon;
 use DataTables;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class CouponsEloquent
 {
@@ -43,43 +46,58 @@ class CouponsEloquent
 
     public function store($request)
     {
-        $data = $request->all();
 
-        if ($request->expiry_date) {
-            $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
-        }
+        try{
+            $data = $request->all();
 
-        $coupon=Coupons::updateOrCreate(['id' => 0], $data);
+            if ($request->expiry_date) {
+                $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
+            }
 
-        $marketer_id = $request->marketer_id;
-        $check_coupon=CouponMarketers::where('user_id', $marketer_id)
-        ->where('coupon_id', '!=', $coupon->id)
-        ->first();
-        if($check_coupon) {
+            $coupon=Coupons::updateOrCreate(['id' => 0], $data);
+            if($request->course_ids){
+
+                foreach($request->course_ids as $id){
+                    CoursesCoupon::firstOrCreate([
+                        'course_id' => $id,
+                        'coupon_id' => $coupon->id
+                    ]);
+                }
+            }
+            $marketer_id = $request->marketer_id;
+            $check_coupon=CouponMarketers::where('user_id', $marketer_id)
+            ->where('coupon_id', '!=', $coupon->id)
+            ->first();
+            if($check_coupon) {
+                $response = [
+                    'message' => 'المسوق له كوبون اخر',
+                    'status' =>false,
+                ];
+
+                return $response;
+            }
+            if($marketer_id){
+                CouponMarketers::create([
+                    'user_id'=>$marketer_id,
+                    'coupon_id'=>$coupon->id,
+                    'add_by'=>CouponMarketers::MANUALLY
+                ]);
+            }
+
+
+            $message = 'تمت العملية بنجاح';
+            $status = true;
+
             $response = [
-                'message' => 'المسوق له كوبون اخر',
-                'status' =>false,
+                'message' => $message,
+                'status' => $status,
             ];
 
             return $response;
         }
-    
-        CouponMarketers::create([
-            'user_id'=>$marketer_id,
-            'coupon_id'=>$coupon->id,
-            'add_by'=>CouponMarketers::MANUALLY
-        ]);
-
-
-        $message = 'تمت العملية بنجاح';
-        $status = true;
-
-        $response = [
-            'message' => $message,
-            'status' => $status,
-        ];
-
-        return $response;
+        catch(Exception $e){
+            Log::info($e->getMessage());
+        }
     }
 
     public function edit($id)
@@ -88,6 +106,7 @@ class CouponsEloquent
         if ($data['item'] == '') {
             abort(404);
         }
+        $data['couponCourses'] = CoursesCoupon::where('coupon_id',$id)->get();
 
 
         return $data;
@@ -95,42 +114,81 @@ class CouponsEloquent
 
     public function update($id, $request)
     {
-        $data = $request->all();
+        try{
+            $data = $request->all();
 
-        if ($request->expiry_date) {
-            $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
-        }
+            if ($request->expiry_date) {
+                $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
+            }
 
-        $coupon=Coupons::updateOrCreate(['id' => $id], $data);
+            $coupon=Coupons::updateOrCreate(['id' => $id], $data);
 
-        $marketer_id = $request->marketer_id;
-        $check_coupon=CouponMarketers::where('user_id', $marketer_id)
-        ->where('coupon_id', '!=', $coupon->id)
-        ->first();
-        if($check_coupon) {
+
+            $newCourseIds = $request->input('course_ids', []);
+
+            $existingCourseIds = CoursesCoupon::where('coupon_id', $id)
+                ->pluck('course_id')
+                ->toArray();
+
+            $coursesToRemove = array_diff($existingCourseIds, $newCourseIds);
+
+            $coursesToAdd = array_diff($newCourseIds, $existingCourseIds);
+
+            if (!empty($coursesToRemove)) {
+                CoursesCoupon::where('coupon_id', $id)
+                    ->whereIn('course_id', $coursesToRemove)
+                    ->delete();
+            }
+
+            foreach ($coursesToAdd as $courseId) {
+                CoursesCoupon::create([
+                    'course_id' => $courseId,
+                    'coupon_id' => $id,
+                ]);
+            }
+
+
+            $marketer_id = $request->marketer_id;
+            $check_coupon=CouponMarketers::where('user_id', $marketer_id)
+            ->where('coupon_id', '!=', $coupon->id)
+            ->first();
+            if($check_coupon) {
+                $response = [
+                    'message' => 'المسوق له كوبون اخر',
+                    'status' =>false,
+                ];
+
+                return $response;
+            }
+
+
+
+            if($marketer_id){
+
+                CouponMarketers::updateOrCreate([ 'user_id'=>$marketer_id,
+                'coupon_id'=>$coupon->id],[
+
+                    'add_by'=>CouponMarketers::MANUALLY
+                ]);
+            }
+
+            $message = 'تمت العملية بنجاح';
+            $status = true;
+
             $response = [
-                'message' => 'المسوق له كوبون اخر',
-                'status' =>false,
+                'message' => $message,
+                'status' => $status,
             ];
 
             return $response;
+        }catch(Exception $e){
+            $response = [
+                'message' => 'asd',
+                'status' => false,
+            ];
+            Log::info($e->getMessage());
+            return $response;
         }
-      
-        CouponMarketers::updateOrCreate([ 'user_id'=>$marketer_id,
-        'coupon_id'=>$coupon->id],[
-           
-            'add_by'=>CouponMarketers::MANUALLY
-        ]);
-
-        $message = 'تمت العملية بنجاح';
-        $status = true;
-
-        $response = [
-            'message' => $message,
-            'status' => $status,
-        ];
-
-        return $response;
     }
 
 

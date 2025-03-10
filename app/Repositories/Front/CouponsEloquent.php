@@ -3,12 +3,13 @@
 namespace App\Repositories\Front;
 
 use App\Models\Coupons;
+use App\Models\CoursesCoupon;
 use App\Models\Transactios;
 use Illuminate\Support\Facades\DB;
 
 class CouponsEloquent
 {
-    public function check($code, $amount)
+    public function check($code, $amount,$course_id)
     {
 
         $coupon = Coupons::where('code', $code)->first();
@@ -30,6 +31,14 @@ class CouponsEloquent
                 'data' =>__('message.the_coupon_is_not_valid') ,];
             }
         }
+
+        $courseIds = CoursesCoupon::where('coupon_id', $coupon->id)->pluck('course_id')->toArray();
+
+        if (count($courseIds) > 0 && !in_array($course_id, $courseIds)) {
+            return ['status' => false,
+                'data' =>__('message.the_coupon_is_not_valid') ,];
+        }
+
 
         if (@$coupon->amount_type == 'fixed') {
             $amount_after_discount = round($amount - $coupon->amount);
