@@ -26,12 +26,13 @@ class ApiSessionResource extends JsonResource
         }
         $join_url  = '';
         $meetType = '';
-
+        $isNow = $this->isNow();
         if ($isSub==1 &&  $this->public_password!=null){
 
 
             if($this->meeting_status == "finished"){
-                $join_url = $this->getRecording();
+                $join_url = "";
+                $isNow = false;
                 $meetType = 'recorded';
             }else{
                 $join_url = "";
@@ -46,7 +47,7 @@ class ApiSessionResource extends JsonResource
             'is_sub' => $isSub,
             'join_url' => $join_url,
             'meeting_type' => $meetType,
-            'is_now' => $this->isNow(),
+            'is_now' => $isNow,
             'can_postpone' => $this->canPostpone(),
             'attachments' => CourseSessionAttachemntResource::collection($this->attachments),
             'session' => [
