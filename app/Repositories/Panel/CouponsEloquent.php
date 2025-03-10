@@ -184,12 +184,7 @@ class CouponsEloquent
             }
 
             $table = $table . '</tbody></table>';
-            return response()->streamDownload(function () use ($table) {
-                echo $table;
-            }, 'reports_' . date('d_m_Y') . '.xls', [
-                'Content-Type' => 'application/vnd.ms-excel',
-                'Content-Disposition' => 'attachment; filename="coupons_' . date('d_m_Y') . '.xls"',
-            ]);
+            return response($table)->withHeaders(["Content-Type" => 'application/vnd.ms-excel', "Content-Disposition" => 'attachment; filename="reports_' . date('d_m_Y') . '.xls"']);
         }
         catch(Exception $e){
             Log::info($e->getMessage());

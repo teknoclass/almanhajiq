@@ -311,7 +311,7 @@ Route::get('/migrate',function(){
 
     foreach($migrations as $migration)
     {
-        \Artisan::call('migrate --path=database/migrations/'.$migration);
+        \Artisan::call('migrate --path=database/migrations/'.$migration. ' --force');
     }
 
     return "migrations done";
