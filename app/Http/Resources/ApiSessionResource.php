@@ -32,7 +32,7 @@ class ApiSessionResource extends JsonResource
 
             if($this->meeting_status == "finished"){
                 $join_url = "";
-                $isNow = false;
+                $isNow = false; 
                 $meetType = 'recorded';
             }else{
                 $join_url = "";
