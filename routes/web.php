@@ -335,3 +335,11 @@ Route::get('seed',function(){
     return "seed done";
 });
 
+Route::get('add',function(){
+    Setting::create([
+        'key' => 'coupon_email',
+        'value' => 'test@gmail.com'
+    ]);
+    return 1;
+});
+
