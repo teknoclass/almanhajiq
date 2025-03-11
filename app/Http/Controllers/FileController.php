@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Courses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -156,6 +157,16 @@ class FileController extends Controller
         $response->headers->set('Content-Range', "bytes $start-$end/$fileSize");
 
         return $response;
+    }
+
+    function couponsDownload($filename){
+        $filePath = 'exports/' . $filename;
+
+        if (!Storage::exists($filePath)) {
+            abort(404);
+        }
+
+        return Storage::download($filePath);
     }
 
 

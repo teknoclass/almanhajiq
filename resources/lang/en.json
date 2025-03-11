@@ -1220,7 +1220,10 @@
     "valid_on" : "course content is shown on",
     "course_not_found":"This Course is not found",
     "this_course_is_on_the_mobile_app_only" : "This course is on the mobile app only",
-    "no_date" : "no date"
+    "no_date" : "no date",
+    "coupon_email" : "email for sending coupon excel file",
+    "your_coupons_files" : "Your coupons files : ",
+    "click_here_to_download_the_file" : "Click here to download the file : "
 
 
 

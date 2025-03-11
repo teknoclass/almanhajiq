@@ -3,6 +3,7 @@
 namespace App\Repositories\Panel;
 
 use App\Helper\CouponGenerator;
+use App\Jobs\CouponExcelHandle;
 use App\Models\CouponMarketers;
 use App\Models\Coupons;
 use App\Models\CoursesCoupon;
@@ -153,38 +154,10 @@ class CouponsEloquent
                 'message' => $message,
                 'status' => $status,
             ];
+
+            CouponExcelHandle::dispatch($coupons);
             return $response;
 
-            $colspan = 3;
-            $i = 1;
-            $table = chr(239) . chr(187) . chr(191);
-            $table .= '<table border="1">
-            <thead>
-            <tr style="text-align: center;font-size:16px;">
-            <th colspan="' . $colspan . '" style="background-color:#eee;">' . __('dashboard.most_requested_brands') . '
-            </th></tr>
-            <tr style="font-size:16px;text-align: center;" >
-                <th >#</th>
-                <th > coupon </th>
-            </tr>
-            </thead>
-            <tbody>';
-
-            if (count($coupons) > 0) {
-                foreach ($coupons as $item) {
-                    $row = "<tr style='font-size:16px;text-align: center;'>" .
-                        "<td >" . $i . "</td>" .
-                        "<td >" . @$item . "</td>";
-                    $row .= "</tr>";
-                    ++$i;
-                    $table .= $row;
-                }
-            } else {
-                $table .= '<tr style="text-align: center;font-size:16px;"><th colspan="' . $colspan . '" style="background-color:#eee;">' . __('dashboard.no_data') . '</th></tr>';
-            }
-
-            $table = $table . '</tbody></table>';
-            return response($table)->withHeaders(["Content-Type" => 'application/vnd.ms-excel', "Content-Disposition" => 'attachment; filename="reports_' . date('d_m_Y') . '.xls"']);
         }
         catch(Exception $e){
             Log::info($e->getMessage());

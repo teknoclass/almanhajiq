@@ -155,6 +155,13 @@
                                                 </div>
                                                 <hr>
                                             @endforeach
+                                            <div class="form-group">
+                                                <label>{{__('coupon_email')}}</label>
+                                                <input type="text"
+                                                       class="form-control mb-10 d-flex align-items-center justify-content-between"
+                                                       name='coupon_email' placeholder=''
+                                                       value="{{@$settings->valueOf('coupon_email')}}" required/>
+                                            </div>
                                             <div class="kt-portlet__body">
                                                 <div class="form-group m-form__group row">
                                                    <label for="example-text-input" class="col-4 col-form-label">{{ __('blog') }}</label>
@@ -240,7 +247,7 @@
                                                        value="{{@$settings->valueOf('mobile')}}" required id="mobile"
                                                        placeholder=""/>
                                             </div>
-                                          
+
                                             <div class="form-group">
                                                 <label for="mobile">{{__('address')}}
                                                     <span class="text-danger">*</span></label>
@@ -605,7 +612,7 @@
                                                 />
                                             </div>
 
-                                          
+
                                         </div>
                                         <div class="tab-pane fade" id="tab_application_settings" role="tabpanel">
 
@@ -614,7 +621,7 @@
                                                 <input type="text" name="android_release"
                                                     class="form-control mb-10 d-flex align-items-center justify-content-between"
                                                     value="{{@$settings->valueOf('android_release')}}"
-                                                    id="android_release" 
+                                                    id="android_release"
                                                 />
                                             </div>
 
@@ -622,8 +629,8 @@
                                                 <label for="android_update_status">{{__('android_update_status')}}</label>
                                                 <select type="text" name="android_update_status"
                                                     class="form-control mb-10 d-flex align-items-center justify-content-between"
-                                              
-                                                    id="android_update_status" 
+
+                                                    id="android_update_status"
                                                 >
                                                 <option>{{__('choose_pls')}}</option>
                                                 <option value="0" @if(@$settings->valueOf('android_update_status') == 0) selected @endif>{{__('optional')}}</option>
@@ -644,8 +651,8 @@
                                                 <label for="ios_update_status">{{__('ios_update_status')}}</label>
                                                 <select type="text" name="ios_update_status"
                                                     class="form-control mb-10 d-flex align-items-center justify-content-between"
-                                              
-                                                    id="ios_update_status" 
+
+                                                    id="ios_update_status"
                                                 >
                                                 <option>{{__('choose_pls')}}</option>
                                                 <option value="0" @if(@$settings->valueOf('ios_update_status') == 0) selected @endif>{{__('optional')}}</option>
@@ -653,7 +660,7 @@
                                             </select>
                                             </div>
 
-                                          
+
                                         </div>
 
                                     </div>

@@ -32,6 +32,8 @@ use App\Models\Category;
 use App\Models\CategoryTranslation;
 use App\Http\Controllers\Front\User\PrivateLessonSubscriptionsController;
 use App\Http\Controllers\Front\User\PaymentOperationsController;
+use App\Models\Setting;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -210,6 +212,7 @@ Route::prefix('/image')->group(function () {
 
 
 Route::get('/files/{link}', [FileController::class, 'getFileLink'])->name('file.getLink');
+Route::get('/couponsDownload/{filename}', [FileController::class, 'couponsDownload'])->name('coupons.download');
 Route::get('/files/video/{link}', [FileController::class, 'getVideoLink'])->name('file.video.getLink');
 Route::post('/files/upload-file', [FileController::class, 'uploadFile'])->name('file.upload');
 
