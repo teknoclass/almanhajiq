@@ -534,6 +534,7 @@ class Courses extends Model
     public function getPriceForPayment()
     {
         $price_details = $this->priceDetails()->first();
+
         $price  =  $price_details->discount_price ?? $price_details->price;
 
         return $price;
@@ -620,17 +621,52 @@ class Courses extends Model
         return CourseCurriculum::active()->where('course_id', $this->id)->order('desc')->first();
     }
 
-    function isFree() {
-
+    function isFree($cpn) {
+        $yes = 1;
         if($this->priceDetails != null){
             if($this->priceDetails->price != null && $this->priceDetails->price > 0){
                 if($this->priceDetails->discount_price > 0 || is_null($this->priceDetails->discount_price)){
-                    return false;
+                    $yes = 0;
                 }
 
             }
         }
-        return true;
+        if($yes)return true;
+
+        $coupon = Coupons::where('code',$cpn)->first();
+
+        if ($coupon == '') {
+            return false;
+        }
+
+        $checkNumUses = Transactios::where('coupon', $cpn)->where('status' , 'completed')->count();
+        if ($coupon->num_uses != '') {
+            if ($checkNumUses > $coupon->num_uses) {
+                return false;
+            }
+        }
+
+        $courseIds = CoursesCoupon::where('coupon_id', $coupon->id)->pluck('course_id')->toArray();
+
+        if (count($courseIds) > 0 && !in_array($this->id, $courseIds)) {
+            return false;
+        }
+
+        $amount = $this->getPriceForPayment();
+
+        if (@$coupon->amount_type == 'fixed') {
+            $amount_after_discount = round($amount - $coupon->amount);
+        }else{
+            $amount_after_discount = ($amount - ($amount * ($coupon->amount / 100)));
+        }
+
+
+        if($amount_after_discount <= 0)return true;
+        else return false;
+
+
+
+
 
     }
 

@@ -15,7 +15,7 @@ class Coupons extends Model
     'marketer_amount_type','marketer_amount','marketer_amount_of_registration'
     ];
 
-    public function isValid()
+    public function isValid($course_id = 0)
     {
         $is_valid = true;
 
@@ -36,7 +36,7 @@ class Coupons extends Model
 
         $courseIds = CoursesCoupon::where('coupon_id', $this->id)->pluck('course_id')->toArray();
 
-        if (count($courseIds) > 0 && !in_array($this->id, $courseIds)) {
+        if (count($courseIds) > 0 && !in_array($course_id, $courseIds)) {
             $is_valid = false;
         }
 

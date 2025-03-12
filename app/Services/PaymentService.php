@@ -284,10 +284,11 @@ class PaymentService
     function buyFree($request){
 
         $courseId = $request->get('course_id');
+        $coupon = $request->get('coupon');
 
         $course = Courses::find($courseId);
 
-        if($course->isFree()){
+        if($course->isFree($coupon)){
             UserCourse::create([
                 "course_id"           => $request->get('course_id'),
                 "user_id"             => auth('api')->id(),
