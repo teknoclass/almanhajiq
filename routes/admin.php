@@ -1040,6 +1040,11 @@ Route::group(
             Route::get('/data', [CouponsController::class, 'getDataTable'])->name('data');
         });
 
+        Route::group(['prefix' => 'groups', 'as' => 'groups.'], function () {
+            Route::get('/', [CouponsController::class, 'indexGroup'])->name('index');
+            Route::get('/data', [CouponsController::class, 'getDataTableGroup'])->name('data');
+        });
+
         Route::delete('/{id}', [CouponsController::class, 'delete'])->name('delete');
         Route::post('/operation', [CouponsController::class, 'operation'])->name('operation');
     });

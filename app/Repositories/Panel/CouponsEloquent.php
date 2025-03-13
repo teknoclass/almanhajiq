@@ -24,6 +24,18 @@ class CouponsEloquent
             ->rawColumns(['action'])
             ->make(true);
     }
+    public function getDataTableGroup()
+    {
+        $data =Coupons::orderByDesc('created_at')->selectRaw('group_name, COUNT(*) as total_coupons,MIN(id) as id')->whereNotNull('group_name')
+        ->groupBy('group_name')
+        ->get();
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', 'panel.coupons.partials.actionsGroup')
+            ->rawColumns(['action'])
+            ->make(true);
+    }
 
     public function getAll()
     {
@@ -155,7 +167,7 @@ class CouponsEloquent
                 'status' => $status,
             ];
 
-            CouponExcelHandle::dispatch($coupons);
+            //CouponExcelHandle::dispatch($coupons);
             return $response;
 
         }
@@ -184,56 +196,59 @@ class CouponsEloquent
             if ($request->expiry_date) {
                 $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
             }
-
-            $coupon=Coupons::updateOrCreate(['id' => $id], $data);
-
-
-            $newCourseIds = $request->input('course_ids', []);
-
-            $existingCourseIds = CoursesCoupon::where('coupon_id', $id)
-                ->pluck('course_id')
-                ->toArray();
-
-            $coursesToRemove = array_diff($existingCourseIds, $newCourseIds);
-
-            $coursesToAdd = array_diff($newCourseIds, $existingCourseIds);
-
-            if (!empty($coursesToRemove)) {
-                CoursesCoupon::where('coupon_id', $id)
-                    ->whereIn('course_id', $coursesToRemove)
-                    ->delete();
+            if($request->get('is_group') == 1){
+                $coupon = Coupons::find($id);
+                $ids = Coupons::where('group_name',$coupon->group_name)->pluck('id')->toArray();
+            }else{
+                $ids = [$id];
             }
+            foreach($ids as $id){
 
-            foreach ($coursesToAdd as $courseId) {
-                CoursesCoupon::create([
-                    'course_id' => $courseId,
-                    'coupon_id' => $id,
-                ]);
-            }
+                $coupon=Coupons::updateOrCreate(['id' => $id], $data);
 
 
-            $marketer_id = $request->marketer_id;
-            $check_coupon=CouponMarketers::where('user_id', $marketer_id)
-            ->where('coupon_id', '!=', $coupon->id)
-            ->first();
-            if($check_coupon) {
-                $response = [
-                    'message' => 'المسوق له كوبون اخر',
-                    'status' =>false,
-                ];
+                $newCourseIds = $request->input('course_ids', []);
 
-                return $response;
-            }
+                $existingCourseIds = CoursesCoupon::where('coupon_id', $id)
+                    ->pluck('course_id')
+                    ->toArray();
+
+                $coursesToRemove = array_diff($existingCourseIds, $newCourseIds);
+
+                $coursesToAdd = array_diff($newCourseIds, $existingCourseIds);
+
+                if (!empty($coursesToRemove)) {
+                    CoursesCoupon::where('coupon_id', $id)
+                        ->whereIn('course_id', $coursesToRemove)
+                        ->delete();
+                }
+
+                foreach ($coursesToAdd as $courseId) {
+                    CoursesCoupon::create([
+                        'course_id' => $courseId,
+                        'coupon_id' => $id,
+                    ]);
+                }
+
+
+                $marketer_id = $request->marketer_id;
+                $check_coupon=CouponMarketers::where('user_id', $marketer_id)
+                ->where('coupon_id', '!=', $coupon->id)
+                ->first();
+                if($check_coupon) {
+                    continue;
+                }
 
 
 
-            if($marketer_id){
+                if($marketer_id){
 
-                CouponMarketers::updateOrCreate([ 'user_id'=>$marketer_id,
-                'coupon_id'=>$coupon->id],[
+                    CouponMarketers::updateOrCreate([ 'user_id'=>$marketer_id,
+                    'coupon_id'=>$coupon->id],[
 
-                    'add_by'=>CouponMarketers::MANUALLY
-                ]);
+                        'add_by'=>CouponMarketers::MANUALLY
+                    ]);
+                }
             }
 
             $message = 'تمت العملية بنجاح';
@@ -256,28 +271,45 @@ class CouponsEloquent
     }
 
 
-    public function delete($id)
+    public function delete($id,$request)
     {
-        $item = Coupons::find($id);
-        if ($item) {
-            $item->delete();
+
+        if($request->get('is_group') == 1){
+            $coupon = Coupons::find($id);
+            $ids = Coupons::where('group_name',$coupon->group_name)->pluck('id')->toArray();
+        }else{
+            $ids = [$id];
+        }
+        try{
+
+            foreach($ids as $id){
+
+                $item = Coupons::find($id);
+                if ($item) {
+                    $item->delete();
+                }
+            }
             $message = 'تم الحذف بنجاح  ';
             $status = true;
+
             $response = [
                 'message' => $message,
                 'status' => $status,
             ];
+
             return $response;
+        }catch(Exception $e){
+            $message = 'حدث خطأ غير متوقع';
+            $status = false;
+
+            $response = [
+                'message' => $message,
+                'status' => $status,
+            ];
+
+            return $response;
+
         }
-        $message = 'حدث خطأ غير متوقع';
-        $status = false;
-
-        $response = [
-            'message' => $message,
-            'status' => $status,
-        ];
-
-        return $response;
     }
 
 

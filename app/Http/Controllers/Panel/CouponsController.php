@@ -41,10 +41,21 @@ class CouponsController extends Controller
         return view('panel.coupons.all',$data);
     }
 
+    public function indexGroup(Request $request)
+    {
+        $data['users']=$this->users->getAllByRole(User::MARKETER);
+
+        return view('panel.coupons.groups',$data);
+    }
+
 
     public function getDataTable()
     {
         return $this->coupons->getDataTable();
+    }
+    public function getDataTableGroup()
+    {
+        return $this->coupons->getDataTableGroup();
     }
 
     public function create()
@@ -79,7 +90,7 @@ class CouponsController extends Controller
         return view('panel.coupons.create', $data);
     }
 
-    public function update($id, couponsRequest $request)
+    public function update($id, Request $request)
     {
         $response = $this->coupons->update($id, $request);
 
@@ -87,9 +98,9 @@ class CouponsController extends Controller
     }
 
 
-    public function delete($id)
+    public function delete($id,Request $request)
     {
-        $response = $this->coupons->delete($id);
+        $response = $this->coupons->delete($id,$request);
         return $this->response_api($response['status'], $response['message']);
     }
 

@@ -309,7 +309,7 @@ Route::get('copy-subjects',function(){
 
 Route::get('/migrate',function(){
     $migrations = [
-        "2025_03_10_023254_create_courses_coupons_table.php"
+        "2025_03_13_132525_add_group_name_to_coupons_table.php"
     ];
 
     foreach($migrations as $migration)

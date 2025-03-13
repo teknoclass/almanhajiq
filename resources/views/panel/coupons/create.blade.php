@@ -31,6 +31,7 @@
             <form id="form" method="{{ isset($item) ? 'POST' : 'POST' }}" to="{{ url()->current() }}"
                 url="{{ url()->current() }}" class="w-100">
                 @csrf
+                <input type="hidden" name="is_group" value="{{ request()->query('is_group', 0) }}">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-9">
@@ -49,12 +50,14 @@
                                         <input type="text" name="title" class="form-control"
                                             value="{{ isset($item) ? @$item->title : '' }}" required />
                                     </div>
+                                    @if (request()->query('is_group') != 1)
                                     <div class="form-group mt-2">
                                         <label>الكود
                                             <span class="text-danger">*</span></label>
                                         <input type="text" name="code" class="form-control"
                                             value="{{ isset($item) ? @$item->code : (new \App\Helper\CouponGenerator)::generateCoupon()  }}" required />
                                     </div>
+                                    @endif
                                     <div class="form-group">
                                         <label>عدد مرات الاستعمال
                                             <span class="text-info">

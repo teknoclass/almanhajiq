@@ -628,7 +628,7 @@
             'icon' => '/assets/panel/media/icons/duotone/Tools/Pantone.svg',
             'sub_menu' => [],
         ],
-       
+
         [
             'name' => __('users'),
             'type' => 'headeing_menu',
@@ -765,6 +765,15 @@
             'type' => '',
             'href' => route('panel.coupons.all.index'),
             'id' => 'coupons',
+            'permissions' => 'show_coupons',
+            'icon' => '/assets/panel/media/icons/duotone/General/Fire.svg',
+            'sub_menu' => [],
+        ],
+        [
+            'name' => 'مجموعات الكوبونات',
+            'type' => '',
+            'href' => route('panel.coupons.groups.index'),
+            'id' => 'group_coupons',
             'permissions' => 'show_coupons',
             'icon' => '/assets/panel/media/icons/duotone/General/Fire.svg',
             'sub_menu' => [],

@@ -52,9 +52,15 @@
                                     <div class="form-group mt-2">
                                         <label>عدد الكودات
                                             <span class="text-danger">*</span></label>
-                                        <input type="text" name="number" class="form-control"
+                                            <input type="text" name="number" class="form-control"
                                             value="1" required />
-                                    </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>اسم المجموعة
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" name="group_name" class="form-control"
+                                                value="{{ isset($item) ? @$item->groupo_name : '' }}" required />
+                                        </div>
                                     <div class="form-group">
                                         <label>عدد مرات الاستعمال
                                             <span class="text-info">
@@ -212,7 +218,7 @@
                                 <!--begin::Form-->
                                 <div class="card-body d-flex align-items-center   ">
                                     @include('panel.components.btn_submit', ['btn_submit_text' => 'حفظ'])
-                                    <a href="{{route('panel.coupons.all.index')}}" class="btn btn-secondary mx-3">{{__('cancel')}}</a>
+                                    <a href="{{route('panel.coupons.groups.index')}}" class="btn btn-secondary mx-3">{{__('cancel')}}</a>
                                 </div>
                                 <!--end::Form-->
                             </div>

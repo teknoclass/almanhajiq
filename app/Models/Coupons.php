@@ -12,7 +12,7 @@ class Coupons extends Model
     use SoftDeletes;
     protected $fillable = ['title', 'code', 'num_uses',
      'amount_type', 'amount', 'expiry_date',
-    'marketer_amount_type','marketer_amount','marketer_amount_of_registration'
+    'marketer_amount_type','marketer_amount','marketer_amount_of_registration','group_name'
     ];
 
     public function isValid($course_id = 0)
