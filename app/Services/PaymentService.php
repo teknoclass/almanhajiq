@@ -170,6 +170,12 @@ class PaymentService
 
     public function createTransactionRecordApi(array $paymentDetails)
     {
+        if(array_key_exists('status', $paymentDetails)){
+            $status = $paymentDetails['status'];
+        }else{
+            $status = 'pinding';
+        }
+
         Transactios::updateOrCreate([
             'payment_id' => $paymentDetails['payment_id'] ?? null,
             'transactionable_type' => $paymentDetails['transactionable_type'] ?? 'Order',
@@ -181,12 +187,12 @@ class PaymentService
             'user_type' => 'student',
             'amount' => $paymentDetails['amount'],
             'amount_before_discount' => $paymentDetails['amount'],
-            'status' => 'pinding',
+            'status' => $status,
             'brand' => $paymentDetails['brand'] ?? null,
             'coupon' => $paymentDetails['coupon'] ?? null,
             'pay_transaction_id' => $paymentDetails['transaction_id'] ?? null,
             'is_paid' => false,
-            'order_id' => $paymentDetails['orderId'],
+            'order_id' => $paymentDetails['orderId'] ?? null,
             'place' => 'api',
             'payment_type' => $paymentDetails['payment_type'] ?? null
         ]);
@@ -296,6 +302,21 @@ class PaymentService
                 "is_paid"             => 1,
                 "is_complete_payment" => 1,
             ]);
+            $paymentDetails = [
+                "description" => "دفع قسط جلسات دورة",
+                "orderId" => null,
+                "payment_id" => uniqid(),
+                "amount" => 0,
+                "transactionable_type" => "App\\Models\\Courses",
+                "transactionable_id" => $course->id,
+                "brand" => "free",
+                'course_id' => $request->course_id,
+                'coupon' => $request->get('coupon'),
+                'payment_type' => 'free',
+                'status' => 'completed'
+            ];
+
+            $this->createTransactionRecordApi($paymentDetails);
 
             return true;
 
