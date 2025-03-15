@@ -314,7 +314,7 @@ class PaymentService
                 'coupon' => $request->get('coupon'),
                 'payment_type' => 'free',
                 'status' => 'completed'
-            ];
+            ]; 
 
             $this->createTransactionRecordApi($paymentDetails);
 
