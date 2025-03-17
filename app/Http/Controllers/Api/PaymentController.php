@@ -699,7 +699,7 @@ class PaymentController extends Controller
             $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
             return response()->success($response);
         }else{
-            $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse(__('you_cant_buy_this_course_because_its_not_free'),Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
 
@@ -1287,9 +1287,20 @@ class PaymentController extends Controller
             return $response;
         }
 
+        if ($coupon->expiry_date != '') {
+            $expiry_date = \Carbon\Carbon::createFromFormat('Y-m-d', $coupon->expiry_date);
+            $now_date = \Carbon\Carbon::now();
+            if ($now_date > $expiry_date) {
+                $response=[
+                    'status'=>false,
+                ];
+
+                return $response;            }
+        }
+
         $checkNumUses = Transactios::where('coupon', $code)->where('status' , 'completed')->count();
         if ($coupon->num_uses != '') {
-            if ($checkNumUses > $coupon->num_uses) {
+            if ($checkNumUses >= $coupon->num_uses) {
                 return ['status' => false];
             }
         }

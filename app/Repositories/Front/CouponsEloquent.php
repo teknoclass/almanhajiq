@@ -24,9 +24,23 @@ class CouponsEloquent
             return $response;
         }
 
+        if ($coupon->expiry_date != '') {
+            $expiry_date = \Carbon\Carbon::createFromFormat('Y-m-d', $coupon->expiry_date);
+            $now_date = \Carbon\Carbon::now();
+            if ($now_date > $expiry_date) {
+                $response=[
+                    'status'=>false,
+                    'message'=>__('message.the_coupon_is_not_valid'),
+                    'items'=>[
+                    ]
+                ];
+                return $response;
+            }
+        }
+
         $checkNumUses = Transactios::where('coupon', $code)->where('status' , 'completed')->count();
         if ($coupon->num_uses != '') {
-            if ($checkNumUses > $coupon->num_uses) {
+            if ($checkNumUses >= $coupon->num_uses) {
                 return ['status' => false,
                 'data' =>__('message.the_coupon_is_not_valid') ,];
             }

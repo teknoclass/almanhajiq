@@ -29,7 +29,7 @@ class Coupons extends Model
 
         $checkNumUses = Transactios::where('coupon', $this->code)->groupBy('user_id')->count();
         if ($this->num_uses != '') {
-            if ($checkNumUses > $this->num_uses) {
+            if ($checkNumUses >= $this->num_uses) {
                 $is_valid = false;
             }
         }
