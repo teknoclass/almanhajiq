@@ -762,7 +762,7 @@ class Courses extends Model
     }
 
     function canRate($type = 'web'){
-        $userCourse = UserCourse::where('course_id',$this->id)->where('user_id',auth('api')->id())->first();
+        $userCourse = UserCourse::where('course_id',$this->id)->where('user_id',auth('api')->id())->where('is_rating',0)->first();
 
         if($userCourse){
             if(Carbon::parse($this->end_date)->isToday() || Carbon::parse($this->end_date)->isPast()){

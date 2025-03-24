@@ -222,16 +222,7 @@ Route::group(['prefix' => '/get-course-file', 'middleware' => ['CheckCanAccessCo
 Route::group(['prefix' => '/get-course-file-stream', 'middleware' => ['CheckCanAccessCourseFiles'], 'as' => 'get.course.file.stream'], function () {
     Route::get('{course_id}/{lesson_type}/{file}', [FileController::class, 'getCourseLessonItemLinkStream']);
 });
-Route::get('/download-report', function(){
-    $table = "<table><tr><td>Sample Data</td></tr></table>";
 
-    return response()->streamDownload(function () use ($table) {
-        echo $table;
-    }, 'reports_' . date('d_m_Y') . '.xls', [
-        'Content-Type' => 'application/vnd.ms-excel',
-        'Content-Disposition' => 'attachment; filename="reports_' . date('d_m_Y') . '.xls"',
-    ]);
-})->name('download.report');
 
 ////////////////////
 //payment webhook
