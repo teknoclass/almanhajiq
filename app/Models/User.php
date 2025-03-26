@@ -314,7 +314,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $ratings_count = $this->getRatingCount();
 
             if ($ratings_count == 0) {
-                return 0;
+                return 5;
             }
 
             return round(fdiv($ratings_sum, $ratings_count));

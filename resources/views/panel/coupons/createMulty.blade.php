@@ -257,7 +257,6 @@
                                 'يجب عليك اختيار كورس اولا',
                                 ''
                             );
-                            console.log('ad');
                             return;
                         }
                         let courseId = selectedOption.value;

@@ -43,6 +43,14 @@ class RatingsEloquent extends HelperEloquent
 
                 $item=UserCourse::where('course_id', $sourse_id)->where('user_id', $user->id)->first();
 
+                $rating2 = new Ratings();
+                $rating2->sourse_type = rATINGS::USER;
+                $rating2->sourse_id = $item->course->user_id;
+                $rating2->rate = $data['rate'];
+                $rating2->comment_text = $data['comment_text'];
+                $rating2->user_id = $data['user_id'];
+                $rating2->save();
+
             }
 
 

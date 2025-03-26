@@ -875,7 +875,7 @@ class CoursesEloquent
             });
         })
                           ->with('translations:courses_id,title,locale')
-            ->where('type', $type)
+            //->where('type', $type)
                           ->take(10)->get();
 
 

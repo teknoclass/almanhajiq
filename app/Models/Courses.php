@@ -765,10 +765,16 @@ class Courses extends Model
         $userCourse = UserCourse::where('course_id',$this->id)->where('user_id',auth('api')->id())->where('is_rating',0)->first();
 
         if($userCourse){
-            if(Carbon::parse($this->end_date)->isToday() || Carbon::parse($this->end_date)->isPast()){
-                return 1;
+            if($this->type == 'live'){
+
+                if(Carbon::parse($this->end_date)->isToday() || Carbon::parse($this->end_date)->isPast()){
+                    return 1;
+                }else{
+                    return 0;
+                }
             }else{
-                return 0;
+                if($userCourse->progress == 100)return 1;
+                else return 0;
             }
 
         }else{

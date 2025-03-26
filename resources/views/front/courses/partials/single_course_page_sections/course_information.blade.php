@@ -5,64 +5,64 @@
             <div class="information">
                 <h2 class="text-color-primary font-bold">{{ __('course_brief_explanation') }}</h2>
 
-                    {{-- {!! @$course->welcome_text_for_registration !!} --}}
-                    @if (@$course->description)
-                        {!!@$course->description!!}
-                    @endif
+                {{-- {!! @$course->welcome_text_for_registration !!} --}}
+                @if (@$course->description)
+                    {!! @$course->description !!}
+                @endif
 
             </div>
             <h2 class="text-color-primary font-bold my-2">{{ __('course_details') }}</h2>
             <div class="row course-details">
-                @if($course->type !='live')
-                <div class="col-6 col-md-3 mb-3">
+                @if ($course->type != 'live')
+                    <div class="col-6 col-md-3 mb-3">
 
                         <div class="content">
                             <h4 class="text-color-muted-02 mb-3">{{ __('lessons') }}</h4>
                             <div>
-                            <span>
-                                <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M22.5 16.7399V4.66994C22.5 3.46994 21.52 2.57994 20.33 2.67994H20.27C18.17 2.85994 14.98 3.92994 13.2 5.04994L13.03 5.15994C12.74 5.33994 12.26 5.33994 11.97 5.15994L11.72 5.00994C9.94 3.89994 6.76 2.83994 4.66 2.66994C3.47 2.56994 2.5 3.46994 2.5 4.65994V16.7399C2.5 17.6999 3.28 18.5999 4.24 18.7199L4.53 18.7599C6.7 19.0499 10.05 20.1499 11.97 21.1999L12.01 21.2199C12.28 21.3699 12.71 21.3699 12.97 21.2199C14.89 20.1599 18.25 19.0499 20.43 18.7599L20.76 18.7199C21.72 18.5999 22.5 17.6999 22.5 16.7399Z"
-                                        stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    <path d="M12.5 5.48999V20.49" stroke="#013B3D" stroke-width="1.5"
-                                          stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M8.25 8.48999H6" stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
-                                          stroke-linejoin="round" />
-                                    <path d="M9 11.49H6" stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
-                                          stroke-linejoin="round" />
-                                </svg>
-                            </span>
-                                <span class="num">{{$course->getTotalItemsCount()}}</span>
+                                <span>
+                                    <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M22.5 16.7399V4.66994C22.5 3.46994 21.52 2.57994 20.33 2.67994H20.27C18.17 2.85994 14.98 3.92994 13.2 5.04994L13.03 5.15994C12.74 5.33994 12.26 5.33994 11.97 5.15994L11.72 5.00994C9.94 3.89994 6.76 2.83994 4.66 2.66994C3.47 2.56994 2.5 3.46994 2.5 4.65994V16.7399C2.5 17.6999 3.28 18.5999 4.24 18.7199L4.53 18.7599C6.7 19.0499 10.05 20.1499 11.97 21.1999L12.01 21.2199C12.28 21.3699 12.71 21.3699 12.97 21.2199C14.89 20.1599 18.25 19.0499 20.43 18.7599L20.76 18.7199C21.72 18.5999 22.5 17.6999 22.5 16.7399Z"
+                                            stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path d="M12.5 5.48999V20.49" stroke="#013B3D" stroke-width="1.5"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M8.25 8.48999H6" stroke="#013B3D" stroke-width="1.5"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M9 11.49H6" stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                                <span class="num">{{ $course->getTotalItemsCount() }}</span>
                             </div>
                         </div>
 
-                </div>
+                    </div>
                 @endif
-                    @if($course->type !='live')
-                <div class="col-6 col-md-3 mb-3">
-                    <div class="content">
-                        <h4 class="text-color-muted-02 mb-3">{{ __('duration') }}</h4>
-                        <div>
-                            <span>
-                                <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M22.5 12C22.5 17.52 18.02 22 12.5 22C6.98 22 2.5 17.52 2.5 12C2.5 6.48 6.98 2 12.5 2C18.02 2 22.5 6.48 22.5 12Z"
-                                        stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    <path
-                                        d="M16.2099 15.18L13.1099 13.33C12.5699 13.01 12.1299 12.24 12.1299 11.61V7.51001"
-                                        stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                            </span>
-                            <span class="num">{{$course->getDurationInDays()}} {{__('days')}}</span>
+                @if ($course->type != 'live')
+                    <div class="col-6 col-md-3 mb-3">
+                        <div class="content">
+                            <h4 class="text-color-muted-02 mb-3">{{ __('duration') }}</h4>
+                            <div>
+                                <span>
+                                    <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M22.5 12C22.5 17.52 18.02 22 12.5 22C6.98 22 2.5 17.52 2.5 12C2.5 6.48 6.98 2 12.5 2C18.02 2 22.5 6.48 22.5 12Z"
+                                            stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path
+                                            d="M16.2099 15.18L13.1099 13.33C12.5699 13.01 12.1299 12.24 12.1299 11.61V7.51001"
+                                            stroke="#013B3D" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                                <span class="num">{{ $course->getDurationInDays() }} {{ __('days') }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                    @endif
+                @endif
                 <div class="col-6 col-md-3 mb-3">
                     <div class="content">
                         <h4 class="text-color-muted-02 mb-3">{{ __('grade_level') }}</h4>
@@ -82,13 +82,14 @@
                                         stroke-linejoin="round" />
                                 </svg>
                             </span>
-                            <span class="num">{{@App\Models\Category::find(@$course->grade_level_id)->name ?? ""}} </span>
+                            <span class="num">{{ @App\Models\Category::find(@$course->grade_level_id)->name ?? '' }}
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3 mb-3">
                     <div class="content">
-                        <h4 class="text-color-muted-02 mb-3">{{ __('students') }}</h4>
+                        <h4 class="text-color-muted-02 mb-3">{{ __('Years of experience') }}</h4>
                         <div>
                             <span>
                                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
@@ -121,7 +122,7 @@
 
                             </span>
                             <span class="num">
-                                {{$course->students()->count() }}</span>
+                                {{ $course->lecturers->lecturerSetting->exp_years }}</span>
                         </div>
                     </div>
                 </div>

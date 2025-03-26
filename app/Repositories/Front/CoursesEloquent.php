@@ -25,13 +25,13 @@ class CoursesEloquent
         $data['levels']  = Category::getCategoriesByParent('course_levels')->orderByDesc('created_at')->get();
 
         $data['age_categories']  = Category::getCategoriesByParent('age_categories')->orderByDesc('created_at')->get();
-        $data['grade_levels']      = Category::where('key', 'grade_levels')->orderBy('order','asc')->get();
+        $data['grade_levels']      = Category::where('key', 'grade_levels')->orderBy('order', 'asc')->get();
         $data['grade_sub_level']      = Category::where('parent', 'grade_levels')->get();
 
         // materials
         $parent = Category::select('id', 'value', 'parent', 'key')->where('key', "joining_course")->first();
         $data['categories'] = Category::query()->select('id', 'value', 'parent', 'key')->where('parent', $parent->key)
-        ->orderByDesc('created_at')->with(['translations:category_id,name,locale', 'parent'])->get();
+            ->orderByDesc('created_at')->with(['translations:category_id,name,locale', 'parent'])->get();
 
         return $data;
     }
@@ -39,63 +39,63 @@ class CoursesEloquent
     public function getData($request, $count_itmes = 8)
     {
         $data['courses'] = Courses::active()->accepted()->subscribed()
-        ->select(
-            'id',
-            'image',
-            'start_date',
-            'duration',
-            'type',
-            'category_id',
-            'is_active',
-            'user_id',
-            'material_id',
-            'level_id',
-            'grade_level_id',
-            'grade_sub_level',
-            'end_date',
-            'subscription_end_date'
-        )
-        ->with('translations:courses_id,title,locale,description')
-        ->with([
-            'category' => function ($query) {
-                $query->select('id', 'value', 'parent')
-                    ->with('translations:category_id,name,locale');
-            }
-        ])
-        ->with([
-            'material' => function ($query) {
-                $query->select('id', 'value', 'parent')
-                    ->with('translations:category_id,name,locale');
-            }
-        ])
-        ->addSelect([
-            'progress' => UserCourse::select('progress')
-                ->whereColumn('course_id', 'courses.id')
-                ->where('user_id', auth()->id())->limit(1)
-        ])
-        ->withCount('items')
-        ->orderBy('id', 'desc')
-        ->when($request->get('title') && $request->get('title') != "" ,function($q) use($request){
-            $search = $request->get('title');
-            return $q->whereHas('translations', function ($q) use ($search) {
-                return $q->where('title', 'like', '%' . $search . '%');
+            ->select(
+                'id',
+                'image',
+                'start_date',
+                'duration',
+                'type',
+                'category_id',
+                'is_active',
+                'user_id',
+                'material_id',
+                'level_id',
+                'grade_level_id',
+                'grade_sub_level',
+                'end_date',
+                'subscription_end_date'
+            )
+            ->with('translations:courses_id,title,locale,description')
+            ->with([
+                'category' => function ($query) {
+                    $query->select('id', 'value', 'parent')
+                        ->with('translations:category_id,name,locale');
+                }
+            ])
+            ->with([
+                'material' => function ($query) {
+                    $query->select('id', 'value', 'parent')
+                        ->with('translations:category_id,name,locale');
+                }
+            ])
+            ->addSelect([
+                'progress' => UserCourse::select('progress')
+                    ->whereColumn('course_id', 'courses.id')
+                    ->where('user_id', auth()->id())->limit(1)
+            ])
+            ->withCount('items')
+            ->orderBy('id', 'desc')
+            ->when($request->get('title') && $request->get('title') != "", function ($q) use ($request) {
+                $search = $request->get('title');
+                return $q->whereHas('translations', function ($q) use ($search) {
+                    return $q->where('title', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($request->get('category_ids') && $request->get('category_ids') != "", function ($q) use ($request) {
+                $search = json_decode($request->get('category_ids'));
+
+                return $q->whereIn('material_id', $search);
+            })
+            ->when($request->get('grade_sub_level') && $request->get('grade_sub_level') != "", function ($q) use ($request) {
+                $search = json_decode($request->get('grade_sub_level'));
+
+                return $q->where('grade_sub_level', $search);
+            })
+            ->when($request->get('id') && $request->get('id') != "", function ($q) use ($request) {
+                $search = $request->get('id');
+
+                return $q->where('id', $search);
             });
-        })
-        ->when($request->get('category_ids') && $request->get('category_ids') != "" ,function($q) use($request){
-            $search = json_decode($request->get('category_ids'));
-
-            return $q->whereIn('material_id', $search);
-        })
-        ->when($request->get('grade_sub_level') && $request->get('grade_sub_level') != "" ,function($q) use($request){
-            $search = json_decode($request->get('grade_sub_level'));
-
-            return $q->where('grade_sub_level', $search);
-        })
-        ->when($request->get('id') && $request->get('id') != "" ,function($q) use($request){
-            $search = $request->get('id');
-
-            return $q->where('id', $search);
-        });
 
 
         $data['lecturers'] = [];
@@ -234,8 +234,8 @@ class CoursesEloquent
                     $query->select('id', 'name', 'image')
                         ->with([
                             'lecturerSetting' => function ($query) {
-                                $query->select('id', 'user_id')
-                                ->with('translations:lecturer_setting_id,position,abstract,locale');
+                                $query->select('id', 'user_id', 'exp_years')
+                                    ->with('translations:lecturer_setting_id,position,abstract,locale');
                             }
                         ]);
                 }
@@ -257,7 +257,7 @@ class CoursesEloquent
             ->withCount('students')
             ->where('id', $id)->first();
         $data['course'] = $course;
-            // dd($data['course']);
+        // dd($data['course']);
 
         if (!$data['course']) abort(404);
 
@@ -292,30 +292,30 @@ class CoursesEloquent
             ->orderBy('id', 'desc')->take(4)->get();
 
         $data['live_sessions'] = $course->sessions()
-                                 ->whereNotNull('group_id') // Ensure that the group_id is not null
-                                 ->with('group') // Eager load the group associated with each session
-                                 ->get();
+            ->whereNotNull('group_id') // Ensure that the group_id is not null
+            ->with('group') // Eager load the group associated with each session
+            ->get();
         $data['curriculum_items'] = CourseCurriculum::active()->where('course_id', $id)
             ->with('section.items', function ($query) {
                 $query->with('itemable')->active();
             })->order('asc')->get();
 
         if (auth()->user() && auth()->user()->role == User::MARKETER) {
-            $data['coupon']=Coupons::whereHas('allMarketers', function (Builder $query) {
+            $data['coupon'] = Coupons::whereHas('allMarketers', function (Builder $query) {
                 $query->where('user_id', auth()->id());
             })->first()->code ?? '';
         }
-        $data['live_lessons_groups'] = Courses::where('user_id',auth()->id())
-                                              ->where('type', 'live')
-                                              ->whereHas('groups', function ($query) {
-                                                  $query->whereHas('sessions'); // Ensure the group has sessions
-                                              })
-                                              ->with(['groups' => function ($query) {
-                                                  $query->distinct()->with(['sessions' => function ($sessionQuery) {
-                                                      $sessionQuery->distinct()->whereNotNull('group_id'); // Ensure only sessions with a group_id
-                                                  }]);
-                                              }])
-                                              ->get();
+        $data['live_lessons_groups'] = Courses::where('user_id', auth()->id())
+            ->where('type', 'live')
+            ->whereHas('groups', function ($query) {
+                $query->whereHas('sessions'); // Ensure the group has sessions
+            })
+            ->with(['groups' => function ($query) {
+                $query->distinct()->with(['sessions' => function ($sessionQuery) {
+                    $sessionQuery->distinct()->whereNotNull('group_id'); // Ensure only sessions with a group_id
+                }]);
+            }])
+            ->get();
 
         return $data;
     }
