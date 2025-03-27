@@ -122,7 +122,7 @@
 
                             </span>
                             <span class="num">
-                                {{ $course->lecturers->lecturerSetting->exp_years }}</span>
+                                {{ @$course->lecturers->lecturerSetting->exp_years }}</span>
                         </div>
                     </div>
                 </div>
