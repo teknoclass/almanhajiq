@@ -187,21 +187,84 @@ var swiper_2 = new Swiper(".swiper-filter", {
 
 $(".categories .item-categ").on("click", function () {
     var filter = $(this).data("filter");
+    var slidesxcol;
     $(".categories .item-categ");
     $(".categories .item-categ").removeClass("active");
     $(this).addClass("active");
 
     if (filter == "all") {
-        $(".swiper-filter [data-filter]")
-            .show();
+      $(".swiper-filter [data-filter]")
+        .removeClass("non-swiper-slide")
+        .addClass("swiper-slide")
+        .show();
+      if ($(".swiper-filter .swiper-slide").length > 6) slidesxcol = 3;
+      else slidesxcol = 1;
+      swiper_2.destroy()
+      swiper = new Swiper(".swiper-filter", {
+        slidesPerView: 3,
+        slidesPerColumn: 2,
+        slidesPerColumnFill: 'row',
+        spaceBetween: 30,
+        navigation: {
+          nextEl: ".swiper-action-filter .swiper-button-next",
+          prevEl: ".swiper-action-filter .swiper-button-prev",
+        },
+        breakpoints: {
+          0: {
+            slidesPerView: 2,
+          },
+          576: {
+            slidesPerView:2,
+          },
+          992: {
+            slidesPerView: 2,
+          },
+          1200: {
+            slidesPerView: 3,
+          },
+        },
+      });
     } else {
-        $(".swiper-filter .swiper-slide")
-            .not("[data-filter='" + filter + "']")
-            .hide();
-        $(".swiper-filter [data-filter='" + filter + "']")
-            .show();
+      $(".swiper-filter .swiper-slide")
+        .not("[data-filter='" + filter + "']")
+        .addClass("non-swiper-slide")
+        .removeClass("swiper-slide")
+        .hide();
+      $(".swiper-filter [data-filter='" + filter + "']")
+        .removeClass("non-swiper-slide")
+        .addClass("swiper-slide")
+        .attr("style", null)
+        .show();
+      console.log($(".swiper-slide").length);
+      if ($(".swiper-filter .swiper-slide").length > 6) slidesxcol = 3;
+      else slidesxcol = 1;
+      swiper_2.destroy()
+      swiper = new Swiper(".swiper-filter", {
+        slidesPerView: 3,
+        slidesPerColumn: 2,
+        slidesPerColumnFill: 'row',
+        spaceBetween: 30,
+        navigation: {
+          nextEl: ".swiper-action-filter .swiper-button-next",
+          prevEl: ".swiper-action-filter .swiper-button-prev",
+        },
+        breakpoints: {
+          0: {
+            slidesPerView: 2,
+          },
+          576: {
+            slidesPerView:2,
+          },
+          992: {
+            slidesPerView: 2,
+          },
+          1200: {
+            slidesPerView: 3,
+          },
+        },
+      });
     }
-});
+  });
 
 var swiperblog = new Swiper(".swiper-blog", {
     slidesPerView: 3,

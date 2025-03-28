@@ -82,7 +82,7 @@ class LiveSessionEloquent  extends HelperEloquent
             $group = $group->with('sessions')->first();
             DB::commit();
 
-            return ['success' => true, 'message' => __('Group updated successfully'),'group' => $group];
+            return ['success' => true, 'message' => __('Group updated successfully'), 'group' => $group];
         } catch (\Exception $e) {
             DB::rollBack();
             return ['success' => false, 'message' => __('Error updating group')];
@@ -113,8 +113,8 @@ class LiveSessionEloquent  extends HelperEloquent
     public function getUsedSessions(int $courseId)
     {
         $usedSessions = CourseSession::where('course_id', $courseId)
-                                     ->whereNotNull('group_id')
-                                     ->pluck('id');
+            ->whereNotNull('group_id')
+            ->pluck('id');
 
         return $usedSessions;
     }
@@ -127,9 +127,9 @@ class LiveSessionEloquent  extends HelperEloquent
         try {
             $sessionData = $request->except(['_token', 'course_id']);
             $course = Courses::find($id);
-            if (!$course->published){
+            if (!$course->published) {
 
-                $this->setSessions($sessionData,$request,$course->id);
+                $this->setSessions($sessionData, $request, $course->id);
             }
 
             $message = __('schedule created');
@@ -149,7 +149,7 @@ class LiveSessionEloquent  extends HelperEloquent
         return $response;
     }
 
-    public function setSessions($sessionData,$request,$course_id)
+    public function setSessions($sessionData, $request, $course_id)
     {
         DB::transaction(function () use ($course_id) {
             DB::table('course_session_installments')
@@ -165,21 +165,30 @@ class LiveSessionEloquent  extends HelperEloquent
         $sessionIds = [];
         $sessions = [];
         $i = 0;
-        while ($request->has("session_day_$i")) {
-            $sessions[] = [
-                'day' => $request->input("session_day_$i"),
-                'date' => $request->input("session_date_$i"),
-                'time' => $request->input("session_time_$i"),
-                'title' => $request->input("session_title_$i"),
-                'course_id' => $course_id
-            ];
+        while ($i < 30) {
+            if($request->has("session_day_$i")){
+
+                $sessions[] = [
+                    'day' => $request->input("session_day_$i"),
+                    'date' => $request->input("session_date_$i"),
+                    'time' => $request->input("session_time_$i"),
+                    'title' => $request->input("session_title_$i"),
+                    'id' => $request->input("session_id_$i", 0),
+                    'course_id' => $course_id
+                ];
+            }
             $i++;
         }
 
         foreach ($sessions as $session) {
-            $session = CourseSession::create($session);
+            if ($session['id'] == 0) {
+                $session = CourseSession::create($session);
 
-            $sessionIds[] = $session->id;
+                $sessionIds[] = $session->id;
+            } else {
+                CourseSession::withTrashed()->where('id', $session['id'])->restore();
+                CourseSession::where('id',$session['id'])->update($session);
+            }
         }
 
         return $sessionIds;
@@ -199,16 +208,14 @@ class LiveSessionEloquent  extends HelperEloquent
                 // Save the changes
                 $course->save();
                 $message = __('Course status updated successfully');
-                if (!$course->published){
+                if (!$course->published) {
                     $groupIds = CourseSession::where('course_id', $id)
-                                             ->pluck('group_id')
-                                             ->toArray();
+                        ->pluck('group_id')
+                        ->toArray();
                     CourseSessionsGroup::whereIn('id', $groupIds)->delete();
                     CourseSession::whereIn('group_id', $groupIds)->update(['group_id' => null]);
-
                 }
-            }
-            else {
+            } else {
                 $message = __('Course not found');
             }
             $published = $course->published;
@@ -231,7 +238,7 @@ class LiveSessionEloquent  extends HelperEloquent
         return $response;
     }
 
-    public function createLiveSession($id,$is_web = true)
+    public function createLiveSession($id, $is_web = true)
     {
         /** @var CourseSession $session***/
         $session = CourseSession::find($id);
@@ -246,11 +253,10 @@ class LiveSessionEloquent  extends HelperEloquent
         })->with(['sessions' => function ($query) use ($request) {
             $query->where('course_id', $request->courseId);
         }])->findOrFail($request->groupId);
-
-
     }
 
-    function addAttachemnt($request){
+    function addAttachemnt($request)
+    {
         $file = $request->file('file');
         $lesson_type = 'liveAttachment';
         Log::info($request->lesson_id);
@@ -258,7 +264,7 @@ class LiveSessionEloquent  extends HelperEloquent
         $attachment = CourseSessionAttachments::create([
             'session_id' => $request->session_id,
             'original_name' => $file->getClientOriginalName(),
-            'file' => uploadFile($file,'courses/' . $session->course_id . '/' . $lesson_type)
+            'file' => uploadFile($file, 'courses/' . $session->course_id . '/' . $lesson_type)
         ]);
         return $attachment;
     }
