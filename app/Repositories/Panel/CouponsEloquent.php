@@ -388,7 +388,7 @@ class CouponsEloquent
                     "<td >" . $i . "</td>" .
                     "<td >" . $item->coupon . "</td>".
                     "<td >" . $item->transactionable->title . "</td>".
-                    "<td >" . 'asdasda' . "</td>";
+                    "<td >" . $item->user->name . "</td>";
                 $row .= "</tr>";
                 ++$i;
                 $table .= $row;
