@@ -26,7 +26,6 @@ class CouponsController extends Controller
         $this->coupons = $coupons_eloquent;
 
         $this->users = $users_eloquent;
-
     }
 
 
@@ -36,16 +35,16 @@ class CouponsController extends Controller
 
     public function index(Request $request)
     {
-        $data['users']=$this->users->getAllByRole(User::MARKETER);
+        $data['users'] = $this->users->getAllByRole(User::MARKETER);
 
-        return view('panel.coupons.all',$data);
+        return view('panel.coupons.all', $data);
     }
 
     public function indexGroup(Request $request)
     {
-        $data['users']=$this->users->getAllByRole(User::MARKETER);
+        $data['users'] = $this->users->getAllByRole(User::MARKETER);
 
-        return view('panel.coupons.groups',$data);
+        return view('panel.coupons.groups', $data);
     }
 
 
@@ -98,9 +97,9 @@ class CouponsController extends Controller
     }
 
 
-    public function delete($id,Request $request)
+    public function delete($id, Request $request)
     {
-        $response = $this->coupons->delete($id,$request);
+        $response = $this->coupons->delete($id, $request);
         return $this->response_api($response['status'], $response['message']);
     }
 
@@ -108,5 +107,11 @@ class CouponsController extends Controller
     {
         $response = $this->coupons->operation($request);
         return $this->response_api($response['status'], $response['message']);
+    }
+
+    public function download()
+    {
+        $response = $this->coupons->download();
+        return response($response)->withHeaders(["Content-Type" => 'application/vnd.ms-excel', "Content-Disposition" => 'attachment; filename="used-couopons_' . date('d_m_Y') . '.xls"']);
     }
 }

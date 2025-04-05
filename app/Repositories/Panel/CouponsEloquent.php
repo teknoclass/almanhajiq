@@ -6,7 +6,9 @@ use App\Helper\CouponGenerator;
 use App\Jobs\CouponExcelHandle;
 use App\Models\CouponMarketers;
 use App\Models\Coupons;
+use App\Models\Courses;
 use App\Models\CoursesCoupon;
+use App\Models\Transactios;
 use DataTables;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -15,8 +17,8 @@ class CouponsEloquent
 {
     public function getDataTable()
     {
-        $data =Coupons::orderByDesc('created_at')
-        ->select('id', 'title', 'code')->get();
+        $data = Coupons::orderByDesc('created_at')
+            ->select('id', 'title', 'code')->get();
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -26,9 +28,9 @@ class CouponsEloquent
     }
     public function getDataTableGroup()
     {
-        $data =Coupons::orderByDesc('created_at')->selectRaw('group_name, COUNT(*) as total_coupons,MIN(id) as id')->whereNotNull('group_name')
-        ->groupBy('group_name')
-        ->get();
+        $data = Coupons::orderByDesc('created_at')->selectRaw('group_name, COUNT(*) as total_coupons,MIN(id) as id')->whereNotNull('group_name')
+            ->groupBy('group_name')
+            ->get();
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -40,7 +42,7 @@ class CouponsEloquent
     public function getAll()
     {
         $items = Coupons::orderByDesc('created_at')
-        ->select('id', 'title', 'code')->orderBy('id', 'desc')->get();
+            ->select('id', 'title', 'code')->orderBy('id', 'desc')->get();
 
         return $items;
     }
@@ -48,30 +50,29 @@ class CouponsEloquent
     public function getAllGeneral()
     {
         $items = Coupons::orderByDesc('created_at')
-        ->select('id', 'title', 'code')->orderBy('id', 'desc')
-        ->withCount('marketers')
-         ->having('marketers_count', '=', 0)
-        ->get();
+            ->select('id', 'title', 'code')->orderBy('id', 'desc')
+            ->withCount('marketers')
+            ->having('marketers_count', '=', 0)
+            ->get();
 
         return $items;
-
     }
 
 
     public function store($request)
     {
 
-        try{
+        try {
             $data = $request->all();
 
             if ($request->expiry_date) {
                 $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
             }
 
-            $coupon=Coupons::updateOrCreate(['id' => 0], $data);
-            if($request->course_ids){
+            $coupon = Coupons::updateOrCreate(['id' => 0], $data);
+            if ($request->course_ids) {
 
-                foreach($request->course_ids as $id){
+                foreach ($request->course_ids as $id) {
                     CoursesCoupon::firstOrCreate([
                         'course_id' => $id,
                         'coupon_id' => $coupon->id
@@ -79,22 +80,22 @@ class CouponsEloquent
                 }
             }
             $marketer_id = $request->marketer_id;
-            $check_coupon=CouponMarketers::where('user_id', $marketer_id)
-            ->where('coupon_id', '!=', $coupon->id)
-            ->first();
-            if($check_coupon) {
+            $check_coupon = CouponMarketers::where('user_id', $marketer_id)
+                ->where('coupon_id', '!=', $coupon->id)
+                ->first();
+            if ($check_coupon) {
                 $response = [
                     'message' => 'المسوق له كوبون اخر',
-                    'status' =>false,
+                    'status' => false,
                 ];
 
                 return $response;
             }
-            if($marketer_id){
+            if ($marketer_id) {
                 CouponMarketers::create([
-                    'user_id'=>$marketer_id,
-                    'coupon_id'=>$coupon->id,
-                    'add_by'=>CouponMarketers::MANUALLY
+                    'user_id' => $marketer_id,
+                    'coupon_id' => $coupon->id,
+                    'add_by' => CouponMarketers::MANUALLY
                 ]);
             }
 
@@ -108,17 +109,16 @@ class CouponsEloquent
             ];
 
             return $response;
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             Log::info($e->getMessage());
         }
     }
     public function storeMultiple($request)
     {
 
-        try{
+        try {
             $coupons = array();
-            for($i = 0 ; $i < $request->number ; $i+=1){
+            for ($i = 0; $i < $request->number; $i += 1) {
 
                 $data = $request->all();
                 $data['code'] = CouponGenerator::generateCoupon();
@@ -127,10 +127,10 @@ class CouponsEloquent
                     $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
                 }
 
-                $coupon=Coupons::updateOrCreate(['id' => 0], $data);
-                if($request->course_ids){
+                $coupon = Coupons::updateOrCreate(['id' => 0], $data);
+                if ($request->course_ids) {
 
-                    foreach($request->course_ids as $id){
+                    foreach ($request->course_ids as $id) {
                         CoursesCoupon::firstOrCreate([
                             'course_id' => $id,
                             'coupon_id' => $coupon->id
@@ -138,22 +138,22 @@ class CouponsEloquent
                     }
                 }
                 $marketer_id = $request->marketer_id;
-                $check_coupon=CouponMarketers::where('user_id', $marketer_id)
-                ->where('coupon_id', '!=', $coupon->id)
-                ->first();
-                if($check_coupon) {
+                $check_coupon = CouponMarketers::where('user_id', $marketer_id)
+                    ->where('coupon_id', '!=', $coupon->id)
+                    ->first();
+                if ($check_coupon) {
                     $response = [
                         'message' => 'المسوق له كوبون اخر',
-                        'status' =>false,
+                        'status' => false,
                     ];
 
                     return $response;
                 }
-                if($marketer_id){
+                if ($marketer_id) {
                     CouponMarketers::create([
-                        'user_id'=>$marketer_id,
-                        'coupon_id'=>$coupon->id,
-                        'add_by'=>CouponMarketers::MANUALLY
+                        'user_id' => $marketer_id,
+                        'coupon_id' => $coupon->id,
+                        'add_by' => CouponMarketers::MANUALLY
                     ]);
                 }
             }
@@ -169,9 +169,7 @@ class CouponsEloquent
 
             //CouponExcelHandle::dispatch($coupons);
             return $response;
-
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             Log::info($e->getMessage());
         }
     }
@@ -182,7 +180,7 @@ class CouponsEloquent
         if ($data['item'] == '') {
             abort(404);
         }
-        $data['couponCourses'] = CoursesCoupon::where('coupon_id',$id)->get();
+        $data['couponCourses'] = CoursesCoupon::where('coupon_id', $id)->get();
 
 
         return $data;
@@ -190,21 +188,21 @@ class CouponsEloquent
 
     public function update($id, $request)
     {
-        try{
+        try {
             $data = $request->all();
 
             if ($request->expiry_date) {
                 $data['expiry_date'] = date('Y-m-d ', strtotime($request->expiry_date));
             }
-            if($request->get('is_group') == 1){
+            if ($request->get('is_group') == 1) {
                 $coupon = Coupons::find($id);
-                $ids = Coupons::where('group_name',$coupon->group_name)->pluck('id')->toArray();
-            }else{
+                $ids = Coupons::where('group_name', $coupon->group_name)->pluck('id')->toArray();
+            } else {
                 $ids = [$id];
             }
-            foreach($ids as $id){
+            foreach ($ids as $id) {
 
-                $coupon=Coupons::updateOrCreate(['id' => $id], $data);
+                $coupon = Coupons::updateOrCreate(['id' => $id], $data);
 
 
                 $newCourseIds = $request->input('course_ids', []);
@@ -232,21 +230,23 @@ class CouponsEloquent
 
 
                 $marketer_id = $request->marketer_id;
-                $check_coupon=CouponMarketers::where('user_id', $marketer_id)
-                ->where('coupon_id', '!=', $coupon->id)
-                ->first();
-                if($check_coupon) {
+                $check_coupon = CouponMarketers::where('user_id', $marketer_id)
+                    ->where('coupon_id', '!=', $coupon->id)
+                    ->first();
+                if ($check_coupon) {
                     continue;
                 }
 
 
 
-                if($marketer_id){
+                if ($marketer_id) {
 
-                    CouponMarketers::updateOrCreate([ 'user_id'=>$marketer_id,
-                    'coupon_id'=>$coupon->id],[
+                    CouponMarketers::updateOrCreate([
+                        'user_id' => $marketer_id,
+                        'coupon_id' => $coupon->id
+                    ], [
 
-                        'add_by'=>CouponMarketers::MANUALLY
+                        'add_by' => CouponMarketers::MANUALLY
                     ]);
                 }
             }
@@ -260,7 +260,7 @@ class CouponsEloquent
             ];
 
             return $response;
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $response = [
                 'message' => 'asd',
                 'status' => false,
@@ -271,18 +271,18 @@ class CouponsEloquent
     }
 
 
-    public function delete($id,$request)
+    public function delete($id, $request)
     {
 
-        if($request->get('is_group') == 1){
+        if ($request->get('is_group') == 1) {
             $coupon = Coupons::find($id);
-            $ids = Coupons::where('group_name',$coupon->group_name)->pluck('id')->toArray();
-        }else{
+            $ids = Coupons::where('group_name', $coupon->group_name)->pluck('id')->toArray();
+        } else {
             $ids = [$id];
         }
-        try{
+        try {
 
-            foreach($ids as $id){
+            foreach ($ids as $id) {
 
                 $item = Coupons::find($id);
                 if ($item) {
@@ -298,7 +298,7 @@ class CouponsEloquent
             ];
 
             return $response;
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $message = 'حدث خطأ غير متوقع';
             $status = false;
 
@@ -308,7 +308,6 @@ class CouponsEloquent
             ];
 
             return $response;
-
         }
     }
 
@@ -347,17 +346,59 @@ class CouponsEloquent
     public function saveMarketers($coupon_id, $marketer_ids)
     {
         CouponMarketers::where('coupon_id', $coupon_id)
-        ->where('add_by', CouponMarketers::MANUALLY)
-        ->delete();
-        if(is_array($marketer_ids)) {
-            foreach($marketer_ids as $marketer_id) {
+            ->where('add_by', CouponMarketers::MANUALLY)
+            ->delete();
+        if (is_array($marketer_ids)) {
+            foreach ($marketer_ids as $marketer_id) {
                 CouponMarketers::create([
-                    'user_id'=>$marketer_id,
-                    'coupon_id'=>$coupon_id,
-                    'add_by'=>CouponMarketers::MANUALLY
+                    'user_id' => $marketer_id,
+                    'coupon_id' => $coupon_id,
+                    'add_by' => CouponMarketers::MANUALLY
                 ]);
             }
         }
         return true;
+    }
+
+    function download()
+    {
+
+
+        $data = Transactios::whereNotNull('coupon')->where('coupon', '!=', "")->where('transactionable_type', Courses::class)->where('status', 'completed')->get();
+        $colspan = 4;
+        $i = 1;
+        $table = chr(239) . chr(187) . chr(191);
+        $table .= '<table border="1">
+        <thead>
+        <tr style="text-align: center;font-size:16px;">
+        <th colspan="' . $colspan . '" style="background-color:#eee;">' . 'coupon' . '
+        </th></tr>
+        <tr style="font-size:16px;text-align: center;" >
+            <th >#</th>
+            <th > coupon </th>
+            <th > course </th>
+            <th > user </th>
+        </tr>
+        </thead>
+        <tbody>';
+
+        if (count($data) > 0) {
+            foreach ($data as $item) {
+                $row = "<tr style='font-size:16px;text-align: center;'>" .
+                    "<td >" . $i . "</td>" .
+                    "<td >" . $item->coupon . "</td>".
+                    "<td >" . $item->transactionable->title . "</td>".
+                    "<td >" . 'asdasda' . "</td>";
+                $row .= "</tr>";
+                ++$i;
+                $table .= $row;
+            }
+        } else {
+            $table .= '<tr style="text-align: center;font-size:16px;"><th colspan="' . $colspan . '" style="background-color:#eee;">' . __('dashboard.no_data') . '</th></tr>';
+        }
+
+        $table = $table . '</tbody></table>';
+
+        return $table;
     }
 }
