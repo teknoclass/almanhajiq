@@ -1,20 +1,20 @@
-@extends('panel.layouts.index', ['sub_title' => 'الكوبونات', 'is_active' => 'coupons'])
+@extends('panel.layouts.index', ['sub_title' => __('coupons'), 'is_active' => 'coupons'])
 @section('contion')
     @php
         $item = isset($item) ? $item : null;
     @endphp
     @php
-       $title_page = __('add');
+        $title_page = __('add');
         if (isset($item)) {
             $title_page = __('edit');
         }
         $breadcrumb_links = [
             [
-                'title' => 'الرئيسية',
+                'title' => __('home'),
                 'link' => route('panel.home'),
             ],
             [
-                'title' => 'الكوبونات ',
+                'title' => __('coupons'),
                 'link' => route('panel.coupons.all.index'),
             ],
             [
@@ -25,8 +25,11 @@
     @endphp
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 
-       <div class="container">
-            @include('panel.layouts.breadcrumb', [ 'breadcrumb_links' => $breadcrumb_links, 'title_page' => 'الكوبونات '])
+        <div class="container">
+            @include('panel.layouts.breadcrumb', [
+                'breadcrumb_links' => $breadcrumb_links,
+                'title_page' => __('coupons'),
+            ])
             <!--begin::Entry-->
             <form id="form" method="{{ isset($item) ? 'POST' : 'POST' }}" to="{{ url()->current() }}"
                 url="{{ url()->current() }}" class="w-100">
@@ -51,24 +54,25 @@
                                             value="{{ isset($item) ? @$item->title : '' }}" required />
                                     </div>
                                     @if (request()->query('is_group') != 1)
-                                    <div class="form-group mt-2">
-                                        <label>الكود
-                                            <span class="text-danger">*</span></label>
-                                        <input type="text" name="code" class="form-control"
-                                            value="{{ isset($item) ? @$item->code : (new \App\Helper\CouponGenerator)::generateCoupon()  }}" required />
-                                    </div>
+                                        <div class="form-group mt-2">
+                                            <label>{{__('coupons')}}
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" name="code" class="form-control"
+                                                value="{{ isset($item) ? @$item->code : (new \App\Helper\CouponGenerator())::generateCoupon() }}"
+                                                required />
+                                        </div>
                                     @endif
                                     <div class="form-group">
-                                        <label>عدد مرات الاستعمال
+                                        <label>{{__('Number of uses')}}
                                             <span class="text-info">
-                                                اتركه فارغ اذا كان لا يوجد حد لمرات الاستخدام
+                                                {{__('Keep it empty if you dont want to use it')}}
                                             </span></label>
                                         <input type="text" name="num_uses" class="form-control"
                                             value="{{ isset($item) ? @$item->num_uses : '' }}" />
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">
-                                            النوع
+                                            {{__('type')}}
                                         </label>
                                         <div class="col-9 col-form-label">
                                             <div class="radio-inline">
@@ -76,38 +80,39 @@
                                                     <input type="radio" name="amount_type" value="rate"
                                                         {{ isset($item) ? (@$item->amount_type == 'rate' ? 'checked' : '') : 'checked' }} />
                                                     <span></span>
-                                                    نسبة
+                                                    {{__('percentage')}}
                                                 </label>
                                                 <label class="radio radio-success">
                                                     <input type="radio" name="amount_type" value="fixed"
                                                         {{ isset($item) ? (@$item->amount_type == 'fixed' ? 'checked' : '') : '' }} />
                                                     <span></span>
-                                                    ثابت
+                                                    {{__('static')}}
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>القيمة
+                                        <label>{{__('value')}}
                                             <span class="text-danger">*</span></label>
                                         <input type="text" name="amount" class="form-control mb-5"
                                             value="{{ isset($item) ? @$item->amount : '' }}" required />
                                     </div>
                                     <div class="form-group">
-                                        <label>تاريخ الانتهاء
+                                        <label>{{__('end_date')}}
                                             <span class="text-info">
-                                                اتركه فارغ اذا كان لا يوجد فترة زمنية معينه لانتهاء صلاحيه الكوبون
+                                                {{__('Keep it empty if you dont want to use it')}}
                                             </span>
                                         </label>
                                         <div class="input-group ">
-                                            <input type="date" class="form-control mb-5 directionTextalign" name="expiry_date"
+                                            <input type="date" class="form-control mb-5 directionTextalign"
+                                                name="expiry_date"
                                                 value="{{ isset($item) && $item->expiry_date != '' ? $item->expiry_date : '' }}" />
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>المسوق
+                                        <label>{{__('marketer')}}
                                             <span class="text-info">
-                                                بإمكانك ربط الكوبون بأحد المسوقين
+                                                {{__('You can link the coupon with a marketer')}}
                                             </span></label>
                                         @php
                                             $marketers = [];
@@ -127,9 +132,9 @@
 
                                     </div>
                                     <div class="form-group">
-                                        <label>الدورات
+                                        <label>{{__('course')}}
                                             <span class="text-info">
-                                                دع هذا الجدول فارغا اذا أردت الكوبون لجميع الدورات
+                                                {{__('Keep it empty if you dont want to use it')}}
                                             </span></label>
                                         @php
                                             $cpnCourses = [];
@@ -141,33 +146,34 @@
                                         <table class="table table-bordered" id="courses-table">
                                             <thead>
                                                 <tr>
-                                                    <th>{{__('course_name')}}</th>
-                                                    <th>{{__('action')}}</th>
+                                                    <th>{{ __('course_name') }}</th>
+                                                    <th>{{ __('action') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($cpnCourses as $course)
+                                                @foreach ($cpnCourses as $course)
                                                     <tr>
                                                         <td>{{ $course->course->title }}</td>
                                                         <td>
-                                                            <input type="hidden" name="course_ids[]" value="{{ $course->course->id }}">
-                                                            <div class="btn btn-danger remove-course">{{__('delete')}}</div>
+                                                            <input type="hidden" name="course_ids[]"
+                                                                value="{{ $course->course->id }}">
+                                                            <div class="btn btn-danger remove-course">{{ __('delete') }}
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        <select class="form-control mb-5 text-right directionRTL"
-                                            id="search_courses">
+                                        <select class="form-control mb-5 text-right directionRTL" id="search_courses">
                                         </select>
-                                        <div class="btn btn-primary" id="add-course-coupon">{{__('add')}}</div>
+                                        <div class="btn btn-primary" id="add-course-coupon">{{ __('add') }}</div>
 
                                     </div>
                                     <div class="marketer-options"
                                         @if (count($marketers) == 0) style="display:none" @endif>
                                         <div class="form-group row">
                                             <label class="col-2 col-form-label">
-                                                نوع نسبه المسوق
+                                                {{__('marketer percentage type')}}
                                             </label>
                                             <div class="col-9 col-form-label">
                                                 <div class="radio-inline">
@@ -175,25 +181,25 @@
                                                         <input type="radio" name="marketer_amount_type" value="rate"
                                                             {{ isset($item) ? (@$item->marketer_amount_type == 'rate' ? 'checked' : '') : 'checked' }} />
                                                         <span></span>
-                                                        نسبة
+                                                        {{__('percentage')}}
                                                     </label>
                                                     <label class="radio radio-success">
                                                         <input type="radio" name="marketer_amount_type" value="fixed"
                                                             {{ isset($item) ? (@$item->marketer_amount_type == 'fixed' ? 'checked' : '') : '' }} />
                                                         <span></span>
-                                                        ثابت
+                                                        {{__('static')}}
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label>قيمة المسوق
+                                            <label>{{__('Marketer value')}}
                                                 <span class="text-danger">*</span></label>
                                             <input type="text" name="marketer_amount" class="form-control"
                                                 value="{{ isset($item) ? @$item->marketer_amount : '' }}" required />
                                         </div>
                                         <div class="form-group">
-                                            <label>قيمة المسوق من كل عمليه تسجيل طالب جديد
+                                            <label>{{__('Marketer value for each register')}}
                                                 <span class="text-danger">*</span></label>
                                             <input type="text" name="marketer_amount_of_registration"
                                                 class="form-control"
@@ -210,12 +216,13 @@
                             <!--begin::Card-->
                             <div class="card card-custom gutter-b example example-compact">
                                 <div class="card-header">
-                                    <h3 class="card-title"> الإجراءات</h3>
+                                    <h3 class="card-title">{{__('action')}}</h3>
                                 </div>
                                 <!--begin::Form-->
                                 <div class="card-body d-flex align-items-center   ">
                                     @include('panel.components.btn_submit', ['btn_submit_text' => 'حفظ'])
-                                    <a href="{{route('panel.coupons.all.index')}}" class="btn btn-secondary mx-3">{{__('cancel')}}</a>
+                                    <a href="{{ route('panel.coupons.all.index') }}"
+                                        class="btn btn-secondary mx-3">{{ __('cancel') }}</a>
                                 </div>
                                 <!--end::Form-->
                             </div>
@@ -224,7 +231,7 @@
                     </div>
                 </div>
             </form>
-       </div>
+        </div>
 
         @push('panel_js')
             <script src="{{ asset('assets/panel/js/post.js') }}"></script>
@@ -237,13 +244,13 @@
                         $('.marketer-options').show();
                     }
                 });
-                document.addEventListener("DOMContentLoaded", function () {
+                document.addEventListener("DOMContentLoaded", function() {
                     document.querySelectorAll(".remove-course").forEach(button => {
-                        button.addEventListener("click", function () {
+                        button.addEventListener("click", function() {
                             this.closest("tr").remove();
                         });
                     });
-                    document.getElementById("add-course-coupon").addEventListener("click", function () {
+                    document.getElementById("add-course-coupon").addEventListener("click", function() {
                         let select = document.getElementById("search_courses");
                         let selectedOption = select.options[select.selectedIndex];
 
@@ -279,13 +286,13 @@
                             <td>${courseName}</td>
                             <td>
                                 <input type="hidden" name="course_ids[]" value="${courseId}">
-                                <button type="button" class="btn btn-danger remove-course">{{__('delete')}}</button>
+                                <button type="button" class="btn btn-danger remove-course">{{ __('delete') }}</button>
                             </td>
                         `;
 
                         tableBody.appendChild(row);
                         document.querySelectorAll(".remove-course").forEach(button => {
-                            button.addEventListener("click", function () {
+                            button.addEventListener("click", function() {
                                 this.closest("tr").remove();
                             });
                         });
@@ -295,7 +302,5 @@
                     });
                 });
             </script>
-
-
         @endpush
     @stop

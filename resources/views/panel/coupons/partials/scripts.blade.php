@@ -8,11 +8,11 @@
         },
         {
             data: 'title',
-            title: 'العنوان',
+            title: '{{__('title')}}',
         },
         {
             data: 'code',
-            title: 'الكود',
+            title: '{{__('code')}}',
         },
         {
             data: 'action',

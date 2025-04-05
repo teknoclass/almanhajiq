@@ -761,7 +761,7 @@
             'sub_menu' => [],
         ],
         [
-            'name' => 'الكوبونات',
+            'name' => __('coupons'),
             'type' => '',
             'href' => route('panel.coupons.all.index'),
             'id' => 'coupons',
@@ -770,7 +770,7 @@
             'sub_menu' => [],
         ],
         [
-            'name' => 'مجموعات الكوبونات',
+            'name' => __('multiple_coupons'),
             'type' => '',
             'href' => route('panel.coupons.groups.index'),
             'id' => 'group_coupons',

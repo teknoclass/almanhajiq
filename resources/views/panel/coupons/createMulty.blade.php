@@ -1,4 +1,4 @@
-@extends('panel.layouts.index', ['sub_title' => 'الكوبونات', 'is_active' => 'coupons'])
+@extends('panel.layouts.index', ['sub_title' => __('coupons'), 'is_active' => 'coupons'])
 @section('contion')
     @php
         $item = isset($item) ? $item : null;
@@ -10,11 +10,11 @@
         }
         $breadcrumb_links = [
             [
-                'title' => 'الرئيسية',
+                'title' => __('home'),
                 'link' => route('panel.home'),
             ],
             [
-                'title' => 'الكوبونات ',
+                'title' => __('coupons'),
                 'link' => route('panel.coupons.all.index'),
             ],
             [
@@ -44,34 +44,34 @@
                                 <!--begin::Form-->
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label>الاسم
+                                        <label>{{__('name')}}
                                             <span class="text-danger">*</span></label>
                                         <input type="text" name="title" class="form-control"
                                             value="{{ isset($item) ? @$item->title : '' }}" required />
                                     </div>
                                     <div class="form-group mt-2">
-                                        <label>عدد الكودات
+                                        <label>{{__('Number of codes')}}
                                             <span class="text-danger">*</span></label>
                                             <input type="text" name="number" class="form-control"
                                             value="1" required />
                                         </div>
                                         <div class="form-group">
-                                            <label>اسم المجموعة
+                                            <label>{{__('group_name')}}
                                                 <span class="text-danger">*</span></label>
                                             <input type="text" name="group_name" class="form-control"
                                                 value="{{ isset($item) ? @$item->groupo_name : '' }}" required />
                                         </div>
                                     <div class="form-group">
-                                        <label>عدد مرات الاستعمال
+                                        <label>{{__('Number of uses')}}
                                             <span class="text-info">
-                                                اتركه فارغ اذا كان لا يوجد حد لمرات الاستخدام
+                                                {{__('Keep it empty if you dont want to use it')}}
                                             </span></label>
                                         <input type="text" name="num_uses" class="form-control"
                                             value="{{ isset($item) ? @$item->num_uses : '' }}" />
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">
-                                            النوع
+                                            {{__('type')}}
                                         </label>
                                         <div class="col-9 col-form-label">
                                             <div class="radio-inline">
@@ -79,27 +79,27 @@
                                                     <input type="radio" name="amount_type" value="rate"
                                                         {{ isset($item) ? (@$item->amount_type == 'rate' ? 'checked' : '') : 'checked' }} />
                                                     <span></span>
-                                                    نسبة
+                                                    {{__('percentage')}}
                                                 </label>
                                                 <label class="radio radio-success">
                                                     <input type="radio" name="amount_type" value="fixed"
                                                         {{ isset($item) ? (@$item->amount_type == 'fixed' ? 'checked' : '') : '' }} />
                                                     <span></span>
-                                                    ثابت
+                                                    {{__('static')}}
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>القيمة
+                                        <label>{{__('value')}}
                                             <span class="text-danger">*</span></label>
                                         <input type="text" name="amount" class="form-control mb-5"
                                             value="{{ isset($item) ? @$item->amount : '' }}" required />
                                     </div>
                                     <div class="form-group">
-                                        <label>تاريخ الانتهاء
+                                        <label>{{__('end_date')}}
                                             <span class="text-info">
-                                                اتركه فارغ اذا كان لا يوجد فترة زمنية معينه لانتهاء صلاحيه الكوبون
+                                                {{__('Keep it empty if you dont want to use it')}}
                                             </span>
                                         </label>
                                         <div class="input-group ">
@@ -108,9 +108,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>المسوق
+                                        <label>{{__('marketer')}}
                                             <span class="text-info">
-                                                بإمكانك ربط الكوبون بأحد المسوقين
+                                                {{__('You can link the coupon with a marketer')}}
                                             </span></label>
                                         @php
                                             $marketers = [];
@@ -130,9 +130,9 @@
 
                                     </div>
                                     <div class="form-group">
-                                        <label>الدورات
+                                        <label>{{__('course')}}
                                             <span class="text-info">
-                                                دع هذا الجدول فارغا اذا أردت الكوبون لجميع الدورات
+                                                {{__('Keep it empty if you dont want to use it')}}
                                             </span></label>
                                         @php
                                             $cpnCourses = [];
@@ -170,7 +170,7 @@
                                         @if (count($marketers) == 0) style="display:none" @endif>
                                         <div class="form-group row">
                                             <label class="col-2 col-form-label">
-                                                نوع نسبه المسوق
+                                                {{__('marketer percentage type')}}
                                             </label>
                                             <div class="col-9 col-form-label">
                                                 <div class="radio-inline">
@@ -178,25 +178,25 @@
                                                         <input type="radio" name="marketer_amount_type" value="rate"
                                                             {{ isset($item) ? (@$item->marketer_amount_type == 'rate' ? 'checked' : '') : 'checked' }} />
                                                         <span></span>
-                                                        نسبة
+                                                        {{__('percentage')}}
                                                     </label>
                                                     <label class="radio radio-success">
                                                         <input type="radio" name="marketer_amount_type" value="fixed"
                                                             {{ isset($item) ? (@$item->marketer_amount_type == 'fixed' ? 'checked' : '') : '' }} />
                                                         <span></span>
-                                                        ثابت
+                                                        {{__('static')}}
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label>قيمة المسوق
+                                            <label>{{__('Marketer value')}}
                                                 <span class="text-danger">*</span></label>
                                             <input type="text" name="marketer_amount" class="form-control"
                                                 value="{{ isset($item) ? @$item->marketer_amount : '' }}" required />
                                         </div>
                                         <div class="form-group">
-                                            <label>قيمة المسوق من كل عمليه تسجيل طالب جديد
+                                            <label>{{__('Marketer value for each register')}}
                                                 <span class="text-danger">*</span></label>
                                             <input type="text" name="marketer_amount_of_registration"
                                                 class="form-control"

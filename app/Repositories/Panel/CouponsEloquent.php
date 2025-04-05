@@ -365,19 +365,20 @@ class CouponsEloquent
 
 
         $data = Transactios::whereNotNull('coupon')->where('coupon', '!=', "")->where('transactionable_type', Courses::class)->where('status', 'completed')->get();
-        $colspan = 4;
+        $colspan = 5;
         $i = 1;
         $table = chr(239) . chr(187) . chr(191);
         $table .= '<table border="1">
         <thead>
         <tr style="text-align: center;font-size:16px;">
-        <th colspan="' . $colspan . '" style="background-color:#eee;">' . 'coupon' . '
+        <th colspan="' . $colspan . '" style="background-color:#eee;">' . __('coupon') . '
         </th></tr>
         <tr style="font-size:16px;text-align: center;" >
             <th >#</th>
-            <th > coupon </th>
-            <th > course </th>
-            <th > user </th>
+            <th > '.__('coupon').' </th>
+            <th > '.__('course').' </th>
+            <th > '.__('user').' </th>
+            <th > '.__('date').' </th>
         </tr>
         </thead>
         <tbody>';
@@ -389,6 +390,7 @@ class CouponsEloquent
                     "<td >" . $item->coupon . "</td>".
                     "<td >" . $item->transactionable->title . "</td>".
                     "<td >" . $item->user->name . "</td>";
+                    "<td >" . $item->created_at . "</td>";
                 $row .= "</tr>";
                 ++$i;
                 $table .= $row;
