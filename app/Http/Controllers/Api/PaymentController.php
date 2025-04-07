@@ -225,7 +225,6 @@ class PaymentController extends Controller
                 $cartId = $data->orderid;
             }
             $paymentDetails = Transactios::where('order_id', $cartId)->first();
-            return $paymentDetails;
             if ($paymentDetails["brand"] == "card") {
 
                 $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
