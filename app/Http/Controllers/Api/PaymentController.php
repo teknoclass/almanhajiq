@@ -234,7 +234,7 @@ class PaymentController extends Controller
                 }
             } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if ($statusCheck["status"] == "failed"  || $statusCheck["status"] == "pinding") {
+                if ($statusCheck["status"] == "failed"  || $statusCheck["status"] == "cancel") {
 
 
                     //return $statusCheck;
@@ -549,7 +549,7 @@ class PaymentController extends Controller
                 }
             } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if ($statusCheck["status"] == "failed") {
+                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "cancel") {
                     return redirect('/payment-failure');
                 }
             }
@@ -615,7 +615,7 @@ class PaymentController extends Controller
                 }
             } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "pinding") {
+                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "cancel") {
                     return redirect('/payment-failure');
                 }
             }
@@ -893,7 +893,7 @@ class PaymentController extends Controller
                 }
             } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "pinding") {
+                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "cancel") {
                     return redirect('/payment-failure');
                 }
             }
@@ -1141,7 +1141,7 @@ class PaymentController extends Controller
                 }
             } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "pinding") {
+                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "cancel") {
                     return $statusCheck;
                     return redirect('/payment-failure');
                 }
