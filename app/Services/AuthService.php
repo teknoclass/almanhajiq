@@ -37,8 +37,7 @@ class AuthService extends MainService
         UserRepository $userRepository,
         ResetPasswordRepository $resetPasswordRepository,
         ParentRepository $parentRepository
-    )
-    {
+    ) {
         $this->teacherRepository       = $teacherRepository;
         $this->userRepository          = $userRepository;
         $this->resetPasswordRepository = $resetPasswordRepository;
@@ -51,7 +50,7 @@ class AuthService extends MainService
         DB::beginTransaction();
 
         try {
-            $user= $this->teacherRepository->getTeacherByEmail($request->email);
+            $user = $this->teacherRepository->getTeacherByEmail($request->email);
 
             if ($user) {
                 return $this->createResponse(
@@ -62,7 +61,7 @@ class AuthService extends MainService
             }
             // $user->sendVerificationCode();
             $data = $request->all();
-            $item= $this->teacherRepository->createOrUpdateTeacherRequest(0, $data, $request);
+            $item = $this->teacherRepository->createOrUpdateTeacherRequest(0, $data, $request);
             $data = $this->handleFileUploads($request, $item, $data);
 
             $request = $this->teacherRepository->createOrUpdateTeacherRequest(0, $data, $request);
@@ -75,7 +74,6 @@ class AuthService extends MainService
                 true,
                 $request
             );
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -122,7 +120,6 @@ class AuthService extends MainService
                 null
             );
         }
-
     }
 
     public function studentRegister(StudentRequest $studentRequest)
@@ -136,13 +133,13 @@ class AuthService extends MainService
             $data['password']        = Hash::make($studentRequest->get('password'));
             $data['device_token']    = Hash::make($studentRequest->get('device_token'));
             $data['role']            = 'student';
-            if(isset($data['market_id'])){
-                $coupon = Coupons::where('code',$data['market_id'])->first();
-                if($coupon){
+            if (isset($data['market_id'])) {
+                $coupon = Coupons::where('code', $data['market_id'])->first();
+                if ($coupon) {
 
-                    $marketerCoupon = CouponMarketers::where('coupon_id',$coupon->id)->first();
+                    $marketerCoupon = CouponMarketers::where('coupon_id', $coupon->id)->first();
                     $data['market_id']     = $marketerCoupon->user_id;
-                }else{
+                } else {
                     unset($data['market_id']);
                 }
             }
@@ -154,12 +151,11 @@ class AuthService extends MainService
             $message = __('message.operation_accomplished_successfully');
             try {
                 $user->sendVerificationCode();
-            }
-            catch (\Exception $exception){
+            } catch (\Exception $exception) {
                 DB::rollback();
                 Log::error($exception->getMessage());
                 return $this->createResponse(
-                    __('message.message.unexpected_error'),
+                    __('message.unexpected_error'),
                     false,
                     null
                 );
@@ -182,7 +178,6 @@ class AuthService extends MainService
                 null
             );
         }
-
     }
 
     public function singIn(SignInRequest  $request): array
@@ -190,7 +185,7 @@ class AuthService extends MainService
         $user     = $this->userRepository->getUserByEmail($request->email);
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
-                if($user->is_validation == 0 || $user->is_validation == null){
+                if ($user->is_validation == 0 || $user->is_validation == null) {
                     // $user->sendVerificationCode(); // ✔
                     // return $this->createResponse(
                     //     __('message.verify_your_mobile'),
@@ -212,24 +207,20 @@ class AuthService extends MainService
                     true,
                     $user
                 );
-            }
-            else {
+            } else {
                 return $this->createResponse(
                     __('message.worng_current_password'),
                     false,
                     null
                 );
             }
-        }
-        else {
+        } else {
             return $this->createResponse(
                 __('message.user_does_not_exist'),
                 false,
                 null
             );
-
         }
-
     }
 
     public function forgetPassword(ForgetPasswordRequest $request): array
@@ -244,7 +235,7 @@ class AuthService extends MainService
             );
         }
         $otp = OtpGenerator::generateOtp();
-        $this->resetPasswordRepository->create($user,$otp);
+        $this->resetPasswordRepository->create($user, $otp);
         Mail::to($request->email)->send(new ResetPasswordEmail(['otp' => $otp]));
         return $this->createResponse(
             __('message.a_otp_has_been_sent_to_your_inbox'),
@@ -264,7 +255,7 @@ class AuthService extends MainService
                 null
             );
         }
-        $otpRecord =$this->resetPasswordRepository->getByUserAndOtp($user,$request->otp);
+        $otpRecord = $this->resetPasswordRepository->getByUserAndOtp($user, $request->otp);
 
         if (!$otpRecord) {
             return $this->createResponse(
@@ -313,7 +304,6 @@ class AuthService extends MainService
                 true,
                 null
             );
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -374,7 +364,8 @@ class AuthService extends MainService
         return Auth::guard('api');
     }
 
-    function verify($request){
+    function verify($request)
+    {
         $code_1 = $request->get('code_1');
         $code_2 = $request->get('code_2');
         $code_3 = $request->get('code_3');
@@ -390,11 +381,11 @@ class AuthService extends MainService
                     'message' => __('message.please_enter_the_code'),
                     'status' => false,
                 ];
-            }
+        }
 
         $user = auth('api')->user();
 
-        if(!$user){
+        if (!$user) {
             return
                 [
                     'message' => __('not_found'),
@@ -402,8 +393,7 @@ class AuthService extends MainService
                 ];
         }
 
-        if ($user->validation_code == $code || $code == 619812)
-        {
+        if ($user->validation_code == $code || $code == 619812) {
             $user->is_validation = 1;
             $user->validation_at = Carbon::now();
             $user->save();
@@ -412,37 +402,33 @@ class AuthService extends MainService
                 'message' => __('message.operation_accomplished_successfully'),
                 'status' => true,
             ];
-        }else{
+        } else {
             return [
                 'message' => __('activation_code_is_not_correct'),
                 'status' => false
             ];
         }
-
     }
 
-    function resend(){
+    function resend()
+    {
 
         $user = auth('api')->user();
 
         $now = Carbon::now();
         $diff = $now->diffInSeconds($user->last_send_validation_code);
 
-        if($diff <= 300 && $user->last_send_validation_code != null){
+        if ($diff <= 300 && $user->last_send_validation_code != null) {
             return [
                 'message' => __('message.unable_to_send_try_again_in_few_minutes') . (300 - $diff) . __('seconds'),
                 'status' => false
             ];
-        }else{
+        } else {
             // $user->sendVerificationCode(); // ✔
             return [
                 'message' => __('message.operation_accomplished_successfully'),
                 'status' => true
             ];
         }
-
-
-
     }
-
 }

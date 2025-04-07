@@ -43,27 +43,27 @@ class PaymentController extends Controller
     {
         $this->paymentService = new PaymentService();
         $this->zainCashService = new ZainCashService();
-
     }
 
-    function fullSubscribeDetails(Request $request){
+    function fullSubscribeDetails(Request $request)
+    {
         $course = Courses::find($request->id);
         $price = 0;
-        if($course->priceDetails != null){
-            if($course->priceDetails->discount_price != null){
+        if ($course->priceDetails != null) {
+            if ($course->priceDetails->discount_price != null) {
                 $price = $course->priceDetails->discount_price;
-            }else{
+            } else {
                 $price = $course->priceDetails->price;
             }
         }
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'),$request->id);
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'), $request->id);
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
-        if($price >= 250)$msg = '';
+        if ($price >= 250) $msg = '';
         else $msg = __('amount_must_exceed_1000_iqd');
 
         $paymentMethods = [
@@ -73,7 +73,7 @@ class PaymentController extends Controller
                 'message' => $msg
             ]
         ];
-        if(getSeting('qi')){
+        if (getSeting('qi')) {
             $paymentMethods[] = [
                 'name' => 'gateway',
                 'image' => url('/assets/front/images/qi-logo.png'),
@@ -82,27 +82,23 @@ class PaymentController extends Controller
         }
 
 
-        $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+        $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
             'course_details' => new ApiCourseResource($course),
             'payment_methods' => $paymentMethods
 
-        ],Response::HTTP_OK);
+        ], Response::HTTP_OK);
 
         return response()->success($response);
-
-
-
     }
 
-    function fullSubscribe(Request $request){
+    function fullSubscribe(Request $request)
+    {
 
-        if($request->payment_type == "gateway")
-        {
+        if ($request->payment_type == "gateway") {
             return $this->fullSubscribeGateway($request);
-        }else{
+        } else {
             return $this->fullSubscribeZain($request);
         }
-
     }
 
 
@@ -113,29 +109,28 @@ class PaymentController extends Controller
         $course = Courses::find($request->id);
         $orderId = genereatePaymentOrderID();
         $price = 0;
-        if($course->priceDetails != null){
-            if($course->priceDetails->discount_price != null){
+        if ($course->priceDetails != null) {
+            if ($course->priceDetails->discount_price != null) {
                 $price = $course->priceDetails->discount_price;
-            }else{
+            } else {
                 $price = $course->priceDetails->price;
             }
         }
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'),$request->id);
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'), $request->id);
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
         $response = $this->paymentService->processPaymentApi([
-            "amount" => $price??0,
+            "amount" => $price ?? 0,
             "currency" => "IQD",
             "successUrl" => url('/api/payment/full-subscribe-course-confirm'),
             'orderId' => $orderId,
             'notificationUrl' => ''
         ]);
-        if($response && $response['status'] == "CREATED")
-        {
+        if ($response && $response['status'] == "CREATED") {
             $paymentDetails = [
                 "description" => 'اشتراك كلى فى الدورة',
                 "orderId" => $response['requestId'],
@@ -154,35 +149,37 @@ class PaymentController extends Controller
 
 
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
                 'payment_link' => $response['formUrl']
-            ],Response::HTTP_OK);
+            ], Response::HTTP_OK);
 
             return response()->success($response);
-
-
-        }else{
-            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = new ErrorResponse($response['error'], Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
 
-    function fullSubscribeZain($request){
+    function fullSubscribeZain($request)
+    {
         $orderId = genereatePaymentOrderID();
         $course = Courses::find($request->id);
         $price = $course->getPriceForPayment();
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'),$request->id);
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'), $request->id);
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
-        $response = $this->zainCashService->processPaymentApi($price,
-        url('/api/payment/full-subscribe-course-confirm'),"اشتراك كلى فى دورة",$orderId);
+        $response = $this->zainCashService->processPaymentApi(
+            $price,
+            url('/api/payment/full-subscribe-course-confirm'),
+            "اشتراك كلى فى دورة",
+            $orderId
+        );
 
-        if(isset($response['id']))
-        {
+        if (isset($response['id'])) {
             $paymentDetails = [
                 "description" => 'اشتراك كلى فى الدورة',
                 "orderId" => $response['orderId'],
@@ -200,19 +197,18 @@ class PaymentController extends Controller
             $this->paymentService->createTransactionRecordApi($paymentDetails);
 
             $transaction_id = $response['id'];
-            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL') . $transaction_id;
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
                 'payment_link' => $paymentUrl
-            ],Response::HTTP_OK);
+            ], Response::HTTP_OK);
 
             return response()->success($response);
-        }else{
+        } else {
 
-            $response = new ErrorResponse($response['err']['msg'],Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse($response['err']['msg'], Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
-
     }
 
 
@@ -221,28 +217,25 @@ class PaymentController extends Controller
     {
 
         DB::beginTransaction();
-        try
-        {
+        try {
             $cartId = $request->get('requestId');
             $token = $request->get('token');
-            if($cartId == null){
+            if ($cartId == null) {
                 $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
                 $cartId = $data->orderid;
             }
-            $paymentDetails = Transactios::where('order_id',$cartId)->first();
-
-            if($paymentDetails["brand"] == "card"){
+            $paymentDetails = Transactios::where('order_id', $cartId)->first();
+            return $paymentDetails;
+            if ($paymentDetails["brand"] == "card") {
 
                 $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
 
-                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
-                {
+                if ($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS") {
                     return redirect('/payment-failure');
                 }
-            }else{
+            } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if($statusCheck["status"] == "failed")
-                {
+                if ($statusCheck["status"] == "failed"  || $statusCheck["status"] == "pinding") {
 
 
                     //return $statusCheck;
@@ -268,13 +261,12 @@ class PaymentController extends Controller
 
 
             DB::commit();
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), null, Response::HTTP_OK);
             return response()->success($response);
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             DB::rollback();
             return redirect('/payment-failure');
-            $response = new ErrorResponse($e->getMessage(),Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
@@ -284,37 +276,31 @@ class PaymentController extends Controller
     {
         $id   = $request->target_id ?? 0;
         $type = $request->type == "group" ? "group" : 'session';
-        if($type == "group")
-        {
+        if ($type == "group") {
             // $title = CourseSessionsGroup::find($request->target_id)->title ?? "";
             $model = CourseSessionsGroup::find($id);
-
-        }else{
+        } else {
             $model = CourseSession::find($id);
         }
-        if(!$model)
-        {
-            return $this->response_api('error' , __('validation.free_sesions_not_foud') );
+        if (!$model) {
+            return $this->response_api('error', __('validation.free_sesions_not_foud'));
         }
 
-        if($model->price)
-        {
-            return $this->response_api('error' , $model->title . ' ' . __('not_free') );
+        if ($model->price) {
+            return $this->response_api('error', $model->title . ' ' . __('not_free'));
         }
 
         $user = auth('api')->user();
 
-        if($type == "group"){
+        if ($type == "group") {
             // if(request()->dd == 1){ $user->studentSubscribedSessions()->delete();}
             $studentSubscribedSessionsIds = $user->studentSubscribedSessions()->pluck('course_session_id')->toArray();
 
             $sessions = CourseSession::where('group_id', $id)->get();
             // if(request()->dd == 'sess'){ dd($studentSubscribedSessionsIds , $sessions , $user->studentSubscribedSessions);}
 
-            foreach($sessions as $session)
-            {
-                if(! in_array( $session->id,$studentSubscribedSessionsIds))
-                {
+            foreach ($sessions as $session) {
+                if (! in_array($session->id, $studentSubscribedSessionsIds)) {
                     CourseSessionSubscription::create([
                         'student_id'                    => $user->id,
                         'course_session_id'             => $session->id,
@@ -327,7 +313,7 @@ class PaymentController extends Controller
                     ]);
                 }
             }
-            if($session = $sessions->first()){
+            if ($session = $sessions->first()) {
                 UserCourse::create([
                     "course_id"           => $session->course_id,
                     "group_id"            => $id,
@@ -339,7 +325,7 @@ class PaymentController extends Controller
                     'is_installment'      => 1
                 ]);
             }
-        }else{
+        } else {
             $courseSession = CourseSessionSubscription::create([
                 'student_id'                    => $user->id,
                 'course_session_id'             => $id,
@@ -360,30 +346,28 @@ class PaymentController extends Controller
             ]);
         }
 
-        return $this->response_api('success' , __('message.operation_accomplished_successfully') );
+        return $this->response_api('success', __('message.operation_accomplished_successfully'));
     }
 
-    function subscribeDetails(Request $request){
+    function subscribeDetails(Request $request)
+    {
 
 
-        if($request->type == "group")
-        {
-            $title = CourseSessionsGroup::find($request->target_id)->title??"";
+        if ($request->type == "group") {
+            $title = CourseSessionsGroup::find($request->target_id)->title ?? "";
             $model = CourseSessionsGroup::find($request->target_id);
-
-        }else{
-            $title = CourseSession::find($request->target_id)->title??"";
+        } else {
+            $title = CourseSession::find($request->target_id)->title ?? "";
             $model = CourseSession::find($request->target_id);
-
         }
         $price = $model->price;
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
-        if($price >= 250)$msg = '';
+        if ($price >= 250) $msg = '';
         else $msg = __('amount_must_exceed_1000_iqd');
 
 
@@ -394,7 +378,7 @@ class PaymentController extends Controller
                 'message' => $msg
             ]
         ];
-        if(getSeting('qi')){
+        if (getSeting('qi')) {
             $paymentMethods[] = [
                 'name' => 'gateway',
                 'image' => url('/assets/front/images/qi-logo.png'),
@@ -402,21 +386,19 @@ class PaymentController extends Controller
             ];
         }
 
-        $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+        $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
             'course_details' => ['title' => $title],
             'payment_methods' => $paymentMethods
-        ],Response::HTTP_OK);
+        ], Response::HTTP_OK);
 
         return response()->success($response);
-
-
     }
 
-    function subscribe(Request $request){
-        if($request->payment_type == "gateway")
-        {
+    function subscribe(Request $request)
+    {
+        if ($request->payment_type == "gateway") {
             return $this->subscribeGateway($request);
-        }else{
+        } else {
             return $this->subscribeZain($request);
         }
     }
@@ -425,15 +407,15 @@ class PaymentController extends Controller
     public function subscribeGateway(Request $request)
     {
 
-        if($request->type == "group"){
+        if ($request->type == "group") {
             $redirect = url('/api/payment/subscribe-to-course-group-confirm');
-            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
+            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title ?? "";
             $transactionable_type = "App\\Models\\CourseSessionsGroup";
             $model = CourseSessionsGroup::find($request->target_id);
             $paymentType = 'group';
-        }else{
+        } else {
             $redirect = url('/api/payment/subscribe-to-course-sessions-confirm');
-            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
+            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title ?? "";
             $transactionable_type = "App\\Models\\CourseSession";
             $model = CourseSession::find($request->target_id);
             $paymentType = 'session';
@@ -442,9 +424,9 @@ class PaymentController extends Controller
 
         $price = $model->price;
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
@@ -458,8 +440,7 @@ class PaymentController extends Controller
 
 
 
-        if($response && $response['status'] == "CREATED")
-        {
+        if ($response && $response['status'] == "CREATED") {
             $paymentDetails = [
                 "description" => $description,
                 "orderId" => $response['requestId'],
@@ -475,48 +456,49 @@ class PaymentController extends Controller
             $this->paymentService->createTransactionRecordApi($paymentDetails);
 
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
                 'payment_link' => $response['formUrl']
-            ],Response::HTTP_OK);
+            ], Response::HTTP_OK);
 
             return response()->success($response);
-        }else{
+        } else {
             return $response;
-            $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse(__('message.unexpected_error'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
 
-    function subscribeZain($request){
-        if($request->type == "group")
-        {
+    function subscribeZain($request)
+    {
+        if ($request->type == "group") {
             $model = CourseSessionsGroup::find($request->target_id);
-            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title??"";
+            $description = " شراء وحدة " . CourseSessionsGroup::find($request->target_id)->title ?? "";
             $transactionable_type = "App\\Models\\CourseSessionsGroup";
             $redirect = url('/api/payment/subscribe-to-course-group-confirm');
-
-        }else{
+        } else {
             $model = CourseSession::find($request->target_id);
-            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title??"";
+            $description = " شراء جلسة " . CourseSession::find($request->target_id)->title ?? "";
             $transactionable_type = "App\\Models\\CourseSession";
             $redirect = url('/api/payment/subscribe-to-course-sessions-confirm');
-
         }
         $orderId = genereatePaymentOrderID();
 
         $price = $model->price;
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
-        $response = $this->zainCashService->processPaymentApi($price,
-        $redirect, $description,$orderId);
+        $response = $this->zainCashService->processPaymentApi(
+            $price,
+            $redirect,
+            $description,
+            $orderId
+        );
 
-        if(isset($response['id']))
-        {
+        if (isset($response['id'])) {
             $paymentDetails = [
                 "description" => $description,
                 "orderId" => $response['orderId'],
@@ -534,15 +516,15 @@ class PaymentController extends Controller
             $this->paymentService->createTransactionRecordApi($paymentDetails);
 
             $transaction_id = $response['id'];
-            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL') . $transaction_id;
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
                 'payment_link' => $paymentUrl
-            ],Response::HTTP_OK);
+            ], Response::HTTP_OK);
 
             return response()->success($response);
-        }else{
-            $response = new ErrorResponse($response['err']['msg'],Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = new ErrorResponse($response['err']['msg'], Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
@@ -550,28 +532,25 @@ class PaymentController extends Controller
     public function confirmSubscribe(Request $request)
     {
         DB::beginTransaction();
-        try
-        {
+        try {
             $cartId = $request->get('requestId');
             $token = $request->get('token');
-            if($cartId == null){
+            if ($cartId == null) {
                 $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
                 $cartId = $data->orderid;
             }
-            $paymentDetails = Transactios::where('order_id',$cartId)->first();
+            $paymentDetails = Transactios::where('order_id', $cartId)->first();
 
-            if($paymentDetails["brand"] == "card"){
+            if ($paymentDetails["brand"] == "card") {
 
                 $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
 
-                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
-                {
+                if ($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS") {
                     return redirect('/payment-failure');
                 }
-            }else{
+            } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if($statusCheck["status"] == "failed")
-                {
+                if ($statusCheck["status"] == "failed") {
                     return redirect('/payment-failure');
                 }
             }
@@ -586,8 +565,7 @@ class PaymentController extends Controller
 
             $session = CourseSession::find($paymentDetails['transactionable_id']);
 
-            if(! in_array($session->id, $studentSubscribedSessionsIds))
-            {
+            if (! in_array($session->id, $studentSubscribedSessionsIds)) {
                 CourseSessionSubscription::create([
                     'student_id' => $paymentDetails['user_id'],
                     'course_session_id' => $session->id,
@@ -601,19 +579,17 @@ class PaymentController extends Controller
 
 
 
-            $this->paymentService->storeBalanceApi($paymentDetails,'session');
+            $this->paymentService->storeBalanceApi($paymentDetails, 'session');
 
 
 
             DB::commit();
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), null, Response::HTTP_OK);
             return response()->success($response);
-
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             DB::rollback();
-            $response = new ErrorResponse($e->getMessage(),Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
@@ -622,28 +598,25 @@ class PaymentController extends Controller
     public function confirmSubscribeGroup(Request $request)
     {
         DB::beginTransaction();
-        try
-        {
+        try {
             $cartId = $request->get('requestId');
             $token = $request->get('token');
-            if($cartId == null){
+            if ($cartId == null) {
                 $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
                 $cartId = $data->orderid;
             }
-            $paymentDetails = Transactios::where('order_id',$cartId)->first();
+            $paymentDetails = Transactios::where('order_id', $cartId)->first();
 
-            if($paymentDetails["brand"] == "card"){
+            if ($paymentDetails["brand"] == "card") {
 
                 $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
 
-                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
-                {
+                if ($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS") {
                     return redirect('/payment-failure');
                 }
-            }else{
+            } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if($statusCheck["status"] == "failed")
-                {
+                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "pinding") {
                     return redirect('/payment-failure');
                 }
             }
@@ -658,72 +631,69 @@ class PaymentController extends Controller
 
             $sessions = CourseSession::where('group_id', $paymentDetails['transactionable_id'])->get();
 
-            foreach($sessions as $session)
-            {
-                    if(! in_array( $session->id,$studentSubscribedSessionsIds))
-                    {
-                        CourseSessionSubscription::create([
-                            'student_id' => $paymentDetails['user_id'],
-                            'course_session_id' => $session->id,
-                            'status' => 1,
-                            'subscription_date' => now(),
-                            'course_session_group_id' => $session->group_id,
-                            'related_to_group_subscription' => 1,
-                            'course_id' => $session->course_id
-                        ]);
-                    }
+            foreach ($sessions as $session) {
+                if (! in_array($session->id, $studentSubscribedSessionsIds)) {
+                    CourseSessionSubscription::create([
+                        'student_id' => $paymentDetails['user_id'],
+                        'course_session_id' => $session->id,
+                        'status' => 1,
+                        'subscription_date' => now(),
+                        'course_session_group_id' => $session->group_id,
+                        'related_to_group_subscription' => 1,
+                        'course_id' => $session->course_id
+                    ]);
+                }
             }
 
 
-            $this->paymentService->storeBalanceApi($paymentDetails,'group');
+            $this->paymentService->storeBalanceApi($paymentDetails, 'group');
 
 
 
             DB::commit();
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), null, Response::HTTP_OK);
             return response()->success($response);
-
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             DB::rollback();
-            $response = new ErrorResponse(__('message.unexpected_error'),Response::HTTP_BAD_REQUEST);
+            $response = new ErrorResponse(__('message.unexpected_error'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
 
-    function buyFree(Request $request){
+    function buyFree(Request $request)
+    {
         $response = $this->paymentService->buyFree($request);
 
-        if($response){
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+        if ($response) {
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), null, Response::HTTP_OK);
             return response()->success($response);
-        }else{
-            $response = new ErrorResponse(__('you_cant_buy_this_course_because_its_not_free'),Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = new ErrorResponse(__('you_cant_buy_this_course_because_its_not_free'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
-
     }
 
 
-    function installmentDetails(Request $request){
+    function installmentDetails(Request $request)
+    {
 
         $installment = $this->getCurInstallment($request->course_id);
 
-        if(!$installment){
-            $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
+        if (!$installment) {
+            $response = new ErrorResponse(__('all_installments_have_been_paid'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
 
         $price = $installment->price;
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
-        if($price >= 250)$msg = '';
+        if ($price >= 250) $msg = '';
         else $msg = __('amount_must_exceed_1000_iqd');
 
 
@@ -738,7 +708,7 @@ class PaymentController extends Controller
                 'message' => $msg
             ]
         ];
-        if(getSeting('qi')){
+        if (getSeting('qi')) {
             $paymentMethods[] = [
                 'name' => 'gateway',
                 'image' => url('/assets/front/images/qi-logo.png'),
@@ -747,7 +717,7 @@ class PaymentController extends Controller
         }
 
 
-        $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+        $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
             'course_details' => [
                 'course' => new ApiCourseResource($course),
                 'installments' => ApiPaymentInstallmentsResource::collection($installmetns),
@@ -755,39 +725,39 @@ class PaymentController extends Controller
             ],
             'price' => $installment->price,
             'payment_methods' => $paymentMethods
-        ],Response::HTTP_OK);
+        ], Response::HTTP_OK);
 
         return response()->success($response);
-
     }
 
-    function installment(Request $request){
-        if($request->payment_type == "gateway")
-        {
+    function installment(Request $request)
+    {
+        if ($request->payment_type == "gateway") {
             return $this->installmentGateway($request);
-        }else{
+        } else {
             return $this->installmentZain($request);
         }
     }
 
 
 
-    function installmentGateway(Request $request){
+    function installmentGateway(Request $request)
+    {
 
         $orderId = genereatePaymentOrderID();
 
         $installment = $this->getCurInstallment($request->course_id);
 
-        if(!$installment){
-            $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
+        if (!$installment) {
+            $response = new ErrorResponse(__('all_installments_have_been_paid'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
 
         $price = $installment->price;
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
@@ -798,8 +768,7 @@ class PaymentController extends Controller
             "notificationUrl" => url('/api/payment/pay-to-course-session-installment-confirm'),
             'orderId' => $orderId
         ]);
-        if($response && $response['status'] == "CREATED")
-        {
+        if ($response && $response['status'] == "CREATED") {
             $paymentDetails = [
                 "description" => "دفع قسط جلسات دورة",
                 "orderId" => $response['requestId'],
@@ -815,41 +784,45 @@ class PaymentController extends Controller
             $this->paymentService->createTransactionRecordApi($paymentDetails);
 
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
                 'payment_link' => $response['formUrl']
-            ],Response::HTTP_OK);
+            ], Response::HTTP_OK);
 
             return response()->success($response);
-        }else{
-            $response = new ErrorResponse($response['err']['msg'],Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = new ErrorResponse($response['err']['msg'], Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
 
-    function installmentZain($request){
+    function installmentZain($request)
+    {
         $orderId = genereatePaymentOrderID();
 
         $installment = $this->getCurInstallment($request->course_id);
 
-        if(!$installment){
-            $response = new ErrorResponse(__('all_installments_have_been_paid'),Response::HTTP_BAD_REQUEST);
+        if (!$installment) {
+            $response = new ErrorResponse(__('all_installments_have_been_paid'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
 
         $price = $installment->price;
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
 
-        $response = $this->zainCashService->processPaymentApi($price,
-        url('/api/payment/pay-to-course-session-installment-confirm'),"دفع قسط جلسات دورة",$orderId);
+        $response = $this->zainCashService->processPaymentApi(
+            $price,
+            url('/api/payment/pay-to-course-session-installment-confirm'),
+            "دفع قسط جلسات دورة",
+            $orderId
+        );
 
-        if(isset($response['id']))
-        {
+        if (isset($response['id'])) {
             $paymentDetails = [
                 "description" => "دفع قسط جلسات دورة",
                 "orderId" => $response['orderId'],
@@ -867,61 +840,61 @@ class PaymentController extends Controller
 
 
             $transaction_id = $response['id'];
-            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL') . $transaction_id;
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
                 'payment_link' => $paymentUrl
-            ],Response::HTTP_OK);
+            ], Response::HTTP_OK);
 
             return response()->success($response);
-        }else{
-            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = new ErrorResponse($response['error'], Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
 
-    function getCurInstallment($courseId){
+    function getCurInstallment($courseId)
+    {
 
-        $last = StudentSessionInstallment::where('course_id',$courseId)->where('student_id',auth('api')->id())->orderBy('access_until_session_id', 'desc')->first();
+        $last = StudentSessionInstallment::where('course_id', $courseId)->where('student_id', auth('api')->id())->orderBy('access_until_session_id', 'desc')->first();
 
-        if($last)$id = $last->access_until_session_id;
+        if ($last) $id = $last->access_until_session_id;
         else $id = 0;
-        $installment = CourseSessionInstallment::where('course_id',$courseId)->where('course_session_id','>',$id)->first();
+        $installment = CourseSessionInstallment::where('course_id', $courseId)->where('course_session_id', '>', $id)->first();
         return $installment;
     }
 
-    function getRemainingInstallment($courseId){
+    function getRemainingInstallment($courseId)
+    {
         $cur = $this->getCurInstallment($courseId);
-        if(!$cur)return CourseSessionInstallment::where('course_id',$courseId)->get();
-        return  CourseSessionInstallment::where('course_id',$courseId)->where('id','>=',$cur->id)->get();
+        if (!$cur) return CourseSessionInstallment::where('course_id', $courseId)->get();
+        return  CourseSessionInstallment::where('course_id', $courseId)->where('id', '>=', $cur->id)->get();
     }
 
-    function confirmPayment(Request $request){
+    function confirmPayment(Request $request)
+    {
         DB::beginTransaction();
-        try
-        {
+        try {
 
             $cartId = $request->get('requestId');
             $token = $request->get('token');
-            if($cartId == null){
+            if ($cartId == null) {
                 $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
                 $cartId = $data->orderid;
             }
-            $paymentDetails = Transactios::where('order_id',$cartId)->first();
+            $paymentDetails = Transactios::where('order_id', $cartId)->first();
 
             //check qi payment status
-            if($paymentDetails["brand"] == "card"){
+            if ($paymentDetails["brand"] == "card") {
 
                 $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
 
-                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
-                {
+                if ($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS") {
                     return redirect('/payment-failure');
                 }
-            }else{
+            } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if($statusCheck["status"] == "failed")
-                {
+                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "pinding") {
                     return redirect('/payment-failure');
                 }
             }
@@ -947,43 +920,41 @@ class PaymentController extends Controller
             ]);
 
 
-            $this->paymentService->storeBalanceApi($paymentDetails,'installment');
+            $this->paymentService->storeBalanceApi($paymentDetails, 'installment');
 
 
             DB::commit();
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), null, Response::HTTP_OK);
             return response()->success($response);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             DB::rollback();
             Log::error($e->getMessage());
             Log::error($e->getFile());
             Log::error($e->getLine());
             return redirect('/payment-failure');
         }
-
     }
 
-    function privateLessonDetails(Request $request){
+    function privateLessonDetails(Request $request)
+    {
         $price = 0;
-        foreach($request->get('times') as $time){
+        foreach ($request->get('times') as $time) {
             $price += $time['price'];
         }
 
-        if(!$price){
-            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'),Response::HTTP_BAD_REQUEST);
+        if (!$price) {
+            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
 
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
-        if($price >= 250)$msg = '';
+        if ($price >= 250) $msg = '';
         else $msg = __('amount_must_exceed_1000_iqd');
 
 
@@ -995,7 +966,7 @@ class PaymentController extends Controller
                 'message' => $msg
             ]
         ];
-        if(getSeting('qi')){
+        if (getSeting('qi')) {
             $paymentMethods[] = [
                 'name' => 'gateway',
                 'image' => url('/assets/front/images/qi-logo.png'),
@@ -1004,41 +975,42 @@ class PaymentController extends Controller
         }
 
 
-        $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+        $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
             'course_details' => $request->get('times'),
             'price' => $price,
             'payment_methods' => $paymentMethods
-        ],Response::HTTP_OK);
+        ], Response::HTTP_OK);
 
         return response()->success($response);
     }
 
-    function privateLesson(Request $request){
-        if($request->payment_type == "gateway")
-        {
+    function privateLesson(Request $request)
+    {
+        if ($request->payment_type == "gateway") {
             return $this->privateLessonGateway($request);
-        }else{
+        } else {
             return $this->privateLessonZain($request);
         }
     }
 
-    function privateLessonGateway(Request $request){
+    function privateLessonGateway(Request $request)
+    {
 
         $orderId = genereatePaymentOrderID();
 
         $price = 0;
-        foreach($request->get('times') as $time){
+        foreach ($request->get('times') as $time) {
             $price += $time['price'];
         }
 
-        if(!$price){
-            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'),Response::HTTP_BAD_REQUEST);
+        if (!$price) {
+            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
@@ -1049,10 +1021,9 @@ class PaymentController extends Controller
             "notificationUrl" => url('/api/payment/pay-to-private-lesson-confirm'),
             'orderId' => $orderId
         ]);
-        if($response && $response['status'] == "CREATED")
-        {
+        if ($response && $response['status'] == "CREATED") {
 
-            foreach($request->get('times') as $time){
+            foreach ($request->get('times') as $time) {
                 $detail = PaymentDetail::create([
                     'details' => json_encode($time)
                 ]);
@@ -1071,44 +1042,48 @@ class PaymentController extends Controller
             }
 
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
                 'payment_link' => $response['formUrl']
-            ],Response::HTTP_OK);
+            ], Response::HTTP_OK);
 
             return response()->success($response);
-        }else{
-            $response = new ErrorResponse($response['err']['msg'],Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = new ErrorResponse($response['err']['msg'], Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
 
-    function privateLessonZain($request){
+    function privateLessonZain($request)
+    {
         $orderId = genereatePaymentOrderID();
 
         $price = 0;
-        foreach($request->get('times') as $time){
+        foreach ($request->get('times') as $time) {
             $price += $time['price'];
         }
 
-        if(!$price){
-            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'),Response::HTTP_BAD_REQUEST);
+        if (!$price) {
+            $response = new ErrorResponse(__('the_price_should_be_greater_than_zero'), Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
 
-        $price_after_discount = $this->getPriceWithCoupon($price , $request->get('code'));
+        $price_after_discount = $this->getPriceWithCoupon($price, $request->get('code'));
 
-        if($price_after_discount['status']){
+        if ($price_after_discount['status']) {
             $price = $price_after_discount['price'];
         }
 
 
-        $response = $this->zainCashService->processPaymentApi($price,
-        url('/api/payment/pay-to-private-lesson-confirm'),"دفع درس خصوصي",$orderId);
+        $response = $this->zainCashService->processPaymentApi(
+            $price,
+            url('/api/payment/pay-to-private-lesson-confirm'),
+            "دفع درس خصوصي",
+            $orderId
+        );
 
-        if(isset($response['id']))
-        {
+        if (isset($response['id'])) {
 
-            foreach($request->get('times') as $time){
+            foreach ($request->get('times') as $time) {
                 $detail = PaymentDetail::create([
                     'details' => json_encode($time)
                 ]);
@@ -1129,61 +1104,59 @@ class PaymentController extends Controller
 
 
             $transaction_id = $response['id'];
-            $paymentUrl = env('ZAINCASH_REDIRECT_URL').$transaction_id;
+            $paymentUrl = env('ZAINCASH_REDIRECT_URL') . $transaction_id;
 
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully') , [
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), [
                 'payment_link' => $paymentUrl
-            ],Response::HTTP_OK);
+            ], Response::HTTP_OK);
 
             return response()->success($response);
-        }else{
-            $response = new ErrorResponse($response['error'],Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = new ErrorResponse($response['error'], Response::HTTP_BAD_REQUEST);
             return response()->error($response);
         }
     }
 
-    function privateLessonConfirm(Request $request){
+    function privateLessonConfirm(Request $request)
+    {
 
         DB::beginTransaction();
-        try
-        {
+        try {
 
             $cartId = $request->get('requestId');
             $token = $request->get('token');
-            if($cartId == null){
+            if ($cartId == null) {
                 $data = JWT::decode($token, new Key(env('ZAINCASH_SECRET_KEY'), 'HS256'));
                 $cartId = $data->orderid;
             }
-            $paymentDetails = Transactios::where('order_id',$cartId)->first();
+            $paymentDetails = Transactios::where('order_id', $cartId)->first();
 
             //check qi payment status
-            if($paymentDetails["brand"] == "card"){
+            if ($paymentDetails["brand"] == "card") {
 
                 $statusCheck = $this->paymentService->checkPaymentStatus($paymentDetails['payment_id']);
 
-                if($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS")
-                {
+                if ($paymentDetails["brand"] == "card" && $statusCheck["status"] != "SUCCESS") {
                     return $statusCheck;
                     return redirect('/payment-failure');
                 }
-            }else{
+            } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if($statusCheck["status"] == "failed")
-                {
+                if ($statusCheck["status"] == "failed" || $statusCheck["status"] == "pinding") {
                     return $statusCheck;
                     return redirect('/payment-failure');
                 }
             }
 
-            $paymentDetails = Transactios::where('order_id',$cartId)->get();
+            $paymentDetails = Transactios::where('order_id', $cartId)->get();
             $teacher_id = 0;
-            foreach($paymentDetails as $payment){
+            foreach ($paymentDetails as $payment) {
                 $payment->status = 'completed';
                 $payment->is_paid = 1;
                 $payment->save();
 
                 $detail = PaymentDetail::find($payment->transactionable_id);
-                $detail = json_decode($detail->details,1);
+                $detail = json_decode($detail->details, 1);
 
                 $privateLesson = PrivateLessons::create([
                     'category_id' => 0,
@@ -1199,7 +1172,7 @@ class PaymentController extends Controller
                 $teacher_id = $payment['teacher_id'];
 
 
-                $this->paymentService->storeBalanceApi($payment,'private_lesson',$detail['teacher_id']);
+                $this->paymentService->storeBalanceApi($payment, 'private_lesson', $detail['teacher_id']);
             }
 
             $user = User::find($payment->user_id);
@@ -1221,11 +1194,9 @@ class PaymentController extends Controller
 
 
             DB::commit();
-            $response = new SuccessResponse(__('message.operation_accomplished_successfully'),null,Response::HTTP_OK);
+            $response = new SuccessResponse(__('message.operation_accomplished_successfully'), null, Response::HTTP_OK);
             return response()->success($response);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return $e->getMessage();
             DB::rollback();
             Log::error($e->getMessage());
@@ -1234,8 +1205,6 @@ class PaymentController extends Controller
             return $e->getMessage();
             return redirect('/payment-failure');
         }
-
-
     }
 
 
@@ -1246,13 +1215,13 @@ class PaymentController extends Controller
     function freeInstallment(freeInstallmentRequest $request)
     {
         $installment = $this->getCurInstallment($request->course_id);
-        if(!$installment){
-            return $this->response_api('error' , __('validation.installment_not_foud') );
+        if (!$installment) {
+            return $this->response_api('error', __('validation.installment_not_foud'));
         }
         $price = $installment->price;
 
-        if($price > 0){
-            return $this->response_api('error' , __('validation.installment_not_Free') , ['price' => $price]);
+        if ($price > 0) {
+            return $this->response_api('error', __('validation.installment_not_Free'), ['price' => $price]);
         }
 
         $courseSession = $installment;
@@ -1271,17 +1240,17 @@ class PaymentController extends Controller
             'is_installment'      => 1
         ]);
 
-        return $this->response_api('success' , __('free_installment_reserved_successfully') );
-
+        return $this->response_api('success', __('free_installment_reserved_successfully'));
     }
 
 
-    function getPriceWithCoupon($amount,$code,$course_id = 0){
+    function getPriceWithCoupon($amount, $code, $course_id = 0)
+    {
         $coupon = Coupons::where('code', $code)->first();
 
         if ($coupon == '') {
-            $response=[
-                'status'=>false,
+            $response = [
+                'status' => false,
             ];
 
             return $response;
@@ -1291,14 +1260,15 @@ class PaymentController extends Controller
             $expiry_date = \Carbon\Carbon::createFromFormat('Y-m-d', $coupon->expiry_date);
             $now_date = \Carbon\Carbon::now();
             if ($now_date > $expiry_date) {
-                $response=[
-                    'status'=>false,
+                $response = [
+                    'status' => false,
                 ];
 
-                return $response;            }
+                return $response;
+            }
         }
 
-        $checkNumUses = Transactios::where('coupon', $code)->where('status' , 'completed')->count();
+        $checkNumUses = Transactios::where('coupon', $code)->where('status', 'completed')->count();
         if ($coupon->num_uses != '') {
             if ($checkNumUses >= $coupon->num_uses) {
                 return ['status' => false];
@@ -1313,19 +1283,15 @@ class PaymentController extends Controller
 
         if (@$coupon->amount_type == 'fixed') {
             $amount_after_discount = round($amount - $coupon->amount);
-        }else{
+        } else {
             $amount_after_discount = ($amount - ($amount * ($coupon->amount / 100)));
         }
 
 
-        $response=[
-            'status'=> true,
+        $response = [
+            'status' => true,
             'price' => $amount_after_discount
         ];
         return $response;
     }
-
-
-
-
 }
