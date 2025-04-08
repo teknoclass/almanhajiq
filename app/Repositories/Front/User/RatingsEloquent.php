@@ -48,7 +48,7 @@ class RatingsEloquent extends HelperEloquent
                 $rating2->sourse_id = $item->course->user_id;
                 $rating2->rate = $data['rate'];
                 $rating2->comment_text = $data['comment_text'];
-                $rating2->user_id = $data['user_id'];
+                $rating2->user_id = $user->id;
                 $rating2->save();
 
             }
