@@ -234,10 +234,9 @@ class PaymentController extends Controller
                 }
             } else {
                 $statusCheck = $this->zainCashService->checkPaymentStatus($paymentDetails['payment_id']);
-                if ($statusCheck["status"] != "failed") {
+                if ($statusCheck["status"] != "completed") {
 
 
-                    //return $statusCheck;
                     return redirect('/payment-failure');
                 }
             }
