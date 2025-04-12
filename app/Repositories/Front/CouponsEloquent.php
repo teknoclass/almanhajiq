@@ -42,7 +42,7 @@ class CouponsEloquent
         if ($coupon->num_uses != '') {
             if ($checkNumUses >= $coupon->num_uses) {
                 return ['status' => false,
-                'data' =>__('message.the_coupon_is_not_valid') ,];
+                'message' =>__('message.the_coupon_is_not_valid') ,];
             }
         }
 
@@ -50,7 +50,7 @@ class CouponsEloquent
 
         if (count($courseIds) > 0 && !in_array($course_id, $courseIds)) {
             return ['status' => false,
-                'data' =>__('message.the_coupon_is_not_valid') ,];
+                'message' =>__('message.the_coupon_is_not_valid') ,];
         }
 
 
