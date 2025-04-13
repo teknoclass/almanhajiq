@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ResetPasswordNotification extends Notification implements ShouldQueue
+class ResetPasswordNotification extends Notification //implements ShouldQueue
 {
     use Queueable;
     private $token;
@@ -48,7 +48,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
             ->view('mail.reset_password')
             ->subject('اعادة تعين كلمة المرور' )
             ->action('اذهب', $url)
-            ->from('info@tadreesacademy.com');
+            ->from('noreply@almanhajiq.com');
     }
 
     /**
