@@ -112,7 +112,7 @@ $item = isset($item) ? $item: null;
                            <input type="hidden" name="slug_country"   value="{{@$item->slug_country}}"
                              class="slug_country">
                            <input style="padding-left: 50px;"
-                              type="number" minlength="10" maxlength="10" name="mobile"
+                              type="number" name="mobile"
                               required placeholder="{{__('enter_mobile_number')}}"
                               class="form-control mobile-number"
                               id="phone"
@@ -286,7 +286,7 @@ $item = isset($item) ? $item: null;
                                 <option value="0" selected>{{__('no')}} </option>
                                 <option value="1" {{@$item->can_add_half_hour==1 ?'selected' :''}}>{{__('yes')}} </option>
                             </select>
-                        </div> 
+                        </div>
 
                  <div class="form-group lecturer_fields half_hour_div {{@$item->can_add_half_hour!=1 ?'d-none' :''}}">
                          <label for="half_hour_price">{{__('half_hour_price')}}</label>
@@ -310,9 +310,9 @@ $item = isset($item) ? $item: null;
                                    class="form-control mb-2 d-flex align-items-center justify-content-between"
                                    value="{{ @$item->max_student_no }}"
                                    required id="max_student_no" placeholder=""/>
-                        </div> 
+                        </div>
 
-   
+
                         <div class="form-group lecturer_fields">
                            <label>{{__('material')}}
                                  <span class="text-danger">*</span></label>
@@ -326,7 +326,7 @@ $item = isset($item) ? $item: null;
                                        @endforeach
                            </select>
                         </div>
-                                        
+
 
 
 
@@ -551,7 +551,7 @@ $item = isset($item) ? $item: null;
          setTimeout(function(){
             $("#phone").val("{{@$item->mobile}}");
          },1000)
- 
+
       });
    </script>
    @endpush

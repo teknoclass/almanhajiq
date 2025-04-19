@@ -1299,6 +1299,9 @@
     "Marketer value" : "قيمة المسوق",
     "Marketer value for each register" : "قيمة المسوق من كل عمليه تسجيل طالب جديد",
     "Number of codes" : "عدد الكودات",
+    "Keep this empty if you dont want to edit the video" : "اتركه فارغا اذا كنت لا تريد تعديل الفيديو",
+    "current video : " : "اسم الفيديو الحالي : ",
+    "code expired" : "انتهت صلاحية الكود",
     "": "",
     "x": ""
 

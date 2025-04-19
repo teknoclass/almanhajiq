@@ -38,7 +38,7 @@
                         <h2 class="text-center mb-4"> {{ __('edit_lesson') }}: {{ @$item->title }}</h2>
                         <div class="accordion" id="accordionLesson">
                             <div class="widget_item-lesson p-0 rounded-3 mb-3">
-                              <!--  <div class="d-flex align-items-center widget_item-head p-3 pointer"
+                                <!--  <div class="d-flex align-items-center widget_item-head p-3 pointer"
                                     data-bs-toggle="collapse" data-bs-target="#collapse-lesson-1"><i
                                         class="fa-solid fa-minus"></i>
                                     <h6 class="mx-2"> {{ @$item->title }}</h6>
@@ -49,20 +49,30 @@
                                     data-bs-parent="#accordionLesson">
                                     <div class="py-3 px-2 px-lg-8">
                                         @php
-                                            if (checkUser('lecturer') && $user_type == "lecturer") {
-                                                $action_url = route('user.lecturer.course.curriculum.lesson.update_lesson');
-                                                $to_url = route('user.lecturer.my_courses.create_curriculum', @$course_id);
-                                                $delete_attachment_url = route('user.lecturer.my_courses.delete-course-file', ':id');
-                                            }
-                                            else if (auth('admin')->user() && $user_type == "admin"){
-                                                $action_url = route('panel.courses.edit.curriculum.lesson.update_lesson');
+                                            if (checkUser('lecturer') && $user_type == 'lecturer') {
+                                                $action_url = route(
+                                                    'user.lecturer.course.curriculum.lesson.update_lesson',
+                                                );
+                                                $to_url = route(
+                                                    'user.lecturer.my_courses.create_curriculum',
+                                                    @$course_id,
+                                                );
+                                                $delete_attachment_url = route(
+                                                    'user.lecturer.my_courses.delete-course-file',
+                                                    ':id',
+                                                );
+                                            } elseif (auth('admin')->user() && $user_type == 'admin') {
+                                                $action_url = route(
+                                                    'panel.courses.edit.curriculum.lesson.update_lesson',
+                                                );
                                                 $to_url = route('panel.courses.edit.curriculum.index', @$course_id);
-                                                $delete_attachment_url = route('panel.courses.edit.curriculum.delete-course-file', ':id');
+                                                $delete_attachment_url = route(
+                                                    'panel.courses.edit.curriculum.delete-course-file',
+                                                    ':id',
+                                                );
                                             }
                                         @endphp
-                                        <form id="course_from2"
-                                            action="{{ @$action_url }}"
-                                            to="{{ @$to_url }}"
+                                        <form id="course_from2" action="{{ @$action_url }}" to="{{ @$to_url }}"
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
 
@@ -73,27 +83,28 @@
                                             <input type="hidden" name="course_sections_id" id="course_sections_id"
                                                 value="{{ @$course_section->id }}">
 
-                                        <div class="row">
-                                            @foreach (locales() as $locale => $value)
-                                                <div class="form-group col-md-6 mt-2">
-                                                    <label>{{ __('title') }}
-                                                        ({{ __($value) }})
-                                                        <span class="text-danger">*</span></label>
-                                                    <input class="form-control" id="title" type="text"
-                                                        value=" {{ @$item->translate($locale)->title }}" name="title_{{ $locale }}"
-                                                        placeholder="{{ __('lesson_title') }} " />
-                                                </div>
-                                            @endforeach
+                                            <div class="row">
+                                                @foreach (locales() as $locale => $value)
+                                                    <div class="form-group col-md-6 mt-2">
+                                                        <label>{{ __('title') }}
+                                                            ({{ __($value) }})
+                                                            <span class="text-danger">*</span></label>
+                                                        <input class="form-control" id="title" type="text"
+                                                            value=" {{ @$item->translate($locale)->title }}"
+                                                            name="title_{{ $locale }}"
+                                                            placeholder="{{ __('lesson_title') }} " />
+                                                    </div>
+                                                @endforeach
 
-                                            @foreach (locales() as $locale => $value)
-                                                <div class="form-group col-md-6 mt-2">
-                                                    <label>{{ __('lesson_desc_'.$locale) }}
-                                                        <span class="text-danger">*</span></label>
-                                                    <textarea class="form-control" rows="3" id="description" name="description_{{ $locale }}"
-                                                        placeholder="{{ __('lesson_desc') }} ">  {{ @$item->translate($locale)->description }} </textarea>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                                                @foreach (locales() as $locale => $value)
+                                                    <div class="form-group col-md-6 mt-2">
+                                                        <label>{{ __('lesson_desc_' . $locale) }}
+                                                            <span class="text-danger">*</span></label>
+                                                        <textarea class="form-control" rows="3" id="description" name="description_{{ $locale }}"
+                                                            placeholder="{{ __('lesson_desc') }} ">  {{ @$item->translate($locale)->description }} </textarea>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                             <input type="hidden" name="file_type" id="filee_type"
                                                 value="{{ @$item->file_type }}">
                                             <div class="form-group mt-3">
@@ -149,7 +160,10 @@
                                                     <div class="tab-pane fade show {{ @$item->file_type == 'video' ? 'show active' : '' }}"
                                                         id="tabb-1" role="tabpanel">
                                                         <div class="bg-white rounded-3 p-3">
-                                                            <input class="form-control bg-light-green" type="number" placeholder="{{__('duration')}}" name="video_duration" min="1" value="{{ @$item->duration }}">
+                                                            <input class="form-control bg-light-green" type="number"
+                                                                placeholder="{{ __('duration') }}"
+                                                                name="video_duration" min="1"
+                                                                value="{{ @$item->duration }}">
                                                             <div class="row">
                                                                 <div class="col-lg-5 mx-auto">
                                                                     <p class="text-center text--muted">
@@ -218,6 +232,7 @@
                                                             <div class="tab-content">
                                                                 <div class="tab-pane fade {{ @$item->storage == 'upload' ? 'show active' : '' }}"
                                                                     id="tabb-video" role="tabpanel">
+                                                                    <label>{{__('Keep this empty if you dont want to edit the video')}}</label>
                                                                     <input class="form-control bg-light-green"
                                                                         type="file" name="upload"
                                                                         placeholder="{{ __('enter_youtube_link') }}" />
@@ -225,6 +240,14 @@
                                                                         <div class="col-lg-5 mx-auto">
                                                                             <p class="text-center text--muted">
                                                                                 {{ __('support_extensions') }}: MP4
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-lg-5 mx-auto">
+                                                                            <p class="text-center text--muted">
+                                                                                {{ __('current video : ') }}
+                                                                                {{ @$item->file }}
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -270,7 +293,10 @@
                                                     <div class="tab-pane fade {{ @$item->file_type == 'listen' ? 'show active' : '' }}"
                                                         id="tabb-2" role="tabpanel">
                                                         <div class="bg-white rounded-3 p-3">
-                                                            <input class="form-control bg-light-green" type="number" placeholder="{{__('duration')}}" name="listen_duration" min="1" value="{{ @$item->duration }}">
+                                                            <input class="form-control bg-light-green" type="number"
+                                                                placeholder="{{ __('duration') }}"
+                                                                name="listen_duration" min="1"
+                                                                value="{{ @$item->duration }}">
                                                             <div class="row">
                                                                 <div class="col-lg-5 mx-auto">
                                                                     <p class="text-center text--muted">
@@ -280,11 +306,12 @@
                                                             </div>
                                                         </div>
                                                         <div class="bg-white rounded-3 p-3">
-                                                            <input class="form-control bg-light-green" type="file" name="listen" accept=".mp3">
+                                                            <input class="form-control bg-light-green" type="file"
+                                                                name="listen" accept=".mp3">
                                                             <div class="row">
                                                                 <div class="col-lg-5 mx-auto">
                                                                     <p class="text-center text--muted">
-                                                                        {{ __('support_extensions') }}:  MP3
+                                                                        {{ __('support_extensions') }}: MP3
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -325,8 +352,8 @@
                                                             <div class="tab-content">
                                                                 <div class="tab-pane fade show active" id="tabb-pdf"
                                                                     role="tabpanel">
-                                                                    <input class="form-control bg-light-green" type="file" name="pdf"
-                                                                        accept=".pdf">
+                                                                    <input class="form-control bg-light-green"
+                                                                        type="file" name="pdf" accept=".pdf">
                                                                 </div>
                                                                 {{-- <div class="tab-pane fade show" id="tabb-word"
                                                                     role="tabpanel">
@@ -344,12 +371,13 @@
                                                     <div class="tab-pane fade {{ @$item->file_type == 'image' ? 'show active' : '' }}"
                                                         id="tabb-5" role="tabpanel">
                                                         <div class="bg-white rounded-3 p-3">
-                                                            <input class="form-control bg-light-green" type="file" name="image"
-                                                                accept=".png, .jpg, .jpeg, .svg">
+                                                            <input class="form-control bg-light-green" type="file"
+                                                                name="image" accept=".png, .jpg, .jpeg, .svg">
                                                             <div class="row">
                                                                 <div class="col-lg-5 mx-auto">
                                                                     <p class="text-center text--muted">
-                                                                        {{ __('support_extensions') }}:  png - jpg - jpeg - svg
+                                                                        {{ __('support_extensions') }}: png - jpg -
+                                                                        jpeg - svg
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -360,14 +388,15 @@
 
                                             <div class="row mx-0 bg-white rounded-3 mt-2">
                                                 <div class="form-group col-md-5 mt-2">
-                                                        <label>{{ __('attachments') }}</label>
-                                                        <input class="form-control" id="fileInput" type="file"
-                                                            name="files[]" multiple>
-                                                        <div class="row">
-                                                            <div class="col-12 mx-auto">
-                                                                <p class="text-center text--muted">يدعم إمتدادات: jpeg - jpg - png - pdf - docx</p>
-                                                            </div>
+                                                    <label>{{ __('attachments') }}</label>
+                                                    <input class="form-control" id="fileInput" type="file"
+                                                        name="files[]" multiple>
+                                                    <div class="row">
+                                                        <div class="col-12 mx-auto">
+                                                            <p class="text-center text--muted">يدعم إمتدادات: jpeg -
+                                                                jpg - png - pdf - docx</p>
                                                         </div>
+                                                    </div>
                                                 </div>
 
                                                 <div class="form-group col-md-3 mt-2" id="uploadedFilesList">
@@ -398,8 +427,8 @@
                                                                 class="btn btn-primary px-1 w-100 btn-add-qestion-task">{{ __('save') }}</button>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <span
-                                                                class="btn btn-outline-primary px-1 w-100" onclick="closeModal()">{{ __('cancel') }}</span>
+                                                            <span class="btn btn-outline-primary px-1 w-100"
+                                                                onclick="closeModal()">{{ __('cancel') }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -558,12 +587,12 @@
             var imgPreview = document.createElement('img');
 
             let uploaded_img_path = URL.createObjectURL(files[i]);
-            let pdf_path          = "{{ asset('assets/front/images/pdf.png') }}";
-            let word_path         = "{{ asset('assets/front/images/docx.png') }}";
-            let ext               = (files[i].name).split('.').pop();
-            if(ext == 'pdf'){
+            let pdf_path = "{{ asset('assets/front/images/pdf.png') }}";
+            let word_path = "{{ asset('assets/front/images/docx.png') }}";
+            let ext = (files[i].name).split('.').pop();
+            if (ext == 'pdf') {
                 uploaded_img_path = pdf_path;
-            }else if(ext == 'docx'){
+            } else if (ext == 'docx') {
                 uploaded_img_path = word_path;
             }
             imgPreview.src = uploaded_img_path;
@@ -599,9 +628,8 @@
 </script>
 
 @php
-    if (checkUser('lecturer') && $user_type == "lecturer") {
-    }
-    else if (auth('admin')->user() && $user_type == "admin"){
+    if (checkUser('lecturer') && $user_type == 'lecturer') {
+    } elseif (auth('admin')->user() && $user_type == 'admin') {
     }
 @endphp
 
@@ -619,13 +647,14 @@
 
             var imgElement = document.createElement('img');
 
-            let uploaded_img_path = baseUrl + '/get-course-file/' + course_id + '/lesson_attachments/' + imageUrl;
-            let pdf_path          = "{{ asset('assets/front/images/pdf.png') }}";
-            let word_path         = "{{ asset('assets/front/images/docx.png') }}";
-            let ext               = (imageUrl).split('.').pop();
-            if(ext == 'pdf'){
+            let uploaded_img_path = baseUrl + '/get-course-file/' + course_id + '/lesson_attachments/' +
+                imageUrl;
+            let pdf_path = "{{ asset('assets/front/images/pdf.png') }}";
+            let word_path = "{{ asset('assets/front/images/docx.png') }}";
+            let ext = (imageUrl).split('.').pop();
+            if (ext == 'pdf') {
                 uploaded_img_path = pdf_path;
-            }else if(ext == 'docx'){
+            } else if (ext == 'docx') {
                 uploaded_img_path = word_path;
             }
 
@@ -635,9 +664,9 @@
             deleteIcon.classList.add('delete-icon');
             deleteIcon.innerHTML = 'X';
 
-            deleteIcon.onclick = function () {
+            deleteIcon.onclick = function() {
                 // Call the function to delete the image
-                deleteImage(img_id, imageUrl, imgWrapper , course_id);
+                deleteImage(img_id, imageUrl, imgWrapper, course_id);
             };
 
             imgWrapper.appendChild(imgElement);
@@ -647,21 +676,21 @@
     }
 
     // Function to delete an image using Ajax
-    function deleteImage(img_id, imageUrl, imgWrapper , course_id) {
+    function deleteImage(img_id, imageUrl, imgWrapper, course_id) {
         var url = '{{ @$delete_attachment_url }}';
         url = url.replace(':id', img_id);
         $.ajax({
-            url:  url,
+            url: url,
             type: 'DELETE',
             data: {
                 _token: '{{ csrf_token() }}',
-                course_id :  course_id,
+                course_id: course_id,
             },
-            success: function (response) {
+            success: function(response) {
                 console.log('Image deleted successfully');
                 imgWrapper.remove();
             },
-            error: function (error) {
+            error: function(error) {
                 // Handle error
                 console.error('Error deleting image:', error);
             }

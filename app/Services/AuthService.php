@@ -394,8 +394,15 @@ class AuthService extends MainService
         }
 
         if ($user->validation_code == $code || $code == 619812) {
+            $now = Carbon::now();
+            if ($now->diffInMinutes($user->last_send_validation_code) >= 3) {
+                return [
+                    'message' => __('Code expired'),
+                    'status' => false
+                ];
+            }
             $user->is_validation = 1;
-            $user->validation_at = Carbon::now();
+            $user->validation_at = $now;
             $user->save();
 
             return [
@@ -424,7 +431,7 @@ class AuthService extends MainService
                 'status' => false
             ];
         } else {
-            // $user->sendVerificationCode(); // ✔
+            $user->sendVerificationCode();
             return [
                 'message' => __('message.operation_accomplished_successfully'),
                 'status' => true

@@ -22,7 +22,7 @@ class HomeService extends MainService
         $gradeLevels = Category::where('key', 'grade_levels')->with('gradeLevels')->get();
 
         $materials = Category::getCategoriesByParent('course_categories')->get();
-        $gradeLevels->each(function($gradeLevel) use ($materials) {
+        $gradeLevels->each(function ($gradeLevel) use ($materials) {
             $gradeLevel->materials = $materials;
         });
         return $this->createResponse(
@@ -30,7 +30,6 @@ class HomeService extends MainService
             true,
             $gradeLevels
         );
-
     }
 
     public function mostOrderedCourses(): array
@@ -49,44 +48,45 @@ class HomeService extends MainService
             $courses
         );
     }
-    function lastCourses(){
+    function lastCourses()
+    {
         $courses = Courses::active()->accepted()->with([
             'grade_sub_level',
             'category',
             'lecturer',
             'priceDetails',
             'material'
-            ])->take(5)->get();
+        ])->orderBy('id', 'desc')->take(5)->get();
 
-            return $this->createResponse(
-                __('message.success'),
-                true,
-                $courses
-            );
+        return $this->createResponse(
+            __('message.success'),
+            true,
+            $courses
+        );
     }
 
     public function topTeachers()
     {
-        $topTeachers = User::whereHas('reviews', function($query) {
+        $topTeachers = User::whereHas('reviews', function ($query) {
             $query->where('sourse_type', Ratings::USER)
-                  ->active();
+                ->active();
         })
-                           ->withCount([
-                               'ratings as ratings_sum' => function($query) {
-                                   $query->where('sourse_type', Ratings::USER)
-                                         ->active()
-                                         ->select(DB::raw('sum(rate)'));
-                               },
-                               'ratings as ratings_count' => function($query) {
-                                   $query->where('sourse_type', Ratings::USER)
-                                         ->active()
-                                         ->select(DB::raw('count(rate)'));
-                               }
-                           ])
-                           ->with(['LecturerSetting', 'motherLang', 'ratings'])
-                           ->having('ratings_count', '>', 0)
-                           ->orderBy(DB::raw('ratings_sum / ratings_count'), 'desc')
-                           ->get();
+            ->withCount([
+                'ratings as ratings_sum' => function ($query) {
+                    $query->where('sourse_type', Ratings::USER)
+                        ->active()
+                        ->select(DB::raw('sum(rate)'));
+                },
+                'ratings as ratings_count' => function ($query) {
+                    $query->where('sourse_type', Ratings::USER)
+                        ->active()
+                        ->select(DB::raw('count(rate)'));
+                }
+            ])
+            ->with(['LecturerSetting', 'motherLang', 'ratings'])
+            ->having('ratings_count', '>', 0)
+            ->orderBy(DB::raw('ratings_sum / ratings_count'), 'desc')
+            ->get();
 
         return $this->createResponse(
             __('message.success'),
@@ -117,48 +117,49 @@ class HomeService extends MainService
         return $data;
     }
 
-    function calendar($request,$is_web = false){
+    function calendar($request, $is_web = false)
+    {
 
         $ids = Courses::withTrashed()->active()->accepted()
-        ->where(function($query) {
-            $query->where('id',studentSubscriptionCoursessIds('api'));
-            $query->orWhere('id',studentInstallmentsCoursessIds('api'));
+            ->where(function ($query) {
+                $query->where('id', studentSubscriptionCoursessIds('api'));
+                $query->orWhere('id', studentInstallmentsCoursessIds('api'));
 
-            $query->orWhereHas('students', function (Builder $query) {
-                $query->where('user_id', auth('api')->id())
-                ->where(function ($query) {
-                    $query ->where('is_complete_payment', 1)
-                    ->orWhere('is_free_trial', 1);
+                $query->orWhereHas('students', function (Builder $query) {
+                    $query->where('user_id', auth('api')->id())
+                        ->where(function ($query) {
+                            $query->where('is_complete_payment', 1)
+                                ->orWhere('is_free_trial', 1);
+                        });
                 });
-            });
-        })->where('type', Courses::LIVE)->pluck('id');
+            })->where('type', Courses::LIVE)->pluck('id');
 
 
         $date_now = now()->toDateString();
 
-        $courseSessionDates = CourseSession::whereIn('course_id',$ids)
-        ->where('date','>=',$date_now)->distinct()->pluck('date');
+        $courseSessionDates = CourseSession::whereIn('course_id', $ids)
+            ->where('date', '>=', $date_now)->distinct()->pluck('date');
 
-        $privateLessonDates = PrivateLessons::where('student_id',auth('api')->id())
-        ->where('meeting_date','>=',$date_now)->distinct()->pluck('meeting_date');
+        $privateLessonDates = PrivateLessons::where('student_id', auth('api')->id())
+            ->where('meeting_date', '>=', $date_now)->distinct()->pluck('meeting_date');
 
         $mergedArray = array_merge($courseSessionDates->toArray(), $privateLessonDates->toArray());
         $uniqueDates = array_unique($mergedArray);
         sort($uniqueDates);
 
 
-        if($request->get('date')){
+        if ($request->get('date')) {
             $date = $request->get('date');
-        }else{
+        } else {
             $date = $date_now;
         }
 
-        $courseSession = CourseSession::whereHas('course',function($q){
-            $q->where('user_id',auth('api')->id());
-        })->where('date','=',$date)->get();
+        $courseSession = CourseSession::whereHas('course', function ($q) {
+            $q->where('user_id', auth('api')->id());
+        })->where('date', '=', $date)->get();
 
-        $privateLessons = PrivateLessons::where('teacher_id',auth('api')->id())
-        ->where('meeting_date','=',$date)->get();
+        $privateLessons = PrivateLessons::where('teacher_id', auth('api')->id())
+            ->where('meeting_date', '=', $date)->get();
 
         $courseSession = TeacherCalendarCourseSessionResource::collection($courseSession);
         $privateLessons = TeacherCalendarPrivateLessonResource::collection($privateLessons);
@@ -169,18 +170,17 @@ class HomeService extends MainService
             'sessions' => $courseSession,
             'lessons' => $privateLessons
         ];
-
-
     }
 
-    function featuredCourses(){
+    function featuredCourses()
+    {
         $courses = Courses::active()->accepted()->with([
             'grade_sub_level',
             'category',
             'lecturer',
             'priceDetails',
             'material'
-        ])->where('is_feature' , 1)->paginate(10);
+        ])->where('is_feature', 1)->paginate(10);
 
         return $this->createResponse(
             __('message.success'),
@@ -188,9 +188,4 @@ class HomeService extends MainService
             $courses
         );
     }
-
-
-
-
-
 }
