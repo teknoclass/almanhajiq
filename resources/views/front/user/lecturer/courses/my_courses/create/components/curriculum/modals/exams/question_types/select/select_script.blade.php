@@ -28,6 +28,8 @@
                                 images_upload_url: 'image/upload',
                                 relative_urls: false,
                                 remove_script_host: false,
+                                document_base_url: "https://almanhajiq.com/",
+                                remove_script_host: false,
                                 convert_urls: false,
                                 language: "ar",
                                 language_url: '/assets/panel/plugins/custom/tinymce/langs/ar.js',

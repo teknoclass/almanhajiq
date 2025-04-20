@@ -99,6 +99,9 @@
                                 selector: '.tinymce',
                                 images_upload_handler: handleImageUpload,
                                 images_upload_url: 'image/upload',
+                                relative_urls: false,
+                                remove_script_host: false,
+                                document_base_url: "https://almanhajiq.com/",
                                 language: "ar",
                                 language_url: '/assets/panel/plugins/custom/tinymce/langs/ar.js',
                                 // path from the root of your web application — / — to the language pack(s)

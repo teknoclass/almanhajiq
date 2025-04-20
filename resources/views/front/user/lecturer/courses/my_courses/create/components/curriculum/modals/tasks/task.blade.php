@@ -193,4 +193,4 @@
     function closeModal() {
         $("#modalAddTasks").hide();
     }
-</script>
+</script> 
