@@ -225,6 +225,8 @@
                         success: function(response) {
                             $('#load').hide();
                             $("#targetDiv").html(response.content);
+                            $('.list-qestions').last('.tab-content').find('textarea').addClass('newClass');
+                            $('.list-qestions').last('.tab-content').find('textarea').removeClass('tinymce2');
                             tinymce.init({
                                 init_instance_callback: function (editor) {
                                     editor.on('blur', function (e) {
@@ -236,10 +238,12 @@
                                     });
                                 },
 
-                                selector: '.tinymce',
+                                selector: '.newClass',
                                 images_upload_handler: handleImageUpload,
                                 images_upload_url: 'image/upload',
                                 relative_urls: false,
+                                remove_script_host: false,
+                                document_base_url: "https://almanhajiq.com/",
                                 remove_script_host: false,
                                 convert_urls: false,
                                 language: "ar",
