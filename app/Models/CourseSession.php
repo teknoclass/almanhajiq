@@ -134,7 +134,7 @@ class CourseSession extends Model
                 'record'         => true,
                 'attendeePW'     => $attendeePW,
                 'moderatorPW'    => $moderatorPW,
-                'endCallbackUrl' => route('user.meeting.finished' , $this->id),
+                'endCallbackUrl' => route('user.meeting.finished2' , $this->id),
                 'logoutUrl'      => route('user.meeting.finished2' , [$this->id , auth($type)->id()]),
             ]);
             $this->public_password = $attendeePW;
