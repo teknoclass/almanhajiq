@@ -246,4 +246,5 @@ Route::group(['prefix' => 'payment', 'as' => 'payment.', 'middleware' => ['share
 
 Route::post('/chat/update-token', [ChatController::class, 'saveToken'])->name('chat.update.token');
 Route::get('/meeting-finished/{meeting_id?}/{user_id?}', [HomeController::class, 'meetingFinished'])->name('meeting.finished');
+Route::get('/meeting-finished/{meeting_id?}/{user_id?}', [HomeController::class, 'meetingFinished'])->name('meeting.finished2');
 Route::get('/set-meeting-finished/{id}', [LecturerCoursesController::class, 'setMeetingFinished'])->name('set.meeting.finished');

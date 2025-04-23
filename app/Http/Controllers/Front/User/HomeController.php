@@ -80,8 +80,17 @@ class HomeController extends Controller
     public function meetingFinished($meeting_id = 0 , $user_id = 0)
     {
         $lesson = CourseSession::where('id', $meeting_id)->first();
+
         $lesson->meeting_status = "finished";
         $lesson->update();
+
+        $this->home_user->meetingFinished($meeting_id , $user_id );
+
+        return view('front.components.meeting_finished');
+    }
+    public function meetingFinished2($meeting_id = 0 , $user_id = 0)
+    {
+        $lesson = CourseSession::where('id', $meeting_id)->first();
 
         $this->home_user->meetingFinished($meeting_id , $user_id );
 
