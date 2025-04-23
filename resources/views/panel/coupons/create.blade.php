@@ -152,8 +152,9 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($cpnCourses as $course)
+                                                    @if (@$course->course->title)
                                                     <tr>
-                                                        <td>{{ $course->course->title }}</td>
+                                                        <td>{{ @$course->course->title }}</td>
                                                         <td>
                                                             <input type="hidden" name="course_ids[]"
                                                                 value="{{ $course->course->id }}">
@@ -161,6 +162,7 @@
                                                             </div>
                                                         </td>
                                                     </tr>
+                                                    @endif
                                                 @endforeach
                                             </tbody>
                                         </table>
