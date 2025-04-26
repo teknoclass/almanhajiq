@@ -35,7 +35,7 @@ class ApiCurriculumItemResource extends JsonResource
             }else{
                 $status = "inactive";
             }
-            $item = collect(new ApiCurriculumItemCollection($this->itemable->items));
+            $item = collect(new ApiCurriculumItemCollection($this->itemable->items_active));
         }else{
             $item = null;
             $status = $this->itemable->status;

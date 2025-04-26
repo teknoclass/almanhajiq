@@ -64,6 +64,12 @@ class CourseSections extends Model
 
     public function items(): HasMany
     {
+        return $this->hasMany(CourseSectionItems::class)->whereHas('itemable',function($q){
+            $q->whereNull('deleted_at');
+        });
+    }
+    public function items_active(): HasMany
+    {
         return $this->hasMany(CourseSectionItems::class)->active()->whereHas('itemable',function($q){
             $q->whereNull('deleted_at');
         });
