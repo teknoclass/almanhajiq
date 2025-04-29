@@ -389,7 +389,7 @@ class CouponsEloquent
                     "<td >" . $i . "</td>" .
                     "<td >" . $item->coupon . "</td>".
                     "<td >" . @$item->transactionable->title . "</td>".
-                    "<td >" . @$item->user->name . "</td>";
+                    "<td >" . @$item->user->name . "</td>".
                     "<td >" . $item->created_at . "</td>";
                 $row .= "</tr>";
                 ++$i;
