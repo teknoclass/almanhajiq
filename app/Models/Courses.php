@@ -165,6 +165,10 @@ class Courses extends Model
     {
         return $q->where('status', 'accepted');
     }
+    public function scopeAcceptedOrCompleted($q)
+    {
+        return $q->where('status', 'accepted')->orWhere('status','ready');
+    }
 
     // subscribed()
     public function scopeSubscribed($q)

@@ -110,7 +110,7 @@ class CoursesEloquent extends HelperEloquent
         $user_id = $data['user']->id;
         $course_type = $request->get('course_type');
 
-        $data['courses'] = Courses::active()->accepted()
+        $data['courses'] = Courses::active()->acceptedOrCompleted()
             ->select('id', 'image', 'start_date', 'duration', 'type', 'category_id', 'is_active', 'is_delete','material_id',
             'level_id','grade_level_id','grade_sub_level','end_date','user_id')
             ->with('translations:courses_id,title,locale,description')
