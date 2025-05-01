@@ -30,9 +30,9 @@ class LessonRepository extends BaseRepository
     {
         return $this->executeTransaction(function () use ($request, $is_web) {
             $data = $this->getAll($request, $is_web);
-            $data['file'] = FileUploadService::handleFileUpload($data,$request, $data['course_id'], $data['file_type'], $data['video_type'] ?? null);
+            $data['file'] = FileUploadService::handleFileUpload($data, $request, $data['course_id'], $data['file_type'], $data['video_type'] ?? null);
 
-           $data['storage'] = $data['video_type'] ?? null;
+            $data['storage'] = $data['video_type'] ?? null;
 
             $data['duration'] = $this->getDuration($data, $request);
             $data['downloadable'] = isset($data['downloadable']) ? 1 : 0;
@@ -41,7 +41,7 @@ class LessonRepository extends BaseRepository
             Log::alert($data['status']);
             $this->handleAttachments($request, $data, $item);
 
-            ItemService::storeSectionItem($data, $item,CourseLessons::class);
+            ItemService::storeSectionItem($data, $item, CourseLessons::class);
 
             $this->notify_registered_users($request->course_id);
 
@@ -52,14 +52,14 @@ class LessonRepository extends BaseRepository
     {
         return $this->executeTransaction(function () use ($request, $is_web) {
             $data = $this->getAll($request, $is_web);
-
+            Log::alert($data);
             $data['downloadable'] = isset($data['downloadable']) ? 1 : 0;
             $data['status'] = isset($data['status']) ? 'active' : 'inactive';
-            if($request->file('upload'))
-            {
-                $data['file'] = FileUploadService::handleFileUpload($data,$request, $data['course_id'], $data['file_type'], $data['video_type'] ?? null);
-            }else{
-                $data['file'] = CourseLessons::find( $data['id'])->file ?? "";
+            if ($request->file('upload')) {
+                $data['file'] = FileUploadService::handleFileUpload($data, $request, $data['course_id'], $data['file_type'], $data['video_type'] ?? null);
+            } else {
+                if($data['vimeo_link']) $data['file'] = $data['vimeo_link'];
+                else $data['file'] = CourseLessons::find($data['id'])->file ?? "";
             }
 
             $item = CourseLessons::updateOrCreate(['id' => $data['id']], $data)->createTranslation($request);
@@ -149,8 +149,7 @@ class LessonRepository extends BaseRepository
         if (!$user) {
             $course          = Courses::whereId($data['course_id'])->select('id', 'user_id')->first();
             $data['user_id'] = $course->user_id;
-        }
-        else {
+        } else {
             $data['user_id'] = $user->id;
         }
 
