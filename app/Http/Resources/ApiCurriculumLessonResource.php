@@ -24,6 +24,8 @@ class ApiCurriculumLessonResource extends JsonResource
             $data['file'] = CourseAudioUrl($this->course_id,$this->file);
         }else if($this->file_type == 'image'){
             $data['file'] = CourseImageUrl($this->course_id,$this->file);
+        }else if($this->file_type == 'video' && $this->storage == 'vimeo_id'){
+            $data['file'] = CourseVimeoUrl($this->file);
         }else{
             $data['file'] = $this->file;
         }

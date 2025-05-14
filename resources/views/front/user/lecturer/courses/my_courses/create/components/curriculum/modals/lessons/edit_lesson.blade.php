@@ -204,6 +204,15 @@
                                                                 </li>
                                                                 <li class="nav-item">
                                                                     <button
+                                                                        class="nav-link videoo_type  {{ @$item->storage == 'vimeo_id' ? 'show active' : '' }}"
+                                                                        data-bs-toggle="pill"
+                                                                        data-bs-target="#tabb-vimeoId"
+                                                                        data-value="vimeo_vimeo_id" type="button"
+                                                                        role="tab"> {{ __('vimeo_id') }}
+                                                                    </button>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <button
                                                                         class="nav-link videoo_type  {{ @$item->storage == 'google_drive' ? 'show active' : '' }}"
                                                                         data-bs-toggle="pill"
                                                                         data-bs-target="#tabb-drive"
@@ -265,6 +274,13 @@
                                                                         type="text" name="vimeo_link"
                                                                         value="{{ @$item->storage == 'vimeo_link' ? @$item->file : '' }}"
                                                                         placeholder="{{ __('enter_vimeo_link') }}" />
+                                                                </div>
+                                                                <div class="tab-pane fade {{ @$item->storage == 'vimeo_id' ? 'show active' : '' }} tab-attac"
+                                                                    id="tabb-vimeoId" role="tabpanel">
+                                                                    <input class="form-control bg-light-green"
+                                                                        type="text" name="vimeo_id"
+                                                                        value="{{ @$item->storage == 'vimeo_id' ? @$item->file : '' }}"
+                                                                        placeholder="{{ __('enter_vimeo_id') }}" />
                                                                 </div>
                                                                 <div class="tab-pane fade {{ @$item->storage == 'google_drive' ? 'show active' : '' }} tab-attac"
                                                                     id="tabb-drive" role="tabpanel">

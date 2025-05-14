@@ -1224,7 +1224,9 @@
     "coupon_email" : "email for sending coupon excel file",
     "your_coupons_files" : "Your coupons files : ",
     "click_here_to_download_the_file" : "Click here to download the file : ",
-    "you_cant_buy_this_course_because_its_not_free" : "You cant buy this course because its not free"
+    "you_cant_buy_this_course_because_its_not_free" : "You cant buy this course because its not free",
+    "enter_vimeo_id" : "Enter vimeo id",
+    "vimeo_id" : "vimeo ID"
 
 
 

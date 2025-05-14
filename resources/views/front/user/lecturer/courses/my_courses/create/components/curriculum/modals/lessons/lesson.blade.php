@@ -150,6 +150,14 @@
                                                                 <li class="nav-item">
                                                                     <button class="nav-link video1_type"
                                                                         data-bs-toggle="pill"
+                                                                        data-bs-target="#tab1-vimeoId"
+                                                                        data-value="vimeo_id" type="button"
+                                                                        role="tab"> {{ __('vimeo_id') }}
+                                                                    </button>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <button class="nav-link video1_type"
+                                                                        data-bs-toggle="pill"
                                                                         data-bs-target="#tab1-drive"
                                                                         data-value="google_drive" type="button"
                                                                         role="tab">
@@ -196,6 +204,12 @@
                                                                     <input class="form-control bg-light-green"
                                                                         type="text" name="vimeo_link"
                                                                         placeholder="{{ __('enter_vimeo_link') }}" />
+                                                                </div>
+                                                                <div class="tab-pane fade tab-attac" id="tab1-vimeoId"
+                                                                    role="tabpanel">
+                                                                    <input class="form-control bg-light-green"
+                                                                        type="text" name="vimeo_id"
+                                                                        placeholder="{{ __('enter_vimeo_id') }}" />
                                                                 </div>
                                                                 <div class="tab-pane fade tab-attac" id="tab1-drive"
                                                                     role="tabpanel">

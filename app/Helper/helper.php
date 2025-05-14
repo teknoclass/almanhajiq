@@ -15,14 +15,23 @@ use App\Mail\ReplayMail;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
-use App\Models\{Courses, CourseSession,CourseSessionsGroup,CourseSessionSubscription,UserCourse,
-    StudentSessionInstallment,CourseSessionInstallment};
+use App\Models\{
+    Courses,
+    CourseSession,
+    CourseSessionsGroup,
+    CourseSessionSubscription,
+    UserCourse,
+    StudentSessionInstallment,
+    CourseSessionInstallment
+};
 use Google\Auth\Credentials\ServiceAccountCredentials;
 use Twilio\Rest\Client;
 use Illuminate\Support\Str;
 use Illuminate\Http\Client\RequestException;
 use App\Models\PaymentDetail;
 use App\Models\Transactios;
+use App\Services\VimeoService;
+
 
 function checkAllPermissionsAdmin($permissions)
 {
@@ -72,7 +81,7 @@ function filterData($items)
     $pagination = \Input::get('pagination');
     $query      = \Input::get('query');
     $search     = isset($query['generalSearch']) ? $query['generalSearch'] : null;
-    if(isset($pagination) ) {
+    if (isset($pagination)) {
         if ($pagination['perpage'] == -1 || $pagination['perpage'] == null) {
             $pagination['perpage'] = 10;
         }
@@ -96,12 +105,12 @@ function getFirstCharacter($srt)
 
 function getHeaderId()
 {
- $silder=Sliders::where('name','header')->select('id')->first();
- return $silder->id;
+    $silder = Sliders::where('name', 'header')->select('id')->first();
+    return $silder->id;
 }
 function getStudentOpinionId()
 {
-    $silder=Sliders::where('name','student_opinions')->select('id')->first();
+    $silder = Sliders::where('name', 'student_opinions')->select('id')->first();
     return $silder->id;
 }
 
@@ -116,15 +125,14 @@ function imageUrl_past($img, $size = '')
 
 function imageUrl($img, $size = '')
 {
-    if($img == "avatar.png")
-    {
+    if ($img == "avatar.png") {
         return url('/image/' . (new Setting)->valueOf('logo'));
     }
     $image =  (!empty($size)) ? url('/image/' . $size . '/' . $img) : url('/image/' . $img);
-    $path = storage_path('app/uploads/images/'.$img);
+    $path = storage_path('app/uploads/images/' . $img);
 
     if (!$img || !File::exists($path)) {
-       return url('/image/' . (new Setting)->valueOf('logo'));
+        return url('/image/' . (new Setting)->valueOf('logo'));
     }
     return $image;
 }
@@ -138,7 +146,7 @@ function centerCertificateImage($id)
 {
     return url('/image/center-certificate/' . $id);
 }
-function changeDateFormate($date, $date_format='Y-m-d')
+function changeDateFormate($date, $date_format = 'Y-m-d')
 {
     if (app()->isLocale('ar')) {
         \Carbon\Carbon::setLocale('ar');
@@ -158,7 +166,7 @@ function getMonthName($date)
     return \Carbon\Carbon::createFromFormat('Y-m-d', $date)->translatedFormat('M');
 }
 
-function getCustomDateFormate($date, $date_format='Y-m-d')
+function getCustomDateFormate($date, $date_format = 'Y-m-d')
 {
     if (app()->isLocale('ar')) {
         \Carbon\Carbon::setLocale('ar');
@@ -194,7 +202,7 @@ function cutString($text, $length)
 {
     $text = strip_tags($text);
 
-    $text=str_replace("&nbsp;", " ", $text);
+    $text = str_replace("&nbsp;", " ", $text);
 
     if (strlen($text) > $length) {
         return mb_substr($text, 0, $length) . '...';
@@ -262,7 +270,8 @@ function cutString($text, $length)
  */
 
 
-function sendWebNotification($user_id, $user_type, $title, $text,$messageData = null){
+function sendWebNotification($user_id, $user_type, $title, $text, $messageData = null)
+{
     if ($user_type == 'user') {
         $FcmToken = User::where('id', $user_id)->whereNotNull('device_token')->pluck('device_token')->first();
     } else {
@@ -287,7 +296,7 @@ function sendWebNotification($user_id, $user_type, $title, $text,$messageData = 
             'Content-Type: application/json'
         ];
 
-        if($messageData === null){
+        if ($messageData === null) {
             $messageData = [
                 "type" => "notification"
             ];
@@ -331,7 +340,8 @@ function sendWebNotification($user_id, $user_type, $title, $text,$messageData = 
         return $e->getMessage();
     }
 }
-function sendWebNotificationV2($user_id, $user_type, $title, $text,$messageData = null){
+function sendWebNotificationV2($user_id, $user_type, $title, $text, $messageData = null)
+{
     if ($user_type == 'user') {
         $FcmToken = User::where('id', $user_id)->whereNotNull('device_token')->pluck('device_token')->first();
     } else {
@@ -356,7 +366,7 @@ function sendWebNotificationV2($user_id, $user_type, $title, $text,$messageData 
             'Content-Type: application/json'
         ];
 
-        if($messageData === null){
+        if ($messageData === null) {
             $messageData = [
                 "type" => "notification"
             ];
@@ -421,16 +431,16 @@ function sendNotification($title, $text, $user_id, $user_type, $action_type = nu
 function sendEmail($title, $msg, $to)
 {
     // if(env('APP_ENV') == 'local') {
-        $send = Mail::to($to)->send(new ReplayMail($title, $msg, $to));
-        if (!$send) {
-            $message = 'حدث خطأ غير متوقع';
-            $status = false;
-            $response = [
-                'message' => $message,
-                'status' => $status,
-            ];
-            return $response;
-        }
+    $send = Mail::to($to)->send(new ReplayMail($title, $msg, $to));
+    if (!$send) {
+        $message = 'حدث خطأ غير متوقع';
+        $status = false;
+        $response = [
+            'message' => $message,
+            'status' => $status,
+        ];
+        return $response;
+    }
     // }
 
     $response = [
@@ -442,14 +452,14 @@ function sendEmail($title, $msg, $to)
 
 function getLastNotifications($type)
 {
-    if ($type=='admin') {
+    if ($type == 'admin') {
         $user =  Auth::user();
     } else {
         $user = auth('web')->user();
     }
     if ($user != '') {
         $data['notifications'] = Notifications::where('user_id', $user->id)->where('user_type', $type)->whereNull('read_at')->orderBy('id', 'desc')->take(3)->get();
-        if ($type=='admin') {
+        if ($type == 'admin') {
             return View::make('panel.layouts.dropdown_notifications', $data)->render();
         } else {
             return View::make('front.layouts.dropdown_notifications', $data)->render();
@@ -469,9 +479,9 @@ function showNotifications()
     $items = Notifications::where('user_id', $user->id)->where('user_type', 'user')->whereNull('read_at')->get();
 
     Notifications::where('user_id', $user->id)->where('user_type', 'user')->whereNull('read_at')
-    ->update([
-        'read_at' => Carbon::now()
-    ]);
+        ->update([
+            'read_at' => Carbon::now()
+        ]);
 
     return 0;
 }
@@ -585,17 +595,16 @@ function mergeString($str1, $str2)
 }
 
 
-function uploadFile($file, $custome_path='', $is_full_path=false)
+function uploadFile($file, $custome_path = '', $is_full_path = false)
 {
-    if ($custome_path=='') {
+    if ($custome_path == '') {
 
-        $path=storage_path() . '/app/uploads/files';
-
+        $path = storage_path() . '/app/uploads/files';
     } else {
-        if(!$is_full_path) {
-            $path=storage_path() . '/app/uploads/files/'.$custome_path;
-        }else{
-            $path=$custome_path;
+        if (!$is_full_path) {
+            $path = storage_path() . '/app/uploads/files/' . $custome_path;
+        } else {
+            $path = $custome_path;
         }
     }
 
@@ -613,15 +622,15 @@ function uploadFile($file, $custome_path='', $is_full_path=false)
     return $filename;
 }
 
-function uploadImageBySendingFile($image, $custome_path='', $is_full_path=false)
+function uploadImageBySendingFile($image, $custome_path = '', $is_full_path = false)
 {
-    if ($custome_path=='') {
+    if ($custome_path == '') {
         $path = storage_path() . '/app/uploads/images';
     } else {
-        if(!$is_full_path) {
-            $path = storage_path() . '/app/uploads/images/'.$custome_path;
-        }else{
-            $path=$custome_path;
+        if (!$is_full_path) {
+            $path = storage_path() . '/app/uploads/images/' . $custome_path;
+        } else {
+            $path = $custome_path;
         }
     }
 
@@ -638,7 +647,7 @@ function uploadImageBySendingFile($image, $custome_path='', $is_full_path=false)
     return $imagename;
 }
 
-function uploadImage($request, $custome_path='')
+function uploadImage($request, $custome_path = '')
 {
     $photo            = $request['file'];
     $extension        = $photo->getClientOriginalExtension();
@@ -766,10 +775,10 @@ function getUser($guard = 'web')
     return auth($guard)->user();
 }
 
-function checkUser($role,$guard='web')
+function checkUser($role, $guard = 'web')
 {
     if (auth($guard)->check()) {
-        if (getUser($guard)->role==$role) {
+        if (getUser($guard)->role == $role) {
             return true;
         }
     }
@@ -788,22 +797,22 @@ function diffInHours($to, $from)
 
 function getDefultLang()
 {
-    $item=Languages::where('is_default', 1)->first();
+    $item = Languages::where('is_default', 1)->first();
     return $item;
 }
 
-function sendNotifications($title, $text, $action_type, $action_data, $permation, $user_type, $user_ids=[])
+function sendNotifications($title, $text, $action_type, $action_data, $permation, $user_type, $user_ids = [])
 {
     $notifications = [];
 
     $notification['title'] = $title;
     $notification['text'] = $text;
     $notification['user_type'] = $user_type;
-    $notification['action_type'] =$action_type;
+    $notification['action_type'] = $action_type;
     $notification['action_id'] = $action_data;
     $notification['created_at'] = \Carbon\Carbon::now();
 
-    if ($user_type=='admin') {
+    if ($user_type == 'admin') {
         $admins =  Admin::all();
         foreach ($admins as $admin) {
             if ($admin->can($permation)) {
@@ -848,17 +857,16 @@ function defaultCountrySlug()
     return 'iraq';
 }
 
-function uploadvideo($file, $custome_path='', $is_full_path=false)
+function uploadvideo($file, $custome_path = '', $is_full_path = false)
 {
-    if ($custome_path=='') {
+    if ($custome_path == '') {
 
-        $path=storage_path() . '/app/uploads/files/videos';
-
+        $path = storage_path() . '/app/uploads/files/videos';
     } else {
-        if(!$is_full_path) {
-            $path=storage_path() . '/app/uploads/files/'.$custome_path;
-        }else{
-            $path=$custome_path;
+        if (!$is_full_path) {
+            $path = storage_path() . '/app/uploads/files/' . $custome_path;
+        } else {
+            $path = $custome_path;
         }
     }
 
@@ -869,17 +877,16 @@ function uploadvideo($file, $custome_path='', $is_full_path=false)
     return $filename;
 }
 
-function uploadVoice($file, $custome_path='', $is_full_path=false)
+function uploadVoice($file, $custome_path = '', $is_full_path = false)
 {
-    if ($custome_path=='') {
+    if ($custome_path == '') {
 
-        $path=storage_path() . '/app/uploads/files';
-
+        $path = storage_path() . '/app/uploads/files';
     } else {
-        if(!$is_full_path) {
-            $path=storage_path() . '/app/uploads/files/'.$custome_path;
-        }else{
-            $path=$custome_path;
+        if (!$is_full_path) {
+            $path = storage_path() . '/app/uploads/files/' . $custome_path;
+        } else {
+            $path = $custome_path;
         }
     }
     $fileName  = uniqid() . '_' . trim($file->getClientOriginalName());
@@ -919,6 +926,11 @@ function CourseAttachmentUrl($course_id, $file)
 function CourseImageUrl($course_id, $file)
 {
     return url('get-course-file/' . $course_id . '/images/' . $file);
+}
+function CourseVimeoUrl($file)
+{
+    $vimeoService = app(VimeoService::class);
+    return $vimeoService->getHlsLink($file);
 }
 function CourseLiveSessionAttachmenteUrl($course_id, $file)
 {
@@ -998,55 +1010,54 @@ function hexToRgb($hex, $alpha = false)
 
 function isCourseHasSubscriptions($course_id)
 {
-    $courseSessionsGroupsIds = CourseSession::where('course_id',$course_id)->pluck('group_id')->toArray();
+    $courseSessionsGroupsIds = CourseSession::where('course_id', $course_id)->pluck('group_id')->toArray();
 
-    $courseGroupsids = CourseSessionsGroup::whereIn('id',$courseSessionsGroupsIds)->pluck('id')->toArray();
+    $courseGroupsids = CourseSessionsGroup::whereIn('id', $courseSessionsGroupsIds)->pluck('id')->toArray();
 
-   return CourseSessionSubscription::whereIn('course_session_group_id',$courseGroupsids)->exists();
+    return CourseSessionSubscription::whereIn('course_session_group_id', $courseGroupsids)->exists();
 }
 
 function isStudentSubscribeToSessionGroup($group_id)
 {
-   //check if student subscribe on all sessions of group
-   $studentSubscribedSessionCount = CourseSessionSubscription::where('course_session_group_id',$group_id)->where('student_id',auth('web')->user()->id)->count();
+    //check if student subscribe on all sessions of group
+    $studentSubscribedSessionCount = CourseSessionSubscription::where('course_session_group_id', $group_id)->where('student_id', auth('web')->user()->id)->count();
 
-   $groupSessionsCount = CourseSession::where('group_id',$group_id)->count();
+    $groupSessionsCount = CourseSession::where('group_id', $group_id)->count();
 
-    $isstudentSubscribedToGroup = CourseSessionSubscription::where('course_session_group_id',$group_id)->where('related_to_group_subscription', 1)
-    ->where('student_id',auth('web')->user()->id)->exists();
+    $isstudentSubscribedToGroup = CourseSessionSubscription::where('course_session_group_id', $group_id)->where('related_to_group_subscription', 1)
+        ->where('student_id', auth('web')->user()->id)->exists();
 
     return $isstudentSubscribedToGroup || ($studentSubscribedSessionCount == $groupSessionsCount) ? true : false;
 }
 
 function isStudentSubscribeToSession($session_id)
 {
-    return CourseSessionSubscription::where('course_session_id',$session_id)->where('student_id',auth('web')->user()->id)->exists();
+    return CourseSessionSubscription::where('course_session_id', $session_id)->where('student_id', auth('web')->user()->id)->exists();
 }
 
 function studentSessionGroupSubscriptions()
 {
-    return CourseSessionSubscription::where('related_to_group_subscription',1)->where('student_id',auth('web')->user()->id)->get();
+    return CourseSessionSubscription::where('related_to_group_subscription', 1)->where('student_id', auth('web')->user()->id)->get();
 }
 
 function studentSubscriptionCoursessIds($type = 'web')
 {
-    if(! auth($type)->check())
-    {
+    if (! auth($type)->check()) {
         return [];
     }
 
-    return CourseSessionSubscription::where('student_id',auth($type)->user()->id)->pluck('course_id')->toArray();
+    return CourseSessionSubscription::where('student_id', auth($type)->user()->id)->pluck('course_id')->toArray();
 }
 
 function isCourseonStudentCourse($course_id)
 {
     $checkStudentCourses = UserCourse::select('id', 'user_id', 'course_id')
-    ->where([
-        ['user_id', auth('web')->user()->id],
-        ['course_id', $course_id],
-        ['is_paid' , 1],
-        ['is_installment' , 0]
-    ])->exists();
+        ->where([
+            ['user_id', auth('web')->user()->id],
+            ['course_id', $course_id],
+            ['is_paid', 1],
+            ['is_installment', 0]
+        ])->exists();
 
     return $checkStudentCourses;
 }
@@ -1054,33 +1065,30 @@ function isCourseonStudentCourse($course_id)
 //installments
 function installementdLessonsIds($course_id)
 {
-   $studentLessonsUntilIds = StudentSessionInstallment::where('course_id',$course_id)
-    ->where('student_id',auth('web')->user()->id)->pluck('access_until_session_id')->toArray();
-    if($studentLessonsUntilIds)
-    {
+    $studentLessonsUntilIds = StudentSessionInstallment::where('course_id', $course_id)
+        ->where('student_id', auth('web')->user()->id)->pluck('access_until_session_id')->toArray();
+    if ($studentLessonsUntilIds) {
         $maxLessonId = max($studentLessonsUntilIds);
 
-        return CourseSession::where("course_id",$course_id)->where("id","<=",$maxLessonId)->pluck('id')->toArray();
-    } else{
+        return CourseSession::where("course_id", $course_id)->where("id", "<=", $maxLessonId)->pluck('id')->toArray();
+    } else {
         return [];
     }
-
 }
 
 function studentCourseSessionInstallmentsIDs($course_id)
 {
-    return  StudentSessionInstallment::where('course_id',$course_id)
-    ->where('student_id',auth('web')->user()->id)->pluck('access_until_session_id')->toArray();
+    return  StudentSessionInstallment::where('course_id', $course_id)
+        ->where('student_id', auth('web')->user()->id)->pluck('access_until_session_id')->toArray();
 }
 
 function studentInstallmentsCoursessIds($type = 'web')
 {
-    if(! auth($type)->check())
-    {
+    if (! auth($type)->check()) {
         return [];
     }
 
-    return StudentSessionInstallment::where('student_id',auth($type)->user()->id)->pluck('course_id')->toArray();
+    return StudentSessionInstallment::where('student_id', auth($type)->user()->id)->pluck('course_id')->toArray();
 }
 
 function checkIfInstallmentHasStudents($installment_id)
@@ -1088,14 +1096,14 @@ function checkIfInstallmentHasStudents($installment_id)
     $installment = CourseSessionInstallment::find($installment_id);
     $course_session_id = $installment->course_session_id;
 
-    return StudentSessionInstallment::where('access_until_session_id',$course_session_id)->where('course_id',$installment->course_id)
-    ->whereHas('student',function($q){
-        $q->whereNotNull('deleted_at');
-    })
-    ->first();
+    return StudentSessionInstallment::where('access_until_session_id', $course_session_id)->where('course_id', $installment->course_id)
+        ->whereHas('student', function ($q) {
+            $q->whereNotNull('deleted_at');
+        })
+        ->first();
 }
 
-function sendOtpToWhatsapp($to_mobile,$otp)
+function sendOtpToWhatsapp($to_mobile, $otp)
 {
 
     $sid    = "ACa05313d6652bde58f9b50dca4af0d0ed";
@@ -1105,20 +1113,20 @@ function sendOtpToWhatsapp($to_mobile,$otp)
 
     // try {
 
-        $twilio = new Client($sid, $token);
+    $twilio = new Client($sid, $token);
 
-        $message = $twilio->messages->create(
-            "whatsapp:+".$to_mobile, // To
-            [
-                "contentSid" => "HXa7993fb9898278580e512255d287f4a6",
-                "contentVariables" => json_encode([
-                    "1" => $otp,
-                ]),
-                "from" => "whatsapp:+9647869653275",
-            ]
-        );
+    $message = $twilio->messages->create(
+        "whatsapp:+" . $to_mobile, // To
+        [
+            "contentSid" => "HXa7993fb9898278580e512255d287f4a6",
+            "contentVariables" => json_encode([
+                "1" => $otp,
+            ]),
+            "from" => "whatsapp:+9647869653275",
+        ]
+    );
 
-        return 'SMS Sent Successfully.';
+    return 'SMS Sent Successfully.';
     // } catch (Exception $e) {
     //     return 'Error: ' . $e->getMessage();
     // }
@@ -1126,12 +1134,12 @@ function sendOtpToWhatsapp($to_mobile,$otp)
 
 function genereatePaymentOrderID()
 {
-    return preg_replace('/[^A-Za-z]/', '', Str::random(10)).rand(1,1000).rand(1,10);
+    return preg_replace('/[^A-Za-z]/', '', Str::random(10)) . rand(1, 1000) . rand(1, 10);
 }
 
 function checkIfstudentFullySubscribeOnCourse($course_id)
 {
-    return UserCourse::where('user_id','student_id',auth('web')->user()->id)->where('course_id',$course_id)->first();
+    return UserCourse::where('user_id', 'student_id', auth('web')->user()->id)->where('course_id', $course_id)->first();
 }
 
 function storePaymentDetails($paymentDetails)
@@ -1145,11 +1153,10 @@ function storePaymentDetails($paymentDetails)
 
 function getPaymentDetails($payment_id)
 {
-   $details = PaymentDetail::where('payment_id', $payment_id)->first();
+    $details = PaymentDetail::where('payment_id', $payment_id)->first();
 
-    if($details)
-    {
-        return json_decode($details->details,true);
+    if ($details) {
+        return json_decode($details->details, true);
     }
 }
 
@@ -1157,9 +1164,10 @@ function isRefundableTransaction($id)
 {
     $transaction = Transactios::find($id);
 
-    if($transaction && $transaction->type == "deposit" && $transaction->status == "completed"
-     && $transaction->is_paid == 1 && $transaction->brand == "card" && $transaction->is_refunded != 1)
-    {
+    if (
+        $transaction && $transaction->type == "deposit" && $transaction->status == "completed"
+        && $transaction->is_paid == 1 && $transaction->brand == "card" && $transaction->is_refunded != 1
+    ) {
         return true;
     }
 
@@ -1168,38 +1176,33 @@ function isRefundableTransaction($id)
 
 function someStudentSubscriptionCoursessIds($id)
 {
-    return CourseSessionSubscription::where('student_id',$id)->pluck('course_id')->toArray();
+    return CourseSessionSubscription::where('student_id', $id)->pluck('course_id')->toArray();
 }
 
 function someStudentInstallmentsCoursessIds($id)
 {
-    return StudentSessionInstallment::where('student_id',$id)->pluck('course_id')->toArray();
+    return StudentSessionInstallment::where('student_id', $id)->pluck('course_id')->toArray();
 }
 
 function canStudentSubscribeToCourse($course_id, $subscription_type)
 {
     $course = Courses::find($course_id);
-    if(! $course->subscription_end_date)
-    {
+    if (! $course->subscription_end_date) {
         return true;
     }
-    if($subscription_type == "full")
-    {
-        if($course->type == "live" &&  $course->subscription_end_date >= date('Y-m-d'))
-        {
+    if ($subscription_type == "full") {
+        if ($course->type == "live" &&  $course->subscription_end_date >= date('Y-m-d')) {
             return true;
-        }else{
+        } else {
             return false;
         }
-    }elseif($subscription_type == "installment")
-    {
-        $studentInstallments =  StudentSessionInstallment::where('student_id',@auth()->guard('web')->user()->id)
-        ->where('course_id',$course_id)->first();
+    } elseif ($subscription_type == "installment") {
+        $studentInstallments =  StudentSessionInstallment::where('student_id', @auth()->guard('web')->user()->id)
+            ->where('course_id', $course_id)->first();
 
-        if($studentInstallments || $course->subscription_end_date >= date('Y-m-d'))
-        {
+        if ($studentInstallments || $course->subscription_end_date >= date('Y-m-d')) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

@@ -1302,6 +1302,8 @@
     "Keep this empty if you dont want to edit the video" : "اتركه فارغا اذا كنت لا تريد تعديل الفيديو",
     "current video : " : "اسم الفيديو الحالي : ",
     "code expired" : "انتهت صلاحية الكود",
+    "enter_vimeo_id" : "ادخل معرف الفيميو",
+    "vimeo_id" : "معرف فيميو",
     "": "",
     "x": ""
 

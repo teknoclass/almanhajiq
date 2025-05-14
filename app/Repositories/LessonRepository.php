@@ -59,6 +59,7 @@ class LessonRepository extends BaseRepository
                 $data['file'] = FileUploadService::handleFileUpload($data, $request, $data['course_id'], $data['file_type'], $data['video_type'] ?? null);
             } else {
                 if($data['vimeo_link']) $data['file'] = $data['vimeo_link'];
+                else if($data['vimeo_id']) $data['file'] = $data['vimeo_id'];
                 else $data['file'] = CourseLessons::find($data['id'])->file ?? "";
             }
 
