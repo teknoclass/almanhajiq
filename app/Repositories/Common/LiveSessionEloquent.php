@@ -151,6 +151,14 @@ class LiveSessionEloquent  extends HelperEloquent
 
     public function setSessions($sessionData, $request, $course_id)
     {
+
+		$sessionDays = collect($request->all())
+		->filter(function ($value, $key) {
+			return str_starts_with($key, 'session_day_');
+		});
+
+		$countSessionDays = $sessionDays->count();
+
         DB::transaction(function () use ($course_id) {
             DB::table('course_session_installments')
                 ->whereIn('course_session_id', function ($query) use ($course_id) {
@@ -165,7 +173,7 @@ class LiveSessionEloquent  extends HelperEloquent
         $sessionIds = [];
         $sessions = [];
         $i = 0;
-        while ($i < 30) {
+        while ($i < $countSessionDays) {
             if($request->has("session_day_$i")){
 
                 $sessions[] = [
