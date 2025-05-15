@@ -55,10 +55,13 @@ class LessonRepository extends BaseRepository
             Log::alert($data);
             $data['downloadable'] = isset($data['downloadable']) ? 1 : 0;
             $data['status'] = isset($data['status']) ? 'active' : 'inactive';
+            Log::alert($request);
+            $data['storage'] = $request['video_type'];
+            if($data['storage'] == 'vimeo_vimeo_id')$data['storage'] = 'vimeo_id';
             if ($request->file('upload')) {
                 $data['file'] = FileUploadService::handleFileUpload($data, $request, $data['course_id'], $data['file_type'], $data['video_type'] ?? null);
             } else {
-                if($data['vimeo_link']) $data['file'] = $data['vimeo_link'];
+                if($data['vimeo_link'] && $data['storage'] == 'vimeo_link') $data['file'] = $data['vimeo_link'];
                 else if($data['vimeo_id']) $data['file'] = $data['vimeo_id'];
                 else $data['file'] = CourseLessons::find($data['id'])->file ?? "";
             }
