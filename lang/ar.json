@@ -1,5 +1,5 @@
 {
-
+    "special": "مميز",
     "From": "من",
     "To": "الى",
     "Lesson_Time": "وقت الدرس",
@@ -1009,7 +1009,7 @@
     "Cannot Delete any of course Items as There`re Students already subscribed.": "لا يمكن حذف أي من عناصر الدورة التدريبية نظرًا لوجود طلاب مشتركين بالفعل.",
     "and We will mail you with your login credintials after admin confirmation.": "وسوف يتم ارسال بريد الكتروني ببيانات الدخول الخاصة بك بعد موافقة الإدارة.",
     "just de-activated": "تم الإكتفاء بالغاء النشر",
-    "pick a date":"جدول الدروس",
+    "pick a date": "جدول الدروس",
     "validation": {
         "name": "الاسم مطلوب ويجب ألا يتجاوز 255 حرفًا.",
         "email": "البريد الإلكتروني مطلوب ويجب ألا يكون مستخدمًا من قبل.",
@@ -1023,12 +1023,10 @@
     "x": "",
     "grade_levels": "المراحل العلمية",
     "grade_sub_level": "الصفوف العلمية",
-    "item_not_found":"العنصر غير موجود",
-    "done_operation":"تمت العملية بنجاح",
-    "session_not_found":"الجلسة غير موجودة",
-    "choose_pls":"اختر من فضلك",
-    "can_subscribe_to_session_group":"امكانية اشتراك الطلاب فى مجموعة جلسات",
-    "can_subscribe_to_session":"امكانية اشتراك الطلاب فى جلسة منفردة"
-
-
+    "item_not_found": "العنصر غير موجود",
+    "done_operation": "تمت العملية بنجاح",
+    "session_not_found": "الجلسة غير موجودة",
+    "choose_pls": "اختر من فضلك",
+    "can_subscribe_to_session_group": "امكانية اشتراك الطلاب فى مجموعة جلسات",
+    "can_subscribe_to_session": "امكانية اشتراك الطلاب فى جلسة منفردة"
 }

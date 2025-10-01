@@ -386,6 +386,24 @@ $item = isset($item) ? $item: null;
                            </span>
                            @endif
                         </div>
+                        <div class="form-group">
+                           <label>{{__('special')}}
+
+                           </label>
+              <select id={{__('special')}} name="special" class="form-control mb-5 ">
+                                                    <option value="" selected disabled>{{__('type_select')}} </option>
+
+                                                        <option value="1"
+                                                            {{@$item->special==1 ?'selected' :''}}>
+                                                            {{__('yes')}}
+                                                        </option>
+                                                    <option value="0"
+                                                        {{@$item->special==0 ?'selected' :''}}>
+                                                        {{__('no')}}
+                                                    </option>
+
+                                                </select>
+                        </div>
 
 
 

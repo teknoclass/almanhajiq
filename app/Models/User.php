@@ -80,7 +80,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'session_token',
         'parent_mobile_number',
         'parent_code_country',
-        'parent_slug_country'
+        'parent_slug_country',
+        'special'
     ];
 
     public function studentSubscribedSessions()
