@@ -1107,7 +1107,7 @@ function sendOtpToWhatsapp($to_mobile, $otp)
 {
 
     $sid    = "ACa05313d6652bde58f9b50dca4af0d0ed";
-    $token  = "6b30343c91275b1248af98d3339010bc";
+    $token  = "8a7ea478d025e34e95aeca9f165ab3fb";
 
     $fromNumber = '+9647869653275';
 

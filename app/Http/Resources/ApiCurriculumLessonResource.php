@@ -29,6 +29,7 @@ class ApiCurriculumLessonResource extends JsonResource
         }else{
             $data['file'] = $this->file;
         }
+
         $data['file_type'] = $this->file_type;
         $data['created_at'] = $this->created_at;
         $data['duration'] = $this->duration;

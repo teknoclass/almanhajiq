@@ -9,8 +9,9 @@ class VimeoService
 
     public function getHlsLink($videoId)
     {
-        $accessToken = env('VIMEO_ACCESS_TOKEN');
+        $accessToken = "833654efae12ebaf0c7cb57297761705";
         $response = Http::withToken($accessToken)->get("https://api.vimeo.com/videos/{$videoId}");
+        // dd($response);
 
         if (!$response->ok()) {
             return null;
