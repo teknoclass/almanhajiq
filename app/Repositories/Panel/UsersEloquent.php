@@ -417,7 +417,7 @@ class UsersEloquent
                     $row .= "<td >" . __($item->role) . "</td>";
                 }
                 $row .= "<td >" . $item->date . "</td>";
-                $row .= "<td >" . $item->special . "</td>";
+                $row .= "<td>" . ($item->special == 0 ? "False" : "True") . "</td>";
                 $row .= "</tr>";
                 ++$i;
                 $table .= $row;
