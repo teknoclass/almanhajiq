@@ -178,13 +178,13 @@ class UsersEloquent
                 'status' => $status,
             ];
 
-            DB::commit(); 
+            DB::commit();
 
             return $response;
 
         } catch (\Exception $e)
         {
-            DB::rollback(); 
+            DB::rollback();
             $response = [
                 'message' => $e->getMessage(),
                 'status' => false,
@@ -398,6 +398,7 @@ class UsersEloquent
             ";
         }
         $table .= "<th >تاريخ التسجيل </th>";
+        $table .= "<th > مميز </th>";
         $table .= '</tr>
         </thead>
         <tbody>';
@@ -416,6 +417,7 @@ class UsersEloquent
                     $row .= "<td >" . __($item->role) . "</td>";
                 }
                 $row .= "<td >" . $item->date . "</td>";
+                $row .= "<td >" . $item->special . "</td>";
                 $row .= "</tr>";
                 ++$i;
                 $table .= $row;
