@@ -72,7 +72,7 @@ $breadcrumb_links=[
 
                          <div class="form-group row" id="generate_btn_div" @if($item->published || count($item['sessions']) >0 )  style="display:none;" @else  style="display:block;" @endif>
                              <div class="col-lg-4" >
-                                 <a  id="generate_btn" onClick="generatePlan('{{$item->start_date}}')"
+                                <a  id="generate_btn" onClick="generatePlan('{{$item->start_date}}')"
                                      class="btn btn-success">
                                      <i class="la la-arrow-circle-o-right"></i>
                                      {{__('Generate Plan')}}

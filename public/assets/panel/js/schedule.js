@@ -246,6 +246,7 @@ function generatePlan(start_date) {
     $('#add_lesson').show();
 
 }
+
 document.getElementById('planContainer').addEventListener('change', function (event) {
     if (event.target && event.target.type === 'date') {
         const dateInput = event.target;

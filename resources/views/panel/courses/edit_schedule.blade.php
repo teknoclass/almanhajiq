@@ -73,7 +73,7 @@
 
                         <div class="form-group row" id="generate_btn_div" @if($item->published || count($item['sessions']) >0 )  style="display:none;" @else  style="display:block;" @endif>
                            <div class="col-lg-4" >
-                               <a  id="generate_btn" onClick="generatePlan('{{$item->start_date}}')"
+                         <a  id="generate_btn" onClick="generatePlan('{{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }}')"
                                   class="btn btn-success">
                                    <i class="la la-arrow-circle-o-right"></i>
                                    {{__('Generate Plan')}}
@@ -152,7 +152,7 @@
 
 
 
-    
+
     $(document).on('click', '.delete-attachment', function() {
         var attachmentId = $(this).data('id');
         var rowElement = $("#attachment-row-" + attachmentId); // Select the row
