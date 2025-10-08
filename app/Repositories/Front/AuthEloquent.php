@@ -238,11 +238,13 @@ class AuthEloquent extends HelperEloquent
             $user = Auth::user();
             $device_token = $request->device_token;
             $user->update(['device_token'=>$device_token,'session_token'=>$session_token]);
-            DB::table('sessions')
-                ->where('user_id', $user->id)
-                ->where('id', '!=', session()->getId())
-                ->delete();
 
+          if($user->role =='student'){
+                DB::table('sessions')
+                    ->where('user_id', $user->id)
+                    ->where('id', '!=', session()->getId())
+                    ->delete();
+            }
             $user->tokens()->whereNull('expires_at')->update(['expires_at' => now()]);
                 $request->session()->regenerate();
             return
