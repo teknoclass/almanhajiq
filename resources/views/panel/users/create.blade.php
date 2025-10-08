@@ -393,13 +393,17 @@ $item = isset($item) ? $item: null;
               <select id={{__('special')}} name="special" class="form-control mb-5 ">
                                                     <option value="" selected disabled>{{__('type_select')}} </option>
 
-                                                        <option value="1"
-                                                            {{@$item->special==1 ?'selected' :''}}>
-                                                            {{__('yes')}}
+                                                        <option value="normal"
+                                                            {{@$item->special=='normal' ?'selected' :''}}>
+                                                            {{__('normal')}}
                                                         </option>
-                                                    <option value="0"
-                                                        {{@$item->special==0 ?'selected' :''}}>
-                                                        {{__('no')}}
+                                                    <option value="shudaa"
+                                                        {{@$item->special=='shudaa' ?'selected' :''}}>
+                                                        {{__('shudaa')}}
+                                                    </option>
+                                                    <option value="reaya"
+                                                        {{@$item->special=='reaya' ?'selected' :''}}>
+                                                        {{__('reaya')}}
                                                     </option>
 
                                                 </select>
