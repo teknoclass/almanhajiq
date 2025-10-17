@@ -210,11 +210,10 @@ function generatePlan(start_date) {
         var titleInput = document.createElement('input');
         titleInput.type = 'text';
         titleInput.name = 'session_title_' + i;
+        titleInput.value = 'الدرس ' + i;
         titleInput.className = 'form-control';
-        dateInput.required = true;
         titleInput.required = true;
-        titleInput.minlength = 3;
-        titleInput.maxlength = 255;
+
         titleCell.appendChild(titleInput);
 
         var deleteButton = document.createElement('button');
@@ -395,7 +394,7 @@ function generateSessionCount() {
 
     totalSessionsSelect.innerHTML = `<option value="" disabled selected>${translations.total_sessions || "Total Session"}</option>`;
 
-    for (let i = parseInt(weeklySessions) + 1; i <= 52; i++) {
+    for (let i = parseInt(weeklySessions) + 1; i <= 100; i++) {
         const option = document.createElement('option');
         option.value = i;
         option.text = i;

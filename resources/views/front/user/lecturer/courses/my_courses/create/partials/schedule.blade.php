@@ -27,7 +27,7 @@
 
                    <select class="form-control" name="total_sessions" id="total_sessions">
                        <option value="" disabled selected>{{ __('Total Sessions') }}</option>
-                       @for ($i = $item['total_sessions_count']; $i <= 52; $i++)
+                       @for ($i = $item['total_sessions_count']; $i <= 100; $i++)
                            <option value="{{ $i }}" {{ (isset($item['total_sessions_count']) && $item['total_sessions_count'] == $i && $item['total_sessions_count'] !=0) ? 'selected' : '' }}>
                                {{ $i }}
                            </option>
