@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class CourseLessons extends Model
 {
     use HasFactory , SoftDeletes , Translatable;
-    protected $fillable = ['course_id', 'course_sections_id', 'user_id', 'accessibility',
+    protected $fillable = ['course_id', 'course_sections_id', 'user_id', 'accessibility','activeDate',
                 'downloadable', 'storage', 'file', 'file_type', 'volume', 'status', 'order', 'duration' ];
 
     public $translatedAttributes = ['title' , 'description'];
@@ -39,15 +39,20 @@ class CourseLessons extends Model
 
     public function scopeActive($q)
     {
-        return $q->
-        where('status', 'active')
-        ->orWhere(function ($query) {
-            $query->when(Auth::guard('web')->check() && checkUser('student') , function ($query) {
-                $query->orWhereHas('lesson_learning' , function ($lesson_learning) {
-                    $lesson_learning->where('user_id', auth('web')->id());
+        return $q->where(function ($query) {
+                    $query->where('status', 'active')
+                          ->where(function ($q2) {
+                              $q2->where('activeDate', '<=', Carbon::now())
+                                 ->orWhereNull('activeDate');
+                          });
+                })
+                ->orWhere(function ($query) {
+                    $query->when(Auth::guard('web')->check() && checkUser('student'), function ($query) {
+                        $query->orWhereHas('lesson_learning', function ($lesson_learning) {
+                            $lesson_learning->where('user_id', auth('web')->id());
+                        });
+                    });
                 });
-            });
-        });
     }
 
     function can_delete() {

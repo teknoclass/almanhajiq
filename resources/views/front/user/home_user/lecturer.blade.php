@@ -38,7 +38,7 @@
             'icon' => "play",
             'value' => auth()->user()->teacherPrivateLessons()->count(),
             'type' => '',
-        ], 
+        ],
     ];
 @endphp
 <section class="section wow fadeInUp" data-wow-delay="0.1s">
@@ -113,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
                 <!--end::Students-->
 
                 <!--begin::Students-->

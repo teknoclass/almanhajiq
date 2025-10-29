@@ -33,6 +33,7 @@ class FileUploadService
                     $file->move(storage_path() . '/app/uploads/files/courses/' . $courseId . '/docs', $filename);
                 }
                 else {
+
                     throw new \Exception("File upload failed");
                 }
                 break;

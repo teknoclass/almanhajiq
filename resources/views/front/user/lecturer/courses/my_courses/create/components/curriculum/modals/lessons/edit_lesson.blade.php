@@ -104,6 +104,13 @@
                                                             placeholder="{{ __('lesson_desc') }} ">  {{ @$item->translate($locale)->description }} </textarea>
                                                     </div>
                                                 @endforeach
+                                                   <div class="form-group col-md-6 mt-2">
+                                                    <label>{{ __('activeDate') }}
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input value="{{ @$item->activeDate }}" type="datetime-local" class="form-control" rows="2" id="activeDate" name="activeDate"
+                                                        placeholder="{{ __('activeDate') }} "/>
+                                                </div>
                                             </div>
                                             <input type="hidden" name="file_type" id="filee_type"
                                                 value="{{ @$item->file_type }}">

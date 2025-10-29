@@ -60,6 +60,13 @@
                                                         placeholder="{{ __('lesson_desc') }} "></textarea>
                                                 </div>
                                             @endforeach
+                                                   <div class="form-group col-md-6 mt-2">
+                                                <label>{{ __('activeDate') }}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="datetime-local" class="form-control" rows="2" id="activeDate" name="activeDate"
+                                                    placeholder="{{ __('activeDate') }} "/>
+                                            </div>
                                         </div>
 
                                             <input type="hidden" name="file_type" id="file1_type" value="video">
