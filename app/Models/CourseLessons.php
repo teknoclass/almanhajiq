@@ -38,22 +38,18 @@ class CourseLessons extends Model
     }
 
     public function scopeActive($q)
-    {
-        return $q->where(function ($query) {
-                    $query->where('status', 'active')
-                          ->where(function ($q2) {
-                              $q2->where('activeDate', '<=', Carbon::now())
-                                 ->orWhereNull('activeDate');
-                          });
-                })
-                ->orWhere(function ($query) {
-                    $query->when(Auth::guard('web')->check() && checkUser('student'), function ($query) {
-                        $query->orWhereHas('lesson_learning', function ($lesson_learning) {
-                            $lesson_learning->where('user_id', auth('web')->id());
-                        });
-                    });
-                });
-    }
+{
+    return $q->
+    where('status', 'active')
+    ->orWhere(function ($query) {
+        $query->when(Auth::guard('web')->check() && checkUser('student'), function ($query) {
+            $query->orWhereHas('lesson_learning', function ($lesson_learning) {
+                $lesson_learning->where('user_id', auth('web')->id());
+            });
+        });
+    });
+}
+
 
     function can_delete() {
         return $this->lesson_learning->count() == 0;
