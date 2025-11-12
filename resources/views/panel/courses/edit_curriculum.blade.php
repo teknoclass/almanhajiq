@@ -370,31 +370,20 @@
             });
         });
 
-        const handleImageUpload = (blobInfo, success, failure) => new Promise((resolve, reject) => {
-            const formData = new FormData()
-            formData.append('image', blobInfo.blob())
-            formData.append('width', '')
-            formData.append('height', '')
-            formData.append('custome_path', $('#custome_path').val());
-            $.ajax({
-                url: '/image/upload',
-                method: 'post',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    const location = response.file_name
-                    setTimeout(function() {
-                        /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-                        success(window.base_image_url + '/' + location);
-                    }, 2000);
-                },
-                error: function(jqXhr) {
-                    toastr.error(window.unexpected_error);
-                }
-            });
+const handleImageUpload = (blobInfo, success, failure) => {
+    try {
+        const reader = new FileReader();
+        reader.onload = function () {
+            success(reader.result);
+        };
+        reader.readAsDataURL(blobInfo.blob());
+    } catch (e) {
+        console.error('Base64 conversion failed:', e);
+        failure('Could not convert image to Base64.');
+    }
+};
 
-        });
+
 
 
         function showTaskModal() {
